@@ -614,7 +614,7 @@
 
 			<div class="logo-wrap">
 				<img
-					src="https://github.com/happy2539/pdfmaster.co.in/blob/main/assets/android-chrome-192x192.png?raw=true"
+					src="/assets/android-chrome-192x192.png"
 					alt="PDF Master Logo"
 				/>
 				<div class="logo-text">PDF<span>Master</span></div>
@@ -688,7 +688,9 @@
 		<div class="domain-tag">pdfmaster<span>.co.in</span></div>
 
 		<script>
-			// Subtle count-num transition placeholder (no countdown needed)
-		</script>
+if (location.hostname === "www.pdfmaster.co.in") {
+  location.replace("https://pdfmaster.co.in" + location.pathname);
+}
+</script>
 	</body>
 </html>
