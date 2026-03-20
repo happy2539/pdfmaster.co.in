@@ -98,45 +98,96 @@
     </script>
 
     <!-- Schema -->
-    <script type="application/ld+json">
-      {
-        "@context": "https://schema.org",
-        "@graph": [
-          {
-            "@type": "FAQPage",
-            "url": "https://pdfmaster.co.in/faq",
-            "name": "PDFMaster FAQ",
-            "description": "Answers about JPG to PDF, image to PDF, and secure browser-based PDF tools.",
-            "publisher": {
-              "@type": "Organization",
-              "name": "PDFMaster",
-              "url": "https://pdfmaster.co.in",
-              "logo": {
-                "@type": "ImageObject",
-                "url": "https://pdfmaster.co.in/assets/apple-touch-icon.png"
-              }
-            }
-          },
-          {
-            "@type": "BreadcrumbList",
-            "itemListElement": [
-              {
-                "@type": "ListItem",
-                "position": 1,
-                "name": "Home",
-                "item": "https://pdfmaster.co.in"
-              },
-              {
-                "@type": "ListItem",
-                "position": 2,
-                "name": "FAQ",
-                "item": "https://pdfmaster.co.in/faq"
-              }
-            ]
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "FAQPage",
+      "url": "https://pdfmaster.co.in/faq",
+      "name": "PDFMaster FAQ",
+      "description": "Answers about JPG to PDF, image to PDF, and secure browser-based PDF tools.",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "What is PDFMaster?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "PDFMaster is a free browser-based toolkit of PDF and image tools that works entirely on your device without uploading files."
           }
-        ]
+        },
+        {
+          "@type": "Question",
+          "name": "Do I need to create an account or register?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No. You can use PDFMaster instantly without signing up, logging in, or providing any personal information."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Are my files safe when using PDFMaster?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes. All files are processed locally in your browser and are never uploaded to any server."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Does PDFMaster upload my files to a server?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No. PDFMaster does not upload or store any files. Everything happens on your device."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "How do I convert JPG images to PDF?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Open the Photo to PDF tool, upload your images, arrange them if needed, and click convert to download your PDF instantly."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Is PDFMaster really free?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes. All tools are completely free with no hidden charges, subscriptions, or limits."
+          }
+        }
+      ],
+      "publisher": {
+        "@type": "Organization",
+        "name": "PDFMaster",
+        "url": "https://pdfmaster.co.in",
+        "logo": {
+          "@type": "ImageObject",
+          "url": "https://pdfmaster.co.in/assets/apple-touch-icon.png"
+        }
       }
-    </script>
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://pdfmaster.co.in"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "FAQ",
+          "item": "https://pdfmaster.co.in/faq"
+        }
+      ]
+    }
+  ]
+}
+</script>
+
   </head>
 
   <body>
