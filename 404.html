@@ -1,0 +1,803 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>404 – Page Not Found | PDFMaster</title>
+
+    <meta
+      name="description"
+      content="Oops! The page you're looking for doesn't exist. Return to PDFMaster and use our free, private PDF tools — no upload required."
+    />
+
+    <meta name="robots" content="noindex, follow" />
+    <meta name="author" content="PDFMaster" />
+    <meta name="theme-color" content="#0f172a" />
+
+    <link rel="manifest" href="/manifest.json" />
+
+    <!-- Favicon -->
+    <link rel="icon" href="assets/favicon.ico" type="image/x-icon" />
+    <link rel="apple-touch-icon" href="assets/apple-touch-icon.png" />
+
+    <!-- Open Graph -->
+    <meta property="og:title" content="404 – Page Not Found | PDFMaster" />
+    <meta
+      property="og:description"
+      content="This page doesn't exist. Head back to PDFMaster for free, private PDF tools."
+    />
+    <meta property="og:url" content="https://pdfmaster.co.in/404" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="PDFMaster" />
+    <meta
+      property="og:image"
+      content="https://pdfmaster.co.in/assets/og-image.png"
+    />
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="404 – Page Not Found | PDFMaster" />
+    <meta
+      name="twitter:description"
+      content="Page not found. Go back to PDFMaster for free browser-based PDF tools."
+    />
+    <meta
+      name="twitter:image"
+      content="https://pdfmaster.co.in/assets/og-image.png"
+    />
+
+    <!-- Performance -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+
+    <!-- Fonts -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="css/404.css" />
+
+    <!-- Redirect .html → clean URL -->
+    <script>
+      (function () {
+        if (window.location.pathname.endsWith(".html")) {
+          const newUrl =
+            window.location.pathname.replace(".html", "") +
+            window.location.search +
+            window.location.hash;
+          window.location.replace(newUrl);
+        }
+      })();
+    </script>
+
+    <!-- Schema -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebPage",
+        "name": "404 – Page Not Found",
+        "url": "https://pdfmaster.co.in/404",
+        "description": "Page not found on PDFMaster.",
+        "isPartOf": {
+          "@type": "WebSite",
+          "url": "https://pdfmaster.co.in",
+          "name": "PDFMaster"
+        }
+      }
+    </script>
+  </head>
+  <body>
+    <!-- ═══════════════ NAVBAR ═══════════════ -->
+    <header>
+      <nav class="container">
+        <a href="/" class="nav-logo" aria-label="PDFMaster Home">
+          <img
+            src="https://raw.githubusercontent.com/happy2539/pdfmaster.co.in/refs/heads/main/assets/apple-touch-icon.png"
+            alt="PDFMaster Logo"
+            width="36"
+            height="36"
+          />
+          <span class="logo-text">PDF<span>Master</span></span>
+        </a>
+
+        <ul class="nav-links" role="navigation" aria-label="Main navigation">
+          <li><a href="/#tools">Tools</a></li>
+          <li><a href="/#features">Features</a></li>
+          <li><a href="/about">About</a></li>
+          <li><a href="/contact">Contact</a></li>
+        </ul>
+
+        <div class="nav-right">
+          <a href="/" class="nav-home-badge" aria-label="Go to homepage">
+            <svg
+              width="13"
+              height="13"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.5"
+              aria-hidden="true"
+            >
+              <path d="M3 9.5L12 3l9 6.5V20a1 1 0 01-1 1H4a1 1 0 01-1-1V9.5z" />
+              <path d="M9 21V12h6v9" />
+            </svg>
+            Home
+          </a>
+          <div
+            class="toggle-wrap"
+            title="Toggle light / dark mode"
+            role="button"
+            aria-label="Toggle theme"
+            tabindex="0"
+          >
+            <span class="toggle-icon" aria-hidden="true">☀️</span>
+            <button
+              class="theme-btn"
+              id="themeBtn"
+              aria-label="Toggle dark/light mode"
+            ></button>
+            <span class="toggle-icon" aria-hidden="true">🌙</span>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <!-- ═══════════════ 404 HERO ═══════════════ -->
+    <main>
+      <section class="error-section" aria-label="404 error page">
+        <div class="hero-glow hero-glow-1" aria-hidden="true"></div>
+        <div class="hero-glow hero-glow-2" aria-hidden="true"></div>
+
+        <div class="container">
+          <div class="error-inner">
+            <!-- ── Left: Content ── -->
+            <div class="error-content">
+              <div class="error-pill">
+                <span class="pill-dot" aria-hidden="true"></span>
+                Error 404 · Page Not Found
+              </div>
+
+              <div class="error-code" aria-label="Error code 404">404</div>
+
+              <h1 class="error-title">Oops! This Page Has<br />Gone Missing</h1>
+
+              <p class="error-desc">
+                The page you're looking for may have been moved, renamed, or
+                doesn't exist. But don't worry — PDFMaster's free PDF &amp;
+                image tools are still right here, running 100% in your browser
+                with zero uploads.
+              </p>
+
+              <!-- Search -->
+              <div class="error-search" role="search">
+                <input
+                  type="search"
+                  id="searchInput"
+                  placeholder="Search for a PDF tool…"
+                  aria-label="Search for PDF tools"
+                  autocomplete="off"
+                />
+                <button class="btn-search" id="searchBtn" aria-label="Search">
+                  <svg
+                    width="16"
+                    height="16"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2.5"
+                    aria-hidden="true"
+                  >
+                    <circle cx="11" cy="11" r="8" />
+                    <path d="M21 21l-4.35-4.35" />
+                  </svg>
+                </button>
+              </div>
+
+              <nav class="error-btns" aria-label="Recovery navigation">
+                <a href="/" class="btn-red">
+                  <svg
+                    width="15"
+                    height="15"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2.5"
+                    aria-hidden="true"
+                  >
+                    <path
+                      d="M3 9.5L12 3l9 6.5V20a1 1 0 01-1 1H4a1 1 0 01-1-1V9.5z"
+                    />
+                    <path d="M9 21V12h6v9" />
+                  </svg>
+                  Go to Homepage
+                </a>
+                <a href="/#tools" class="btn-outline">
+                  <svg
+                    width="15"
+                    height="15"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2.5"
+                    aria-hidden="true"
+                  >
+                    <rect x="3" y="3" width="7" height="7" rx="1.5" />
+                    <rect x="14" y="3" width="7" height="7" rx="1.5" />
+                    <rect x="3" y="14" width="7" height="7" rx="1.5" />
+                    <rect x="14" y="14" width="7" height="7" rx="1.5" />
+                  </svg>
+                  Browse All Tools
+                </a>
+              </nav>
+            </div>
+
+            <!-- ── Right: Illustration ── -->
+            <div class="error-illustration" aria-hidden="true">
+              <div class="illus-wrap">
+                <!-- Floating context badges -->
+                <div class="float-badge fb-1">
+                  <span class="fb-dot fb-dot-green"></span>
+                  On-device · Private
+                </div>
+                <div class="float-badge fb-2">
+                  <span class="fb-dot fb-dot-blue"></span>
+                  21+ Free Tools
+                </div>
+                <div class="float-badge fb-3">
+                  <span class="fb-dot fb-dot-red"></span>
+                  No Upload Needed
+                </div>
+
+                <!-- SVG Illustration -->
+                <svg
+                  viewBox="0 0 440 400"
+                  xmlns="http://www.w3.org/2000/svg"
+                  role="img"
+                  aria-label="404 illustration of a broken document"
+                >
+                  <defs>
+                    <linearGradient
+                      id="cardGrad"
+                      x1="0%"
+                      y1="0%"
+                      x2="100%"
+                      y2="100%"
+                    >
+                      <stop
+                        offset="0%"
+                        stop-color="#e8372a"
+                        stop-opacity="0.15"
+                      />
+                      <stop
+                        offset="100%"
+                        stop-color="#f97316"
+                        stop-opacity="0.08"
+                      />
+                    </linearGradient>
+                    <linearGradient
+                      id="docGrad"
+                      x1="0%"
+                      y1="0%"
+                      x2="0%"
+                      y2="100%"
+                    >
+                      <stop
+                        offset="0%"
+                        stop-color="#e8372a"
+                        stop-opacity="0.9"
+                      />
+                      <stop
+                        offset="100%"
+                        stop-color="#f97316"
+                        stop-opacity="0.7"
+                      />
+                    </linearGradient>
+                    <linearGradient
+                      id="shadowGrad"
+                      x1="0%"
+                      y1="0%"
+                      x2="0%"
+                      y2="100%"
+                    >
+                      <stop
+                        offset="0%"
+                        stop-color="#e8372a"
+                        stop-opacity="0.12"
+                      />
+                      <stop
+                        offset="100%"
+                        stop-color="#e8372a"
+                        stop-opacity="0"
+                      />
+                    </linearGradient>
+                  </defs>
+
+                  <!-- Background card -->
+                  <rect
+                    x="60"
+                    y="40"
+                    width="320"
+                    height="330"
+                    rx="24"
+                    fill="url(#cardGrad)"
+                    stroke="#e8372a"
+                    stroke-opacity="0.12"
+                    stroke-width="1.5"
+                  />
+
+                  <!-- Document body -->
+                  <rect
+                    x="120"
+                    y="80"
+                    width="200"
+                    height="240"
+                    rx="12"
+                    fill="white"
+                    fill-opacity="0.08"
+                    stroke="#e8372a"
+                    stroke-opacity="0.25"
+                    stroke-width="1.5"
+                  />
+
+                  <!-- Document corner fold -->
+                  <path
+                    d="M280 80 L320 80 L320 118 Z"
+                    fill="#e8372a"
+                    fill-opacity="0.25"
+                  />
+                  <path
+                    d="M280 80 L280 118 L320 118"
+                    fill="none"
+                    stroke="#e8372a"
+                    stroke-opacity="0.4"
+                    stroke-width="1.5"
+                  />
+
+                  <!-- Doc lines (crossed out) -->
+                  <rect
+                    x="144"
+                    y="140"
+                    width="100"
+                    height="7"
+                    rx="3.5"
+                    fill="#e8372a"
+                    fill-opacity="0.35"
+                  />
+                  <line
+                    x1="140"
+                    y1="138"
+                    x2="248"
+                    y2="152"
+                    stroke="#e8372a"
+                    stroke-width="2"
+                    stroke-opacity="0.5"
+                  />
+
+                  <rect
+                    x="144"
+                    y="160"
+                    width="120"
+                    height="6"
+                    rx="3"
+                    fill="#94a3b8"
+                    fill-opacity="0.35"
+                  />
+                  <rect
+                    x="144"
+                    y="177"
+                    width="80"
+                    height="6"
+                    rx="3"
+                    fill="#94a3b8"
+                    fill-opacity="25"
+                  />
+                  <rect
+                    x="144"
+                    y="194"
+                    width="110"
+                    height="6"
+                    rx="3"
+                    fill="#94a3b8"
+                    fill-opacity="0.2"
+                  />
+
+                  <!-- X mark / broken icon -->
+                  <circle
+                    cx="220"
+                    cy="258"
+                    r="28"
+                    fill="#e8372a"
+                    fill-opacity="0.12"
+                    stroke="#e8372a"
+                    stroke-opacity="0.35"
+                    stroke-width="2"
+                  />
+                  <line
+                    x1="207"
+                    y1="245"
+                    x2="233"
+                    y2="271"
+                    stroke="#e8372a"
+                    stroke-width="3"
+                    stroke-linecap="round"
+                  />
+                  <line
+                    x1="233"
+                    y1="245"
+                    x2="207"
+                    y2="271"
+                    stroke="#e8372a"
+                    stroke-width="3"
+                    stroke-linecap="round"
+                  />
+
+                  <!-- Magnifier glass searching -->
+                  <circle
+                    cx="340"
+                    cy="130"
+                    r="30"
+                    fill="white"
+                    fill-opacity="0.05"
+                    stroke="#e8372a"
+                    stroke-opacity="0.4"
+                    stroke-width="2.5"
+                  />
+                  <circle
+                    cx="340"
+                    cy="130"
+                    r="18"
+                    fill="none"
+                    stroke="#e8372a"
+                    stroke-opacity="0.6"
+                    stroke-width="2.5"
+                  />
+                  <line
+                    x1="353"
+                    y1="143"
+                    x2="366"
+                    y2="156"
+                    stroke="#e8372a"
+                    stroke-opacity="0.6"
+                    stroke-width="3"
+                    stroke-linecap="round"
+                  />
+
+                  <!-- Question mark inside lens -->
+                  <text
+                    x="340"
+                    y="136"
+                    text-anchor="middle"
+                    font-size="16"
+                    font-weight="800"
+                    fill="#e8372a"
+                    fill-opacity="0.7"
+                    font-family="Sora, sans-serif"
+                  >
+                    ?
+                  </text>
+
+                  <!-- Shadow ellipse -->
+                  <ellipse
+                    cx="220"
+                    cy="390"
+                    rx="100"
+                    ry="14"
+                    fill="url(#shadowGrad)"
+                  />
+                </svg>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ═══════════════ QUICK LINKS / SITEMAP ═══════════════ -->
+      <section class="sitemap-sec" aria-label="Quick site navigation">
+        <div class="container">
+          <h2>Explore PDFMaster</h2>
+          <nav class="sitemap-grid" aria-label="Site pages">
+            <a href="/" class="sitemap-chip">
+              <svg
+                width="13"
+                height="13"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2.5"
+                aria-hidden="true"
+              >
+                <path
+                  d="M3 9.5L12 3l9 6.5V20a1 1 0 01-1 1H4a1 1 0 01-1-1V9.5z"
+                />
+                <path d="M9 21V12h6v9" />
+              </svg>
+              Home
+            </a>
+            <a href="/#tools" class="sitemap-chip">
+              <svg
+                width="13"
+                height="13"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2.5"
+                aria-hidden="true"
+              >
+                <rect x="3" y="3" width="7" height="7" rx="1.5" />
+                <rect x="14" y="3" width="7" height="7" rx="1.5" />
+                <rect x="3" y="14" width="7" height="7" rx="1.5" />
+                <rect x="14" y="14" width="7" height="7" rx="1.5" />
+              </svg>
+              All Tools
+            </a>
+            <a href="/#features" class="sitemap-chip">
+              <svg
+                width="13"
+                height="13"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2.5"
+                aria-hidden="true"
+              >
+                <path
+                  d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"
+                />
+              </svg>
+              Features
+            </a>
+            <a href="/about" class="sitemap-chip">
+              <svg
+                width="13"
+                height="13"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2.5"
+                aria-hidden="true"
+              >
+                <circle cx="12" cy="8" r="4" />
+                <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" />
+              </svg>
+              About Us
+            </a>
+            <a href="/contact" class="sitemap-chip">
+              <svg
+                width="13"
+                height="13"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2.5"
+                aria-hidden="true"
+              >
+                <path
+                  d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"
+                />
+              </svg>
+              Contact
+            </a>
+            <a href="/faq" class="sitemap-chip">
+              <svg
+                width="13"
+                height="13"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2.5"
+                aria-hidden="true"
+              >
+                <circle cx="12" cy="12" r="10" />
+                <path d="M9.09 9a3 3 0 015.83 1c0 2-3 3-3 3M12 17h.01" />
+              </svg>
+              FAQ
+            </a>
+            <a href="/privacy" class="sitemap-chip">
+              <svg
+                width="13"
+                height="13"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2.5"
+                aria-hidden="true"
+              >
+                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+              </svg>
+              Privacy Policy
+            </a>
+            <a href="/terms" class="sitemap-chip">
+              <svg
+                width="13"
+                height="13"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2.5"
+                aria-hidden="true"
+              >
+                <path
+                  d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"
+                />
+                <polyline points="14 2 14 8 20 8" />
+              </svg>
+              Terms of Service
+            </a>
+            <a href="/photo-to-pdf" class="sitemap-chip">
+              <svg
+                width="13"
+                height="13"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2.5"
+                aria-hidden="true"
+              >
+                <rect x="3" y="3" width="18" height="18" rx="2" />
+                <circle cx="8.5" cy="8.5" r="1.5" />
+                <polyline points="21 15 16 10 5 21" />
+              </svg>
+              Photo to PDF
+            </a>
+            <a href="/pdf-to-photo" class="sitemap-chip">
+              <svg
+                width="13"
+                height="13"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2.5"
+                aria-hidden="true"
+              >
+                <path
+                  d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"
+                />
+                <polyline points="14 2 14 8 20 8" />
+              </svg>
+              PDF to Photo
+            </a>
+            <a href="/pdf-compiler" class="sitemap-chip">
+              <svg
+                width="13"
+                height="13"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2.5"
+                aria-hidden="true"
+              >
+                <path
+                  d="M9 3H5a2 2 0 00-2 2v4m6-6h10a2 2 0 012 2v4M9 3v18m0 0h10a2 2 0 002-2V9M9 21H5a2 2 0 01-2-2V9m0 0h18"
+                />
+              </svg>
+              PDF Compiler
+            </a>
+          </nav>
+        </div>
+      </section>
+
+      <!-- ═══════════════ SEO CONTENT ═══════════════ -->
+      <section class="seo-block" aria-label="About PDFMaster">
+        <div class="container">
+          <div class="seo-inner">
+            <h2>What is PDFMaster? Your Free, Private PDF Toolkit</h2>
+            <p>
+              PDFMaster is a free, browser-based PDF and image conversion
+              platform that processes every file entirely on your device.
+              Whether you need to convert JPG to PDF, merge multiple PDFs,
+              compress documents, or extract images from a PDF, PDFMaster
+              handles it all without ever uploading your files to a server.
+            </p>
+            <p>
+              Our toolkit includes 21+ tools:
+              <a href="/photo-to-pdf">Photo to PDF converter</a>,
+              <a href="/pdf-to-photo">PDF to image extractor</a>,
+              <a href="/pdf-compiler">PDF compiler and merger</a>, PDF splitter,
+              PDF compressor, JPG to PDF, PNG to PDF, and many more tools — all
+              free, all on-device, all requiring zero registration.
+            </p>
+            <p>
+              If you landed on this 404 page by mistake, use the search bar
+              above or navigate to our
+              <a href="/">homepage</a> to find the right tool. You can also
+              browse our <a href="/#tools">complete PDF tools list</a> or check
+              the <a href="/faq">FAQ</a> for common questions.
+            </p>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- ═══════════════ FOOTER ═══════════════ -->
+    <footer id="contact">
+      <div class="container">
+        <div class="footer-grid">
+          <div class="fbrand">
+            <a href="/" class="nav-logo" aria-label="PDFMaster Homepage">
+              <img
+                src="https://raw.githubusercontent.com/happy2539/pdfmaster.co.in/refs/heads/main/assets/apple-touch-icon.png"
+                alt="PDFMaster"
+                width="36"
+                height="36"
+              />
+              <span class="logo-text">PDF<span>Master</span></span>
+            </a>
+            <p>
+              Professional PDF and image conversion tools for individuals and
+              businesses worldwide. Free, fast, and 100% private — your files
+              never leave your device.
+            </p>
+            <div class="fsocials">
+              <a
+                href="https://github.com/happy2539"
+                class="fsoc"
+                aria-label="PDFMaster on GitHub"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <svg
+                  width="20"
+                  height="20"
+                  viewBox="0 0 24 24"
+                  fill="currentColor"
+                  aria-hidden="true"
+                >
+                  <path
+                    d="M12 2C6.477 2 2 6.484 2 12.021c0 4.428 2.865 8.184 6.839 9.504.5.092.682-.217.682-.483 0-.237-.009-.868-.014-1.703-2.782.605-3.369-1.342-3.369-1.342-.454-1.154-1.11-1.462-1.11-1.462-.908-.62.069-.608.069-.608 1.004.07 1.532 1.032 1.532 1.032.892 1.53 2.341 1.088 2.91.832.091-.647.35-1.088.636-1.339-2.221-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.987 1.029-2.687-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.025A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.295 2.748-1.025 2.748-1.025.546 1.378.202 2.397.1 2.65.64.7 1.028 1.594 1.028 2.687 0 3.847-2.337 4.695-4.566 4.944.359.309.678.919.678 1.853 0 1.337-.012 2.419-.012 2.749 0 .268.18.579.688.481C19.138 20.2 22 16.447 22 12.021 22 6.484 17.523 2 12 2z"
+                  />
+                </svg>
+              </a>
+            </div>
+          </div>
+
+          <div class="fcol">
+            <h4>Quick Links</h4>
+            <ul>
+              <li><a href="/#tools">All Tools</a></li>
+              <li><a href="/#features">Features</a></li>
+              <li><a href="/about">About Us</a></li>
+              <li><a href="/contact">Contact</a></li>
+            </ul>
+          </div>
+
+          <div class="fcol">
+            <h4>Popular Tools</h4>
+            <ul>
+              <li><a href="/photo-to-pdf">Photo to PDF</a></li>
+              <li><a href="/pdf-to-photo">PDF to Photo</a></li>
+              <li><a href="/pdf-compiler">PDF Compiler</a></li>
+              <li><a href="/#tools">All Tools</a></li>
+            </ul>
+          </div>
+
+          <div class="fcol">
+            <h4>Support</h4>
+            <ul>
+              <li><a href="/contact">Help Center</a></li>
+              <li><a href="/privacy">Privacy Policy</a></li>
+              <li><a href="/terms">Terms of Service</a></li>
+              <li><a href="/faq">FAQ</a></li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="footer-bot">
+          <p>&copy; 2026 pdfmaster.co.in — All rights reserved.</p>
+          <div class="footer-bot-links">
+            <a href="/privacy">Privacy Policy</a>
+            <a href="/terms">Terms of Service</a>
+            <a href="/contact">Contact</a>
+          </div>
+        </div>
+      </div>
+    </footer>
+
+    <!-- Back to top -->
+    <button class="b2t" id="b2t" aria-label="Back to top"></button>
+
+    <script src="js/404.js"></script>
+  </body>
+</html>

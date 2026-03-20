@@ -1,0 +1,29 @@
+{
+  "name": "PDFMaster - Free PDF & Image Tools",
+  "short_name": "PDFMaster",
+  "description": "Free JPG to PDF, PDF to JPG, and other PDF tools. 100% private, no uploads, browser-based.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#0f172a",
+  "theme_color": "#0f172a",
+
+  "icons": [
+    {
+      "src": "/assets/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/assets/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    },
+    {
+      "src": "/assets/apple-touch-icon.png",
+      "sizes": "180x180",
+      "type": "image/png"
+    }
+  ]
+}

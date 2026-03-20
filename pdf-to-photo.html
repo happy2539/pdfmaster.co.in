@@ -1,0 +1,956 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>PDF to JPG Converter (No Upload) | PNG, WEBP – PDFMaster</title>
+
+    <meta
+      name="description"
+      content="Convert PDF to JPG, PNG, or WEBP images instantly. No upload required. 100% private, client-side PDF to image converter."
+    />
+
+    <meta
+      name="keywords"
+      content="PDF to JPG, PDF to PNG, PDF to WEBP, PDF to image converter, convert PDF to images, no upload PDF converter, secure PDF tools"
+    />
+
+    <meta name="robots" content="index, follow" />
+    <meta name="author" content="PDFMaster" />
+    <meta name="theme-color" content="#0f172a" />
+
+    <link rel="canonical" href="https://pdfmaster.co.in/pdf-to-jpg" />
+    <link rel="manifest" href="/manifest.json" />
+
+    <!-- Favicon -->
+    <link rel="icon" href="assets/favicon.ico" type="image/x-icon" />
+    <link rel="apple-touch-icon" href="assets/apple-touch-icon.png" />
+
+    <!-- Open Graph -->
+    <meta
+      property="og:title"
+      content="PDF to JPG Converter (No Upload) – PDFMaster"
+    />
+    <meta
+      property="og:description"
+      content="Convert PDF pages to JPG, PNG, or WEBP instantly in your browser. Free and private."
+    />
+    <meta property="og:url" content="https://pdfmaster.co.in/pdf-to-jpg" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="PDFMaster" />
+    <meta
+      property="og:image"
+      content="https://pdfmaster.co.in/assets/og-image.png"
+    />
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="PDF to JPG – PDFMaster" />
+    <meta
+      name="twitter:description"
+      content="Convert PDF to images with no upload. Fast, secure, browser-based tool."
+    />
+    <meta
+      name="twitter:image"
+      content="https://pdfmaster.co.in/assets/og-image.png"
+    />
+
+    <!-- Performance -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
+
+    <!-- Fonts -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="css/pdf-to-photo.css" />
+
+    <!-- Google Tag Manager -->
+    <script>
+      (function (w, d, s, l, i) {
+        w[l] = w[l] || [];
+        w[l].push({ "gtm.start": new Date().getTime(), event: "gtm.js" });
+        var f = d.getElementsByTagName(s)[0],
+          j = d.createElement(s),
+          dl = l != "dataLayer" ? "&l=" + l : "";
+        j.async = true;
+        j.src = "https://www.googletagmanager.com/gtm.js?id=" + i + dl;
+        f.parentNode.insertBefore(j, f);
+      })(window, document, "script", "dataLayer", "GTM-PCSVMC65");
+    </script>
+
+    <!-- Redirect .html → clean URL -->
+    <script>
+      (function () {
+        if (window.location.pathname.endsWith(".html")) {
+          const newUrl =
+            window.location.pathname.replace(".html", "") +
+            window.location.search +
+            window.location.hash;
+          window.location.replace(newUrl);
+        }
+      })();
+    </script>
+
+    <!-- Schema -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "PDF to JPG Converter",
+        "url": "https://pdfmaster.co.in/pdf-to-jpg",
+        "description": "Convert PDF pages to JPG, PNG, or WEBP images with no upload. Fully private and browser-based.",
+        "applicationCategory": "UtilitiesApplication",
+        "operatingSystem": "Any",
+        "offers": {
+          "@type": "Offer",
+          "price": "0",
+          "priceCurrency": "USD"
+        },
+        "publisher": {
+          "@type": "Organization",
+          "name": "PDFMaster",
+          "url": "https://pdfmaster.co.in"
+        }
+      }
+    </script>
+  </head>
+
+  <body>
+    <!-- Google Tag Manager (noscript) -->
+    <noscript
+      ><iframe
+        src="https://www.googletagmanager.com/ns.html?id=GTM-PCSVMC65"
+        height="0"
+        width="0"
+        style="display: none; visibility: hidden"
+      ></iframe
+    ></noscript>
+    <!-- End Google Tag Manager (noscript) -->
+    <!-- ════════════════ SIDEBAR OVERLAY ════════════════ -->
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+    <aside class="sidebar" id="sidebar" aria-label="Page navigation menu">
+      <div class="sidebar-header">
+        <h3>On This Page</h3>
+        <button class="sidebar-close" id="sidebarClose" aria-label="Close menu">
+          ✕
+        </button>
+      </div>
+      <nav class="sidebar-nav">
+        <a href="#what-is-it" class="snav-link">
+          <span class="snav-icon">📖</span> What is it?
+        </a>
+        <a href="#features" class="snav-link">
+          <span class="snav-icon">✨</span> Features
+        </a>
+        <a href="#how-to-use" class="snav-link">
+          <span class="snav-icon">🚀</span> How to Use
+        </a>
+        <a href="#benefits" class="snav-link">
+          <span class="snav-icon">🎯</span> Benefits
+        </a>
+        <a href="#faqs" class="snav-link">
+          <span class="snav-icon">❓</span> FAQs
+        </a>
+        <div class="sidebar-divider"></div>
+        <a href="#related-tools" class="snav-link">
+          <span class="snav-icon">🧩</span> Related Tools
+        </a>
+        <a href="#contact" class="snav-link">
+          <span class="snav-icon">📬</span> Contact
+        </a>
+      </nav>
+      <div class="sidebar-footer">
+        <a href="https://pdfmaster.co.in">← Back to Home</a>
+      </div>
+    </aside>
+
+    <!-- ════════════════ HEADER ════════════════ -->
+    <header>
+      <nav class="container">
+        <!-- Logo -->
+        <a
+          href="https://pdfmaster.co.in"
+          class="nav-logo"
+          aria-label="PDFMaster Home"
+        >
+          <img
+            href="/assets/apple-touch-icon.png"
+            alt="PDFMaster Logo"
+            width="36"
+            height="36"
+          />
+          <span class="logo-text">PDF<span>Master</span></span>
+        </a>
+
+        <!-- Breadcrumb -->
+        <div class="nav-breadcrumb" aria-label="Breadcrumb">
+          <a href="https://pdfmaster.co.in">Home</a>
+          <svg
+            width="12"
+            height="12"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+          >
+            <path d="M9 18l6-6-6-6" />
+          </svg>
+          <span>PDF to Image</span>
+        </div>
+
+        <!-- Right controls -->
+        <div class="nav-right">
+          <!-- Theme toggle -->
+          <div
+            class="toggle-wrap"
+            id="themeToggle"
+            role="button"
+            tabindex="0"
+            title="Toggle light / dark mode"
+            aria-label="Toggle theme"
+          >
+            <span class="toggle-icon">☀️</span>
+            <button
+              class="theme-btn"
+              id="themeBtn"
+              aria-label="Toggle theme"
+              type="button"
+            ></button>
+            <span class="toggle-icon">🌙</span>
+          </div>
+          <!-- Hamburger -->
+          <button
+            class="hamburger"
+            id="hamburger"
+            aria-label="Open menu"
+            aria-expanded="false"
+            aria-controls="sidebar"
+          >
+            <span></span><span></span><span></span>
+          </button>
+        </div>
+      </nav>
+    </header>
+
+    <!-- ════════════════ HERO ════════════════ -->
+    <section class="tool-hero" id="top">
+      <div class="container">
+        <div class="tool-pill anim">
+          <span class="pill-dot"></span>
+          100% On-Device · No Uploads · Multi-Format Export
+        </div>
+        <h1 class="anim anim-d1">PDF to <em>Image Converter</em></h1>
+        <p class="anim anim-d2">
+          Convert any PDF page to JPG, PNG, WEBP or BMP — directly in your
+          browser. Your files never leave your device.
+        </p>
+      </div>
+    </section>
+
+    <!-- ════════════════ TOOL AREA ════════════════ -->
+    <section style="padding: 0 0 48px">
+      <div class="container">
+        <!-- Upload & Settings Card -->
+        <div class="tool-card anim anim-d3">
+          <!-- Upload zone -->
+          <div
+            class="upload-zone"
+            id="uploadZone"
+            role="button"
+            tabindex="0"
+            aria-label="Click or drag a PDF file here"
+          >
+            <span class="upload-zone-icon">📄</span>
+            <h3>Drop your PDF here</h3>
+            <p>or click to browse files</p>
+            <input
+              type="file"
+              id="pdfFileInput"
+              accept=".pdf"
+              style="display: none"
+              aria-label="Select PDF file"
+            />
+          </div>
+          <div class="upload-file-info" id="fileInfo">
+            <span class="file-icon">📋</span>
+            <span id="fileName">No file selected</span>
+            <span
+              id="filePages"
+              style="color: var(--accent); font-weight: 700"
+            ></span>
+          </div>
+
+          <!-- Options -->
+          <div class="options-grid">
+            <!-- Output format -->
+            <div class="opt-group">
+              <label for="outputFormat">Output Format</label>
+              <div class="sel-wrap">
+                <select
+                  id="outputFormat"
+                  aria-label="Select output image format"
+                >
+                  <option value="jpeg">JPG / JPEG</option>
+                  <option value="png">PNG (lossless)</option>
+                  <option value="webp">WEBP (web-optimised)</option>
+                  <option value="bmp">BMP (uncompressed)</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Resolution -->
+            <div class="opt-group">
+              <label for="dpiSelect">Resolution (DPI / Scale)</label>
+              <div class="sel-wrap">
+                <select id="dpiSelect" aria-label="Select render resolution">
+                  <option value="1">72 DPI – Screen (1×)</option>
+                  <option value="1.5">108 DPI (1.5×)</option>
+                  <option value="2" selected>150 DPI – Standard (2×)</option>
+                  <option value="3">216 DPI – HQ (3×)</option>
+                  <option value="4">288 DPI – Ultra (4×)</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <!-- Quality (only for lossy formats) -->
+          <div class="opt-group" id="qualityGroup">
+            <label>Image Quality — <span id="qualityVal">92</span>%</label>
+            <div class="quality-row">
+              <input
+                type="range"
+                id="qualitySlider"
+                min="10"
+                max="100"
+                value="92"
+                aria-label="Image quality"
+              />
+              <span id="qualityDisplay">92%</span>
+            </div>
+          </div>
+
+          <!-- Page selection -->
+          <div class="opt-group" style="margin-top: 8px">
+            <label>Pages to Convert</label>
+            <div class="radio-group">
+              <label class="radio-item selected" id="radioAllLabel">
+                <input
+                  type="radio"
+                  name="pageMode"
+                  value="all"
+                  id="radioAll"
+                  checked
+                />
+                All pages
+              </label>
+              <label class="radio-item" id="radioSpecLabel">
+                <input
+                  type="radio"
+                  name="pageMode"
+                  value="specific"
+                  id="radioSpec"
+                />
+                Specific pages
+              </label>
+            </div>
+            <div class="pages-input" id="pagesInput">
+              <input
+                type="text"
+                id="pagesText"
+                placeholder="e.g. 1-3, 5, 8-10"
+                aria-label="Page range input"
+              />
+              <small
+                >Separate pages with commas and ranges with hyphens (e.g. 1-3,
+                5, 7)</small
+              >
+            </div>
+          </div>
+
+          <!-- Action buttons -->
+          <div class="action-row" style="margin-top: 24px">
+            <button
+              class="btn-red"
+              id="convertBtn"
+              disabled
+              aria-label="Convert PDF to images"
+            >
+              <svg
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2.5"
+              >
+                <path d="M12 3v13M5 14l7 7 7-7" />
+              </svg>
+              Convert to Images
+            </button>
+            <button
+              class="btn-outline"
+              id="resetBtn"
+              disabled
+              aria-label="Clear and start over"
+            >
+              <svg
+                width="15"
+                height="15"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2.5"
+              >
+                <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
+                <path d="M3 3v5h5" />
+              </svg>
+              Reset
+            </button>
+          </div>
+
+          <!-- Progress -->
+          <div class="progress-block" id="progressBlock">
+            <div class="progress-label">
+              <span id="progressText">Converting…</span>
+              <span id="progressPct">0%</span>
+            </div>
+            <div class="progress-bar">
+              <div class="progress-fill" id="progressFill"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Results Card -->
+        <div class="tool-card results-section" id="resultsSection">
+          <div class="results-header">
+            <h3>Converted Images</h3>
+            <span class="results-count" id="resultsCount">0 pages</span>
+          </div>
+
+          <!-- Per-download format selector -->
+          <div class="export-bar">
+            <label>Download as:</label>
+            <div class="fmt-btns" id="fmtBtns">
+              <button class="fmt-btn active" data-fmt="same">
+                Same as above
+              </button>
+              <button class="fmt-btn" data-fmt="jpeg">JPG</button>
+              <button class="fmt-btn" data-fmt="png">PNG</button>
+              <button class="fmt-btn" data-fmt="webp">WEBP</button>
+              <button class="fmt-btn" data-fmt="bmp">BMP</button>
+            </div>
+          </div>
+
+          <!-- Images grid -->
+          <div class="images-grid" id="imagesGrid"></div>
+
+          <!-- Download all -->
+          <div class="download-all-row">
+            <button
+              class="btn-red"
+              id="downloadAllBtn"
+              aria-label="Download all images as ZIP"
+            >
+              <svg
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2.5"
+              >
+                <path d="M12 3v13M5 14l7 7 7-7" />
+                <path d="M3 20h18" />
+              </svg>
+              Download All as ZIP
+            </button>
+            <button
+              class="btn-outline"
+              id="downloadSingleBtn"
+              style="display: none"
+              aria-label="Download single image"
+            >
+              <svg
+                width="15"
+                height="15"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2.5"
+              >
+                <path d="M12 3v13M5 14l7 7 7-7" />
+              </svg>
+              Download Image
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ════════════════ WHAT IS IT ════════════════ -->
+    <section class="content-section" id="what-is-it">
+      <div class="container">
+        <div class="sec-head">
+          <div class="sec-label">What is it?</div>
+          <h2>PDF to Image — Explained Simply</h2>
+          <p>Everything you need to know about this tool before using it.</p>
+        </div>
+        <p
+          style="
+            color: var(--text-muted);
+            max-width: 720px;
+            line-height: 1.75;
+            font-size: 0.97rem;
+          "
+        >
+          <strong style="color: var(--text)"
+            >PDFMaster's PDF to Image Converter</strong
+          >
+          lets you extract every page of a PDF document as a standalone image in
+          JPG, PNG, WEBP or BMP format —
+          <em>without sending your file anywhere</em>. Everything runs inside
+          your browser using the open-source PDF.js rendering engine. This means
+          your documents are processed entirely on your own device, ensuring
+          complete privacy. Whether you're extracting a single diagram,
+          converting a multi-page report, or archiving a scanned document as
+          images, this tool handles it instantly at full quality.
+        </p>
+      </div>
+    </section>
+
+    <!-- ════════════════ FEATURES ════════════════ -->
+    <section class="content-section" id="features">
+      <div class="container">
+        <div class="sec-head">
+          <div class="sec-label">Features</div>
+          <h2>Everything You Need in One Tool</h2>
+          <p>
+            Powerful export options with zero compromise on privacy or quality.
+          </p>
+        </div>
+        <div class="feat-grid">
+          <div class="feat-card">
+            <span class="fc-icon">🖼️</span>
+            <h4>4 Export Formats</h4>
+            <p>
+              Download pages as JPG, PNG, WEBP, or BMP. Switch format even after
+              conversion.
+            </p>
+          </div>
+          <div class="feat-card">
+            <span class="fc-icon">🔒</span>
+            <h4>100% Private</h4>
+            <p>
+              All rendering happens locally in your browser. No file is ever
+              sent to a server.
+            </p>
+          </div>
+          <div class="feat-card">
+            <span class="fc-icon">🎚️</span>
+            <h4>Quality Control</h4>
+            <p>
+              Adjust image quality from 10% to 100% for the perfect balance of
+              size and detail.
+            </p>
+          </div>
+          <div class="feat-card">
+            <span class="fc-icon">📐</span>
+            <h4>Resolution Scaling</h4>
+            <p>
+              Render at 1×, 2×, 3× or 4× scale — from fast screen-res to
+              ultra-high-DPI images.
+            </p>
+          </div>
+          <div class="feat-card">
+            <span class="fc-icon">📑</span>
+            <h4>Page Range Selection</h4>
+            <p>
+              Convert all pages or pick only the ones you need with flexible
+              range input.
+            </p>
+          </div>
+          <div class="feat-card">
+            <span class="fc-icon">📦</span>
+            <h4>Bulk ZIP Download</h4>
+            <p>
+              Download all converted pages in one ZIP archive — no manual saving
+              required.
+            </p>
+          </div>
+          <div class="feat-card">
+            <span class="fc-icon">📱</span>
+            <h4>All Devices</h4>
+            <p>
+              Fully responsive — works on desktop, tablet and mobile without any
+              compromise.
+            </p>
+          </div>
+          <div class="feat-card">
+            <span class="fc-icon">🆓</span>
+            <h4>Completely Free</h4>
+            <p>
+              No account, no subscription, no watermarks. Free forever with no
+              hidden limits.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ════════════════ HOW TO USE ════════════════ -->
+    <section class="content-section" id="how-to-use">
+      <div class="container">
+        <div class="sec-head">
+          <div class="sec-label">How to Use</div>
+          <h2>Convert in 4 Simple Steps</h2>
+          <p>
+            No tech knowledge needed — anyone can use this tool in under a
+            minute.
+          </p>
+        </div>
+        <div class="steps-list">
+          <div class="step-item">
+            <div class="step-num">1</div>
+            <div class="step-content">
+              <h4>Upload your PDF</h4>
+              <p>
+                Click the upload zone or drag and drop any PDF file from your
+                device. The file stays in your browser — it is never uploaded to
+                any server.
+              </p>
+            </div>
+          </div>
+          <div class="step-item">
+            <div class="step-num">2</div>
+            <div class="step-content">
+              <h4>Choose format & quality</h4>
+              <p>
+                Select your output format (JPG, PNG, WEBP, or BMP), set the
+                rendering resolution and adjust quality if needed.
+              </p>
+            </div>
+          </div>
+          <div class="step-item">
+            <div class="step-num">3</div>
+            <div class="step-content">
+              <h4>Select pages (optional)</h4>
+              <p>
+                Convert all pages at once, or enter a custom range like "1-3, 5,
+                8" to extract only what you need.
+              </p>
+            </div>
+          </div>
+          <div class="step-item">
+            <div class="step-num">4</div>
+            <div class="step-content">
+              <h4>Download your images</h4>
+              <p>
+                Save individual pages with the per-image download button, or
+                grab all images at once in a single ZIP file.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ════════════════ BENEFITS ════════════════ -->
+    <section class="content-section" id="benefits">
+      <div class="container">
+        <div class="sec-head">
+          <div class="sec-label">Benefits</div>
+          <h2>Why Use PDFMaster for PDF to Image?</h2>
+          <p>Here's what sets us apart from other online conversion tools.</p>
+        </div>
+        <div class="benefits-grid">
+          <div class="benefit-card">
+            <span class="benefit-icon">🛡️</span>
+            <div class="benefit-text">
+              <h4>Zero Data Risk</h4>
+              <p>
+                Your confidential PDFs — contracts, medical records, financials
+                — never leave your device.
+              </p>
+            </div>
+          </div>
+          <div class="benefit-card">
+            <span class="benefit-icon">⚡</span>
+            <div class="benefit-text">
+              <h4>Instant Processing</h4>
+              <p>
+                No waiting for upload queues or server round-trips. Results
+                appear in seconds.
+              </p>
+            </div>
+          </div>
+          <div class="benefit-card">
+            <span class="benefit-icon">🎨</span>
+            <div class="benefit-text">
+              <h4>True Colour Fidelity</h4>
+              <p>
+                PDF.js renders every page with accurate colours, fonts and
+                vector graphics at any scale.
+              </p>
+            </div>
+          </div>
+          <div class="benefit-card">
+            <span class="benefit-icon">🌐</span>
+            <div class="benefit-text">
+              <h4>Works Offline</h4>
+              <p>
+                Once loaded, the tool continues to work even without an internet
+                connection.
+              </p>
+            </div>
+          </div>
+          <div class="benefit-card">
+            <span class="benefit-icon">💾</span>
+            <div class="benefit-text">
+              <h4>Multiple Formats</h4>
+              <p>
+                JPG for photos, PNG for transparency, WEBP for the web, BMP for
+                legacy software — your choice.
+              </p>
+            </div>
+          </div>
+          <div class="benefit-card">
+            <span class="benefit-icon">🔓</span>
+            <div class="benefit-text">
+              <h4>No Registration</h4>
+              <p>
+                Open the page and start converting. No sign-up, no email, no
+                account required.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ════════════════ FAQs ════════════════ -->
+    <section class="content-section" id="faqs">
+      <div class="container">
+        <div class="sec-head">
+          <div class="sec-label">FAQs</div>
+          <h2>Frequently Asked Questions</h2>
+          <p>Quick answers to common questions about this converter.</p>
+        </div>
+        <div class="faq-list">
+          <div class="faq-item">
+            <div class="faq-q">
+              Is my PDF file uploaded to a server?
+              <span class="faq-icon">+</span>
+            </div>
+            <div class="faq-a">
+              No. This tool uses PDF.js, a browser-based PDF rendering engine.
+              Your file is read directly by your browser and never transmitted
+              to any server or third party. Your data stays 100% on your device.
+            </div>
+          </div>
+          <div class="faq-item">
+            <div class="faq-q">
+              Which image format should I choose?
+              <span class="faq-icon">+</span>
+            </div>
+            <div class="faq-a">
+              Use JPG for general use and smaller file sizes. Use PNG if you
+              need transparency or lossless quality (e.g. for diagrams). Use
+              WEBP for web publishing — smaller than JPG at the same quality.
+              Use BMP if you need an uncompressed format for compatibility with
+              legacy software.
+            </div>
+          </div>
+          <div class="faq-item">
+            <div class="faq-q">
+              Can I convert only specific pages?
+              <span class="faq-icon">+</span>
+            </div>
+            <div class="faq-a">
+              Yes! Select "Specific pages" and enter a custom range like "1-3,
+              5, 8-10". You can mix individual page numbers and ranges separated
+              by commas.
+            </div>
+          </div>
+          <div class="faq-item">
+            <div class="faq-q">
+              What resolution / DPI should I choose?
+              <span class="faq-icon">+</span>
+            </div>
+            <div class="faq-a">
+              2× (150 DPI) is the default and works well for most purposes.
+              Choose 3× or 4× for print-quality output. Higher scales produce
+              larger file sizes and take longer to generate.
+            </div>
+          </div>
+          <div class="faq-item">
+            <div class="faq-q">
+              How do I download all pages at once?
+              <span class="faq-icon">+</span>
+            </div>
+            <div class="faq-a">
+              After conversion, click "Download All as ZIP". All pages are
+              bundled into a single ZIP archive which you can extract on any
+              device.
+            </div>
+          </div>
+          <div class="faq-item">
+            <div class="faq-q">
+              Does this work on mobile?
+              <span class="faq-icon">+</span>
+            </div>
+            <div class="faq-a">
+              Yes! The tool is fully responsive and tested on Android Chrome,
+              iPhone Safari, and all major mobile browsers. For large PDFs,
+              processing may be slightly slower on low-end devices.
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ════════════════ RELATED TOOLS ════════════════ -->
+    <section class="content-section" id="related-tools">
+      <div class="container">
+        <div class="sec-head">
+          <div class="sec-label">Related Tools</div>
+          <h2>More Free PDF &amp; Image Tools</h2>
+          <p>
+            Explore our full suite of document tools — all free, all on-device.
+          </p>
+        </div>
+        <div class="related-grid">
+          <div class="related-card">
+            <span class="related-icon">🖼️</span>
+            <h4>Photo to PDF</h4>
+            <p>Combine multiple images into a single PDF document instantly.</p>
+            <a href="photo-to-pdf.html">Use Tool →</a>
+          </div>
+          <div class="related-card">
+            <span class="related-icon">📄</span>
+            <h4>PDF Compiler</h4>
+            <p>Merge several PDF files into one perfectly ordered document.</p>
+            <a href="pdf-compiler.html">Use Tool →</a>
+          </div>
+          <div class="related-card">
+            <span class="related-icon">✂️</span>
+            <h4>Split PDF</h4>
+            <p>Divide a PDF into individual pages or custom page ranges.</p>
+            <a href="split-pdf.html">Use Tool →</a>
+          </div>
+          <div class="related-card">
+            <span class="related-icon">🔀</span>
+            <h4>PDF Reorder</h4>
+            <p>Drag and drop to reorder PDF pages in any sequence you want.</p>
+            <a href="pdf-reorder.html">Use Tool →</a>
+          </div>
+          <div class="related-card">
+            <span class="related-icon">🔄</span>
+            <h4>PDF Rotate</h4>
+            <p>Rotate individual or all pages of a PDF by any 90° increment.</p>
+            <a href="pdf-rotate.html">Use Tool →</a>
+          </div>
+          <div class="related-card">
+            <span class="related-icon">💾</span>
+            <h4>PDF Compress</h4>
+            <p>Shrink PDF file size without noticeable loss of quality.</p>
+            <a href="pdf-compressor.html">Use Tool →</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ════════════════ FOOTER ════════════════ -->
+    <footer id="contact">
+      <div class="container">
+        <div class="footer-grid">
+          <div class="fbrand">
+            <a href="/" class="nav-logo">
+              <img
+                href="/assets/apple-touch-icon.png"
+                alt="PDFMaster"
+                width="36"
+                height="36"
+              />
+              <span class="logo-text">PDF<span>Master</span></span>
+            </a>
+            <p>
+              Professional PDF and image conversion tools for everyone. Free,
+              fast, and 100% private.
+            </p>
+            <div class="fsocials">
+              <a
+                href="https://github.com/happy2539"
+                class="fsoc"
+                aria-label="GitHub"
+                target="_blank"
+                rel="noopener"
+              >
+                <svg
+                  width="20"
+                  height="20"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  aria-hidden="true"
+                >
+                  <path
+                    d="M12 2C6.477 2 2 6.484 2 12.021c0 4.428 2.865 8.184 6.839 9.504.5.092.682-.217.682-.483 0-.237-.009-.868-.014-1.703-2.782.605-3.369-1.342-3.369-1.342-.454-1.154-1.11-1.462-1.11-1.462-.908-.62.069-.608.069-.608 1.004.07 1.532 1.032 1.532 1.032.892 1.53 2.341 1.088 2.91.832.091-.647.35-1.088.636-1.339-2.221-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.987 1.029-2.687-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.025A9.564 9.564 0 0 1 12 6.844c.85.004 1.705.115 2.504.337 1.909-1.295 2.748-1.025 2.748-1.025.546 1.378.202 2.397.1 2.65.64.7 1.028 1.594 1.028 2.687 0 3.847-2.337 4.695-4.566 4.944.359.309.678.919.678 1.853 0 1.337-.012 2.419-.012 2.749 0 .268.18.579.688.481C19.138 20.2 22 16.447 22 12.021 22 6.484 17.523 2 12 2Z"
+                    fill="currentColor"
+                  />
+                </svg>
+              </a>
+            </div>
+          </div>
+
+          <div class="fcol">
+            <h4>Quick Links</h4>
+            <ul>
+              <li><a href="/">Home</a></li>
+              <li><a href="/#tools">All Tools</a></li>
+              <li><a href="/#features">Features</a></li>
+              <li><a href="about.html">About Us</a></li>
+            </ul>
+          </div>
+          <div class="fcol">
+            <h4>Popular Tools</h4>
+            <ul>
+              <li><a href="photo-to-pdf.html">Photo to PDF</a></li>
+              <li><a href="pdf-to-photo.html">PDF to Photo</a></li>
+              <li><a href="pdf-compiler.html">PDF Compiler</a></li>
+              <li><a href="/">All Tools</a></li>
+            </ul>
+          </div>
+          <div class="fcol">
+            <h4>Support</h4>
+            <ul>
+              <li><a href="contact.html">Contact Us</a></li>
+              <li><a href="privacy.html">Privacy Policy</a></li>
+              <li><a href="terms.html">Terms of Service</a></li>
+              <li><a href="faq.html">FAQ</a></li>
+            </ul>
+          </div>
+        </div>
+        <div class="footer-bot">
+          <p>© 2026 pdfmaster.co.in — All rights reserved.</p>
+          <div class="footer-bot-links">
+            <a href="privacy.html">Privacy Policy</a>
+            <a href="terms.html">Terms</a>
+            <a href="contact.html">Contact</a>
+          </div>
+        </div>
+      </div>
+    </footer>
+
+    <!-- Back to top -->
+    <button class="b2t" id="b2t" aria-label="Back to top"></button>
+
+    <!-- Toast -->
+    <div class="toast" id="toast" role="alert" aria-live="polite"></div>
+    <script src="js/pdf-to-photo.js"></script>
+  </body>
+</html>
