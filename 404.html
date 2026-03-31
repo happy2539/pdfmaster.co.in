@@ -60,19 +60,6 @@
     <!-- CSS -->
     <link rel="stylesheet" href="css/404.css" />
 
-    <!-- Redirect .html → clean URL -->
-    <script>
-      (function () {
-        if (window.location.pathname.endsWith(".html")) {
-          const newUrl =
-            window.location.pathname.replace(".html", "") +
-            window.location.search +
-            window.location.hash;
-          window.location.replace(newUrl);
-        }
-      })();
-    </script>
-
     <!-- Schema -->
     <script type="application/ld+json">
       {
