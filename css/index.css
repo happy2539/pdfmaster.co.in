@@ -817,80 +817,43 @@ footer {
   flex-wrap: wrap;
 }
 
-/* ── Back to top ── */
+/* Back to top */
 .b2t {
   position: fixed;
-  bottom: 26px;
-  right: 26px;
-  z-index: 999;
-  width: 48px;
-  height: 48px;
+  bottom: 24px;
+  right: 24px;
+  width: 44px;
+  height: 44px;
   border-radius: 50%;
-  background: linear-gradient(135deg, var(--primary) 60%, var(--accent) 100%);
-  color: #fff;
+  background: var(--red);
   border: none;
-  font-size: 22px;
-  font-weight: 300;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow:
-    0 6px 24px rgba(230, 57, 70, 0.35),
-    0 1.5px 6px rgba(244, 162, 97, 0.13);
+  box-shadow: 0 4px 16px rgba(232, 55, 42, 0.4);
   opacity: 0;
-  transform: translateY(18px) scale(0.96);
   pointer-events: none;
   transition:
-    opacity 0.3s,
-    transform 0.3s,
-    box-shadow 0.25s,
-    background 0.3s;
-  outline: none;
+    opacity var(--trans),
+    transform var(--trans);
+  z-index: 200;
 }
 .b2t.show {
   opacity: 1;
-  transform: translateY(0) scale(1);
   pointer-events: auto;
 }
-.b2t:hover,
-.b2t:focus {
-  background: linear-gradient(
-    135deg,
-    var(--primary-dark) 60%,
-    var(--accent) 100%
-  );
-  box-shadow:
-    0 10px 32px rgba(230, 57, 70, 0.45),
-    0 2px 8px rgba(244, 162, 97, 0.18);
-  transform: translateY(-3px) scale(1.07);
-}
-.b2t::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  border-radius: 50%;
-  background: radial-gradient(
-    circle at 60% 30%,
-    rgba(255, 255, 255, 0.13) 0%,
-    transparent 70%
-  );
-  pointer-events: none;
+.b2t:hover {
+  transform: translateY(-3px);
 }
 .b2t::after {
-  content: "↑";
-  position: relative;
-  z-index: 1;
-  font-size: 1.7em;
-  font-family: "Sora", "DM Sans", sans-serif;
-  text-shadow: 0 2px 8px rgba(230, 57, 70, 0.18);
-  transition: transform 0.25s;
-  display: block;
-}
-.b2t:hover::after,
-.b2t:focus::after {
-  transform: translateY(-2px) scale(1.12);
-  text-shadow: 0 4px 16px rgba(230, 57, 70, 0.22);
+  content: "";
+  border: 2px solid red;
+  border-bottom: none;
+  border-right: none;
+  width: 9px;
+  height: 9px;
+  transform: rotate(45deg) translate(1px, 1px);
 }
 
 /* ── Reveal ── */
