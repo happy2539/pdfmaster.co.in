@@ -16,7 +16,6 @@
       content="PDF Master, JPG to PDF, image to PDF, PDF converter free, client side PDF tools, no upload PDF converter, secure PDF tools, PDFMaster"
     />
 
-    <meta name="robots" content="index, follow" />
     <meta name="author" content="PDFMaster" />
     <meta name="theme-color" content="#0f172a" />
 
@@ -46,7 +45,10 @@
 
     <!-- Twitter -->
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="PDFMaster - Free PDF tools website without upload" />
+    <meta
+      name="twitter:title"
+      content="PDFMaster - Free PDF tools website without upload"
+    />
     <meta
       name="twitter:description"
       content="PDF Master, Free, private PDF tools. No uploads, fully browser-based."
@@ -82,19 +84,6 @@
         j.src = "https://www.googletagmanager.com/gtm.js?id=" + i + dl;
         f.parentNode.insertBefore(j, f);
       })(window, document, "script", "dataLayer", "GTM-PCSVMC65");
-    </script>
-
-    <!-- Redirect .html → clean URL -->
-    <script>
-      (function () {
-        if (window.location.pathname.endsWith(".html")) {
-          const newUrl =
-            window.location.pathname.replace(".html", "") +
-            window.location.search +
-            window.location.hash;
-          window.location.replace(newUrl);
-        }
-      })();
     </script>
 
     <!-- Schema -->
@@ -139,8 +128,8 @@
         <ul class="nav-links">
           <li><a href="#tools">Tools</a></li>
           <li><a href="#features">Features</a></li>
-          <li><a href="about.html">About</a></li>
-          <li><a href="contact.html">Contact</a></li>
+          <li><a href="/about">About</a></li>
+          <li><a href="../contact">Contact</a></li>
         </ul>
 
         <div class="nav-right">
@@ -306,7 +295,7 @@
               Merge multiple PDF files into one comprehensive document while
               maintaining formatting and quality.
             </p>
-            <a href="/pdf-compiler" class="tcard-btn tcard-btn-live">
+            <a href="/merge-pdf" class="tcard-btn tcard-btn-live">
               Use Tool
               <svg
                 width="12"
@@ -773,17 +762,18 @@
             <ul>
               <li><a href="#tools">All Tools</a></li>
               <li><a href="#features">Features</a></li>
-              <li><a href="about.html">About Us</a></li>
-              <li><a href="contact.html">Contact</a></li>
+              <li><a href="/about">About Us</a></li>
+              <li><a href="../contact">Contact</a></li>
             </ul>
           </div>
 
           <div class="fcol">
             <h4>Popular Tools</h4>
             <ul>
-              <li><a href="photo-to-pdf.html">Photo to PDF</a></li>
-              <li><a href="pdf-to-photo.html">PDF to Photo</a></li>
-              <li><a href="pdf-compiler.html">PDF Compiler</a></li>
+              <li><a href="../photo-to-pdf">Photo to PDF</a></li>
+              <li><a href="../pdf-to-photo">PDF to Photo</a></li>
+              <li><a href="../pdf-metadata">PDF Metadata</a></li>
+              <li><a href="../merge-pdf">PDF Compiler</a></li>
               <li><a href="/#tools">All Tools</a></li>
             </ul>
           </div>
@@ -791,10 +781,10 @@
           <div class="fcol">
             <h4>Support</h4>
             <ul>
-              <li><a href="contact.html">Help Center</a></li>
-              <li><a href="privacy.html">Privacy Policy</a></li>
-              <li><a href="terms.html">Terms of Service</a></li>
-              <li><a href="faq.html">FAQ</a></li>
+              <li><a href="../contact">Help Center</a></li>
+              <li><a href="../privacy">Privacy Policy</a></li>
+              <li><a href="../terms">Terms of Service</a></li>
+              <li><a href="../faq">FAQ</a></li>
             </ul>
           </div>
         </div>
@@ -802,9 +792,9 @@
         <div class="footer-bot">
           <p>&copy; 2026 pdfmaster.co.in — All rights reserved.</p>
           <div class="footer-bot-links">
-            <a href="privacy.html">Privacy Policy</a>
-            <a href="terms.html">Terms of Service</a>
-            <a href="contact.html">Contact</a>
+            <a href="../privacy">Privacy Policy</a>
+            <a href="../terms">Terms of Service</a>
+            <a href="../contact">Contact</a>
           </div>
         </div>
       </div>
