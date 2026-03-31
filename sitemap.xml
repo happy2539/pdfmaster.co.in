@@ -1,72 +1,43 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+<urlset xmlns="https://www.sitemaps.org/schemas/sitemap/0.9">
 
   <!-- Homepage -->
   <url>
     <loc>https://pdfmaster.co.in/</loc>
-    <lastmod>2026-03-20</lastmod>
-    <changefreq>daily</changefreq>
     <priority>1.0</priority>
   </url>
 
-  <!-- Main Tool (Highest Priority) -->
+  <!-- Main Tools -->
   <url>
-    <loc>https://pdfmaster.co.in/photo-to-pdf</loc>
-    <lastmod>2026-03-20</lastmod>
-    <changefreq>weekly</changefreq>
+    <loc>https://pdfmaster.co.in/merge-pdf/</loc>
     <priority>0.9</priority>
   </url>
 
-  <!-- Other Tools -->
   <url>
-    <loc>https://pdfmaster.co.in/pdf-to-photo</loc>
-    <lastmod>2026-03-20</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.85</priority>
+    <loc>https://pdfmaster.co.in/photo-to-pdf/</loc>
+    <priority>0.9</priority>
   </url>
 
   <url>
-    <loc>https://pdfmaster.co.in/pdf-compiler</loc>
-    <lastmod>2026-03-20</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.85</priority>
+    <loc>https://pdfmaster.co.in/pdf-to-photo/</loc>
+    <priority>0.9</priority>
   </url>
 
-  <!-- Informational Pages -->
+
+  <!-- Utility Pages -->
   <url>
-    <loc>https://pdfmaster.co.in/about</loc>
-    <lastmod>2026-03-20</lastmod>
-    <changefreq>monthly</changefreq>
+    <loc>https://pdfmaster.co.in/faq/</loc>
     <priority>0.6</priority>
   </url>
 
   <url>
-    <loc>https://pdfmaster.co.in/contact</loc>
-    <lastmod>2026-03-20</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.5</priority>
+    <loc>https://pdfmaster.co.in/privacy/</loc>
+    <priority>0.4</priority>
   </url>
 
   <url>
-    <loc>https://pdfmaster.co.in/faq</loc>
-    <lastmod>2026-03-20</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-
-  <!-- Legal Pages -->
-  <url>
-    <loc>https://pdfmaster.co.in/privacy</loc>
-    <lastmod>2026-03-20</lastmod>
-    <changefreq>yearly</changefreq>
-    <priority>0.3</priority>
-  </url>
-
-  <url>
-    <loc>https://pdfmaster.co.in/terms</loc>
-    <lastmod>2026-03-20</lastmod>
-    <changefreq>yearly</changefreq>
-    <priority>0.3</priority>
+    <loc>https://pdfmaster.co.in/terms/</loc>
+    <priority>0.4</priority>
   </url>
 
 </urlset>
