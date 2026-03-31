@@ -1,14 +1,8 @@
 User-agent: *
 Allow: /
 
-# Allow important assets
-Allow: /assets/
-Allow: /css/
-Allow: /js/
+# Block internal or useless files
+Disallow: /404.html
+Disallow: /pdf-metadata
 
-# Block unnecessary system files
-Disallow: /node_modules/
-Disallow: /.git/
-
-# Sitemap
 Sitemap: https://pdfmaster.co.in/sitemap.xml
