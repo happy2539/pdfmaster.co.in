@@ -1,0 +1,705 @@
+"use strict";
+
+// ── pdf.js worker setup ──────────────────────────────
+pdfjsLib.GlobalWorkerOptions.workerSrc =
+  "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
+
+// ── State ─────────────────────────────────────────────
+let currentFile = null;
+let currentPdfBytes = null;
+let currentMeta = null;
+let cleanPdfBytes = null;
+
+// ── Theme ─────────────────────────────────────────────
+const applyTheme = (t) => {
+  document.documentElement.setAttribute("data-theme", t);
+  localStorage.setItem("pdfm-theme", t);
+};
+applyTheme(localStorage.getItem("pdfm-theme") || "light");
+document.getElementById("themeBtn").addEventListener("click", () => {
+  const next =
+    document.documentElement.getAttribute("data-theme") === "dark"
+      ? "light"
+      : "dark";
+  applyTheme(next);
+});
+
+// ── Hamburger & Drawer ────────────────────────────────
+const hamburgerBtn = document.getElementById("hamburgerBtn");
+const drawerOverlay = document.getElementById("drawerOverlay");
+const navDrawer = document.getElementById("navDrawer");
+const drawerClose = document.getElementById("drawerClose");
+
+const openDrawer = () => {
+  navDrawer.classList.add("open");
+  drawerOverlay.classList.add("open");
+  hamburgerBtn.classList.add("active");
+  hamburgerBtn.setAttribute("aria-expanded", "true");
+};
+const closeDrawer = () => {
+  navDrawer.classList.remove("open");
+  drawerOverlay.classList.remove("open");
+  hamburgerBtn.classList.remove("active");
+  hamburgerBtn.setAttribute("aria-expanded", "false");
+};
+hamburgerBtn.addEventListener("click", openDrawer);
+drawerClose.addEventListener("click", closeDrawer);
+drawerOverlay.addEventListener("click", closeDrawer);
+
+function navTo(id) {
+  closeDrawer();
+  setTimeout(
+    () =>
+      document
+        .getElementById(id)
+        ?.scrollIntoView({ behavior: "smooth", block: "start" }),
+    200,
+  );
+}
+
+// ── Tabs ──────────────────────────────────────────────
+document.querySelectorAll(".tab").forEach((t) => {
+  t.addEventListener("click", () => {
+    document.querySelectorAll(".tab").forEach((x) => {
+      x.classList.remove("active");
+      x.setAttribute("aria-selected", "false");
+    });
+    t.classList.add("active");
+    t.setAttribute("aria-selected", "true");
+    const name = t.dataset.tab;
+    ["view", "security", "remove", "raw"].forEach((n) => {
+      const el = document.getElementById("tab-" + n);
+      el?.classList.toggle("hidden", n !== name);
+    });
+  });
+});
+
+// ── FAQ accordion ─────────────────────────────────────
+function toggleFaq(el) {
+  const item = el.parentElement;
+  item.classList.toggle("open");
+  el.setAttribute("aria-expanded", item.classList.contains("open"));
+}
+document.querySelectorAll(".faq-q").forEach((q) => {
+  q.addEventListener("keydown", (e) => {
+    if (e.key === "Enter" || e.key === " ") {
+      e.preventDefault();
+      toggleFaq(q);
+    }
+  });
+});
+
+// ── Back to top ───────────────────────────────────────
+const b2t = document.getElementById("b2t");
+window.addEventListener(
+  "scroll",
+  () => b2t.classList.toggle("visible", window.scrollY > 400),
+  { passive: true },
+);
+b2t.addEventListener("click", () =>
+  window.scrollTo({ top: 0, behavior: "smooth" }),
+);
+
+// ── Toast ─────────────────────────────────────────────
+function showToast(msg, type = "info", dur = 3500) {
+  const tc = document.getElementById("toastContainer");
+  const toast = document.createElement("div");
+  toast.className = `toast ${type}`;
+  toast.textContent = msg;
+  tc.appendChild(toast);
+  setTimeout(() => {
+    toast.style.opacity = "0";
+    toast.style.transition = "opacity 0.3s";
+    setTimeout(() => toast.remove(), 300);
+  }, dur);
+}
+
+// ── Upload / Drop zone ────────────────────────────────
+const dropZone = document.getElementById("dropZone");
+const fileInput = document.getElementById("fileInput");
+
+dropZone.addEventListener("dragover", (e) => {
+  e.preventDefault();
+  dropZone.classList.add("drag-over");
+});
+dropZone.addEventListener("dragleave", () =>
+  dropZone.classList.remove("drag-over"),
+);
+dropZone.addEventListener("drop", (e) => {
+  e.preventDefault();
+  dropZone.classList.remove("drag-over");
+  const f = e.dataTransfer.files[0];
+  if (f && f.type === "application/pdf") loadFile(f);
+  else showToast("Please drop a valid PDF file.", "error");
+});
+dropZone.addEventListener("keydown", (e) => {
+  if (e.key === "Enter" || e.key === " ") fileInput.click();
+});
+fileInput.addEventListener("change", () => {
+  if (fileInput.files[0]) loadFile(fileInput.files[0]);
+});
+
+// ── Reset ─────────────────────────────────────────────
+function resetTool() {
+  currentFile = currentPdfBytes = currentMeta = cleanPdfBytes = null;
+  fileInput.value = "";
+  document.getElementById("toolArea").classList.add("hidden");
+  document.getElementById("resultCard").classList.remove("visible");
+  document.getElementById("removeBtn").disabled = false;
+  document.getElementById("progressWrap").classList.remove("visible");
+  document.getElementById("progressFill").style.width = "0%";
+  window.scrollTo({ top: 0, behavior: "smooth" });
+  showToast("Ready for a new file.", "info");
+}
+
+// ── Load file ─────────────────────────────────────────
+async function loadFile(file) {
+  currentFile = file;
+  cleanPdfBytes = null;
+
+  showToast("Reading PDF…", "info", 2000);
+  const arrBuf = await file.arrayBuffer();
+  currentPdfBytes = new Uint8Array(arrBuf);
+
+  document.getElementById("fileName").textContent = file.name;
+  document.getElementById("fileSize").textContent = formatBytes(file.size);
+  document.getElementById("statSize").textContent = formatBytes(file.size);
+
+  document.getElementById("toolArea").classList.remove("hidden");
+  // Reset remove tab
+  document.getElementById("resultCard").classList.remove("visible");
+  document.getElementById("removeBtn").disabled = false;
+  document.getElementById("progressWrap").classList.remove("visible");
+  document.getElementById("progressFill").style.width = "0%";
+
+  await extractAndRender(currentPdfBytes, file);
+  document
+    .getElementById("toolArea")
+    .scrollIntoView({ behavior: "smooth", block: "start" });
+}
+
+// ── Helpers ───────────────────────────────────────────
+function formatBytes(n) {
+  if (n < 1024) return n + " B";
+  if (n < 1048576) return (n / 1024).toFixed(1) + " KB";
+  return (n / 1048576).toFixed(2) + " MB";
+}
+
+function parseDate(raw) {
+  try {
+    if (!raw || !raw.startsWith("D:")) return "";
+    const m = raw.match(/D:(\d{4})(\d{2})(\d{2})(\d{2})(\d{2})(\d{2})/);
+    if (m) return `${m[1]}-${m[2]}-${m[3]} ${m[4]}:${m[5]}:${m[6]}`;
+    return "";
+  } catch {
+    return "";
+  }
+}
+
+function calcRisk(info, xmp, custom) {
+  let s = 0;
+  if (info.Author) s += 3;
+  if (info.Creator) s += 2;
+  if (info.Producer) s += 1;
+  if (info["Creation Date"]) s += 2;
+  if (info["Modification Date"]) s += 2;
+  if (Object.keys(xmp).length) s += 3;
+  if (Object.keys(custom).length) s += 2;
+  if (s >= 8) return { level: "High", color: "var(--danger)", code: "high" };
+  if (s >= 4) return { level: "Med", color: "var(--warning)", code: "med" };
+  return { level: "Low", color: "var(--success)", code: "low" };
+}
+
+// ── Extract & render metadata ─────────────────────────
+async function extractAndRender(bytes, file) {
+  try {
+    const pdf = await pdfjsLib.getDocument({ data: bytes.slice() }).promise;
+    const meta = await pdf.getMetadata();
+    const info = meta.info || {};
+    const pages = pdf.numPages;
+
+    const docInfo = {
+      Title: info.Title || "",
+      Author: info.Author || "",
+      Subject: info.Subject || "",
+      Keywords: info.Keywords || "",
+      Creator: info.Creator || "",
+      Producer: info.Producer || "",
+      "Creation Date": parseDate(info.CreationDate),
+      "Modification Date": parseDate(info.ModDate),
+      "PDF Version": info.PDFFormatVersion || "",
+      Language: info.Language || "",
+    };
+
+    const docProps = {
+      "Page Count": pages,
+      "File Name": file.name,
+      "File Size": formatBytes(file.size),
+      Encrypted: info.IsAcroFormPresent ? "Yes" : "No",
+      Linearized: info.IsLinearized ? "Yes" : "No",
+      "Tagged PDF": info.IsTaggedPDF ? "Yes" : "No",
+      "AcroForm Present": info.IsAcroFormPresent ? "Yes" : "No",
+      "XFA Present": info.IsXFAPresent ? "Yes" : "No",
+      "Signatures Present": info.HasSignature ? "Yes" : "No",
+    };
+
+    let xmpFields = {};
+    if (meta.metadata?.getAll) Object.assign(xmpFields, meta.metadata.getAll());
+
+    const stdKeys = new Set([
+      "Title",
+      "Author",
+      "Subject",
+      "Keywords",
+      "Creator",
+      "Producer",
+      "CreationDate",
+      "ModDate",
+      "PDFFormatVersion",
+      "Language",
+      "IsAcroFormPresent",
+      "IsLinearized",
+      "IsTaggedPDF",
+      "IsXFAPresent",
+      "HasSignature",
+    ]);
+    const customFields = {};
+    Object.entries(info).forEach(([k, v]) => {
+      if (!stdKeys.has(k)) customFields[k] = v;
+    });
+
+    currentMeta = { docInfo, docProps, xmpFields, customFields, pages };
+
+    const allFieldCount =
+      Object.values(docInfo).filter(Boolean).length +
+      Object.keys(xmpFields).length +
+      Object.keys(customFields).length;
+    document.getElementById("statFields").textContent = allFieldCount;
+    document.getElementById("statPages").textContent = pages;
+
+    const risk = calcRisk(docInfo, xmpFields, customFields);
+    const riskEl = document.getElementById("statRisk");
+    riskEl.textContent = risk.level;
+    riskEl.style.color = risk.color;
+
+    renderMetaView(docInfo, docProps, xmpFields, customFields);
+    renderSecurity(docInfo, xmpFields, customFields, risk);
+    renderRaw(docInfo, docProps, xmpFields, customFields);
+    showToast("PDF loaded — metadata scanned successfully.", "success");
+  } catch (e) {
+    console.error(e);
+    document.getElementById("metaContainer").innerHTML =
+      `<div style="padding:20px;color:var(--danger);background:var(--danger-bg);border-radius:8px;">⚠️ Could not read metadata: ${e.message}</div>`;
+    showToast(
+      "Failed to read PDF. The file may be encrypted or corrupted.",
+      "error",
+    );
+  }
+}
+
+// ── Render metadata view ──────────────────────────────
+function renderMetaView(docInfo, docProps, xmpFields, customFields) {
+  const c = document.getElementById("metaContainer");
+  c.innerHTML = "";
+  c.appendChild(buildSection("📄 Document Information", docInfo));
+  c.appendChild(buildSection("📊 Document Properties", docProps));
+  if (Object.keys(xmpFields).length)
+    c.appendChild(buildSection("🧩 XMP Metadata", xmpFields));
+  if (Object.keys(customFields).length)
+    c.appendChild(buildSection("⚙️ Custom Fields", customFields));
+}
+
+function buildSection(title, fields) {
+  const wrap = document.createElement("div");
+  wrap.className = "meta-section";
+  const head = document.createElement("div");
+  head.className = "meta-section-head";
+  head.textContent = title;
+  wrap.appendChild(head);
+  Object.entries(fields).forEach(([k, v]) => {
+    const row = document.createElement("div");
+    row.className = "meta-row";
+    row.dataset.key = k.toLowerCase();
+    row.dataset.val = String(v).toLowerCase();
+    const key = document.createElement("div");
+    key.className = "meta-key";
+    key.textContent = k;
+    const val = document.createElement("div");
+    if (!v || v === "") {
+      val.className = "meta-val empty";
+      val.textContent = "— not set —";
+    } else if (String(v) === "Yes" || String(v) === "No") {
+      val.className = "meta-val";
+      const badge = document.createElement("span");
+      badge.className =
+        "meta-badge " + (v === "Yes" ? "badge-yes" : "badge-no");
+      badge.textContent = v;
+      val.appendChild(badge);
+    } else {
+      val.className = "meta-val";
+      val.textContent = v;
+    }
+    row.appendChild(key);
+    row.appendChild(val);
+    wrap.appendChild(row);
+  });
+  return wrap;
+}
+
+function filterMeta() {
+  const q = document.getElementById("metaSearch").value.toLowerCase();
+  document.querySelectorAll(".meta-row").forEach((row) => {
+    const match = row.dataset.key.includes(q) || row.dataset.val.includes(q);
+    row.style.display = q && !match ? "none" : "";
+  });
+  // Show/hide section heads if all rows hidden
+  document.querySelectorAll(".meta-section").forEach((sec) => {
+    const rows = sec.querySelectorAll(".meta-row");
+    const anyVisible = Array.from(rows).some((r) => r.style.display !== "none");
+    sec.style.display = q && !anyVisible ? "none" : "";
+  });
+}
+
+// ── Render security tab ───────────────────────────────
+function renderSecurity(docInfo, xmpFields, customFields, risk) {
+  const c = document.getElementById("securityContainer");
+  c.innerHTML = "";
+  const findings = [];
+  if (docInfo.Author)
+    findings.push({
+      level: "high",
+      title: "Author Identity Exposed",
+      desc: `The "Author" field contains: "${docInfo.Author}". This can directly identify who created the document.`,
+    });
+  if (docInfo.Creator)
+    findings.push({
+      level: "med",
+      title: "Creator Application Visible",
+      desc: `Created with: "${docInfo.Creator}". Reveals your software stack and version fingerprint.`,
+    });
+  if (docInfo.Producer)
+    findings.push({
+      level: "med",
+      title: "Producer Tool Visible",
+      desc: `Produced by: "${docInfo.Producer}". May reveal PDF workflow tools and versions used.`,
+    });
+  if (docInfo["Creation Date"])
+    findings.push({
+      level: "med",
+      title: "Creation Date Present",
+      desc: `Document created on: ${docInfo["Creation Date"]}. Reveals exact creation time, timezone, and work schedule.`,
+    });
+  if (docInfo["Modification Date"])
+    findings.push({
+      level: "med",
+      title: "Modification Date Present",
+      desc: `Last modified: ${docInfo["Modification Date"]}. Exposes your edit history timeline.`,
+    });
+  if (docInfo.Title)
+    findings.push({
+      level: "med",
+      title: "Document Title Embedded",
+      desc: `Title: "${docInfo.Title}". Internal document names can reveal confidential project or case names.`,
+    });
+  if (Object.keys(xmpFields).length > 0)
+    findings.push({
+      level: "high",
+      title: "XMP Metadata Stream Detected",
+      desc: `Contains ${Object.keys(xmpFields).length} XMP field(s). XMP can hold company names, document IDs, revision history, and more.`,
+    });
+  if (Object.keys(customFields).length > 0)
+    findings.push({
+      level: "med",
+      title: "Non-Standard Fields Found",
+      desc: `${Object.keys(customFields).length} custom field(s) detected. May contain application-specific private data.`,
+    });
+  if (!findings.length)
+    findings.push({
+      level: "low",
+      title: "Minimal Privacy Exposure",
+      desc: "No significant privacy-sensitive metadata was found in this PDF.",
+    });
+
+  // Summary card
+  const riskBg =
+    risk.code === "high"
+      ? "var(--danger-bg)"
+      : risk.code === "med"
+        ? "var(--warning-bg)"
+        : "var(--success-bg)";
+  const sumCard = document.createElement("div");
+  sumCard.className = "sec-card";
+  sumCard.style.marginBottom = "20px";
+  sumCard.innerHTML = `
+    <div class="sec-card-head" style="background:${riskBg}">
+      <span class="sec-dot dot-${risk.code}"></span>
+      <h4>Overall Privacy Risk: ${risk.level}</h4>
+      <span class="sec-tag sec-tag-${risk.code === "high" ? "high" : risk.code === "med" ? "med" : "low"}">${findings.length} finding(s)</span>
+    </div>
+    <div class="sec-card-body" style="display:flex;gap:10px;align-items:flex-start;">
+      <span style="font-size:1.6rem;flex-shrink:0">${risk.code === "high" ? "⛔" : risk.code === "med" ? "⚠️" : "✅"}</span>
+      <span>${
+        risk.code === "high"
+          ? "This PDF contains sensitive metadata that could identify you or your organisation. Remove it before sharing externally."
+          : risk.code === "med"
+            ? "Some metadata fields may reveal information about the creator or workflow. Consider stripping before distributing."
+            : "This PDF appears to have minimal sensitive metadata. You may still want to verify individual fields below."
+      }</span>
+    </div>`;
+  c.appendChild(sumCard);
+
+  findings.forEach((f) => {
+    const card = document.createElement("div");
+    card.className = "sec-card";
+    card.innerHTML = `
+      <div class="sec-card-head">
+        <span class="sec-dot dot-${f.level === "high" ? "high" : f.level === "med" ? "med" : "low"}"></span>
+        <h4>${f.title}</h4>
+        <span class="sec-tag sec-tag-${f.level === "high" ? "high" : f.level === "med" ? "med" : "low"}">${f.level.toUpperCase()}</span>
+      </div>
+      <div class="sec-card-body">${f.desc}</div>`;
+    c.appendChild(card);
+  });
+}
+
+// ── Render raw JSON ───────────────────────────────────
+function renderRaw(docInfo, docProps, xmpFields, customFields) {
+  const obj = {
+    documentInfo: docInfo,
+    documentProperties: docProps,
+    xmpMetadata: xmpFields,
+    customFields,
+  };
+  document.getElementById("rawJson").textContent = JSON.stringify(obj, null, 2);
+}
+
+function copyRaw() {
+  navigator.clipboard
+    .writeText(document.getElementById("rawJson").textContent)
+    .then(() => showToast("Copied to clipboard!", "success"))
+    .catch(() =>
+      showToast("Copy failed — please select and copy manually.", "error"),
+    );
+}
+
+// ── Download metadata exports ─────────────────────────
+function downloadMetaJson() {
+  if (!currentMeta) return;
+  const { docInfo, docProps, xmpFields, customFields } = currentMeta;
+  const obj = {
+    documentInfo: docInfo,
+    documentProperties: docProps,
+    xmpMetadata: xmpFields,
+    customFields,
+  };
+  const blob = new Blob([JSON.stringify(obj, null, 2)], {
+    type: "application/json",
+  });
+  dl(
+    blob,
+    (currentFile?.name.replace(/\.pdf$/i, "") || "metadata") + "_metadata.json",
+  );
+  showToast("Metadata JSON downloaded.", "success");
+}
+
+function downloadMetaTxt() {
+  if (!currentMeta) return;
+  const { docInfo, docProps, xmpFields, customFields } = currentMeta;
+  const lines = [
+    "PDF METADATA REPORT",
+    "===================",
+    `File: ${currentFile?.name}`,
+    `Generated: ${new Date().toLocaleString()}`,
+    `Tool: PDFMaster (pdfmaster.co.in)`,
+    "",
+  ];
+  const sec = (title, fields) => {
+    lines.push(title, "-".repeat(title.length));
+    Object.entries(fields).forEach(([k, v]) => lines.push(`${k}: ${v || "—"}`));
+    lines.push("");
+  };
+  sec("Document Information", docInfo);
+  sec("Document Properties", docProps);
+  if (Object.keys(xmpFields).length) sec("XMP Metadata", xmpFields);
+  if (Object.keys(customFields).length) sec("Custom Fields", customFields);
+  const blob = new Blob([lines.join("\n")], { type: "text/plain" });
+  dl(
+    blob,
+    (currentFile?.name.replace(/\.pdf$/i, "") || "metadata") + "_metadata.txt",
+  );
+  showToast("Metadata TXT report downloaded.", "success");
+}
+
+function dl(blob, name) {
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = name;
+  a.click();
+  setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+}
+
+// ── Remove Metadata ───────────────────────────────────
+// Uses the deep deletion approach: directly removes keys from the raw PDF
+// Info Dictionary via pdf-lib's context API, rather than setting empty strings.
+// This ensures metadata is truly absent — not merely blanked.
+
+async function removeAll() {
+  ["rmAuthor", "rmDates", "rmTitle", "rmApp", "rmXmp", "rmCustom"].forEach(
+    (id) => {
+      document.getElementById(id).checked = true;
+    },
+  );
+  await removeMetadata();
+}
+
+async function removeMetadata() {
+  if (!currentPdfBytes) {
+    showToast("Please upload a PDF first.", "error");
+    return;
+  }
+
+  const removeBtn = document.getElementById("removeBtn");
+  const progressWrap = document.getElementById("progressWrap");
+  const progressFill = document.getElementById("progressFill");
+  const progressLabel = document.getElementById("progressLabel");
+  const resultCard = document.getElementById("resultCard");
+
+  const rmAuthor = document.getElementById("rmAuthor").checked;
+  const rmDates = document.getElementById("rmDates").checked;
+  const rmTitle = document.getElementById("rmTitle").checked;
+  const rmApp = document.getElementById("rmApp").checked;
+  const rmXmp = document.getElementById("rmXmp").checked;
+  const rmCustom = document.getElementById("rmCustom").checked;
+
+  removeBtn.disabled = true;
+  progressWrap.classList.add("visible");
+  resultCard.classList.remove("visible");
+
+  const setProgress = (p, label) => {
+    progressFill.style.width = `${p}%`;
+    progressLabel.textContent = label;
+  };
+
+  try {
+    setProgress(10, "Loading PDF…");
+    await new Promise((r) => setTimeout(r, 30));
+
+    const { PDFDocument, PDFName } = PDFLib;
+    const pdfDoc = await PDFDocument.load(currentPdfBytes, {
+      ignoreEncryption: true,
+    });
+
+    setProgress(35, "Stripping info dictionary fields…");
+    await new Promise((r) => setTimeout(r, 20));
+
+    // ── Step 1: Delete keys directly from the Info Dictionary ──
+    // This is the robust approach — we look up the actual PDFDict object
+    // and call .delete() on it, so keys are completely removed (not just blanked).
+    const infoRef = pdfDoc.context.trailerInfo?.Info;
+    if (infoRef) {
+      const infoDict = pdfDoc.context.lookup(infoRef);
+      if (infoDict && typeof infoDict.delete === "function") {
+        const toDelete = [];
+        if (rmTitle) toDelete.push("Title", "Subject", "Keywords");
+        if (rmAuthor) toDelete.push("Author");
+        if (rmDates) toDelete.push("CreationDate", "ModDate");
+        if (rmApp)
+          toDelete.push(
+            "Creator",
+            "Producer",
+            "Trapped",
+            "GTS_PDFXVersion",
+            "GTS_PDFXConformance",
+          );
+
+        toDelete.forEach((k) => {
+          try {
+            infoDict.delete(PDFName.of(k));
+          } catch {}
+        });
+
+        // Remove all custom / non-standard fields
+        if (rmCustom) {
+          const stdSet = new Set([
+            "Title",
+            "Author",
+            "Subject",
+            "Keywords",
+            "Creator",
+            "Producer",
+            "CreationDate",
+            "ModDate",
+            "Trapped",
+            "GTS_PDFXVersion",
+            "GTS_PDFXConformance",
+          ]);
+          try {
+            const entries = Array.from(infoDict.entries());
+            entries.forEach(([k]) => {
+              try {
+                const kName = k.decodeText?.() ?? String(k);
+                if (!stdSet.has(kName)) infoDict.delete(k);
+              } catch {}
+            });
+          } catch {}
+        }
+      }
+    }
+
+    setProgress(60, "Removing XMP metadata stream…");
+    await new Promise((r) => setTimeout(r, 20));
+
+    // ── Step 2: Remove XMP stream and PieceInfo from catalog ──
+    if (rmXmp) {
+      try {
+        pdfDoc.catalog.delete(PDFName.of("Metadata"));
+      } catch {}
+      try {
+        pdfDoc.catalog.delete(PDFName.of("PieceInfo"));
+      } catch {}
+    }
+
+    setProgress(80, "Rebuilding clean PDF…");
+    await new Promise((r) => setTimeout(r, 20));
+
+    // ── Step 3: Save — no metadata update, no extra pages ──
+    cleanPdfBytes = await pdfDoc.save({
+      addDefaultPage: false,
+      updateFieldAppearances: false,
+    });
+
+    setProgress(100, "Done!");
+
+    const base = currentFile?.name.replace(/\.pdf$/i, "") || "document";
+    const fname = `${base}_clean.pdf`;
+
+    // Trigger download
+    const blob = new Blob([cleanPdfBytes], { type: "application/pdf" });
+    dl(blob, fname);
+
+    // Update result card
+    document.getElementById("resultSub").textContent = `Saved as: ${fname}`;
+    resultCard.classList.add("visible");
+
+    // Wire up "Download Again" button
+    document.getElementById("dlAgainBtn").onclick = () => {
+      if (cleanPdfBytes) {
+        const b2 = new Blob([cleanPdfBytes], { type: "application/pdf" });
+        dl(b2, fname);
+        showToast("Downloaded again: " + fname, "success");
+      }
+    };
+
+    showToast("Metadata removed and clean PDF downloaded!", "success", 4000);
+  } catch (err) {
+    console.error(err);
+    showToast("Failed to process PDF. Please try again.", "error");
+    removeBtn.disabled = false;
+  } finally {
+    setTimeout(() => {
+      progressWrap.classList.remove("visible");
+      progressFill.style.width = "0%";
+      removeBtn.disabled = false;
+    }, 1200);
+  }
+}
