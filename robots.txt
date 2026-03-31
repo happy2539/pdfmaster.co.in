@@ -3,6 +3,5 @@ Allow: /
 
 # Block internal or useless files
 Disallow: /404.html
-Disallow: /pdf-metadata
 
 Sitemap: https://pdfmaster.co.in/sitemap.xml
