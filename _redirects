@@ -1,14 +1,4 @@
 # -----------------------------
-# FORCE HTTPS
-# -----------------------------
-http://pdfmaster.co.in/* https://pdfmaster.co.in/:splat 301!
-
-# -----------------------------
-# REMOVE WWW
-# -----------------------------
-https://www.pdfmaster.co.in/* https://pdfmaster.co.in/:splat 301!
-
-# -----------------------------
 # REMOVE INDEX.HTML
 # -----------------------------
 /index.html /
