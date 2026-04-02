@@ -1,2 +1,9 @@
-# Remove .html extension
+# -----------------------------
+# REMOVE INDEX.HTML
+# -----------------------------
+/index.html /
+
+# -----------------------------
+# REMOVE .HTML EXTENSION
+# -----------------------------
 /*.html /:splat 301!
