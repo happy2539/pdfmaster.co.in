@@ -1,7 +1,7 @@
 # -----------------------------
 # REMOVE INDEX.HTML
 # -----------------------------
-/index.html /
+/index.html / 301!
 
 # -----------------------------
 # REMOVE .HTML EXTENSION
