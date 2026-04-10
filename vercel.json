@@ -1,6 +1,5 @@
 {
   "cleanUrls": true,
-  "redirects": [
-    { "source": "/index.html", "destination": "/", "type": 308 }
-  ]
+  "trailingSlash": false
+
 }   
