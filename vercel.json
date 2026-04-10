@@ -1,6 +1,6 @@
 {
   "cleanUrls": true,
   "redirects": [
-    { "source": "/index.html", "destination": "/" }
+    { "source": "/index.html", "destination": "/", "type": 308 }
   ]
 }   
