@@ -1,0 +1,969 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>Merge PDF Online (No Upload) | Free PDF Combiner – PDFMaster</title>
+
+    <meta
+      name="description"
+      content="Merge PDF files online for free with no upload. Combine multiple PDFs instantly in your browser. 100% private, client-side PDF combiner."
+    />
+
+    <meta
+      name="keywords"
+      content="merge PDF, combine PDF files, join PDF online, PDF combiner free, merge PDF without upload, secure PDF merger, client side PDF tool"
+    />
+
+    <meta name="robots" content="index, follow" />
+    <meta name="author" content="PDFMaster" />
+    <meta name="theme-color" content="#0f172a" />
+
+    <link rel="canonical" href="https://pdfmaster.co.in/merge-pdf/" />
+    <link rel="manifest" href="/manifest.json" />
+
+    <!-- Favicon -->
+    <link rel="icon" href="assets/favicon.ico" type="image/x-icon" />
+    <link rel="apple-touch-icon" href="assets/apple-touch-icon.png" />
+
+    <!-- Open Graph -->
+    <meta
+      property="og:title"
+      content="Merge PDF Online (No Upload) – PDFMaster"
+    />
+    <meta
+      property="og:description"
+      content="Combine PDF files instantly in your browser. Free, private, and secure PDF merger."
+    />
+    <meta property="og:url" content="https://pdfmaster.co.in/merge-pdf" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="PDFMaster" />
+    <meta
+      property="og:image"
+      content="https://pdfmaster.co.in/assets/og-image.png"
+    />
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Merge PDF – PDFMaster" />
+    <meta
+      name="twitter:description"
+      content="Free PDF combiner with no upload. Merge PDFs securely in your browser."
+    />
+    <meta
+      name="twitter:image"
+      content="https://pdfmaster.co.in/assets/og-image.png"
+    />
+
+    <!-- Performance -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
+
+    <!-- Fonts -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="css/pdf-compiler.css" />
+
+    <!-- Scripts (deferred for performance) -->
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"
+      defer
+    ></script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.0/Sortable.min.js"
+      defer
+    ></script>
+
+    <!-- Google Tag Manager -->
+    <script>
+      (function (w, d, s, l, i) {
+        w[l] = w[l] || [];
+        w[l].push({ "gtm.start": new Date().getTime(), event: "gtm.js" });
+        var f = d.getElementsByTagName(s)[0],
+          j = d.createElement(s),
+          dl = l != "dataLayer" ? "&l=" + l : "";
+        j.async = true;
+        j.src = "https://www.googletagmanager.com/gtm.js?id=" + i + dl;
+        f.parentNode.insertBefore(j, f);
+      })(window, document, "script", "dataLayer", "GTM-PCSVMC65");
+    </script>
+
+    <!-- Schema -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "Merge PDF Tool",
+        "url": "https://pdfmaster.co.in/merge-pdf",
+        "description": "Free tool to merge PDF files online with no upload. Fully private and browser-based.",
+        "applicationCategory": "UtilitiesApplication",
+        "operatingSystem": "Any",
+        "offers": {
+          "@type": "Offer",
+          "price": "0",
+          "priceCurrency": "USD"
+        },
+        "publisher": {
+          "@type": "Organization",
+          "name": "PDFMaster",
+          "url": "https://pdfmaster.co.in"
+        }
+      }
+    </script>
+  </head>
+  <body>
+    <!-- Google Tag Manager (noscript) -->
+    <noscript
+      ><iframe
+        src="https://www.googletagmanager.com/ns.html?id=GTM-PCSVMC65"
+        height="0"
+        width="0"
+        style="display: none; visibility: hidden"
+      ></iframe
+    ></noscript>
+    <!-- End Google Tag Manager (noscript) -->
+    <!-- ═══════════════ NAVBAR ═══════════════ -->
+    <header>
+      <nav>
+        <a href="/" class="nav-logo" aria-label="PDFMaster Home">
+          <img src="assets/apple-touch-icon.png" alt="PDFMaster Logo" />
+          <span class="logo-text">PDF<span>Master</span></span>
+        </a>
+
+        <div class="nav-right">
+          <div class="toggle-wrap" title="Toggle theme" id="themeToggle">
+            <span class="toggle-icon">☀️</span>
+            <button
+              class="theme-btn"
+              id="themeBtn"
+              aria-label="Toggle dark/light mode"
+            ></button>
+            <span class="toggle-icon">🌙</span>
+          </div>
+          <button
+            class="hamburger-btn"
+            id="hamburgerBtn"
+            aria-label="Open navigation menu"
+            aria-expanded="false"
+          >
+            <span></span><span></span><span></span>
+          </button>
+        </div>
+      </nav>
+
+      <nav
+        class="nav-dropdown"
+        id="navDropdown"
+        role="navigation"
+        aria-label="Tool sections"
+      >
+        <a href="#what-is-it"><span class="dd-dot"></span> What is it</a>
+        <a href="#features"><span class="dd-dot"></span> Features</a>
+        <a href="#how-to-use"><span class="dd-dot"></span> How to Use</a>
+        <a href="#benefits"><span class="dd-dot"></span> Benefits</a>
+        <a href="#faqs"><span class="dd-dot"></span> FAQs</a>
+        <a href="#related-tools"><span class="dd-dot"></span> Related Tools</a>
+        <a href="#contact"><span class="dd-dot"></span> Contact</a>
+      </nav>
+    </header>
+
+    <div class="nav-overlay" id="navOverlay"></div>
+
+    <!-- ═══════════════ BREADCRUMB ═══════════════ -->
+    <div class="breadcrumb">
+      <div class="breadcrumb-inner">
+        <a href="/">🏠 Home</a>
+        <svg
+          width="12"
+          height="12"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+        >
+          <path d="M9 18l6-6-6-6" />
+        </svg>
+        <a href="/#tools">Tools</a>
+        <svg
+          width="12"
+          height="12"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+        >
+          <path d="M9 18l6-6-6-6" />
+        </svg>
+        <span>PDF Compiler & Merger</span>
+      </div>
+    </div>
+
+    <!-- ═══════════════ TOOL HERO ═══════════════ -->
+    <section class="tool-hero">
+      <div class="tool-badge">
+        <span class="tool-badge-dot"></span> Free PDF Tool
+      </div>
+      <h1>PDF Compiler &amp; <em>Merger</em></h1>
+      <p>
+        Combine multiple PDF files into a single polished document — select
+        pages, reorder files, set metadata, and download instantly.
+      </p>
+      <div class="tool-pills">
+        <span class="tool-pill">🔒 100% Private</span>
+        <span class="tool-pill">⚡ On-Device Processing</span>
+        <span class="tool-pill">📄 Unlimited Files</span>
+        <span class="tool-pill">🆓 Always Free</span>
+      </div>
+    </section>
+
+    <!-- ═══════════════ TOOL AREA ═══════════════ -->
+    <div class="page-wrap">
+      <!-- Upload Card -->
+      <div class="tool-card">
+        <div class="tool-card-head">
+          <div class="card-icon">📂</div>
+          Upload PDF Files
+        </div>
+        <div class="tool-card-body">
+          <div class="upload-area" id="uploadArea">
+            <div class="upload-icon">📋</div>
+            <div class="upload-title">
+              Drop PDF files here or click to browse
+            </div>
+            <div class="upload-sub">
+              Supports multiple PDFs · Max 500 MB per file · Drag &amp; drop
+              supported
+            </div>
+            <button class="upload-browse-btn" type="button" id="browseBtn">
+              <svg
+                width="14"
+                height="14"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2.5"
+              >
+                <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4" />
+                <polyline points="17 8 12 3 7 8" />
+                <line x1="12" y1="3" x2="12" y2="15" />
+              </svg>
+              Choose PDF Files
+            </button>
+            <input
+              type="file"
+              id="fileInput"
+              multiple
+              accept=".pdf,application/pdf"
+            />
+          </div>
+        </div>
+      </div>
+
+      <!-- Stats -->
+      <div class="stats-row" id="statsRow">
+        <div class="stat-box">
+          <div class="snum" id="statFiles">0</div>
+          <div class="slbl">Files</div>
+        </div>
+        <div class="stat-box">
+          <div class="snum" id="statPages">0</div>
+          <div class="slbl">Total Pages</div>
+        </div>
+        <div class="stat-box">
+          <div class="snum" id="statSize">0 KB</div>
+          <div class="slbl">Total Size</div>
+        </div>
+      </div>
+
+      <!-- File List Card -->
+      <div class="tool-card" id="fileListCard">
+        <div class="tool-card-head">
+          <div class="card-icon">📋</div>
+          <span style="flex: 1"
+            >Uploaded Files
+            <span
+              id="fileCountBadge"
+              style="color: var(--text3); font-weight: 400; font-size: 0.85rem"
+            ></span
+          ></span>
+          <div class="sort-btns">
+            <button class="sort-btn" id="sortByName">Sort A–Z</button>
+            <button class="sort-btn" id="sortBySize">Sort by Size</button>
+            <button class="sort-btn" id="sortByPages">Sort by Pages</button>
+          </div>
+        </div>
+        <div class="tool-card-body">
+          <div class="dup-warn" id="dupWarn">
+            ⚠️ <span id="dupWarnText">Duplicate file detected.</span>
+          </div>
+          <div id="fileListContainer">
+            <div class="empty-state show" id="emptyState">
+              <div class="es-icon">📄</div>
+              <p>
+                No PDF files added yet.<br />Upload files above to get started.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Advanced Options Card -->
+      <div class="tool-card">
+        <div class="tool-card-head">
+          <div class="card-icon">⚙️</div>
+          Advanced Options
+        </div>
+        <div class="tool-card-body">
+          <div class="options-grid" style="margin-bottom: 20px">
+            <div class="opt-group">
+              <label for="pdfName">Output Filename</label>
+              <input
+                type="text"
+                id="pdfName"
+                value="merged_document"
+                placeholder="merged_document"
+              />
+            </div>
+            <div class="opt-group">
+              <label for="compressionLevel">Compression Level</label>
+              <select id="compressionLevel">
+                <option value="none">None (highest quality)</option>
+                <option value="low" selected>Low (recommended)</option>
+                <option value="medium">Medium (smaller file)</option>
+              </select>
+            </div>
+          </div>
+          <p
+            style="
+              font-size: 0.82rem;
+              font-weight: 700;
+              color: var(--text2);
+              margin-bottom: 12px;
+              text-transform: uppercase;
+              letter-spacing: 0.05em;
+            "
+          >
+            PDF Metadata
+          </p>
+          <div class="options-grid three-col" style="margin-bottom: 20px">
+            <div class="opt-group">
+              <label for="metaTitle">Document Title</label>
+              <input
+                type="text"
+                id="metaTitle"
+                placeholder="e.g. Annual Report 2026"
+              />
+            </div>
+            <div class="opt-group">
+              <label for="metaAuthor">Author</label>
+              <input type="text" id="metaAuthor" placeholder="e.g. John Doe" />
+            </div>
+            <div class="opt-group">
+              <label for="metaSubject">Subject</label>
+              <input type="text" id="metaSubject" placeholder="e.g. Finance" />
+            </div>
+          </div>
+          <p
+            style="
+              font-size: 0.82rem;
+              font-weight: 700;
+              color: var(--text2);
+              margin-bottom: 12px;
+              text-transform: uppercase;
+              letter-spacing: 0.05em;
+            "
+          >
+            Options
+          </p>
+          <div class="toggle-row">
+            <div class="toggle-row-info">
+              <strong>Insert blank page between documents</strong>
+              <span>Adds a blank separator page between each merged PDF</span>
+            </div>
+            <button
+              class="mini-toggle"
+              id="toggleBlankPage"
+              aria-label="Toggle blank page separator"
+            ></button>
+          </div>
+          <div class="toggle-row">
+            <div class="toggle-row-info">
+              <strong>Add page numbers</strong>
+              <span>Automatically number pages in the merged PDF</span>
+            </div>
+            <button
+              class="mini-toggle"
+              id="togglePageNumbers"
+              aria-label="Toggle page numbers"
+            ></button>
+          </div>
+          <div class="toggle-row">
+            <div class="toggle-row-info">
+              <strong>Preserve bookmarks &amp; links</strong>
+              <span>Keep existing document navigation and hyperlinks</span>
+            </div>
+            <button
+              class="mini-toggle on"
+              id="toggleBookmarks"
+              aria-label="Toggle bookmark preservation"
+            ></button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Loading -->
+      <div class="loading-bar-wrap" id="loadingWrap">
+        <div class="spinner"></div>
+        <div class="loading-txt" id="loadingTxt">Processing files…</div>
+        <div class="progress-track">
+          <div class="progress-fill" id="progressFill"></div>
+        </div>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="action-row">
+        <button class="btn btn-ghost" id="clearAllBtn" disabled>
+          <svg
+            width="14"
+            height="14"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2.5"
+          >
+            <polyline points="3 6 5 6 21 6" />
+            <path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6" />
+            <path d="M10 11v6M14 11v6" />
+          </svg>
+          Clear All
+        </button>
+        <button class="btn btn-secondary" id="addMoreBtn">
+          <svg
+            width="14"
+            height="14"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2.5"
+          >
+            <circle cx="12" cy="12" r="10" />
+            <line x1="12" y1="8" x2="12" y2="16" />
+            <line x1="8" y1="12" x2="16" y2="12" />
+          </svg>
+          Add More Files
+        </button>
+        <button class="btn btn-primary" id="mergePdfBtn" disabled>
+          <svg
+            width="14"
+            height="14"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2.5"
+          >
+            <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" />
+            <polyline points="14 2 14 8 20 8" />
+          </svg>
+          Merge &amp; Compile PDF
+        </button>
+      </div>
+    </div>
+    <!-- /page-wrap -->
+
+    <!-- ═══════════════ SEO CONTENT SECTIONS ═══════════════ -->
+    <div class="content-wrap">
+      <div class="sec-divider"></div>
+
+      <!-- What Is It -->
+      <section class="content-section" id="what-is-it">
+        <div class="sec-head">
+          <div class="sec-label">About This Tool</div>
+          <h2 class="sec-title">What is a PDF Compiler &amp; Merger?</h2>
+          <p class="sec-desc">
+            A PDF compiler and merger is a tool that lets you combine two or
+            more PDF documents into a single cohesive file. Whether you're
+            compiling a project report, combining scanned invoices, or
+            assembling a research portfolio, PDFMaster's free online PDF merger
+            does it all — instantly and privately in your browser.
+          </p>
+        </div>
+        <div class="feat-grid">
+          <div class="feat-card">
+            <div class="feat-icon">🔗</div>
+            <h3>Merge Multiple PDFs</h3>
+            <p>
+              Combine any number of PDF files into a single document in the
+              exact order you choose.
+            </p>
+          </div>
+          <div class="feat-card">
+            <div class="feat-icon">📄</div>
+            <h3>Selective Page Ranges</h3>
+            <p>
+              Choose exactly which pages from each PDF to include — no need to
+              pre-split your files.
+            </p>
+          </div>
+          <div class="feat-card">
+            <div class="feat-icon">🔀</div>
+            <h3>Drag &amp; Reorder</h3>
+            <p>
+              Simply drag and drop to rearrange the order of your uploaded PDF
+              documents.
+            </p>
+          </div>
+          <div class="feat-card">
+            <div class="feat-icon">🏷️</div>
+            <h3>Metadata Editing</h3>
+            <p>
+              Set the title, author, and subject of your merged PDF for
+              professional document management.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <div class="sec-divider"></div>
+
+      <!-- Features -->
+      <section class="content-section" id="features">
+        <div class="sec-head">
+          <div class="sec-label">Features</div>
+          <h2 class="sec-title">Advanced Merge PDF Features</h2>
+          <p class="sec-desc">
+            PDFMaster's PDF merger packs more powerful options than most paid
+            tools — completely free and entirely on-device.
+          </p>
+        </div>
+        <div class="feat-grid">
+          <div class="feat-card">
+            <div class="feat-icon">🔒</div>
+            <h3>100% On-Device</h3>
+            <p>
+              Every byte of your PDF stays on your device. Zero server uploads,
+              zero data collection.
+            </p>
+          </div>
+          <div class="feat-card">
+            <div class="feat-icon">⚡</div>
+            <h3>Lightning Fast</h3>
+            <p>
+              Powered by pdf-lib running natively in your browser — no queue, no
+              wait, instant output.
+            </p>
+          </div>
+          <div class="feat-card">
+            <div class="feat-icon">📑</div>
+            <h3>Page Range Selection</h3>
+            <p>
+              Include only the pages you need from each PDF, saving time on
+              pre-processing.
+            </p>
+          </div>
+          <div class="feat-card">
+            <div class="feat-icon">↕️</div>
+            <h3>Drag to Reorder</h3>
+            <p>
+              Intuitive drag-and-drop reordering so the final document follows
+              your exact sequence.
+            </p>
+          </div>
+          <div class="feat-card">
+            <div class="feat-icon">📝</div>
+            <h3>PDF Metadata</h3>
+            <p>
+              Set title, author, and subject metadata for a professional,
+              searchable output document.
+            </p>
+          </div>
+          <div class="feat-card">
+            <div class="feat-icon">📌</div>
+            <h3>Blank Page Separator</h3>
+            <p>
+              Optionally insert a blank separator page between each merged
+              document for clarity.
+            </p>
+          </div>
+          <div class="feat-card">
+            <div class="feat-icon">🗜️</div>
+            <h3>Compression Options</h3>
+            <p>
+              Choose your compression level to balance file size and visual
+              quality to your needs.
+            </p>
+          </div>
+          <div class="feat-card">
+            <div class="feat-icon">📊</div>
+            <h3>Live Statistics</h3>
+            <p>
+              See a real-time summary of total files, combined pages, and
+              estimated output size.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <div class="sec-divider"></div>
+
+      <!-- How to Use -->
+      <section class="content-section" id="how-to-use">
+        <div class="sec-head">
+          <div class="sec-label">How to Use</div>
+          <h2 class="sec-title">Merge PDFs in 4 Simple Steps</h2>
+          <p class="sec-desc">
+            No learning curve. No registration. Just open, upload, configure,
+            and download your merged PDF file in seconds.
+          </p>
+        </div>
+        <div class="steps-list">
+          <div class="step-item">
+            <div class="step-num">1</div>
+            <div class="step-body">
+              <h4>Upload Your PDFs</h4>
+              <p>
+                Click the upload area or drag and drop your PDF files. You can
+                add as many PDFs as needed — there's no file-count limit.
+              </p>
+            </div>
+          </div>
+          <div class="step-item">
+            <div class="step-num">2</div>
+            <div class="step-body">
+              <h4>Reorder &amp; Set Page Ranges</h4>
+              <p>
+                Drag files to rearrange their order. Optionally specify a page
+                range (e.g. pages 2–5) for each file to include only the pages
+                you want.
+              </p>
+            </div>
+          </div>
+          <div class="step-item">
+            <div class="step-num">3</div>
+            <div class="step-body">
+              <h4>Configure Options</h4>
+              <p>
+                Set your output filename, document metadata (title, author),
+                compression preference, and toggle advanced options like
+                blank-page separators.
+              </p>
+            </div>
+          </div>
+          <div class="step-item">
+            <div class="step-num">4</div>
+            <div class="step-body">
+              <h4>Merge &amp; Download</h4>
+              <p>
+                Click <strong>Merge &amp; Compile PDF</strong>. Your merged file
+                is generated instantly in your browser and downloaded
+                automatically — no email required.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <div class="sec-divider"></div>
+
+      <!-- Benefits -->
+      <section class="content-section" id="benefits">
+        <div class="sec-head">
+          <div class="sec-label">Benefits</div>
+          <h2 class="sec-title">Why Use PDFMaster's Merge PDF?</h2>
+          <p class="sec-desc">
+            Hundreds of thousands of users choose PDFMaster for their daily PDF
+            merging needs. Here's why.
+          </p>
+        </div>
+        <div class="benefits-grid">
+          <div class="benefit-card">
+            <div class="benefit-icon">🛡️</div>
+            <div>
+              <h4>Total Privacy</h4>
+              <p>
+                Files never leave your device. No cloud, no servers, no risk of
+                data exposure.
+              </p>
+            </div>
+          </div>
+          <div class="benefit-card">
+            <div class="benefit-icon">💸</div>
+            <div>
+              <h4>Free Forever</h4>
+              <p>
+                No subscription, no credits, no paywalls. PDF merging is 100%
+                free with PDFMaster.
+              </p>
+            </div>
+          </div>
+          <div class="benefit-card">
+            <div class="benefit-icon">🌐</div>
+            <div>
+              <h4>Works Offline</h4>
+              <p>
+                Once loaded, the tool works without an internet connection —
+                ideal for travel or restricted networks.
+              </p>
+            </div>
+          </div>
+          <div class="benefit-card">
+            <div class="benefit-icon">📱</div>
+            <div>
+              <h4>Any Device</h4>
+              <p>
+                Fully responsive — works seamlessly on smartphone, tablet,
+                laptop, and desktop browsers.
+              </p>
+            </div>
+          </div>
+          <div class="benefit-card">
+            <div class="benefit-icon">🔖</div>
+            <div>
+              <h4>No Registration</h4>
+              <p>
+                Open the tool and start merging immediately. No account, no
+                email, no sign-up needed.
+              </p>
+            </div>
+          </div>
+          <div class="benefit-card">
+            <div class="benefit-icon">🏆</div>
+            <div>
+              <h4>Professional Output</h4>
+              <p>
+                High-quality merged PDFs with preserved fonts, images, and
+                vector graphics from source files.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <div class="sec-divider"></div>
+
+      <!-- FAQs -->
+      <section class="content-section" id="faqs">
+        <div class="sec-head">
+          <div class="sec-label">FAQs</div>
+          <h2 class="sec-title">Frequently Asked Questions</h2>
+        </div>
+        <div class="faq-list">
+          <div class="faq-item">
+            <div class="faq-question">
+              Is PDFMaster's Merge PDF completely free?<span class="faq-arrow"
+                >▾</span
+              >
+            </div>
+            <div class="faq-answer">
+              Yes. PDFMaster is 100% free with no hidden fees, no premium plan
+              required, and no limit on the number of PDFs you can merge.
+            </div>
+          </div>
+          <div class="faq-item">
+            <div class="faq-question">
+              Are my PDF files secure when using this tool?<span
+                class="faq-arrow"
+                >▾</span
+              >
+            </div>
+            <div class="faq-answer">
+              Absolutely. All PDF processing happens entirely on your device
+              using browser-native JavaScript. Your files are never uploaded to
+              any server, ensuring complete privacy and security.
+            </div>
+          </div>
+          <div class="faq-item">
+            <div class="faq-question">
+              How many PDF files can I merge at once?<span class="faq-arrow"
+                >▾</span
+              >
+            </div>
+            <div class="faq-answer">
+              There is no hard limit on the number of files. However, very large
+              batches (e.g. 50+ large PDFs) may be constrained by your device's
+              available RAM. For best performance, merge in batches of 20–30
+              files if needed.
+            </div>
+          </div>
+          <div class="faq-item">
+            <div class="faq-question">
+              Can I select specific pages from each PDF?<span class="faq-arrow"
+                >▾</span
+              >
+            </div>
+            <div class="faq-answer">
+              Yes! Each uploaded file has a "From page" and "To page" input.
+              Enter your desired range and only those pages will be included in
+              the merged output. Leave blank to include all pages.
+            </div>
+          </div>
+          <div class="faq-item">
+            <div class="faq-question">
+              Does the tool work on mobile and tablets?<span class="faq-arrow"
+                >▾</span
+              >
+            </div>
+            <div class="faq-answer">
+              Yes. PDFMaster is fully responsive and works on all modern mobile
+              browsers including Chrome on Android and Safari on iOS.
+            </div>
+          </div>
+          <div class="faq-item">
+            <div class="faq-question">
+              Can I merge password-protected PDFs?<span class="faq-arrow"
+                >▾</span
+              >
+            </div>
+            <div class="faq-answer">
+              No. Password-protected or encrypted PDFs cannot be merged. You'll
+              need to remove the password from your PDFs first before uploading
+              them to this tool.
+            </div>
+          </div>
+          <div class="faq-item">
+            <div class="faq-question">
+              Will the quality of my PDFs degrade after merging?<span
+                class="faq-arrow"
+                >▾</span
+              >
+            </div>
+            <div class="faq-answer">
+              No. PDFMaster uses pdf-lib, which merges PDFs at the document
+              structure level — preserving fonts, images, vector graphics, and
+              text at their original quality.
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <div class="sec-divider"></div>
+
+      <!-- Related Tools -->
+      <section class="content-section" id="related-tools">
+        <div class="sec-head">
+          <div class="sec-label">Related Tools</div>
+          <h2 class="sec-title">More Free PDF Tools</h2>
+          <p class="sec-desc">
+            Explore other popular PDF tools on PDFMaster — all free, all
+            on-device.
+          </p>
+        </div>
+        <div class="related-grid">
+          <a href="pdf-to-photo" class="related-card">
+            <div class="related-icon">🖼️</div>
+            <div>
+              <h4>PDF to Photo</h4>
+              <span>Convert pages to photos</span>
+            </div>
+          </a>
+          <a href="photo-to-pdf" class="related-card">
+            <div class="related-icon">📷</div>
+            <div>
+              <h4>Photo to PDF</h4>
+              <span>Photos to PDF</span>
+            </div>
+          </a>
+        </div>
+      </section>
+    </div>
+    <!-- /content-wrap -->
+
+    <!-- ═══════════════ FOOTER ═══════════════ -->
+    <footer id="contact">
+      <div class="footer-inner">
+        <div class="footer-grid">
+          <div class="fbrand">
+            <a href="/" class="nav-logo">
+              <img src="assets/apple-touch-icon.png" alt="PDFMaster" />
+              <span class="logo-text">PDF<span>Master</span></span>
+            </a>
+            <p>
+              Professional PDF and image conversion tools for everyone. Free,
+              fast, and completely private — your files never leave your
+              browser.
+            </p>
+            <div class="fsocials">
+              <a
+                href="https://github.com/happy2539"
+                class="fsoc"
+                aria-label="GitHub"
+                target="_blank"
+                rel="noopener"
+              >
+                <svg
+                  width="20"
+                  height="20"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  aria-hidden="true"
+                >
+                  <path
+                    d="M12 2C6.477 2 2 6.484 2 12.021c0 4.428 2.865 8.184 6.839 9.504.5.092.682-.217.682-.483 0-.237-.009-.868-.014-1.703-2.782.605-3.369-1.342-3.369-1.342-.454-1.154-1.11-1.462-1.11-1.462-.908-.62.069-.608.069-.608 1.004.07 1.532 1.032 1.532 1.032.892 1.53 2.341 1.088 2.91.832.091-.647.35-1.088.636-1.339-2.221-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.987 1.029-2.687-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.025A9.564 9.564 0 0 1 12 6.844c.85.004 1.705.115 2.504.337 1.909-1.295 2.748-1.025 2.748-1.025.546 1.378.202 2.397.1 2.65.64.7 1.028 1.594 1.028 2.687 0 3.847-2.337 4.695-4.566 4.944.359.309.678.919.678 1.853 0 1.337-.012 2.419-.012 2.749 0 .268.18.579.688.481C19.138 20.2 22 16.447 22 12.021 22 6.484 17.523 2 12 2Z"
+                    fill="currentColor"
+                  />
+                </svg>
+              </a>
+            </div>
+          </div>
+          <div class="fcol">
+            <h4>Quick Links</h4>
+            <ul>
+              <li><a href="/">Home</a></li>
+              <li><a href="/#tools">All Tools</a></li>
+              <li><a href="/#features">Features</a></li>
+              <li><a href="/about">About Us</a></li>
+            </ul>
+          </div>
+          <div class="fcol">
+            <h4>PDF Tools</h4>
+            <ul>
+              <li><a href="photo-to-pdf">Photo to PDF</a></li>
+              <li><a href="pdf-to-photo">PDF to Photo</a></li>
+              <li><a href="merge-pdf">PDF Merge</a></li>
+              <li><a href="/">All Tools</a></li>
+            </ul>
+          </div>
+          <div class="fcol">
+            <h4>Support</h4>
+            <ul>
+              <li><a href="contact">Contact Us</a></li>
+              <li><a href="privacy">Privacy Policy</a></li>
+              <li><a href="terms">Terms of Service</a></li>
+              <li><a href="faq">FAQ</a></li>
+            </ul>
+          </div>
+        </div>
+        <div class="footer-bot">
+          <p>© 2026 pdfmaster.co.in — All rights reserved.</p>
+          <div class="footer-bot-links">
+            <a href="privacy">Privacy Policy</a>
+            <a href="terms">Terms</a>
+            <a href="contact">Contact</a>
+          </div>
+        </div>
+      </div>
+    </footer>
+
+    <!-- Toast Container -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <!-- Back to Top -->
+    <button class="b2t" id="b2t" aria-label="Back to top">↑</button>
+
+    <!-- Hidden file input for "Add More" -->
+    <input
+      type="file"
+      id="addMoreInput"
+      multiple
+      accept=".pdf,application/pdf"
+      style="display: none"
+    />
+
+    <script src="js/pdf-compiler.js"></script>
+  </body>
+</html>
