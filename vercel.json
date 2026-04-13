@@ -4,7 +4,7 @@
     {
       "source": "/pdf-metadata.html",
       "destination": "/pdf-metadata",
-      "statusCode": 301
+      "permanent": true
     },
     {
       "source": "/merge-pdf.html",
