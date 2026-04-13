@@ -72,6 +72,14 @@
     <!-- CSS -->
     <link rel="stylesheet" href="css/index.css" />
 
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        document
+          .querySelectorAll(".reveal")
+          .forEach((el) => el.classList.add("visible"));
+      });
+    </script>
+    
     <!-- Google Tag Manager -->
     <script>
       (function (w, d, s, l, i) {
