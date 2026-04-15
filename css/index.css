@@ -528,17 +528,52 @@ nav {
   line-height: 1.65;
   flex: 1;
 }
+
+.t-b-btn {
+  display: flex;
+  gap: 8px;
+  width: 100%;
+}
+
 .tcard-btn {
   display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  padding: 8px 17px;
+  border-radius: 8px;
+  font-size: 0.83rem;
+  font-weight: 600;
+  align-self: flex-start;
+  font-weight: 600;
+  transition: all 0.2s;
+  flex: 1;
+  text-align: center;
+  justify-content: center;
+  display: flex;
+}
+
+.bcard-btn {
   align-items: center;
   gap: 6px;
   padding: 8px 17px;
   border-radius: 8px;
   font-size: 0.83rem;
   font-weight: 600;
-  align-self: flex-start;
-  margin-top: 2px;
   transition: all 0.2s;
+  flex: 1;
+  text-align: center;
+  justify-content: center;
+  display: flex;
+}
+.tcard-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-top: 8px;
+}
+.tcard-footer .tcard-btn:first-child {
+  margin-right: auto;
 }
 .tcard-btn-live {
   background: rgba(230, 57, 70, 0.07);

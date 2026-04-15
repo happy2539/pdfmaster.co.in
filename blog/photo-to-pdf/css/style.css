@@ -978,6 +978,54 @@ ol {
   line-height: 1.7;
   max-width: 280px;
 }
+
+.fsocials {
+  display: flex;
+  gap: 9px;
+}
+.fsoc {
+  width: 34px;
+  height: 34px;
+  border-radius: 7px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  transition: all 0.2s;
+  color: var(--text-2);
+}
+.fsoc:hover {
+  background: var(--primary);
+  border-color: var(--primary);
+  color: #fff;
+  transform: translateY(-2px);
+}
+.fcol h4 {
+  font-family: "Sora", sans-serif;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--text);
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  margin-bottom: 18px;
+}
+.fcol ul {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+}
+.fcol a {
+  font-size: 0.88rem;
+  color: var(--text-2);
+  transition: color 0.2s;
+}
+.fcol a:hover {
+  color: var(--primary);
+}
+
 .footer-col h4 {
   font-family: "Sora", sans-serif;
   font-size: 0.85rem;

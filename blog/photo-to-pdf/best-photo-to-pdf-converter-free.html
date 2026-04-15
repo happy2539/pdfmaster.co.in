@@ -89,6 +89,20 @@
       });
     </script>
 
+    <!-- Google Tag Manager -->
+    <script>
+      (function (w, d, s, l, i) {
+        w[l] = w[l] || [];
+        w[l].push({ "gtm.start": new Date().getTime(), event: "gtm.js" });
+        var f = d.getElementsByTagName(s)[0],
+          j = d.createElement(s),
+          dl = l != "dataLayer" ? "&l=" + l : "";
+        j.async = true;
+        j.src = "https://www.googletagmanager.com/gtm.js?id=" + i + dl;
+        f.parentNode.insertBefore(j, f);
+      })(window, document, "script", "dataLayer", "GTM-PCSVMC65");
+    </script>
+
     <!-- JSON-LD Structured Data -->
     <script type="application/ld+json">
       {
@@ -202,7 +216,7 @@
                 "@type": "HowToStep",
                 "position": 1,
                 "name": "Open the Photo to PDF Tool",
-                "text": "Visit pdfmaster.co.in/photo-to-pdf.html — no account or signup required."
+                "text": "Visit pdfmaster.co.in/photo-to-pdf — no account or signup required."
               },
               {
                 "@type": "HowToStep",
@@ -235,6 +249,17 @@
     </script>
   </head>
   <body>
+    <!-- Google Tag Manager (noscript) -->
+    <noscript
+      ><iframe
+        src="https://www.googletagmanager.com/ns.html?id=GTM-PCSVMC65"
+        height="0"
+        width="0"
+        style="display: none; visibility: hidden"
+      ></iframe
+    ></noscript>
+    <!-- End Google Tag Manager (noscript) -->
+
     <!-- ── Navbar ─────────────────────────────────────────────── -->
     <nav class="navbar" id="navbar">
       <a href="/" class="navbar__logo" aria-label="PDFMaster Home">
@@ -249,10 +274,10 @@
       <div class="navbar__spacer"></div>
       <ul class="navbar__links">
         <li><a href="/">Home</a></li>
-        <li><a href="../blog" class="active">Blog</a></li>
-        <li><a href="../photo-to-pdf.html">Photo to PDF</a></li>
-        <li><a href="../pdf-compiler.html">PDF Compiler</a></li>
-        <li><a href="../#tools">All Tools</a></li>
+        <li><a href="../photo-to-pdf" class="active">Blog</a></li>
+        <li><a href="../../photo-to-pdf">Photo to PDF</a></li>
+        <li><a href="../../merge-pdf">PDF Compiler</a></li>
+        <li><a href="../../#tools">All Tools</a></li>
       </ul>
       <div class="navbar__actions">
         <button
@@ -277,13 +302,13 @@
     <!-- Mobile Drawer -->
     <div class="nav-drawer" id="navDrawer" role="navigation">
       <a href="/">🏠 Home</a>
-      <a href="../blog">✍️ Blog</a>
-      <a href="../photo-to-pdf.html">🖼️ Photo to PDF</a>
-      <a href="../pdf-compiler.html">📑 PDF Compiler</a>
-      <a href="../pdf-to-photo.html">📷 PDF to Photo</a>
-      <a href="../#tools">🛠️ All Tools</a>
-      <a href="../about.html">ℹ️ About</a>
-      <a href="../faq.html">❓ FAQs</a><a href="../../contact">📧 Contact</a>
+      <a href="../photo-to-pdf">✍️ Blog</a>
+      <a href="../../photo-to-pdf">🖼️ Photo to PDF</a>
+      <a href="../../pdf-compiler">📑 PDF Compiler</a>
+      <a href="../../pdf-to-photo">📷 PDF to Photo</a>
+      <a href="../../#tools">🛠️ All Tools</a>
+      <a href="../../about">ℹ️ About</a>
+      <a href="../../faq">❓ FAQs</a><a href="../../contact">📧 Contact</a>
     </div>
 
     <!-- ── Breadcrumb ──────────────────────────────────────────── -->
@@ -687,7 +712,7 @@
           </h2>
           <p class="reveal">
             Browser-based tools like PDFMaster's
-            <a href="../photo-to-pdf.html">free Photo to PDF converter</a>
+            <a href="../photo-to-pdf">free Photo to PDF converter</a>
             process everything using your own device's processor and RAM. The
             entire pipeline works like this:
           </p>
@@ -722,7 +747,7 @@
             <div class="pro-tip-label">💡 Technical Note</div>
             <p>
               PDFMaster's
-              <a href="../photo-to-pdf.html">Photo to PDF tool</a> uses
+              <a href="../photo-to-pdf">Photo to PDF tool</a> uses
               <strong>pdf-lib</strong> for image packaging entirely within your
               browser. Even a mid-range Android smartphone running on a 2G
               mobile connection can process a 10-photo, 100MB+ batch in under 5
@@ -782,9 +807,7 @@
             <li>
               <strong
                 >Open PDFMaster's
-                <a href="../photo-to-pdf.html"
-                  >free Photo to PDF tool</a
-                ></strong
+                <a href="../photo-to-pdf">free Photo to PDF tool</a></strong
               >
               — no account, no signup required. Works on desktop and mobile.
             </li>
@@ -829,7 +852,7 @@
               100% browser-based · Zero uploads · No registration · No watermark
               · Unlimited photos · Works offline
             </p>
-            <a href="../photo-to-pdf.html" class="cta-btn">
+            <a href="../../photo-to-pdf" class="cta-btn">
               🖼️ Convert Photos to PDF — Free
             </a>
           </div>
@@ -863,7 +886,7 @@
               <div class="faq-answer" id="faq-2">
                 <div class="faq-answer-inner">
                   Yes. PDFMaster's
-                  <a href="../photo-to-pdf.html">Photo to PDF tool</a>
+                  <a href="../../photo-to-pdf">Photo to PDF tool</a>
                   converts images entirely within your browser using JavaScript.
                   Your photos never leave your device — making it safe for
                   sensitive documents, personal photos, or confidential business
@@ -898,12 +921,12 @@
               <div class="faq-answer" id="faq-4">
                 <div class="faq-answer-inner">
                   Open PDFMaster's
-                  <a href="../photo-to-pdf.html">Photo to PDF tool</a>, add
+                  <a href="../../photo-to-pdf">Photo to PDF tool</a>, add
                   multiple JPG or PNG files at once (you can add dozens),
                   drag-and-drop them to reorder the pages, then click "Convert
                   to PDF." The result is a single merged PDF — no watermark, no
                   registration, no fee. If you have PDF files to merge too, use
-                  our <a href="../pdf-compiler.html">free PDF Compiler tool</a>.
+                  our <a href="../../pdf-compiler">free PDF Compiler tool</a>.
                 </div>
               </div>
             </div>
@@ -978,11 +1001,10 @@
             <strong>no artificial restrictions</strong> — a browser-based free
             photo to PDF converter is unambiguously the best choice in 2026. For
             PDF-to-image conversion, see our
-            <a href="../pdf-to-photo.html">PDF to Photo tool</a>. To merge
-            existing PDFs, try our
-            <a href="../pdf-compiler.html">PDF Compiler</a>. To protect
-            sensitive documents, use our
-            <a href="../pdf-metadata-remover.html">PDF Metadata Remover</a>
+            <a href="../../pdf-to-photo">PDF to Photo tool</a>. To merge
+            existing PDFs, try our <a href="../../merge-pdf">PDF Compiler</a>.
+            To protect sensitive documents, use our
+            <a href="../../pdf-metadata-remover">PDF Metadata Remover</a>
             after conversion.
           </p>
 
@@ -1029,7 +1051,7 @@
           <hr class="section-divider" />
           <h2 class="reveal">🛠️ Related Free PDF Tools on PDFMaster</h2>
           <div class="related-tools-grid reveal">
-            <a href="../photo-to-pdf.html" class="related-tool-card">
+            <a href="../../photo-to-pdf" class="related-tool-card">
               <div class="related-tool-icon">🖼️</div>
               <div class="related-tool-info">
                 <strong>Photo to PDF</strong>
@@ -1039,21 +1061,21 @@
                 >
               </div>
             </a>
-            <a href="../pdf-compiler.html" class="related-tool-card">
+            <a href="../../merge-pdf" class="related-tool-card">
               <div class="related-tool-icon">📑</div>
               <div class="related-tool-info">
                 <strong>PDF Compiler</strong>
                 <span>Merge multiple PDFs or photos into one file</span>
               </div>
             </a>
-            <a href="../pdf-to-photo.html" class="related-tool-card">
+            <a href="../../pdf-to-photo" class="related-tool-card">
               <div class="related-tool-icon">📷</div>
               <div class="related-tool-info">
                 <strong>PDF to Photo</strong>
                 <span>Extract PDF pages as high-resolution images</span>
               </div>
             </a>
-            <a href="../pdf-metadata-remover.html" class="related-tool-card">
+            <a href="../../pdf-metadata-remover" class="related-tool-card">
               <div class="related-tool-icon">🧹</div>
               <div class="related-tool-info">
                 <strong>PDF Metadata Remover</strong>
@@ -1087,15 +1109,37 @@
               Free, browser-based PDF and image tools. All processing happens on
               your device — your files never leave your browser.
             </p>
+            <div class="fsocials">
+              <a
+                href="https://github.com/happy2539"
+                class="fsoc"
+                aria-label="GitHub"
+                target="_blank"
+                rel="noopener"
+              >
+                <svg
+                  width="20"
+                  height="20"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  aria-hidden="true"
+                >
+                  <path
+                    d="M12 2C6.477 2 2 6.484 2 12.021c0 4.428 2.865 8.184 6.839 9.504.5.092.682-.217.682-.483 0-.237-.009-.868-.014-1.703-2.782.605-3.369-1.342-3.369-1.342-.454-1.154-1.11-1.462-1.11-1.462-.908-.62.069-.608.069-.608 1.004.07 1.532 1.032 1.532 1.032.892 1.53 2.341 1.088 2.91.832.091-.647.35-1.088.636-1.339-2.221-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.987 1.029-2.687-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.025A9.564 9.564 0 0 1 12 6.844c.85.004 1.705.115 2.504.337 1.909-1.295 2.748-1.025 2.748-1.025.546 1.378.202 2.397.1 2.65.64.7 1.028 1.594 1.028 2.687 0 3.847-2.337 4.695-4.566 4.944.359.309.678.919.678 1.853 0 1.337-.012 2.419-.012 2.749 0 .268.18.579.688.481C19.138 20.2 22 16.447 22 12.021 22 6.484 17.523 2 12 2Z"
+                    fill="currentColor"
+                  />
+                </svg>
+              </a>
+            </div>
           </div>
           <div class="footer-col">
             <h4>PDF Tools</h4>
             <ul>
-              <li><a href="../photo-to-pdf.html">Photo to PDF</a></li>
-              <li><a href="../pdf-compiler.html">PDF Compiler</a></li>
-              <li><a href="../pdf-to-photo.html">PDF to Photo</a></li>
+              <li><a href="../../photo-to-pdf">Photo to PDF</a></li>
+              <li><a href="../../merge-pdf">PDF Compiler</a></li>
+              <li><a href="../../pdf-to-photo">PDF to Photo</a></li>
               <li>
-                <a href="../pdf-metadata-remover.html">Metadata Remover</a>
+                <a href="../../pdf-metadata-remover">Metadata Remover</a>
               </li>
             </ul>
           </div>
@@ -1103,21 +1147,18 @@
             <h4>Company</h4>
             <ul>
               <li><a href="/">Home</a></li>
-              <li><a href="../about.html">About Us</a></li>
-              <li><a href="../blog">Blog</a></li>
-              <li><a href="../faq.html">FAQs</a></li>
+              <li><a href="../../about">About Us</a></li>
+              <li><a href="../photo-to-pdf/">Blog</a></li>
+              <li><a href="../../faq">FAQs</a></li>
             </ul>
           </div>
           <div class="footer-col">
             <h4>Legal</h4>
             <ul>
-              <li><a href="../privacy-policy.html">Privacy Policy</a></li>
-              <li><a href="../terms-of-service.html">Terms of Service</a></li>
+              <li><a href="../../privacy">Privacy Policy</a></li>
+              <li><a href="../../terms">Terms of Service</a></li>
               <li>
-                <a
-                  href="/cdn-cgi/l/email-protection#f49395999d9a93839d809c9c9584848dc7cdb49399959d98da979b99"
-                  >Contact Us</a
-                >
+                <a href="../../contact">Contact Us</a>
               </li>
             </ul>
           </div>
@@ -1134,5 +1175,6 @@
     <button class="back-to-top" id="backToTop" aria-label="Back to top">
       ↑
     </button>
+    <script src="script/script.js"></script>
   </body>
 </html>
