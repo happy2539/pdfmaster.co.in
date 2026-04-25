@@ -63,37 +63,73 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
 
-    <!-- Fonts -->
+    <!-- Preload LCP element (logo) -->
     <link
-      href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&display=swap"
-      rel="stylesheet"
+      rel="preload"
+      href="/assets/apple-touch-icon.png"
+      as="image"
+      fetchpriority="high"
     />
+
+    <!-- Fonts – async (non-render-blocking) -->
+    <link
+      rel="preload"
+      href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&display=swap"
+      as="style"
+      onload="
+        this.onload = null;
+        this.rel = 'stylesheet';
+      "
+    />
+    <noscript>
+      <link
+        href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&display=swap"
+        rel="stylesheet"
+      />
+    </noscript>
+
+    <!-- Lighthouse contrast fixes -->
+    <style>
+      /* btn-red: make text bold so WCAG large-text threshold (3:1) applies */
+      .btn-red {
+        font-weight: 600;
+      }
+      /* sstat-lbl: was #525c6e (2.86:1 on dark hero) → lighten to pass 4.5:1 */
+      .sstat-lbl {
+        color: #9db0c4 !important;
+      }
+    </style>
 
     <!-- CSS -->
     <link rel="stylesheet" href="css/index.css" />
 
-<meta name="google-adsense-account" content="ca-pub-9223989888558332">
+    <meta name="google-adsense-account" content="ca-pub-9223989888558332" />
 
+    <!-- GTM deferred: loads on first user interaction to eliminate TBT/cookie impact -->
     <script>
-      document.addEventListener("DOMContentLoaded", () => {
-        document
-          .querySelectorAll(".reveal")
-          .forEach((el) => el.classList.add("visible"));
-      });
-    </script>
-    
-    <!-- Google Tag Manager -->
-    <script>
-      (function (w, d, s, l, i) {
-        w[l] = w[l] || [];
-        w[l].push({ "gtm.start": new Date().getTime(), event: "gtm.js" });
-        var f = d.getElementsByTagName(s)[0],
-          j = d.createElement(s),
-          dl = l != "dataLayer" ? "&l=" + l : "";
-        j.async = true;
-        j.src = "https://www.googletagmanager.com/gtm.js?id=" + i + dl;
-        f.parentNode.insertBefore(j, f);
-      })(window, document, "script", "dataLayer", "GTM-PCSVMC65");
+      (function () {
+        var gtmLoaded = false;
+        function loadGTM() {
+          if (gtmLoaded) return;
+          gtmLoaded = true;
+          (function (w, d, s, l, i) {
+            w[l] = w[l] || [];
+            w[l].push({ "gtm.start": new Date().getTime(), event: "gtm.js" });
+            var f = d.getElementsByTagName(s)[0],
+              j = d.createElement(s),
+              dl = l != "dataLayer" ? "&l=" + l : "";
+            j.async = true;
+            j.src = "https://www.googletagmanager.com/gtm.js?id=" + i + dl;
+            f.parentNode.insertBefore(j, f);
+          })(window, document, "script", "dataLayer", "GTM-PCSVMC65");
+        }
+        var evts = ["mousedown", "touchstart", "keydown", "scroll", "wheel"];
+        evts.forEach(function (e) {
+          window.addEventListener(e, loadGTM, { once: true, passive: true });
+        });
+        // Fallback: load after 4 s if no interaction
+        setTimeout(loadGTM, 4000);
+      })();
     </script>
 
     <!-- Schema -->
@@ -131,7 +167,13 @@
     <header>
       <nav class="container">
         <a href="/" class="nav-logo">
-          <img src="/assets/apple-touch-icon.png" alt="PDFMaster" />
+          <img
+            src="/assets/apple-touch-icon.png"
+            alt="PDFMaster"
+            fetchpriority="high"
+            width="40"
+            height="40"
+          />
           <span class="logo-text">PDF<span>Master</span></span>
         </a>
 
@@ -156,572 +198,571 @@
       </nav>
     </header>
 
-    <!-- ═══════════════ HERO ═══════════════ -->
-    <section class="hero">
-      <div class="hero-glow hero-glow-1"></div>
-      <div class="hero-glow hero-glow-2"></div>
-      <div class="container">
-        <div class="hero-inner">
-          <div class="hero-pill">
-            <span class="pill-dot"></span>
-            100% Free · No Registration · On-Device Processing
-          </div>
-
-          <h1>Your All-in-One<br /><em>PDF Toolkit</em></h1>
-
-          <p class="hero-sub">
-            Convert, compress, split, merge and transform PDFs and images —
-            entirely in your browser. Your files never leave your device.
-          </p>
-
-          <div class="hero-btns">
-            <a href="#tools" class="btn-red">
-              <svg
-                width="15"
-                height="15"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2.5"
-              >
-                <rect x="3" y="3" width="7" height="7" rx="1.5" />
-                <rect x="14" y="3" width="7" height="7" rx="1.5" />
-                <rect x="3" y="14" width="7" height="7" rx="1.5" />
-                <rect x="14" y="14" width="7" height="7" rx="1.5" />
-              </svg>
-              Explore All Tools
-            </a>
-            <a href="#features" class="btn-outline">
-              <svg
-                width="15"
-                height="15"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2.5"
-              >
-                <circle cx="12" cy="12" r="10" />
-                <path d="M12 8v4l2.5 2.5" />
-              </svg>
-              Why PDFMaster?
-            </a>
-          </div>
-
-          <div class="stats-strip">
-            <div class="sstat">
-              <span class="sstat-num">21+</span>
-              <span class="sstat-lbl">Tools</span>
-            </div>
-            <div class="sstat">
-              <span class="sstat-num">100%</span>
-              <span class="sstat-lbl">Secure</span>
-            </div>
-            <div class="sstat">
-              <span class="sstat-num">Free</span>
-              <span class="sstat-lbl">Forever</span>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- ═══════════════ TOOLS ═══════════════ -->
-    <section class="tools-sec" id="tools">
-      <div class="container">
-        <div class="sec-head rv">
-          <div class="sec-label">Toolkit</div>
-          <h2>Complete PDF &amp; Image Toolkit</h2>
-          <p>
-            Everything you need to work with PDFs and images — all on your
-            device, no uploads needed.
-          </p>
-        </div>
-
-        <div class="filter-tabs rv">
-          <button class="ftab active" data-filter="all">All Tools</button>
-          <button class="ftab" data-filter="av">Available Now</button>
-          <button class="ftab" data-filter="cs">Coming Soon</button>
-        </div>
-
-        <div class="tools-grid" id="tGrid">
-          <!-- ────── AVAILABLE TOOLS ────── -->
-          <div class="tcard" data-cat="av">
-            <div class="tcard-top">
-              <div class="ticon">🖼️</div>
-              <span class="tbadge tbadge-live">Live</span>
-            </div>
-            <h3>Photo to PDF Converter</h3>
-            <p>
-              Combine multiple photos into a single PDF document. Ideal for
-              photo albums, reports and portfolios.
-            </p>
-            <div class="t-b-btn">
-            <a href="/photo-to-pdf" class="tcard-btn tcard-btn-live">
-              Use Tool
-              <svg
-                width="12"
-                height="12"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2.5"
-              >
-                <path d="M5 12h14M12 5l7 7-7 7" />
-              </svg>
-            </a>
-            
-            <a href="/blog/photo-to-pdf/" class="bcard-btn tcard-btn-live">
-              Read Blogs
-              <svg
-                width="12"
-                height="12"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2.5"
-              >
-                <path d="M5 12h14M12 5l7 7-7 7" />
-              </svg>
-            </a>
-            </div>
-          </div>
-
-          <div class="tcard" data-cat="av">
-            <div class="tcard-top">
-              <div class="ticon">📄</div>
-              <span class="tbadge tbadge-live">Live</span>
-            </div>
-            <h3>PDF to JPG Converter</h3>
-            <p>
-              Transform PDF documents into high-quality JPG images with
-              customisable quality settings.
-            </p>
-            <a href="/pdf-to-photo" class="tcard-btn tcard-btn-live">
-              Use Tool
-              <svg
-                width="12"
-                height="12"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2.5"
-              >
-                <path d="M5 12h14M12 5l7 7-7 7" />
-              </svg>
-            </a>
-          </div>
-
-          <div class="tcard" data-cat="av">
-            <div class="tcard-top">
-              <div class="ticon">📋</div>
-              <span class="tbadge tbadge-live">Live</span>
-            </div>
-            <h3>PDF Compiler</h3>
-            <p>
-              Merge multiple PDF files into one comprehensive document while
-              maintaining formatting and quality.
-            </p>
-            <a href="/merge-pdf" class="tcard-btn tcard-btn-live">
-              Use Tool
-              <svg
-                width="12"
-                height="12"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2.5"
-              >
-                <path d="M5 12h14M12 5l7 7-7 7" />
-              </svg>
-            </a>
-          </div>
-
-
-          <div class="tcard" data-cat="av">
-            <div class="tcard-top">
-              <div class="ticon">🧹</div>
-              <span class="tbadge tbadge-live">Live</span>
-            </div>
-            <h3>PDF Metadata Viewer &amp Remover</h3>
-            <p>
-              Strip and view all hidden metadata from PDF files to protect your privacy
-              before sharing documents publicly.
-            </p>
-            <a href="pdf-metadata" class="tcard-btn tcard-btn-live">
-              Use Tool
-              <svg
-                width="12"
-                height="12"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2.5"
-              >
-                <path d="M5 12h14M12 5l7 7-7 7" />
-              </svg>
-            </a>
-          </div>
-
-          <!-- ────── COMING SOON TOOLS ────── -->
-
-          <div class="tcard" data-cat="cs">
-            <div class="tcard-top">
-              <div class="ticon">🔄</div>
-              <span class="tbadge tbadge-soon">Coming Soon</span>
-            </div>
-            <h3>PDF Reorder</h3>
-            <p>
-              Rearrange PDF pages in any order you need. Simple drag-and-drop
-              interface for easy organisation.
-            </p>
-           <span class="tcard-btn tcard-btn-disabled">Coming Soon</span>
+    <main id="main-content">
+      <!-- ═══════════════ HERO ═══════════════ -->
+      <section class="hero">
+        <div class="hero-glow hero-glow-1"></div>
+        <div class="hero-glow hero-glow-2"></div>
+        <div class="container">
+          <div class="hero-inner">
+            <div class="hero-pill">
+              <span class="pill-dot"></span>
+              100% Free · No Registration · On-Device Processing
             </div>
 
-          <div class="tcard" data-cat="cs">
-          </a>
-            <div class="tcard-top">
-              <div class="ticon">✂️</div>
-              <span class="tbadge tbadge-soon">Coming Soon</span>
+            <h1>Your All-in-One<br /><em>PDF Toolkit</em></h1>
+
+            <p class="hero-sub">
+              Convert, compress, split, merge and transform PDFs and images —
+              entirely in your browser. Your files never leave your device.
+            </p>
+
+            <div class="hero-btns">
+              <a href="#tools" class="btn-red">
+                <svg
+                  width="15"
+                  height="15"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2.5"
+                >
+                  <rect x="3" y="3" width="7" height="7" rx="1.5" />
+                  <rect x="14" y="3" width="7" height="7" rx="1.5" />
+                  <rect x="3" y="14" width="7" height="7" rx="1.5" />
+                  <rect x="14" y="14" width="7" height="7" rx="1.5" />
+                </svg>
+                Explore All Tools
+              </a>
+              <a href="#features" class="btn-outline">
+                <svg
+                  width="15"
+                  height="15"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2.5"
+                >
+                  <circle cx="12" cy="12" r="10" />
+                  <path d="M12 8v4l2.5 2.5" />
+                </svg>
+                Why PDFMaster?
+              </a>
             </div>
-            <h3>Split PDF</h3>
-            <p>
-              Split large PDF files into smaller documents. Extract specific
-              pages or custom page ranges with ease.
-            </p>
-           <span class="tcard-btn tcard-btn-disabled">Coming Soon</span>
-          </div>
 
-          <div class="tcard cs" data-cat="cs">
-            <div class="tcard-top">
-              <div class="ticon">📷</div>
-              <span class="tbadge tbadge-soon">Coming Soon</span>
-            </div>
-            <h3>PDF to PNG Converter</h3>
-            <p>
-              Convert PDF pages into high-quality PNG images instantly. Perfect
-              for presentations and web use.
-            </p>
-            <span class="tcard-btn tcard-btn-disabled">Coming Soon</span>
-          </div>
-
-          <div class="tcard cs" data-cat="cs">
-            <div class="tcard-top">
-              <div class="ticon">🗜️</div>
-              <span class="tbadge tbadge-soon">Coming Soon</span>
-            </div>
-            <h3>PDF Compressor</h3>
-            <p>
-              Reduce PDF file sizes without compromising quality. Perfect for
-              email attachments and cloud storage.
-            </p>
-            <span class="tcard-btn tcard-btn-disabled">Coming Soon</span>
-          </div>
-
-          <div class="tcard cs" data-cat="cs">
-            <div class="tcard-top">
-              <div class="ticon">#️⃣</div>
-              <span class="tbadge tbadge-soon">Coming Soon</span>
-            </div>
-            <h3>Hexadecimal to Photo</h3>
-            <p>
-              Convert hex codes into beautiful images. Ideal for security
-              purposes and technical workflows.
-            </p>
-            <span class="tcard-btn tcard-btn-disabled">Coming Soon</span>
-          </div>
-
-          <div class="tcard cs" data-cat="cs">
-            <div class="tcard-top">
-              <div class="ticon">🎨</div>
-              <span class="tbadge tbadge-soon">Coming Soon</span>
-            </div>
-            <h3>Photo to Hexadecimal</h3>
-            <p>
-              Convert any image into hexadecimal code. Useful for data encoding
-              and secure image sharing.
-            </p>
-            <span class="tcard-btn tcard-btn-disabled">Coming Soon</span>
-          </div>
-
-          <div class="tcard cs" data-cat="cs">
-            <div class="tcard-top">
-              <div class="ticon">📋</div>
-              <span class="tbadge tbadge-soon">Coming Soon</span>
-            </div>
-            <h3>Clipboard to Photo</h3>
-            <p>
-              Convert clipboard content directly into image format. Save
-              screenshots as various image file types.
-            </p>
-            <span class="tcard-btn tcard-btn-disabled">Coming Soon</span>
-          </div>
-
-          <div class="tcard cs" data-cat="cs">
-            <div class="tcard-top">
-              <div class="ticon">🗑️</div>
-              <span class="tbadge tbadge-soon">Coming Soon</span>
-            </div>
-            <h3>PDF Page Deletor</h3>
-            <p>
-              Remove any unwanted pages from your PDF documents quickly and
-              effortlessly.
-            </p>
-            <span class="tcard-btn tcard-btn-disabled">Coming Soon</span>
-          </div>
-
-          <div class="tcard cs" data-cat="cs">
-            <div class="tcard-top">
-              <div class="ticon">💧</div>
-              <span class="tbadge tbadge-soon">Coming Soon</span>
-            </div>
-            <h3>PDF Watermark</h3>
-            <p>
-              Add custom text or image watermarks to your PDFs for branding and
-              copyright protection.
-            </p>
-            <span class="tcard-btn tcard-btn-disabled">Coming Soon</span>
-          </div>
-
-          <div class="tcard cs" data-cat="cs">
-            <div class="tcard-top">
-              <div class="ticon">🔃</div>
-              <span class="tbadge tbadge-soon">Coming Soon</span>
-            </div>
-            <h3>PDF Page Rotator</h3>
-            <p>
-              Rotate individual PDF pages to the correct orientation. Fix
-              scanned documents instantly.
-            </p>
-            <span class="tcard-btn tcard-btn-disabled">Coming Soon</span>
-          </div>
-
-          <div class="tcard cs" data-cat="cs">
-            <div class="tcard-top">
-              <div class="ticon">🖼️</div>
-              <span class="tbadge tbadge-soon">Coming Soon</span>
-            </div>
-            <h3>Image From PDF Extractor</h3>
-            <p>
-              Extract all embedded images from PDF documents in their original
-              quality and format.
-            </p>
-            <span class="tcard-btn tcard-btn-disabled">Coming Soon</span>
-          </div>
-
-          <div class="tcard cs" data-cat="cs">
-            <div class="tcard-top">
-              <div class="ticon">🔢</div>
-              <span class="tbadge tbadge-soon">Coming Soon</span>
-            </div>
-            <h3>PDF Page Numbering</h3>
-            <p>
-              Add professional page numbers to PDFs with fully customisable
-              position, font and style.
-            </p>
-            <span class="tcard-btn tcard-btn-disabled">Coming Soon</span>
-          </div>
-
-          <div class="tcard cs" data-cat="cs">
-            <div class="tcard-top">
-              <div class="ticon">🔐</div>
-              <span class="tbadge tbadge-soon">Coming Soon</span>
-            </div>
-            <h3>ZIP Password (Basic)</h3>
-            <p>
-              Protect your ZIP archives with password encryption. Quick and
-              basic security for compressed files.
-            </p>
-            <span class="tcard-btn tcard-btn-disabled">Coming Soon</span>
-          </div>
-
-          <div class="tcard cs" data-cat="cs">
-            <div class="tcard-top">
-              <div class="ticon">📄</div>
-              <span class="tbadge tbadge-soon">Coming Soon</span>
-            </div>
-            <h3>PDF Blank Page Inserter</h3>
-            <p>
-              Insert blank pages at any position in your PDF documents for
-              additional content or formatting.
-            </p>
-            <span class="tcard-btn tcard-btn-disabled">Coming Soon</span>
-          </div>
-
-          <div class="tcard cs" data-cat="cs">
-            <div class="tcard-top">
-              <div class="ticon">📊</div>
-              <span class="tbadge tbadge-soon">Coming Soon</span>
-            </div>
-            <h3>Excel to PDF</h3>
-            <p>
-              Convert Excel spreadsheets to PDF format while preserving all
-              formatting, tables and layout.
-            </p>
-            <span class="tcard-btn tcard-btn-disabled">Coming Soon</span>
-          </div>
-
-          <div class="tcard cs" data-cat="cs">
-            <div class="tcard-top">
-              <div class="ticon">📈</div>
-              <span class="tbadge tbadge-soon">Coming Soon</span>
-            </div>
-            <h3>PDF to Excel</h3>
-            <p>
-              Extract tabular data from PDFs and convert them to editable Excel
-              spreadsheets effortlessly.
-            </p>
-            <span class="tcard-btn tcard-btn-disabled">Coming Soon</span>
-          </div>
-
-          <div class="tcard cs" data-cat="cs">
-            <div class="tcard-top">
-              <div class="ticon">🌙</div>
-              <span class="tbadge tbadge-soon">Coming Soon</span>
-            </div>
-            <h3>PDF Dark Mode Toggle</h3>
-            <p>
-              Switch PDF documents between light and dark modes for comfortable
-              reading in any environment.
-            </p>
-            <span class="tcard-btn tcard-btn-disabled">Coming Soon</span>
-          </div>
-
-          <div class="tcard cs" data-cat="cs">
-            <div class="tcard-top">
-              <div class="ticon">👁️</div>
-              <span class="tbadge tbadge-soon">Coming Soon</span>
-            </div>
-            <h3>PDF Viewer</h3>
-            <p>
-              View PDF documents directly in your browser with zoom, search and
-              smooth navigation features.
-            </p>
-            <span class="tcard-btn tcard-btn-disabled">Coming Soon</span>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- ═══════════════ FEATURES ═══════════════ -->
-    <section class="feat-sec" id="features">
-      <div class="container">
-        <div class="sec-head rv">
-          <div class="sec-label">Why Us</div>
-          <h2>Built for Speed, Privacy &amp; Reliability</h2>
-          <p>
-            Professional-grade tools designed with your privacy and productivity
-            as the top priority.
-          </p>
-        </div>
-        <div class="feat-grid">
-          <div class="fcard rv">
-            <span class="fcard-icon">🔒</span>
-            <h3>100% Private</h3>
-            <p>
-              All processing happens on your device. Files are never uploaded to
-              any server, ever.
-            </p>
-          </div>
-          <div class="fcard rv">
-            <span class="fcard-icon">⚡</span>
-            <h3>Lightning Fast</h3>
-            <p>
-              Instant results powered by modern browser APIs — no waiting for
-              server roundtrips.
-            </p>
-          </div>
-          <div class="fcard rv">
-            <span class="fcard-icon">🎯</span>
-            <h3>High Quality</h3>
-            <p>
-              Advanced algorithms maintain original document quality through
-              every conversion.
-            </p>
-          </div>
-          <div class="fcard rv">
-            <span class="fcard-icon">📱</span>
-            <h3>All Devices</h3>
-            <p>
-              Fully responsive — works beautifully on desktop, tablet or any
-              smartphone.
-            </p>
-          </div>
-          <div class="fcard rv">
-            <span class="fcard-icon">🆓</span>
-            <h3>Completely Free</h3>
-            <p>
-              No hidden fees, no subscriptions, no registration needed. Free
-              forever.
-            </p>
-          </div>
-          <div class="fcard rv">
-            <span class="fcard-icon">🌐</span>
-            <h3>Works Offline</h3>
-            <p>
-              On-device processing means tools continue to work even without an
-              internet connection.
-            </p>
-          </div>
-          <div class="fcard rv">
-            <span class="fcard-icon">🧩</span>
-            <h3>No Plugins</h3>
-            <p>
-              Zero extensions or plugins required. Everything runs natively in
-              your browser.
-            </p>
-          </div>
-          <div class="fcard rv">
-            <span class="fcard-icon">🛠️</span>
-            <h3>Always Updated</h3>
-            <p>
-              Regular updates and new features added continuously — more tools
-              coming very soon.
-            </p>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- ═══════════════ CTA BANNER ═══════════════ -->
-    <section class="cta-sec">
-      <div class="container">
-        <div class="cta-inner rv">
-          <div class="cta-left">
-            <h2>Your Privacy Comes First — Always</h2>
-            <p>
-              Unlike most online PDF tools, PDFMaster processes everything
-              directly in your browser. No file uploads, no cloud storage, no
-              data collection. Just powerful tools that respect you.
-            </p>
-            <a href="#tools" class="btn-white">Try It Free →</a>
-          </div>
-          <div class="cta-points">
-            <div class="cpoint">
-              <div class="cpoint-icon">🛡️</div>
-              <div class="cpoint-txt">
-                <h4>Zero Server Uploads</h4>
-                <p>Files stay on your device — always and entirely.</p>
+            <div class="stats-strip">
+              <div class="sstat">
+                <span class="sstat-num">21+</span>
+                <span class="sstat-lbl">Tools</span>
               </div>
-            </div>
-            <div class="cpoint">
-              <div class="cpoint-icon">⚡</div>
-              <div class="cpoint-txt">
-                <h4>Instant Results</h4>
-                <p>No upload queue — processing starts immediately.</p>
+              <div class="sstat">
+                <span class="sstat-num">100%</span>
+                <span class="sstat-lbl">Secure</span>
               </div>
-            </div>
-            <div class="cpoint">
-              <div class="cpoint-icon">🔓</div>
-              <div class="cpoint-txt">
-                <h4>No Account Needed</h4>
-                <p>Open a tool and start working — that's it.</p>
+              <div class="sstat">
+                <span class="sstat-num">Free</span>
+                <span class="sstat-lbl">Forever</span>
               </div>
             </div>
           </div>
         </div>
-      </div>
-    </section>
+      </section>
 
+      <!-- ═══════════════ TOOLS ═══════════════ -->
+      <section class="tools-sec" id="tools">
+        <div class="container">
+          <div class="sec-head rv">
+            <div class="sec-label">Toolkit</div>
+            <h2>Complete PDF &amp; Image Toolkit</h2>
+            <p>
+              Everything you need to work with PDFs and images — all on your
+              device, no uploads needed.
+            </p>
+          </div>
+
+          <div class="filter-tabs rv">
+            <button class="ftab active" data-filter="all">All Tools</button>
+            <button class="ftab" data-filter="av">Available Now</button>
+            <button class="ftab" data-filter="cs">Coming Soon</button>
+          </div>
+
+          <div class="tools-grid" id="tGrid">
+            <!-- ────── AVAILABLE TOOLS ────── -->
+            <div class="tcard" data-cat="av">
+              <div class="tcard-top">
+                <div class="ticon">🖼️</div>
+                <span class="tbadge tbadge-live">Live</span>
+              </div>
+              <h3>Photo to PDF Converter</h3>
+              <p>
+                Combine multiple photos into a single PDF document. Ideal for
+                photo albums, reports and portfolios.
+              </p>
+              <div class="t-b-btn">
+                <a href="/photo-to-pdf" class="tcard-btn tcard-btn-live">
+                  Use Tool
+                  <svg
+                    width="12"
+                    height="12"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2.5"
+                  >
+                    <path d="M5 12h14M12 5l7 7-7 7" />
+                  </svg>
+                </a>
+
+                <a href="/blog/photo-to-pdf/" class="bcard-btn tcard-btn-live">
+                  Read Blogs
+                  <svg
+                    width="12"
+                    height="12"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2.5"
+                  >
+                    <path d="M5 12h14M12 5l7 7-7 7" />
+                  </svg>
+                </a>
+              </div>
+            </div>
+
+            <div class="tcard" data-cat="av">
+              <div class="tcard-top">
+                <div class="ticon">📄</div>
+                <span class="tbadge tbadge-live">Live</span>
+              </div>
+              <h3>PDF to JPG Converter</h3>
+              <p>
+                Transform PDF documents into high-quality JPG images with
+                customisable quality settings.
+              </p>
+              <a href="/pdf-to-photo" class="tcard-btn tcard-btn-live">
+                Use Tool
+                <svg
+                  width="12"
+                  height="12"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2.5"
+                >
+                  <path d="M5 12h14M12 5l7 7-7 7" />
+                </svg>
+              </a>
+            </div>
+
+            <div class="tcard" data-cat="av">
+              <div class="tcard-top">
+                <div class="ticon">📋</div>
+                <span class="tbadge tbadge-live">Live</span>
+              </div>
+              <h3>PDF Compiler</h3>
+              <p>
+                Merge multiple PDF files into one comprehensive document while
+                maintaining formatting and quality.
+              </p>
+              <a href="/merge-pdf" class="tcard-btn tcard-btn-live">
+                Use Tool
+                <svg
+                  width="12"
+                  height="12"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2.5"
+                >
+                  <path d="M5 12h14M12 5l7 7-7 7" />
+                </svg>
+              </a>
+            </div>
+
+            <div class="tcard" data-cat="av">
+              <div class="tcard-top">
+                <div class="ticon">🧹</div>
+                <span class="tbadge tbadge-live">Live</span>
+              </div>
+              <h3>PDF Metadata Viewer &amp Remover</h3>
+              <p>
+                Strip and view all hidden metadata from PDF files to protect
+                your privacy before sharing documents publicly.
+              </p>
+              <a href="pdf-metadata" class="tcard-btn tcard-btn-live">
+                Use Tool
+                <svg
+                  width="12"
+                  height="12"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2.5"
+                >
+                  <path d="M5 12h14M12 5l7 7-7 7" />
+                </svg>
+              </a>
+            </div>
+
+            <!-- ────── COMING SOON TOOLS ────── -->
+
+            <div class="tcard" data-cat="cs">
+              <div class="tcard-top">
+                <div class="ticon">🔄</div>
+                <span class="tbadge tbadge-soon">Coming Soon</span>
+              </div>
+              <h3>PDF Reorder</h3>
+              <p>
+                Rearrange PDF pages in any order you need. Simple drag-and-drop
+                interface for easy organisation.
+              </p>
+              <span class="tcard-btn tcard-btn-disabled">Coming Soon</span>
+            </div>
+
+            <div class="tcard" data-cat="cs">
+              <div class="tcard-top">
+                <div class="ticon">✂️</div>
+                <span class="tbadge tbadge-soon">Coming Soon</span>
+              </div>
+              <h3>Split PDF</h3>
+              <p>
+                Split large PDF files into smaller documents. Extract specific
+                pages or custom page ranges with ease.
+              </p>
+              <span class="tcard-btn tcard-btn-disabled">Coming Soon</span>
+            </div>
+
+            <div class="tcard cs" data-cat="cs">
+              <div class="tcard-top">
+                <div class="ticon">📷</div>
+                <span class="tbadge tbadge-soon">Coming Soon</span>
+              </div>
+              <h3>PDF to PNG Converter</h3>
+              <p>
+                Convert PDF pages into high-quality PNG images instantly.
+                Perfect for presentations and web use.
+              </p>
+              <span class="tcard-btn tcard-btn-disabled">Coming Soon</span>
+            </div>
+
+            <div class="tcard cs" data-cat="cs">
+              <div class="tcard-top">
+                <div class="ticon">🗜️</div>
+                <span class="tbadge tbadge-soon">Coming Soon</span>
+              </div>
+              <h3>PDF Compressor</h3>
+              <p>
+                Reduce PDF file sizes without compromising quality. Perfect for
+                email attachments and cloud storage.
+              </p>
+              <span class="tcard-btn tcard-btn-disabled">Coming Soon</span>
+            </div>
+
+            <div class="tcard cs" data-cat="cs">
+              <div class="tcard-top">
+                <div class="ticon">#️⃣</div>
+                <span class="tbadge tbadge-soon">Coming Soon</span>
+              </div>
+              <h3>Hexadecimal to Photo</h3>
+              <p>
+                Convert hex codes into beautiful images. Ideal for security
+                purposes and technical workflows.
+              </p>
+              <span class="tcard-btn tcard-btn-disabled">Coming Soon</span>
+            </div>
+
+            <div class="tcard cs" data-cat="cs">
+              <div class="tcard-top">
+                <div class="ticon">🎨</div>
+                <span class="tbadge tbadge-soon">Coming Soon</span>
+              </div>
+              <h3>Photo to Hexadecimal</h3>
+              <p>
+                Convert any image into hexadecimal code. Useful for data
+                encoding and secure image sharing.
+              </p>
+              <span class="tcard-btn tcard-btn-disabled">Coming Soon</span>
+            </div>
+
+            <div class="tcard cs" data-cat="cs">
+              <div class="tcard-top">
+                <div class="ticon">📋</div>
+                <span class="tbadge tbadge-soon">Coming Soon</span>
+              </div>
+              <h3>Clipboard to Photo</h3>
+              <p>
+                Convert clipboard content directly into image format. Save
+                screenshots as various image file types.
+              </p>
+              <span class="tcard-btn tcard-btn-disabled">Coming Soon</span>
+            </div>
+
+            <div class="tcard cs" data-cat="cs">
+              <div class="tcard-top">
+                <div class="ticon">🗑️</div>
+                <span class="tbadge tbadge-soon">Coming Soon</span>
+              </div>
+              <h3>PDF Page Deletor</h3>
+              <p>
+                Remove any unwanted pages from your PDF documents quickly and
+                effortlessly.
+              </p>
+              <span class="tcard-btn tcard-btn-disabled">Coming Soon</span>
+            </div>
+
+            <div class="tcard cs" data-cat="cs">
+              <div class="tcard-top">
+                <div class="ticon">💧</div>
+                <span class="tbadge tbadge-soon">Coming Soon</span>
+              </div>
+              <h3>PDF Watermark</h3>
+              <p>
+                Add custom text or image watermarks to your PDFs for branding
+                and copyright protection.
+              </p>
+              <span class="tcard-btn tcard-btn-disabled">Coming Soon</span>
+            </div>
+
+            <div class="tcard cs" data-cat="cs">
+              <div class="tcard-top">
+                <div class="ticon">🔃</div>
+                <span class="tbadge tbadge-soon">Coming Soon</span>
+              </div>
+              <h3>PDF Page Rotator</h3>
+              <p>
+                Rotate individual PDF pages to the correct orientation. Fix
+                scanned documents instantly.
+              </p>
+              <span class="tcard-btn tcard-btn-disabled">Coming Soon</span>
+            </div>
+
+            <div class="tcard cs" data-cat="cs">
+              <div class="tcard-top">
+                <div class="ticon">🖼️</div>
+                <span class="tbadge tbadge-soon">Coming Soon</span>
+              </div>
+              <h3>Image From PDF Extractor</h3>
+              <p>
+                Extract all embedded images from PDF documents in their original
+                quality and format.
+              </p>
+              <span class="tcard-btn tcard-btn-disabled">Coming Soon</span>
+            </div>
+
+            <div class="tcard cs" data-cat="cs">
+              <div class="tcard-top">
+                <div class="ticon">🔢</div>
+                <span class="tbadge tbadge-soon">Coming Soon</span>
+              </div>
+              <h3>PDF Page Numbering</h3>
+              <p>
+                Add professional page numbers to PDFs with fully customisable
+                position, font and style.
+              </p>
+              <span class="tcard-btn tcard-btn-disabled">Coming Soon</span>
+            </div>
+
+            <div class="tcard cs" data-cat="cs">
+              <div class="tcard-top">
+                <div class="ticon">🔐</div>
+                <span class="tbadge tbadge-soon">Coming Soon</span>
+              </div>
+              <h3>ZIP Password (Basic)</h3>
+              <p>
+                Protect your ZIP archives with password encryption. Quick and
+                basic security for compressed files.
+              </p>
+              <span class="tcard-btn tcard-btn-disabled">Coming Soon</span>
+            </div>
+
+            <div class="tcard cs" data-cat="cs">
+              <div class="tcard-top">
+                <div class="ticon">📄</div>
+                <span class="tbadge tbadge-soon">Coming Soon</span>
+              </div>
+              <h3>PDF Blank Page Inserter</h3>
+              <p>
+                Insert blank pages at any position in your PDF documents for
+                additional content or formatting.
+              </p>
+              <span class="tcard-btn tcard-btn-disabled">Coming Soon</span>
+            </div>
+
+            <div class="tcard cs" data-cat="cs">
+              <div class="tcard-top">
+                <div class="ticon">📊</div>
+                <span class="tbadge tbadge-soon">Coming Soon</span>
+              </div>
+              <h3>Excel to PDF</h3>
+              <p>
+                Convert Excel spreadsheets to PDF format while preserving all
+                formatting, tables and layout.
+              </p>
+              <span class="tcard-btn tcard-btn-disabled">Coming Soon</span>
+            </div>
+
+            <div class="tcard cs" data-cat="cs">
+              <div class="tcard-top">
+                <div class="ticon">📈</div>
+                <span class="tbadge tbadge-soon">Coming Soon</span>
+              </div>
+              <h3>PDF to Excel</h3>
+              <p>
+                Extract tabular data from PDFs and convert them to editable
+                Excel spreadsheets effortlessly.
+              </p>
+              <span class="tcard-btn tcard-btn-disabled">Coming Soon</span>
+            </div>
+
+            <div class="tcard cs" data-cat="cs">
+              <div class="tcard-top">
+                <div class="ticon">🌙</div>
+                <span class="tbadge tbadge-soon">Coming Soon</span>
+              </div>
+              <h3>PDF Dark Mode Toggle</h3>
+              <p>
+                Switch PDF documents between light and dark modes for
+                comfortable reading in any environment.
+              </p>
+              <span class="tcard-btn tcard-btn-disabled">Coming Soon</span>
+            </div>
+
+            <div class="tcard cs" data-cat="cs">
+              <div class="tcard-top">
+                <div class="ticon">👁️</div>
+                <span class="tbadge tbadge-soon">Coming Soon</span>
+              </div>
+              <h3>PDF Viewer</h3>
+              <p>
+                View PDF documents directly in your browser with zoom, search
+                and smooth navigation features.
+              </p>
+              <span class="tcard-btn tcard-btn-disabled">Coming Soon</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ═══════════════ FEATURES ═══════════════ -->
+      <section class="feat-sec" id="features">
+        <div class="container">
+          <div class="sec-head rv">
+            <div class="sec-label">Why Us</div>
+            <h2>Built for Speed, Privacy &amp; Reliability</h2>
+            <p>
+              Professional-grade tools designed with your privacy and
+              productivity as the top priority.
+            </p>
+          </div>
+          <div class="feat-grid">
+            <div class="fcard rv">
+              <span class="fcard-icon">🔒</span>
+              <h3>100% Private</h3>
+              <p>
+                All processing happens on your device. Files are never uploaded
+                to any server, ever.
+              </p>
+            </div>
+            <div class="fcard rv">
+              <span class="fcard-icon">⚡</span>
+              <h3>Lightning Fast</h3>
+              <p>
+                Instant results powered by modern browser APIs — no waiting for
+                server roundtrips.
+              </p>
+            </div>
+            <div class="fcard rv">
+              <span class="fcard-icon">🎯</span>
+              <h3>High Quality</h3>
+              <p>
+                Advanced algorithms maintain original document quality through
+                every conversion.
+              </p>
+            </div>
+            <div class="fcard rv">
+              <span class="fcard-icon">📱</span>
+              <h3>All Devices</h3>
+              <p>
+                Fully responsive — works beautifully on desktop, tablet or any
+                smartphone.
+              </p>
+            </div>
+            <div class="fcard rv">
+              <span class="fcard-icon">🆓</span>
+              <h3>Completely Free</h3>
+              <p>
+                No hidden fees, no subscriptions, no registration needed. Free
+                forever.
+              </p>
+            </div>
+            <div class="fcard rv">
+              <span class="fcard-icon">🌐</span>
+              <h3>Works Offline</h3>
+              <p>
+                On-device processing means tools continue to work even without
+                an internet connection.
+              </p>
+            </div>
+            <div class="fcard rv">
+              <span class="fcard-icon">🧩</span>
+              <h3>No Plugins</h3>
+              <p>
+                Zero extensions or plugins required. Everything runs natively in
+                your browser.
+              </p>
+            </div>
+            <div class="fcard rv">
+              <span class="fcard-icon">🛠️</span>
+              <h3>Always Updated</h3>
+              <p>
+                Regular updates and new features added continuously — more tools
+                coming very soon.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ═══════════════ CTA BANNER ═══════════════ -->
+      <section class="cta-sec">
+        <div class="container">
+          <div class="cta-inner rv">
+            <div class="cta-left">
+              <h2>Your Privacy Comes First — Always</h2>
+              <p>
+                Unlike most online PDF tools, PDFMaster processes everything
+                directly in your browser. No file uploads, no cloud storage, no
+                data collection. Just powerful tools that respect you.
+              </p>
+              <a href="#tools" class="btn-white">Try It Free →</a>
+            </div>
+            <div class="cta-points">
+              <div class="cpoint">
+                <div class="cpoint-icon">🛡️</div>
+                <div class="cpoint-txt">
+                  <h3>Zero Server Uploads</h3>
+                  <p>Files stay on your device — always and entirely.</p>
+                </div>
+              </div>
+              <div class="cpoint">
+                <div class="cpoint-icon">⚡</div>
+                <div class="cpoint-txt">
+                  <h3>Instant Results</h3>
+                  <p>No upload queue — processing starts immediately.</p>
+                </div>
+              </div>
+              <div class="cpoint">
+                <div class="cpoint-icon">🔓</div>
+                <div class="cpoint-txt">
+                  <h3>No Account Needed</h3>
+                  <p>Open a tool and start working — that's it.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
     <!-- ═══════════════ FOOTER ═══════════════ -->
     <footer id="contact">
       <div class="container">
@@ -806,5 +847,11 @@
     <button class="b2t" id="b2t" aria-label="Back to top"></button>
 
     <script src="js/index.js"></script>
+    <script>
+      // Reveal animations – deferred until after render
+      document.querySelectorAll(".reveal").forEach(function (el) {
+        el.classList.add("visible");
+      });
+    </script>
   </body>
 </html>
