@@ -97,9 +97,10 @@ ol {
   transition:
     background var(--transition),
     box-shadow var(--transition);
+  will-change: transform;
 }
 .navbar.scrolled {
-  box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--shadow);
 }
 .navbar__logo {
   display: flex;
@@ -1108,6 +1109,7 @@ ol {
   transition:
     opacity 0.6s ease,
     transform 0.6s ease;
+  will-change: opacity, transform;
 }
 .reveal.visible {
   opacity: 1;

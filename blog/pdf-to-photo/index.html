@@ -65,29 +65,49 @@
       href="https://pdfmaster.co.in/assets/apple-touch-icon.png"
     />
 
-    <!-- Fonts -->
+    <!-- Fonts - async -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
+      rel="preload"
       href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=DM+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap"
-      rel="stylesheet"
+      as="style"
+      onload="this.onload=null;this.rel='stylesheet'"
     />
+    <noscript>
+      <link
+        href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=DM+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap"
+        rel="stylesheet"
+      />
+    </noscript>
 
     <!--Stylesheet-->
     <link rel="stylesheet" href="css/index.css" />
 
-    <!-- Google Tag Manager -->
+    <!-- GTM Deferred -->
     <script>
-      (function (w, d, s, l, i) {
-        w[l] = w[l] || [];
-        w[l].push({ "gtm.start": new Date().getTime(), event: "gtm.js" });
-        var f = d.getElementsByTagName(s)[0],
-          j = d.createElement(s),
-          dl = l != "dataLayer" ? "&l=" + l : "";
-        j.async = true;
-        j.src = "https://www.googletagmanager.com/gtm.js?id=" + i + dl;
-        f.parentNode.insertBefore(j, f);
-      })(window, document, "script", "dataLayer", "GTM-PCSVMC65");
+      (function () {
+        var gtmLoaded = false;
+        function loadGTM() {
+          if (gtmLoaded) return;
+          gtmLoaded = true;
+          (function (w, d, s, l, i) {
+            w[l] = w[l] || [];
+            w[l].push({ "gtm.start": new Date().getTime(), event: "gtm.js" });
+            var f = d.getElementsByTagName(s)[0],
+              j = d.createElement(s),
+              dl = l != "dataLayer" ? "&l=" + l : "";
+            j.async = true;
+            j.src = "https://www.googletagmanager.com/gtm.js?id=" + i + dl;
+            f.parentNode.insertBefore(j, f);
+          })(window, document, "script", "dataLayer", "GTM-PCSVMC65");
+        }
+        var evts = ["mousedown", "touchstart", "keydown", "scroll", "wheel"];
+        evts.forEach(function (e) {
+          window.addEventListener(e, loadGTM, { once: true, passive: true });
+        });
+        setTimeout(loadGTM, 4000);
+      })();
     </script>
 
     <!-- JSON-LD Structured Data -->
@@ -214,6 +234,7 @@
           alt="PDFMaster Logo"
           width="34"
           height="34"
+          fetchpriority="high"
         />
         PDFMaster
       </a>
@@ -337,15 +358,15 @@
         <span class="breadcrumb-sep" aria-hidden="true">›</span>
         <span aria-current="page">Blog</span>
       </nav>
-      <div class="sec-label rv" aria-hidden="true">📝 Knowledge Hub</div>
-      <h1 class="hero-title rv" style="transition-delay: 0.08s">
+      <div class="sec-label" aria-hidden="true">📝 Knowledge Hub</div>
+      <h1 class="hero-title">
         PDF to Photo & Image<br /><span>Conversion Guides</span>
       </h1>
-      <p class="hero-desc rv" style="transition-delay: 0.16s">
+      <p class="hero-desc">
         Free, practical guides on converting PDF documents to images privately — no
         uploads, no servers, no data risk. Works on desktop, tablet, and mobile.
       </p>
-      <div class="hero-stats rv" style="transition-delay: 0.22s">
+      <div class="hero-stats">
         <span class="hero-stat"
           ><span class="hero-stat-dot"></span>10 Articles Published</span
         >
@@ -359,7 +380,7 @@
     </header>
 
     <!-- ═══ FILTER BAR ═══ -->
-    <div class="filter-bar rv">
+    <div class="filter-bar">
       <div
         class="filter-tags"
         role="group"
@@ -381,9 +402,8 @@
       <div class="blog-grid">
         <!-- Card 1 — FEATURED -->
         <article
-          class="blog-card featured rv"
+          class="blog-card featured"
           data-tags="converter,guide"
-          style="transition-delay: 0.05s"
         >
           <div class="card-top">
             <div class="card-meta">
@@ -808,6 +828,8 @@
                 alt="PDFMaster Logo"
                 width="34"
                 height="34"
+                loading="lazy"
+                decoding="async"
               />
               PDFMaster
             </a>
@@ -881,6 +903,6 @@
     <button class="back-to-top" id="backToTop" aria-label="Back to top">
       ↑
     </button>
-    <script src="script/index.js"></script>
+    <script src="script/index.js" defer></script>
   </body>
 </html>

@@ -721,6 +721,8 @@ ul {
   background: var(--bg-alt);
   border-top: 1px solid var(--border);
   padding: 60px 32px 32px;
+  content-visibility: auto;
+  contain-intrinsic-size: 0 400px;
 }
 .footer-inner {
   max-width: 1200px;
@@ -842,6 +844,7 @@ ul {
   transition:
     opacity 0.55s ease,
     transform 0.55s ease;
+  will-change: opacity, transform;
 }
 .rv.visible {
   opacity: 1;
