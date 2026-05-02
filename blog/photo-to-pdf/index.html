@@ -69,25 +69,64 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=DM+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap"
+      rel="preload"
+      as="style"
+      href="https://fonts.googleapis.com/css2?family=Sora:wght@700;800&family=DM+Sans:wght@400;500;700&display=swap"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Sora:wght@700;800&family=DM+Sans:wght@400;500;700&display=swap"
       rel="stylesheet"
     />
 
     <!--Stylesheet-->
+    <link rel="preload" href="css/index.css" as="style" />
     <link rel="stylesheet" href="css/index.css" />
 
-    <!-- Google Tag Manager -->
     <script>
-      (function (w, d, s, l, i) {
-        w[l] = w[l] || [];
-        w[l].push({ "gtm.start": new Date().getTime(), event: "gtm.js" });
-        var f = d.getElementsByTagName(s)[0],
-          j = d.createElement(s),
-          dl = l != "dataLayer" ? "&l=" + l : "";
-        j.async = true;
-        j.src = "https://www.googletagmanager.com/gtm.js?id=" + i + dl;
-        f.parentNode.insertBefore(j, f);
-      })(window, document, "script", "dataLayer", "GTM-PCSVMC65");
+      // Immediate theme initialization to prevent FOUC
+      (function () {
+        const THEME_KEY = "pdfmaster-theme";
+        const savedTheme = localStorage.getItem(THEME_KEY) || "light";
+        document.documentElement.setAttribute("data-theme", savedTheme);
+      })();
+    </script>
+
+    <!-- Google Tag Manager (Delayed) -->
+    <script>
+      (function () {
+        let gtmLoaded = false;
+        const gtmId = "GTM-PCSVMC65";
+
+        function loadGTM() {
+          if (gtmLoaded) return;
+          gtmLoaded = true;
+
+          (function (w, d, s, l, i) {
+            w[l] = w[l] || [];
+            w[l].push({ "gtm.start": new Date().getTime(), event: "gtm.js" });
+            var f = d.getElementsByTagName(s)[0],
+              j = d.createElement(s),
+              dl = l != "dataLayer" ? "&l=" + l : "";
+            j.async = true;
+            j.src = "https://www.googletagmanager.com/gtm.js?id=" + i + dl;
+            f.parentNode.insertBefore(j, f);
+          })(window, document, "script", "dataLayer", gtmId);
+
+          // Clean up listeners
+          window.removeEventListener("scroll", loadGTM);
+          window.removeEventListener("mousemove", loadGTM);
+          window.removeEventListener("touchstart", loadGTM);
+          window.removeEventListener("click", loadGTM);
+        }
+
+        window.addEventListener("scroll", loadGTM, { passive: true });
+        window.addEventListener("mousemove", loadGTM, { passive: true });
+        window.addEventListener("touchstart", loadGTM, { passive: true });
+        window.addEventListener("click", loadGTM, { passive: true });
+
+        // Fallback for very slow interactions
+        setTimeout(loadGTM, 5000);
+      })();
     </script>
 
     <!-- JSON-LD Structured Data -->
@@ -202,6 +241,8 @@
         height="0"
         width="0"
         style="display: none; visibility: hidden"
+        title="Google Tag Manager"
+        loading="lazy"
       ></iframe
     ></noscript>
     <!-- End Google Tag Manager (noscript) -->
@@ -214,6 +255,7 @@
           alt="PDFMaster Logo"
           width="34"
           height="34"
+          fetchpriority="high"
         />
         PDFMaster
       </a>
@@ -826,6 +868,7 @@
                 alt="PDFMaster Logo"
                 width="34"
                 height="34"
+                loading="lazy"
               />
               PDFMaster
             </a>
@@ -899,6 +942,6 @@
     <button class="back-to-top" id="backToTop" aria-label="Back to top">
       ↑
     </button>
-    <script src="script/index.js"></script>
+    <script src="script/index.js" defer></script>
   </body>
 </html>

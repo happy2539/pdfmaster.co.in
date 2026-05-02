@@ -75,24 +75,63 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&family=DM+Sans:wght@300;400;500;600;700&display=swap"
+      rel="preload"
+      as="style"
+      href="https://fonts.googleapis.com/css2?family=Sora:wght@700;800&family=DM+Sans:wght@400;500;700&display=swap"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Sora:wght@700;800&family=DM+Sans:wght@400;500;700&display=swap"
       rel="stylesheet"
     />
 
+    <link rel="preload" href="css/style.css" as="style" />
     <link rel="stylesheet" href="css/style.css" />
 
-    <!-- Google Tag Manager -->
     <script>
-      (function (w, d, s, l, i) {
-        w[l] = w[l] || [];
-        w[l].push({ "gtm.start": new Date().getTime(), event: "gtm.js" });
-        var f = d.getElementsByTagName(s)[0],
-          j = d.createElement(s),
-          dl = l != "dataLayer" ? "&l=" + l : "";
-        j.async = true;
-        j.src = "https://www.googletagmanager.com/gtm.js?id=" + i + dl;
-        f.parentNode.insertBefore(j, f);
-      })(window, document, "script", "dataLayer", "GTM-PCSVMC65");
+      // Immediate theme initialization to prevent FOUC
+      (function () {
+        const THEME_KEY = "pdfmaster-theme";
+        const savedTheme = localStorage.getItem(THEME_KEY) || "light";
+        document.documentElement.setAttribute("data-theme", savedTheme);
+      })();
+    </script>
+
+    <!-- Google Tag Manager (Delayed) -->
+    <script>
+      (function () {
+        let gtmLoaded = false;
+        const gtmId = "GTM-PCSVMC65";
+
+        function loadGTM() {
+          if (gtmLoaded) return;
+          gtmLoaded = true;
+
+          (function (w, d, s, l, i) {
+            w[l] = w[l] || [];
+            w[l].push({ "gtm.start": new Date().getTime(), event: "gtm.js" });
+            var f = d.getElementsByTagName(s)[0],
+              j = d.createElement(s),
+              dl = l != "dataLayer" ? "&l=" + l : "";
+            j.async = true;
+            j.src = "https://www.googletagmanager.com/gtm.js?id=" + i + dl;
+            f.parentNode.insertBefore(j, f);
+          })(window, document, "script", "dataLayer", gtmId);
+
+          // Clean up listeners
+          window.removeEventListener("scroll", loadGTM);
+          window.removeEventListener("mousemove", loadGTM);
+          window.removeEventListener("touchstart", loadGTM);
+          window.removeEventListener("click", loadGTM);
+        }
+
+        window.addEventListener("scroll", loadGTM, { passive: true });
+        window.addEventListener("mousemove", loadGTM, { passive: true });
+        window.addEventListener("touchstart", loadGTM, { passive: true });
+        window.addEventListener("click", loadGTM, { passive: true });
+
+        // Fallback for very slow interactions
+        setTimeout(loadGTM, 5000);
+      })();
     </script>
 
     <!-- JSON-LD Structured Data -->
@@ -198,6 +237,8 @@
         height="0"
         width="0"
         style="display: none; visibility: hidden"
+        title="Google Tag Manager"
+        loading="lazy"
       ></iframe
     ></noscript>
     <!-- End Google Tag Manager (noscript) -->
@@ -214,6 +255,7 @@
           alt="PDFMaster Logo"
           width="36"
           height="36"
+          fetchpriority="high"
         />
         <span class="navbar__logo-text">PDF<span>Master</span></span>
       </a>
@@ -480,7 +522,7 @@
                 <tr>
                   <td><strong>Works Without Internet</strong></td>
                   <td class="badge-warn">⚠️ Some apps only</td>
-                  <td class="badge-no">❌ No</td>
+                  <td class="badge-yes">✅ No</td>
                   <td class="badge-yes">✅ Yes, after first page load</td>
                 </tr>
                 <tr>
@@ -808,11 +850,16 @@
           </h2>
           <div class="faq-list reveal" id="faqList">
             <div class="faq-item">
-              <button class="faq-question" data-faq="1">
+              <button
+                class="faq-question"
+                data-faq="1"
+                aria-expanded="false"
+                aria-controls="faq-1"
+              >
                 What is the best free PNG to PDF converter for mobile in 2026?
                 <span class="faq-chevron">▾</span>
               </button>
-              <div class="faq-answer" id="faq-1">
+              <div class="faq-answer" id="faq-1" role="region">
                 <div class="faq-answer-inner">
                   PDFMaster's browser-based PNG to PDF converter is the top free
                   option for mobile users in 2026. It runs entirely inside
@@ -826,12 +873,17 @@
             </div>
 
             <div class="faq-item">
-              <button class="faq-question" data-faq="2">
+              <button
+                class="faq-question"
+                data-faq="2"
+                aria-expanded="false"
+                aria-controls="faq-2"
+              >
                 Does the PNG to PDF converter work on both iPhone (Safari) and
                 Android (Chrome)?
                 <span class="faq-chevron">▾</span>
               </button>
-              <div class="faq-answer" id="faq-2">
+              <div class="faq-answer" id="faq-2" role="region">
                 <div class="faq-answer-inner">
                   Yes. PDFMaster's PNG to PDF converter is fully tested and
                   confirmed working on Safari (iOS 15+), Chrome for Android,
@@ -844,11 +896,16 @@
             </div>
 
             <div class="faq-item">
-              <button class="faq-question" data-faq="3">
+              <button
+                class="faq-question"
+                data-faq="3"
+                aria-expanded="false"
+                aria-controls="faq-3"
+              >
                 Can I convert PNG to PDF offline on my phone using this tool?
                 <span class="faq-chevron">▾</span>
               </button>
-              <div class="faq-answer" id="faq-3">
+              <div class="faq-answer" id="faq-3" role="region">
                 <div class="faq-answer-inner">
                   Yes. Once the PDFMaster page has loaded in your mobile
                   browser, you can disconnect from Wi-Fi or switch to airplane
@@ -861,12 +918,17 @@
             </div>
 
             <div class="faq-item">
-              <button class="faq-question" data-faq="4">
+              <button
+                class="faq-question"
+                data-faq="4"
+                aria-expanded="false"
+                aria-controls="faq-4"
+              >
                 How do I merge multiple PNG files into a single PDF on my phone
                 without an app?
                 <span class="faq-chevron">▾</span>
               </button>
-              <div class="faq-answer" id="faq-4">
+              <div class="faq-answer" id="faq-4" role="region">
                 <div class="faq-answer-inner">
                   Open PDFMaster's
                   <a href="https://pdfmaster.co.in/photo-to-pdf"
@@ -883,12 +945,17 @@
             </div>
 
             <div class="faq-item">
-              <button class="faq-question" data-faq="5">
+              <button
+                class="faq-question"
+                data-faq="5"
+                aria-expanded="false"
+                aria-controls="faq-5"
+              >
                 Is there a limit on how many PNG files I can convert to PDF at
                 once?
                 <span class="faq-chevron">▾</span>
               </button>
-              <div class="faq-answer" id="faq-5">
+              <div class="faq-answer" id="faq-5" role="region">
                 <div class="faq-answer-inner">
                   PDFMaster imposes no artificial PNG count or file size limits
                   on conversion. Because the PNG to PDF process runs directly on
@@ -901,11 +968,16 @@
             </div>
 
             <div class="faq-item">
-              <button class="faq-question" data-faq="6">
+              <button
+                class="faq-question"
+                data-faq="6"
+                aria-expanded="false"
+                aria-controls="faq-6"
+              >
                 Will my PNG image quality be reduced when the PDF is generated?
                 <span class="faq-chevron">▾</span>
               </button>
-              <div class="faq-answer" id="faq-6">
+              <div class="faq-answer" id="faq-6" role="region">
                 <div class="faq-answer-inner">
                   No. PDFMaster embeds your PNG images directly into the PDF
                   without any re-compression or quality reduction. Unlike
@@ -1071,6 +1143,7 @@
                 alt="PDFMaster"
                 width="34"
                 height="34"
+                loading="lazy"
               />
               <span>PDF<em>Master</em></span>
             </a>
@@ -1140,6 +1213,6 @@
       ↑
     </button>
 
-    <script src="script/script.js"></script>
+    <script defer src="script/script.js"></script>
   </body>
 </html>

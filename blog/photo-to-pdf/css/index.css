@@ -14,7 +14,7 @@
 
   --text-primary: #111111;
   --text-secondary: #444444;
-  --text-muted: #888888;
+  --text-muted: #6b7280;
   --text-nav: #111111;
 
   --border: #e5e5e5;
@@ -28,7 +28,7 @@
 
   --radius: 14px;
   --radius-sm: 8px;
-  --transition: 0.22s ease;
+  --transition: 0.2s ease;
 }
 
 [data-theme="dark"] {
@@ -39,7 +39,7 @@
 
   --text-primary: #f0f0f2;
   --text-secondary: #b8b8c0;
-  --text-muted: #606068;
+  --text-muted: #9ca3af;
   --text-nav: #f0f0f2;
 
   --border: #2a2a30;
@@ -59,6 +59,10 @@
   margin: 0;
   padding: 0;
 }
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 4px;
+}
 html {
   scroll-behavior: smooth;
 }
@@ -68,7 +72,7 @@ body {
   color: var(--text-primary);
   line-height: 1.65;
   transition:
-    background var(--transition),
+    background-color var(--transition),
     color var(--transition);
   overflow-x: hidden;
 }
@@ -146,15 +150,15 @@ ul {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 36px;
-  height: 36px;
+  width: 44px;
+  height: 44px;
   border-radius: 50%;
   border: 1px solid var(--border);
   background: var(--bg-alt);
   cursor: pointer;
   color: var(--text-secondary);
   transition: all var(--transition);
-  font-size: 1rem;
+  font-size: 1.1rem;
 }
 .btn-theme:hover {
   border-color: var(--accent);
@@ -167,10 +171,10 @@ ul {
   flex-direction: column;
   justify-content: center;
   gap: 5px;
-  width: 36px;
-  height: 36px;
+  width: 44px;
+  height: 44px;
   cursor: pointer;
-  padding: 4px;
+  padding: 8px;
   border-radius: var(--radius-sm);
   transition: background var(--transition);
 }
@@ -252,14 +256,14 @@ ul {
   border-radius: 6px;
 }
 .drawer-close {
-  width: 32px;
-  height: 32px;
+  width: 44px;
+  height: 44px;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
   border-radius: 50%;
-  font-size: 1.2rem;
+  font-size: 1.3rem;
   color: var(--text-secondary);
   transition:
     background var(--transition),
@@ -431,7 +435,7 @@ ul {
   border-radius: 100px;
   border: 1px solid var(--border);
   font-size: 0.82rem;
-  font-weight: 600;
+  font-weight: 700;
   cursor: pointer;
   color: var(--text-secondary);
   background: var(--bg-card);
@@ -580,7 +584,7 @@ ul {
 }
 .author-name {
   font-size: 0.8rem;
-  font-weight: 600;
+  font-weight: 700;
   color: var(--text-secondary);
 }
 .card-read-btn {

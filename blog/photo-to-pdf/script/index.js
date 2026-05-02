@@ -46,11 +46,17 @@ function closeDrawer() {
 
 hamburger.addEventListener("click", openDrawer);
 hamburger.addEventListener("keydown", (e) => {
-  if (e.key === "Enter" || e.key === " ") openDrawer();
+  if (e.key === "Enter" || e.key === " ") {
+    e.preventDefault();
+    openDrawer();
+  }
 });
 drawerClose.addEventListener("click", closeDrawer);
 drawerClose.addEventListener("keydown", (e) => {
-  if (e.key === "Enter" || e.key === " ") closeDrawer();
+  if (e.key === "Enter" || e.key === " ") {
+    e.preventDefault();
+    closeDrawer();
+  }
 });
 drawerOverlay.addEventListener("click", closeDrawer);
 document.addEventListener("keydown", (e) => {
@@ -74,7 +80,7 @@ filterBtns.forEach((btn) => {
       card.style.display = show ? "" : "none";
       if (show) count++;
     });
-    visibleCount.textContent = count;
+    if (visibleCount) visibleCount.textContent = count;
   });
 });
 
@@ -95,13 +101,15 @@ document.querySelectorAll(".rv").forEach((el) => observer.observe(el));
 
 // ── BACK TO TOP ──
 const backToTop = document.getElementById("backToTop");
-window.addEventListener(
-  "scroll",
-  () => {
-    backToTop.classList.toggle("visible", window.scrollY > 400);
-  },
-  { passive: true },
-);
-backToTop.addEventListener("click", () =>
-  window.scrollTo({ top: 0, behavior: "smooth" }),
-);
+if (backToTop) {
+  window.addEventListener(
+    "scroll",
+    () => {
+      backToTop.classList.toggle("visible", window.scrollY > 400);
+    },
+    { passive: true },
+  );
+  backToTop.addEventListener("click", () =>
+    window.scrollTo({ top: 0, behavior: "smooth" }),
+  );
+}

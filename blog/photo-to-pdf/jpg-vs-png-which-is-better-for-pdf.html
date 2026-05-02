@@ -38,7 +38,7 @@
     <meta property="og:site_name" content="PDFMaster" />
     <meta
       property="og:image"
-      content="https://pdfmaster.co.in/assets/og-blog-jpg-pdf.png"
+      content="https://pdfmaster.co.in/assets/apple-touch-icon.png"
     />
     <meta
       property="article:published_time"
@@ -63,7 +63,7 @@
     />
     <meta
       name="twitter:image"
-      content="https://pdfmaster.co.in/assets/og-blog-jpg-pdf.png"
+      content="https://pdfmaster.co.in/assets/apple-touch-icon.png"
     />
 
     <!-- Favicon & Fonts -->
@@ -75,32 +75,63 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&family=DM+Sans:wght@300;400;500;600;700&display=swap"
+      rel="preload"
+      as="style"
+      href="https://fonts.googleapis.com/css2?family=Sora:wght@700;800&family=DM+Sans:wght@400;500;700&display=swap"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Sora:wght@700;800&family=DM+Sans:wght@400;500;700&display=swap"
       rel="stylesheet"
     />
 
+    <link rel="preload" href="css/style.css" as="style" />
     <link rel="stylesheet" href="css/style.css" />
 
-    <!-- Google Tag Manager -->
     <script>
-      (function (w, d, s, l, i) {
-        w[l] = w[l] || [];
-        w[l].push({ "gtm.start": new Date().getTime(), event: "gtm.js" });
-        var f = d.getElementsByTagName(s)[0],
-          j = d.createElement(s),
-          dl = l != "dataLayer" ? "&l=" + l : "";
-        j.async = true;
-        j.src = "https://www.googletagmanager.com/gtm.js?id=" + i + dl;
-        f.parentNode.insertBefore(j, f);
-      })(window, document, "script", "dataLayer", "GTM-PCSVMC65");
+      // Immediate theme initialization to prevent FOUC
+      (function () {
+        const THEME_KEY = "pdfmaster-theme";
+        const savedTheme = localStorage.getItem(THEME_KEY) || "light";
+        document.documentElement.setAttribute("data-theme", savedTheme);
+      })();
     </script>
 
+    <!-- Google Tag Manager (Delayed) -->
     <script>
-      document.addEventListener("DOMContentLoaded", () => {
-        document
-          .querySelectorAll(".reveal")
-          .forEach((el) => el.classList.add("visible"));
-      });
+      (function () {
+        let gtmLoaded = false;
+        const gtmId = "GTM-PCSVMC65";
+
+        function loadGTM() {
+          if (gtmLoaded) return;
+          gtmLoaded = true;
+
+          (function (w, d, s, l, i) {
+            w[l] = w[l] || [];
+            w[l].push({ "gtm.start": new Date().getTime(), event: "gtm.js" });
+            var f = d.getElementsByTagName(s)[0],
+              j = d.createElement(s),
+              dl = l != "dataLayer" ? "&l=" + l : "";
+            j.async = true;
+            j.src = "https://www.googletagmanager.com/gtm.js?id=" + i + dl;
+            f.parentNode.insertBefore(j, f);
+          })(window, document, "script", "dataLayer", gtmId);
+
+          // Clean up listeners
+          window.removeEventListener("scroll", loadGTM);
+          window.removeEventListener("mousemove", loadGTM);
+          window.removeEventListener("touchstart", loadGTM);
+          window.removeEventListener("click", loadGTM);
+        }
+
+        window.addEventListener("scroll", loadGTM, { passive: true });
+        window.addEventListener("mousemove", loadGTM, { passive: true });
+        window.addEventListener("touchstart", loadGTM, { passive: true });
+        window.addEventListener("click", loadGTM, { passive: true });
+
+        // Fallback for very slow interactions
+        setTimeout(loadGTM, 5000);
+      })();
     </script>
 
     <!-- JSON-LD Structured Data -->
@@ -206,6 +237,8 @@
         height="0"
         width="0"
         style="display: none; visibility: hidden"
+        title="Google Tag Manager"
+        loading="lazy"
       ></iframe
     ></noscript>
     <!-- End Google Tag Manager (noscript) -->
@@ -222,6 +255,7 @@
           alt="PDFMaster Logo"
           width="36"
           height="36"
+          fetchpriority="high"
         />
         <span class="navbar__logo-text">PDF<span>Master</span></span>
       </a>
@@ -645,11 +679,6 @@
             >
             — it embeds your JPGs at their original quality with no extra
             re-compression.
-            <!-- You can also learn more about
-            <a href="https://pdfmaster.co.in/blog/photo-to-pdf/convert-photo-to-pdf-without-uploading"
-              >how to convert photos to PDF without uploading</a
-            >
-            to protect privacy while you work. -->
           </p>
 
           <!-- Section 5 -->
@@ -704,7 +733,7 @@
 
           <!-- Section 6 -->
           <h2 id="transparency" class="reveal">
-            🔲 PNG Transparency in PDF: What Actually Happens
+            🔲 PNG Transparency in PDF: How It Works
           </h2>
           <p class="reveal">
             One of the most important reasons to choose PNG over JPG for PDF is
@@ -815,11 +844,16 @@
           <h2 id="faqs" class="reveal">❓ Frequently Asked Questions</h2>
           <div class="faq-list reveal" id="faqList">
             <div class="faq-item">
-              <button class="faq-question" data-faq="1">
+              <button
+                class="faq-question"
+                data-faq="1"
+                aria-expanded="false"
+                aria-controls="faq-1"
+              >
                 Is JPG or PNG better for PDF conversion?
                 <span class="faq-chevron">▾</span>
               </button>
-              <div class="faq-answer" id="faq-1">
+              <div class="faq-answer" id="faq-1" role="region">
                 <div class="faq-answer-inner">
                   It depends entirely on the content. JPG is better for
                   photographs — it produces PDFs that are 3–4× smaller with no
@@ -835,11 +869,16 @@
             </div>
 
             <div class="faq-item">
-              <button class="faq-question" data-faq="2">
+              <button
+                class="faq-question"
+                data-faq="2"
+                aria-expanded="false"
+                aria-controls="faq-2"
+              >
                 Does converting PNG to PDF result in a larger file than JPG?
                 <span class="faq-chevron">▾</span>
               </button>
-              <div class="faq-answer" id="faq-2">
+              <div class="faq-answer" id="faq-2" role="region">
                 <div class="faq-answer-inner">
                   Yes, for photographic content. In our 50-image test, PNG PDFs
                   averaged 3.8× larger than equivalent JPG PDFs for photos. For
@@ -852,21 +891,22 @@
             </div>
 
             <div class="faq-item">
-              <button class="faq-question" data-faq="3">
+              <button
+                class="faq-question"
+                data-faq="3"
+                aria-expanded="false"
+                aria-controls="faq-3"
+              >
                 Does JPG lose quality when converted to PDF?
                 <span class="faq-chevron">▾</span>
               </button>
-              <div class="faq-answer" id="faq-3">
+              <div class="faq-answer" id="faq-3" role="region">
                 <div class="faq-answer-inner">
                   The PDF conversion process itself does not add quality loss if
                   you use a browser-based tool like PDFMaster. The JPG is
                   embedded as-is into the PDF. Any blurring or artefacts you see
                   in the final PDF are from the original JPG compression — not
-                  the conversion. This is why using a
-                  <a
-                    href="https://pdfmaster.co.in/blog/photo-to-pdf/convert-photo-to-pdf-without-uploading"
-                    >no-upload PDF converter</a
-                  >
+                  the conversion. This is why using a no-upload PDF converter
                   matters: cloud tools sometimes re-compress images during
                   conversion, causing additional quality degradation.
                 </div>
@@ -874,11 +914,16 @@
             </div>
 
             <div class="faq-item">
-              <button class="faq-question" data-faq="4">
+              <button
+                class="faq-question"
+                data-faq="4"
+                aria-expanded="false"
+                aria-controls="faq-4"
+              >
                 Can PNG transparency be preserved in a PDF?
                 <span class="faq-chevron">▾</span>
               </button>
-              <div class="faq-answer" id="faq-4">
+              <div class="faq-answer" id="faq-4" role="region">
                 <div class="faq-answer-inner">
                   Yes. The PDF format natively supports alpha-channel
                   transparency. A PNG with a transparent background retains that
@@ -892,11 +937,16 @@
             </div>
 
             <div class="faq-item">
-              <button class="faq-question" data-faq="5">
+              <button
+                class="faq-question"
+                data-faq="5"
+                aria-expanded="false"
+                aria-controls="faq-5"
+              >
                 Can I mix JPG and PNG images in the same PDF?
                 <span class="faq-chevron">▾</span>
               </button>
-              <div class="faq-answer" id="faq-5">
+              <div class="faq-answer" id="faq-5" role="region">
                 <div class="faq-answer-inner">
                   Yes. PDFMaster supports mixing JPG, PNG, WEBP, and HEIC images
                   in a single PDF conversion. Each image is embedded in its
@@ -909,11 +959,16 @@
             </div>
 
             <div class="faq-item">
-              <button class="faq-question" data-faq="6">
+              <button
+                class="faq-question"
+                data-faq="6"
+                aria-expanded="false"
+                aria-controls="faq-6"
+              >
                 Which format is better for a scanned document PDF — JPG or PNG?
                 <span class="faq-chevron">▾</span>
               </button>
-              <div class="faq-answer" id="faq-6">
+              <div class="faq-answer" id="faq-6" role="region">
                 <div class="faq-answer-inner">
                   For scanned documents containing text, PNG is strongly
                   preferred. Scanned text has sharp black-on-white edges — the
@@ -1087,6 +1142,7 @@
                 alt="PDFMaster"
                 width="34"
                 height="34"
+                loading="lazy"
               />
               <span>PDF<em>Master</em></span>
             </a>
@@ -1152,6 +1208,6 @@
     <button class="back-to-top" id="backToTop" aria-label="Back to top">
       ↑
     </button>
-    <script src="script/script.js"></script>
+    <script defer src="script/script.js"></script>
   </body>
 </html>

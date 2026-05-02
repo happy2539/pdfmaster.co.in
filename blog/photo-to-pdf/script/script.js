@@ -63,17 +63,21 @@ document.querySelectorAll(".faq-question").forEach((btn) => {
     const id = btn.dataset.faq;
     const answer = document.getElementById("faq-" + id);
     const isOpen = answer.classList.contains("open");
+
     // Close all
-    document
-      .querySelectorAll(".faq-answer")
-      .forEach((a) => a.classList.remove("open"));
-    document
-      .querySelectorAll(".faq-question")
-      .forEach((b) => b.classList.remove("active"));
+    document.querySelectorAll(".faq-answer").forEach((a) => {
+      a.classList.remove("open");
+    });
+    document.querySelectorAll(".faq-question").forEach((b) => {
+      b.classList.remove("active");
+      b.setAttribute("aria-expanded", "false");
+    });
+
     // Open clicked if it was closed
     if (!isOpen) {
       answer.classList.add("open");
       btn.classList.add("active");
+      btn.setAttribute("aria-expanded", "true");
     }
   });
 });

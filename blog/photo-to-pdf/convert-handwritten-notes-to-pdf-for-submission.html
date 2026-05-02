@@ -77,32 +77,62 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&family=DM+Sans:wght@300;400;500;600;700&display=swap"
+      rel="preload"
+      as="style"
+      href="https://fonts.googleapis.com/css2?family=Sora:wght@700;800&family=DM+Sans:wght@400;500;700&display=swap"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Sora:wght@700;800&family=DM+Sans:wght@400;500;700&display=swap"
       rel="stylesheet"
     />
 
+    <link rel="preload" href="css/style.css" as="style" />
     <link rel="stylesheet" href="css/style.css" />
-
     <script>
-      document.addEventListener("DOMContentLoaded", () => {
-        document
-          .querySelectorAll(".reveal")
-          .forEach((el) => el.classList.add("visible"));
-      });
+      // Immediate theme initialization to prevent FOUC
+      (function () {
+        const THEME_KEY = "pdfmaster-theme";
+        const savedTheme = localStorage.getItem(THEME_KEY) || "light";
+        document.documentElement.setAttribute("data-theme", savedTheme);
+      })();
     </script>
 
-    <!-- Google Tag Manager -->
+    <!-- Google Tag Manager (Delayed) -->
     <script>
-      (function (w, d, s, l, i) {
-        w[l] = w[l] || [];
-        w[l].push({ "gtm.start": new Date().getTime(), event: "gtm.js" });
-        var f = d.getElementsByTagName(s)[0],
-          j = d.createElement(s),
-          dl = l != "dataLayer" ? "&l=" + l : "";
-        j.async = true;
-        j.src = "https://www.googletagmanager.com/gtm.js?id=" + i + dl;
-        f.parentNode.insertBefore(j, f);
-      })(window, document, "script", "dataLayer", "GTM-PCSVMC65");
+      (function () {
+        let gtmLoaded = false;
+        const gtmId = "GTM-PCSVMC65";
+
+        function loadGTM() {
+          if (gtmLoaded) return;
+          gtmLoaded = true;
+
+          (function (w, d, s, l, i) {
+            w[l] = w[l] || [];
+            w[l].push({ "gtm.start": new Date().getTime(), event: "gtm.js" });
+            var f = d.getElementsByTagName(s)[0],
+              j = d.createElement(s),
+              dl = l != "dataLayer" ? "&l=" + l : "";
+            j.async = true;
+            j.src = "https://www.googletagmanager.com/gtm.js?id=" + i + dl;
+            f.parentNode.insertBefore(j, f);
+          })(window, document, "script", "dataLayer", gtmId);
+
+          // Clean up listeners
+          window.removeEventListener("scroll", loadGTM);
+          window.removeEventListener("mousemove", loadGTM);
+          window.removeEventListener("touchstart", loadGTM);
+          window.removeEventListener("click", loadGTM);
+        }
+
+        window.addEventListener("scroll", loadGTM, { passive: true });
+        window.addEventListener("mousemove", loadGTM, { passive: true });
+        window.addEventListener("touchstart", loadGTM, { passive: true });
+        window.addEventListener("click", loadGTM, { passive: true });
+
+        // Fallback for very slow interactions
+        setTimeout(loadGTM, 5000);
+      })();
     </script>
 
     <!-- JSON-LD Structured Data -->
@@ -208,6 +238,8 @@
         height="0"
         width="0"
         style="display: none; visibility: hidden"
+        title="Google Tag Manager"
+        loading="lazy"
       ></iframe
     ></noscript>
     <!-- End Google Tag Manager (noscript) -->
@@ -220,6 +252,7 @@
           alt="PDFMaster Logo"
           width="36"
           height="36"
+          fetchpriority="high"
         />
         <span class="navbar__logo-text">PDF<span>Master</span></span>
       </a>
@@ -868,12 +901,17 @@
           <h2 id="faqs" class="reveal">❓ Frequently Asked Questions</h2>
           <div class="faq-list reveal" id="faqList">
             <div class="faq-item">
-              <button class="faq-question" data-faq="1">
+              <button
+                class="faq-question"
+                data-faq="1"
+                aria-expanded="false"
+                aria-controls="faq-1"
+              >
                 What is the best way to convert handwritten notes to PDF for
                 submission?
                 <span class="faq-chevron">▾</span>
               </button>
-              <div class="faq-answer" id="faq-1">
+              <div class="faq-answer" id="faq-1" role="region">
                 <div class="faq-answer-inner">
                   The most reliable method is to photograph your handwritten
                   notes in good lighting as PNG images, then convert them using
@@ -889,12 +927,17 @@
             </div>
 
             <div class="faq-item">
-              <button class="faq-question" data-faq="2">
+              <button
+                class="faq-question"
+                data-faq="2"
+                aria-expanded="false"
+                aria-controls="faq-2"
+              >
                 Should I use JPG or PNG when photographing handwritten notes for
                 a PDF submission?
                 <span class="faq-chevron">▾</span>
               </button>
-              <div class="faq-answer" id="faq-2">
+              <div class="faq-answer" id="faq-2" role="region">
                 <div class="faq-answer-inner">
                   PNG is strongly recommended for handwritten notes. In our
                   50-document test, JPG at quality 85 introduced visible
@@ -908,12 +951,17 @@
             </div>
 
             <div class="faq-item">
-              <button class="faq-question" data-faq="3">
+              <button
+                class="faq-question"
+                data-faq="3"
+                aria-expanded="false"
+                aria-controls="faq-3"
+              >
                 Can I convert handwritten notes to PDF on my phone without
                 uploading them?
                 <span class="faq-chevron">▾</span>
               </button>
-              <div class="faq-answer" id="faq-3">
+              <div class="faq-answer" id="faq-3" role="region">
                 <div class="faq-answer-inner">
                   Yes. PDFMaster's Photo to PDF tool runs entirely in your
                   mobile browser with no server upload. Photograph your notes,
@@ -929,12 +977,17 @@
             </div>
 
             <div class="faq-item">
-              <button class="faq-question" data-faq="4">
+              <button
+                class="faq-question"
+                data-faq="4"
+                aria-expanded="false"
+                aria-controls="faq-4"
+              >
                 How do I submit handwritten notes as a PDF to a university
                 portal or via email?
                 <span class="faq-chevron">▾</span>
               </button>
-              <div class="faq-answer" id="faq-4">
+              <div class="faq-answer" id="faq-4" role="region">
                 <div class="faq-answer-inner">
                   Photograph your handwritten notes as PNG images, convert them
                   into a single multi-page PDF using PDFMaster, and check the
@@ -951,12 +1004,17 @@
             </div>
 
             <div class="faq-item">
-              <button class="faq-question" data-faq="5">
+              <button
+                class="faq-question"
+                data-faq="5"
+                aria-expanded="false"
+                aria-controls="faq-5"
+              >
                 Can I combine handwritten notes from multiple sessions into one
                 submission PDF?
                 <span class="faq-chevron">▾</span>
               </button>
-              <div class="faq-answer" id="faq-5">
+              <div class="faq-answer" id="faq-5" role="region">
                 <div class="faq-answer-inner">
                   Yes. PDFMaster supports combining any number of PNG and JPG
                   images — including notes photographed on different days or
@@ -974,12 +1032,17 @@
             </div>
 
             <div class="faq-item">
-              <button class="faq-question" data-faq="6">
+              <button
+                class="faq-question"
+                data-faq="6"
+                aria-expanded="false"
+                aria-controls="faq-6"
+              >
                 Why do my handwritten notes look blurry in the PDF after
                 conversion?
                 <span class="faq-chevron">▾</span>
               </button>
-              <div class="faq-answer" id="faq-6">
+              <div class="faq-answer" id="faq-6" role="region">
                 <div class="faq-answer-inner">
                   Blurriness in a handwritten notes PDF almost always traces
                   back to JPG compression in the source image — either from
@@ -1258,6 +1321,6 @@
     <button class="back-to-top" id="backToTop" aria-label="Back to top">
       ↑
     </button>
-    <script src="script/script.js"></script>
+    <script src="script/script.js" defer></script>
   </body>
 </html>
