@@ -3,5 +3,28 @@ Allow: /
 
 # Block internal or useless files
 Disallow: /404.html
+Disallow: /vercel.json
+Disallow: /README.md
+Disallow: /CNAME
+Disallow: /_redirects
+
+# Block AI Bots
+User-agent: GPTBot
+Allow: /
+
+User-agent: ChatGPT-User
+Allow: /
+
+User-agent: CCBot
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+User-agent: anthropic-ai
+Allow: /
+
+User-agent: Claude-Web
+Allow: /
 
 Sitemap: https://pdfmaster.co.in/sitemap.xml
