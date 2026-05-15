@@ -8,8 +8,8 @@
   --bg-card: #ffffff;
   --bg-nav: rgba(245, 246, 250, 0.94);
   --text: #14151f;
-  --text-2: #52596a;
-  --text-muted: #9099a8;
+  --text-2: #4b5263;
+  --text-muted: #6b7280;
   --border: #e4e7ee;
   --shadow-sm: 0 1px 4px rgba(0, 0, 0, 0.05);
   --shadow-md: 0 6px 24px rgba(0, 0, 0, 0.07);
@@ -24,8 +24,8 @@
   --bg-card: #13161f;
   --bg-nav: rgba(12, 14, 19, 0.96);
   --text: #edf0f8;
-  --text-2: #8c95a8;
-  --text-muted: #525c6e;
+  --text-2: #9ba3b8;
+  --text-muted: #8e9aaf;
   --border: #1e2232;
   --shadow-sm: 0 1px 4px rgba(0, 0, 0, 0.35);
   --shadow-md: 0 6px 24px rgba(0, 0, 0, 0.45);
@@ -700,7 +700,7 @@ nav {
 .faq-a-inner {
   padding: 0 22px 20px;
   font-size: 0.87rem;
-  color: white;
+  color: var(--text-2);
   line-height: 1.75;
 }
 

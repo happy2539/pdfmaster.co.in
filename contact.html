@@ -60,28 +60,59 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
+    <link rel="preload" href="/css/contact.css" as="style" />
 
-    <!-- Fonts -->
+    <!-- Preload LCP element (logo) -->
     <link
-      href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&display=swap"
-      rel="stylesheet"
+      rel="preload"
+      href="/assets/apple-touch-icon.png"
+      as="image"
+      fetchpriority="high"
     />
 
-    <!-- CSS -->
-    <link rel="stylesheet" href="css/contact.css" />
+    <!-- Google Fonts – async (non-render-blocking) -->
+    <link
+      rel="preload"
+      href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&display=swap"
+      as="style"
+      onload="this.onload=null;this.rel='stylesheet'"
+    />
+    <noscript>
+      <link
+        href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&display=swap"
+        rel="stylesheet"
+      />
+    </noscript>
 
-    <!-- Google Tag Manager -->
+    <!-- CSS -->
+    <link rel="stylesheet" href="/css/contact.css" />
+
+    <meta name="google-adsense-account" content="ca-pub-9223989888558332" />
+
+    <!-- GTM deferred: loads on first user interaction to eliminate TBT impact -->
     <script>
-      (function (w, d, s, l, i) {
-        w[l] = w[l] || [];
-        w[l].push({ "gtm.start": new Date().getTime(), event: "gtm.js" });
-        var f = d.getElementsByTagName(s)[0],
-          j = d.createElement(s),
-          dl = l != "dataLayer" ? "&l=" + l : "";
-        j.async = true;
-        j.src = "https://www.googletagmanager.com/gtm.js?id=" + i + dl;
-        f.parentNode.insertBefore(j, f);
-      })(window, document, "script", "dataLayer", "GTM-PCSVMC65");
+      (function () {
+        var gtmLoaded = false;
+        function loadGTM() {
+          if (gtmLoaded) return;
+          gtmLoaded = true;
+          (function (w, d, s, l, i) {
+            w[l] = w[l] || [];
+            w[l].push({ "gtm.start": new Date().getTime(), event: "gtm.js" });
+            var f = d.getElementsByTagName(s)[0],
+              j = d.createElement(s),
+              dl = l != "dataLayer" ? "&l=" + l : "";
+            j.async = true;
+            j.src = "https://www.googletagmanager.com/gtm.js?id=" + i + dl;
+            f.parentNode.insertBefore(j, f);
+          })(window, document, "script", "dataLayer", "GTM-PCSVMC65");
+        }
+        var evts = ["mousedown", "touchstart", "keydown", "scroll", "wheel"];
+        evts.forEach(function (e) {
+          window.addEventListener(e, loadGTM, { once: true, passive: true });
+        });
+        setTimeout(loadGTM, 4000);
+      })();
     </script>
 
     <!-- Schema -->
@@ -89,6 +120,10 @@
       {
         "@context": "https://schema.org",
         "@type": "ContactPage",
+        "mainEntityOfPage": {
+          "@type": "WebPage",
+          "@id": "https://pdfmaster.co.in/contact"
+        },
         "url": "https://pdfmaster.co.in/contact",
         "name": "Contact PDFMaster",
         "description": "Contact PDFMaster for JPG to PDF support, feedback, or queries about secure PDF tools.",
@@ -97,8 +132,15 @@
           "name": "PDFMaster",
           "logo": {
             "@type": "ImageObject",
-            "url": "https://pdfmaster.co.in/assets/apple-touch-icon.png"
+            "url": "https://pdfmaster.co.in/assets/apple-touch-icon.png",
+            "width": "180",
+            "height": "180"
           }
+        },
+        "author": {
+          "@type": "Person",
+          "name": "Happy Gupta",
+          "url": "https://github.com/happy2539"
         }
       }
     </script>
@@ -118,32 +160,43 @@
     <header>
       <nav class="container">
         <a href="/" class="nav-logo">
-          <img src="assets/apple-touch-icon.png" alt="PDFMaster" />
+          <img
+            src="/assets/apple-touch-icon.png"
+            alt="PDFMaster Logo"
+            width="34"
+            height="34"
+            fetchpriority="high"
+          />
           <span class="logo-text">PDF<span>Master</span></span>
         </a>
 
         <ul class="nav-links">
+          <li><a href="/">Home</a></li>
           <li><a href="/#tools">Tools</a></li>
           <li><a href="/#features">Features</a></li>
           <li><a href="/about">About</a></li>
-          <li><a href="contact" class="active">Contact</a></li>
+          <li>
+            <a href="/contact" class="active" aria-current="page">Contact</a>
+          </li>
         </ul>
 
         <div class="nav-right">
-          <div class="toggle-wrap" title="Toggle light / dark mode">
-            <span class="toggle-icon">☀️</span>
+          <div class="toggle-wrap" title="Toggle dark / light mode">
+            <span class="toggle-icon" aria-hidden="true">☀️</span>
             <button
               class="theme-btn"
               id="themeBtn"
               aria-label="Toggle theme"
+              type="button"
             ></button>
-            <span class="toggle-icon">🌙</span>
+            <span class="toggle-icon" aria-hidden="true">🌙</span>
           </div>
         </div>
       </nav>
     </header>
 
-    <!-- ═══════════════ PAGE HERO ═══════════════ -->
+    <main id="main-content">
+      <!-- ═══════════════ PAGE HERO ═══════════════ -->
     <section class="page-hero">
       <div class="hero-glow hero-glow-1"></div>
       <div class="hero-glow hero-glow-2"></div>
@@ -182,7 +235,7 @@
 
             <div class="contact-info">
               <div class="info-card rv">
-                <div class="info-icon">📧</div>
+                <div class="info-icon" aria-hidden="true">📧</div>
                 <div class="info-body">
                   <h4>Email Us</h4>
                   <a href="mailto:gamingwithhappy39@gmail.com"
@@ -198,7 +251,7 @@
               </div>
 
               <div class="info-card rv">
-                <div class="info-icon">📍</div>
+                <div class="info-icon" aria-hidden="true">📍</div>
                 <div class="info-body">
                   <h4>Our Location</h4>
                   <p>
@@ -209,7 +262,7 @@
               </div>
 
               <div class="info-card rv">
-                <div class="info-icon">🕐</div>
+                <div class="info-icon" aria-hidden="true">🕐</div>
                 <div class="info-body">
                   <h4>Working Hours</h4>
                   <p>
@@ -220,7 +273,7 @@
               </div>
 
               <div class="info-card rv">
-                <div class="info-icon">🐛</div>
+                <div class="info-icon" aria-hidden="true">🐛</div>
                 <div class="info-body">
                   <h4>Report a Bug</h4>
                   <p>Found an issue with one of our tools?</p>
@@ -231,7 +284,7 @@
               </div>
 
               <div class="info-card rv">
-                <div class="info-icon">🤝</div>
+                <div class="info-icon" aria-hidden="true">🤝</div>
                 <div class="info-body">
                   <h4>Partnership &amp; Collaboration</h4>
                   <p>Interested in working with us?</p>
@@ -316,7 +369,7 @@
               Thanks for contacting us. We'll reply within
               <strong>24 working hours</strong>.
             </p>
-            <button id="resetBtn">Send Another Message</button>
+            <button id="resetBtn" type="button">Send Another Message</button>
           </div>
         </div>
       </div>
@@ -337,9 +390,9 @@
 
         <div class="faq-grid">
           <div class="faq-item rv">
-            <button class="faq-q" data-faq="0">
+            <button class="faq-q" type="button" data-faq="0">
               How long does it take to get a response?
-              <span class="faq-arrow">▾</span>
+              <span class="faq-arrow" aria-hidden="true">▾</span>
             </button>
             <div class="faq-a" id="faq-0">
               <div class="faq-a-inner">
@@ -352,9 +405,9 @@
           </div>
 
           <div class="faq-item rv">
-            <button class="faq-q" data-faq="1">
+            <button class="faq-q" type="button" data-faq="1">
               Is there a phone number I can call?
-              <span class="faq-arrow">▾</span>
+              <span class="faq-arrow" aria-hidden="true">▾</span>
             </button>
             <div class="faq-a" id="faq-1">
               <div class="faq-a-inner">
@@ -366,9 +419,9 @@
           </div>
 
           <div class="faq-item rv">
-            <button class="faq-q" data-faq="2">
+            <button class="faq-q" type="button" data-faq="2">
               I found a bug in one of the tools. How do I report it?
-              <span class="faq-arrow">▾</span>
+              <span class="faq-arrow" aria-hidden="true">▾</span>
             </button>
             <div class="faq-a" id="faq-2">
               <div class="faq-a-inner">
@@ -382,9 +435,9 @@
           </div>
 
           <div class="faq-item rv">
-            <button class="faq-q" data-faq="3">
+            <button class="faq-q" type="button" data-faq="3">
               Can I request a new tool or feature?
-              <span class="faq-arrow">▾</span>
+              <span class="faq-arrow" aria-hidden="true">▾</span>
             </button>
             <div class="faq-a" id="faq-3">
               <div class="faq-a-inner">
@@ -397,9 +450,9 @@
           </div>
 
           <div class="faq-item rv">
-            <button class="faq-q" data-faq="4">
+            <button class="faq-q" type="button" data-faq="4">
               Do you offer an API or enterprise plan?
-              <span class="faq-arrow">▾</span>
+              <span class="faq-arrow" aria-hidden="true">▾</span>
             </button>
             <div class="faq-a" id="faq-4">
               <div class="faq-a-inner">
@@ -412,9 +465,9 @@
           </div>
 
           <div class="faq-item rv">
-            <button class="faq-q" data-faq="5">
+            <button class="faq-q" type="button" data-faq="5">
               My files — are they really private?
-              <span class="faq-arrow">▾</span>
+              <span class="faq-arrow" aria-hidden="true">▾</span>
             </button>
             <div class="faq-a" id="faq-5">
               <div class="faq-a-inner">
@@ -439,25 +492,25 @@
               Over 20+ free PDF and image tools, running entirely in your
               browser. No uploads, no accounts, no limits.
             </p>
-            <a href="index.html#tools" class="btn-white">Browse All Tools →</a>
+            <a href="/#tools" class="btn-white">Browse All Tools →</a>
           </div>
           <div class="cta-points">
             <div class="cpoint">
-              <div class="cpoint-icon">🛡️</div>
+              <div class="cpoint-icon" aria-hidden="true">🛡️</div>
               <div class="cpoint-txt">
                 <h4>Zero Server Uploads</h4>
                 <p>Files stay on your device — always and entirely.</p>
               </div>
             </div>
             <div class="cpoint">
-              <div class="cpoint-icon">⚡</div>
+              <div class="cpoint-icon" aria-hidden="true">⚡</div>
               <div class="cpoint-txt">
                 <h4>Instant Results</h4>
                 <p>No upload queue — processing starts immediately.</p>
               </div>
             </div>
             <div class="cpoint">
-              <div class="cpoint-icon">🔓</div>
+              <div class="cpoint-icon" aria-hidden="true">🔓</div>
               <div class="cpoint-txt">
                 <h4>No Account Needed</h4>
                 <p>Open a tool and start working — that's it.</p>
@@ -467,6 +520,7 @@
         </div>
       </div>
     </section>
+    </main>
 
     <!-- ═══════════════ FOOTER ═══════════════ -->
     <footer>
@@ -474,7 +528,13 @@
         <div class="footer-grid">
           <div class="fbrand">
             <a href="/" class="nav-logo">
-              <img src="assets/apple-touch-icon.png" alt="PDFMaster" />
+              <img
+                src="/assets/apple-touch-icon.png"
+                alt="PDFMaster Logo"
+                width="34"
+                height="34"
+                loading="lazy"
+              />
               <span class="logo-text">PDF<span>Master</span></span>
             </a>
             <p>
@@ -512,17 +572,17 @@
               <li><a href="/#tools">All Tools</a></li>
               <li><a href="/#features">Features</a></li>
               <li><a href="/about">About Us</a></li>
-              <li><a href="contact">Contact</a></li>
-              <li><a href="blog/photo-to-pdf/">Blogs</a></li>
+              <li><a href="/contact">Contact</a></li>
+              <li><a href="/blog/photo-to-pdf/">Blogs</a></li>
             </ul>
           </div>
 
           <div class="fcol">
             <h4>Popular Tools</h4>
             <ul>
-              <li><a href="photo-to-pdf">Photo to PDF</a></li>
-              <li><a href="pdf-to-photo">PDF to Photo</a></li>
-              <li><a href="merge-pdf">PDF Compiler</a></li>
+              <li><a href="/photo-to-pdf">Photo to PDF</a></li>
+              <li><a href="/pdf-to-photo">PDF to Photo</a></li>
+              <li><a href="/merge-pdf">PDF Compiler</a></li>
               <li><a href="/#tools">All Tools</a></li>
             </ul>
           </div>
@@ -530,10 +590,10 @@
           <div class="fcol">
             <h4>Support</h4>
             <ul>
-              <li><a href="contact">Help Center</a></li>
-              <li><a href="privacy">Privacy Policy</a></li>
-              <li><a href="terms">Terms of Service</a></li>
-              <li><a href="faq">FAQ</a></li>
+              <li><a href="/contact">Help Center</a></li>
+              <li><a href="/privacy">Privacy Policy</a></li>
+              <li><a href="/terms">Terms of Service</a></li>
+              <li><a href="/faq">FAQ</a></li>
             </ul>
           </div>
         </div>
@@ -541,16 +601,21 @@
         <div class="footer-bot">
           <p>&copy; 2026 pdfmaster.co.in — All rights reserved.</p>
           <div class="footer-bot-links">
-            <a href="privacy">Privacy Policy</a>
-            <a href="terms">Terms of Service</a>
-            <a href="contact">Contact</a>
+            <a href="/privacy">Privacy Policy</a>
+            <a href="/terms">Terms of Service</a>
+            <a href="/contact">Contact</a>
           </div>
         </div>
       </div>
     </footer>
 
-    <button class="b2t" id="b2t" aria-label="Back to top"></button>
+    <button
+      class="b2t"
+      id="b2t"
+      aria-label="Back to top"
+      type="button"
+    ></button>
 
-    <script src="js/contact.js"></script>
+    <script src="/js/contact.js"></script>
   </body>
 </html>
