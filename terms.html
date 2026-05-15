@@ -21,11 +21,11 @@
     <meta name="theme-color" content="#0f172a" />
 
     <link rel="canonical" href="https://pdfmaster.co.in/terms" />
-    <link rel="manifest" href="manifest.json" />
+    <link rel="manifest" href="/manifest.json" />
 
-    <!-- Favicon -->
-    <link rel="icon" href="assets/favicon.ico" type="image/x-icon" />
-    <link rel="apple-touch-icon" href="assets/apple-touch-icon.png" />
+    <!-- Favicon (root-relative paths) -->
+    <link rel="icon" href="/assets/favicon.ico" type="image/x-icon" />
+    <link rel="apple-touch-icon" href="/assets/apple-touch-icon.png" />
 
     <!-- Open Graph -->
     <meta property="og:title" content="Terms of Service – PDFMaster" />
@@ -57,28 +57,59 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
+    <link rel="preload" href="/css/terms.css" as="style" />
 
-    <!-- Fonts -->
+    <!-- Preload LCP element (logo) -->
     <link
-      href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&display=swap"
-      rel="stylesheet"
+      rel="preload"
+      href="/assets/apple-touch-icon.png"
+      as="image"
+      fetchpriority="high"
     />
 
-    <!-- CSS -->
-    <link rel="stylesheet" href="css/terms.css" />
+    <!-- Google Fonts – async (non-render-blocking) -->
+    <link
+      rel="preload"
+      href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&display=swap"
+      as="style"
+      onload="this.onload=null;this.rel='stylesheet'"
+    />
+    <noscript>
+      <link
+        href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&display=swap"
+        rel="stylesheet"
+      />
+    </noscript>
 
-    <!-- Google Tag Manager -->
+    <!-- CSS -->
+    <link rel="stylesheet" href="/css/terms.css" />
+
+    <meta name="google-adsense-account" content="ca-pub-9223989888558332" />
+
+    <!-- GTM deferred: loads on first user interaction to eliminate TBT impact -->
     <script>
-      (function (w, d, s, l, i) {
-        w[l] = w[l] || [];
-        w[l].push({ "gtm.start": new Date().getTime(), event: "gtm.js" });
-        var f = d.getElementsByTagName(s)[0],
-          j = d.createElement(s),
-          dl = l != "dataLayer" ? "&l=" + l : "";
-        j.async = true;
-        j.src = "https://www.googletagmanager.com/gtm.js?id=" + i + dl;
-        f.parentNode.insertBefore(j, f);
-      })(window, document, "script", "dataLayer", "GTM-PCSVMC65");
+      (function () {
+        var gtmLoaded = false;
+        function loadGTM() {
+          if (gtmLoaded) return;
+          gtmLoaded = true;
+          (function (w, d, s, l, i) {
+            w[l] = w[l] || [];
+            w[l].push({ "gtm.start": new Date().getTime(), event: "gtm.js" });
+            var f = d.getElementsByTagName(s)[0],
+              j = d.createElement(s),
+              dl = l != "dataLayer" ? "&l=" + l : "";
+            j.async = true;
+            j.src = "https://www.googletagmanager.com/gtm.js?id=" + i + dl;
+            f.parentNode.insertBefore(j, f);
+          })(window, document, "script", "dataLayer", "GTM-PCSVMC65");
+        }
+        var evts = ["mousedown", "touchstart", "keydown", "scroll", "wheel"];
+        evts.forEach(function (e) {
+          window.addEventListener(e, loadGTM, { once: true, passive: true });
+        });
+        setTimeout(loadGTM, 4000);
+      })();
     </script>
 
     <!-- Schema -->
@@ -86,6 +117,10 @@
       {
         "@context": "https://schema.org",
         "@type": "WebPage",
+        "mainEntityOfPage": {
+          "@type": "WebPage",
+          "@id": "https://pdfmaster.co.in/terms"
+        },
         "name": "Terms of Service – PDFMaster",
         "url": "https://pdfmaster.co.in/terms",
         "description": "Terms of Service for using PDFMaster's free, private, browser-based PDF tools.",
@@ -95,8 +130,15 @@
           "url": "https://pdfmaster.co.in",
           "logo": {
             "@type": "ImageObject",
-            "url": "https://pdfmaster.co.in/assets/apple-touch-icon.png"
+            "url": "https://pdfmaster.co.in/assets/apple-touch-icon.png",
+            "width": "180",
+            "height": "180"
           }
+        },
+        "author": {
+          "@type": "Person",
+          "name": "Happy Gupta",
+          "url": "https://github.com/happy2539"
         },
         "breadcrumb": {
           "@type": "BreadcrumbList",
@@ -133,25 +175,33 @@
     <header>
       <nav class="main-nav">
         <a href="/" class="nav-logo" aria-label="PDFMaster Home">
-          <img src="assets/apple-touch-icon.png" alt="PDFMaster Logo" />
+          <img
+            src="/assets/apple-touch-icon.png"
+            alt="PDFMaster Logo"
+            width="34"
+            height="34"
+            fetchpriority="high"
+          />
           <span class="logo-text">PDF<span>Master</span></span>
         </a>
 
         <div class="nav-right">
           <div class="toggle-wrap" title="Toggle dark / light mode">
-            <span class="toggle-icon">☀️</span>
+            <span class="toggle-icon" aria-hidden="true">☀️</span>
             <button
               class="theme-btn"
               id="themeBtn"
               aria-label="Toggle dark/light mode"
+              type="button"
             ></button>
-            <span class="toggle-icon">🌙</span>
+            <span class="toggle-icon" aria-hidden="true">🌙</span>
           </div>
           <button
             class="hamburger-btn"
             id="hamburgerBtn"
             aria-label="Open navigation menu"
             aria-expanded="false"
+            type="button"
           >
             <span></span><span></span><span></span>
           </button>
@@ -162,45 +212,49 @@
     <!-- Dropdown nav (sections) -->
     <div class="nav-dropdown-wrap" id="navDropdown">
       <div class="nav-dropdown-inner">
-        <a href="#overview"><span class="dd-dot"></span> Overview</a>
-        <a href="#acceptance"><span class="dd-dot"></span> Acceptance</a>
+        <a href="#overview"><span class="dd-dot" aria-hidden="true"></span> Overview</a>
+        <a href="#acceptance"
+          ><span class="dd-dot" aria-hidden="true"></span> Acceptance</a
+        >
         <a href="#use-of-service"
-          ><span class="dd-dot"></span> Use of Service</a
+          ><span class="dd-dot" aria-hidden="true"></span> Use of Service</a
         >
         <a href="#intellectual-property"
-          ><span class="dd-dot"></span> Intellectual Property</a
+          ><span class="dd-dot" aria-hidden="true"></span> Intellectual Property</a
         >
-        <a href="#disclaimers"><span class="dd-dot"></span> Disclaimers</a>
-        <a href="#limitations"><span class="dd-dot"></span> Limitations</a>
-        <a href="#privacy"><span class="dd-dot"></span> Privacy</a>
-        <a href="#termination"><span class="dd-dot"></span> Termination</a>
-        <a href="#changes"><span class="dd-dot"></span> Changes</a>
-        <a href="#contact-us"><span class="dd-dot"></span> Contact</a>
+        <a href="#disclaimers"><span class="dd-dot" aria-hidden="true"></span> Disclaimers</a>
+        <a href="#limitations"><span class="dd-dot" aria-hidden="true"></span> Limitations</a>
+        <a href="#privacy"><span class="dd-dot" aria-hidden="true"></span> Privacy</a>
+        <a href="#termination"><span class="dd-dot" aria-hidden="true"></span> Termination</a>
+        <a href="#changes"><span class="dd-dot" aria-hidden="true"></span> Changes</a>
+        <a href="#contact-us"><span class="dd-dot" aria-hidden="true"></span> Contact</a>
         <a href="/">🏠 Home</a>
       </div>
     </div>
 
     <div class="nav-overlay" id="navOverlay"></div>
 
-    <!-- ═══════════════ BREADCRUMB ═══════════════ -->
-    <div class="breadcrumb">
-      <div class="breadcrumb-inner">
-        <a href="/">🏠 Home</a>
-        <svg
-          width="12"
-          height="12"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="2.5"
-        >
-          <path d="M9 18l6-6-6-6" />
-        </svg>
-        <span>Terms of Service</span>
-      </div>
-    </div>
+    <main id="main-content">
+      <!-- ═══════════════ BREADCRUMB ═══════════════ -->
+      <nav class="breadcrumb" aria-label="Breadcrumb">
+        <div class="breadcrumb-inner">
+          <a href="/">🏠 Home</a>
+          <svg
+            width="12"
+            height="12"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2.5"
+            aria-hidden="true"
+          >
+            <path d="M9 18l6-6-6-6" />
+          </svg>
+          <span aria-current="page">Terms of Service</span>
+        </div>
+      </nav>
 
-    <!-- ═══════════════ PAGE HERO ═══════════════ -->
+      <!-- ═══════════════ PAGE HERO ═══════════════ -->
     <section class="page-hero">
       <div class="page-hero-inner">
         <div class="page-hero-badge">
@@ -215,15 +269,15 @@
         </p>
         <div class="page-hero-meta">
           <div class="meta-item">
-            <span class="meta-icon">📅</span>
+            <span class="meta-icon" aria-hidden="true">📅</span>
             Last updated: 12 March, 2026
           </div>
           <div class="meta-item">
-            <span class="meta-icon">🌍</span>
+            <span class="meta-icon" aria-hidden="true">🌍</span>
             Effective globally
           </div>
           <div class="meta-item">
-            <span class="meta-icon">📄</span>
+            <span class="meta-icon" aria-hidden="true">📄</span>
             Plain English
           </div>
         </div>
@@ -243,7 +297,7 @@
         </div>
         <div class="highlights-grid rv">
           <div class="hcard">
-            <span class="hcard-icon">🆓</span>
+            <span class="hcard-icon" aria-hidden="true">🆓</span>
             <h3>Free, Forever</h3>
             <p>
               PDFMaster is completely free to use with no hidden fees,
@@ -252,7 +306,7 @@
             </p>
           </div>
           <div class="hcard">
-            <span class="hcard-icon">🛡️</span>
+            <span class="hcard-icon" aria-hidden="true">🛡️</span>
             <h3>Your Files, Your Device</h3>
             <p>
               All PDF and image processing happens entirely in your browser. We
@@ -261,7 +315,7 @@
             </p>
           </div>
           <div class="hcard">
-            <span class="hcard-icon">⚖️</span>
+            <span class="hcard-icon" aria-hidden="true">⚖️</span>
             <h3>Fair Use Required</h3>
             <p>
               You may use PDFMaster for lawful purposes only. You may not use
@@ -355,7 +409,7 @@
             <div class="policy-section rv" id="overview">
               <h2>
                 <span class="section-num">1</span>
-                <span class="section-icon">📋</span>
+                <span class="section-icon" aria-hidden="true">📋</span>
                 Overview
               </h2>
               <p>
@@ -374,7 +428,7 @@
                 Terms, you must not use our service.
               </p>
               <div class="policy-alert">
-                <span class="policy-alert-icon">💡</span>
+                <span class="policy-alert-icon" aria-hidden="true">💡</span>
                 <p>
                   <strong>In plain English:</strong> PDFMaster is a free tool.
                   Use it responsibly and for lawful purposes. Your files are
@@ -387,7 +441,7 @@
             <div class="policy-section rv" id="acceptance">
               <h2>
                 <span class="section-num">2</span>
-                <span class="section-icon">✅</span>
+                <span class="section-icon" aria-hidden="true">✅</span>
                 Acceptance of Terms
               </h2>
               <p>
@@ -414,7 +468,7 @@
             <div class="policy-section rv" id="use-of-service">
               <h2>
                 <span class="section-num">3</span>
-                <span class="section-icon">⚙️</span>
+                <span class="section-icon" aria-hidden="true">⚙️</span>
                 Use of Service
               </h2>
               <p>
@@ -467,7 +521,7 @@
             <div class="policy-section rv" id="prohibited-uses">
               <h2>
                 <span class="section-num">4</span>
-                <span class="section-icon">🚫</span>
+                <span class="section-icon" aria-hidden="true">🚫</span>
                 Prohibited Uses
               </h2>
               <p>
@@ -516,7 +570,7 @@
                 </li>
               </ul>
               <div class="policy-alert">
-                <span class="policy-alert-icon">⚠️</span>
+                <span class="policy-alert-icon" aria-hidden="true">⚠️</span>
                 <p>
                   <strong>Important:</strong> Violation of these prohibited use
                   policies may result in immediate termination of your access to
@@ -530,7 +584,7 @@
             <div class="policy-section rv" id="intellectual-property">
               <h2>
                 <span class="section-num">5</span>
-                <span class="section-icon">©️</span>
+                <span class="section-icon" aria-hidden="true">©️</span>
                 Intellectual Property
               </h2>
               <h3>PDFMaster's IP</h3>
@@ -576,7 +630,7 @@
             <div class="policy-section rv" id="disclaimers">
               <h2>
                 <span class="section-num">6</span>
-                <span class="section-icon">⚠️</span>
+                <span class="section-icon" aria-hidden="true">⚠️</span>
                 Disclaimers
               </h2>
               <p>
@@ -624,7 +678,7 @@
             <div class="policy-section rv" id="limitations">
               <h2>
                 <span class="section-num">7</span>
-                <span class="section-icon">🛡️</span>
+                <span class="section-icon" aria-hidden="true">🛡️</span>
                 Limitation of Liability
               </h2>
               <p>
@@ -666,7 +720,7 @@
             <div class="policy-section rv" id="privacy">
               <h2>
                 <span class="section-num">8</span>
-                <span class="section-icon">🔒</span>
+                <span class="section-icon" aria-hidden="true">🔒</span>
                 Privacy &amp; Data Processing
               </h2>
               <p>
@@ -699,7 +753,7 @@
             <div class="policy-section rv" id="third-party">
               <h2>
                 <span class="section-num">9</span>
-                <span class="section-icon">🔗</span>
+                <span class="section-icon" aria-hidden="true">🔗</span>
                 Third-Party Links &amp; Resources
               </h2>
               <p>
@@ -728,7 +782,7 @@
             <div class="policy-section rv" id="termination">
               <h2>
                 <span class="section-num">10</span>
-                <span class="section-icon">🚪</span>
+                <span class="section-icon" aria-hidden="true">🚪</span>
                 Termination
               </h2>
               <p>
@@ -762,7 +816,7 @@
             <div class="policy-section rv" id="governing-law">
               <h2>
                 <span class="section-num">11</span>
-                <span class="section-icon">⚖️</span>
+                <span class="section-icon" aria-hidden="true">⚖️</span>
                 Governing Law &amp; Jurisdiction
               </h2>
               <p>
@@ -792,7 +846,7 @@
             <div class="policy-section rv" id="changes">
               <h2>
                 <span class="section-num">12</span>
-                <span class="section-icon">📝</span>
+                <span class="section-icon" aria-hidden="true">📝</span>
                 Changes to These Terms
               </h2>
               <p>
@@ -829,7 +883,7 @@
             <div class="policy-section rv" id="contact-us">
               <h2>
                 <span class="section-num">13</span>
-                <span class="section-icon">📬</span>
+                <span class="section-icon" aria-hidden="true">📬</span>
                 Contact Us
               </h2>
               <p>
@@ -869,7 +923,13 @@
         <div class="footer-grid">
           <div class="fbrand">
             <a href="/" class="nav-logo">
-              <img src="/assets/apple-touch-icon.png" alt="PDFMaster" />
+              <img
+                src="/assets/apple-touch-icon.png"
+                alt="PDFMaster Logo"
+                width="34"
+                height="34"
+                loading="lazy"
+              />
               <span class="logo-text">PDF<span>Master</span></span>
             </a>
             <p>
@@ -908,7 +968,7 @@
               <li><a href="/#features">Features</a></li>
               <li><a href="/about">About Us</a></li>
               <li><a href="/contact">Contact</a></li>
-              <li><a href="blog/photo-to-pdf/">Blogs</a></li>
+              <li><a href="/blog/photo-to-pdf/">Blogs</a></li>
             </ul>
           </div>
 
@@ -951,9 +1011,17 @@
         </div>
       </div>
     </footer>
+    </main>
 
-    <button class="b2t" id="b2t" aria-label="Back to top">↑</button>
+    <button
+      class="b2t"
+      id="b2t"
+      aria-label="Back to top"
+      type="button"
+    >
+      ↑
+    </button>
 
-    <script src="js/terms.js"></script>
+    <script src="/js/terms.js"></script>
   </body>
 </html>
