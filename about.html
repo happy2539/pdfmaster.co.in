@@ -123,6 +123,10 @@
       {
         "@context": "https://schema.org",
         "@type": "AboutPage",
+        "mainEntityOfPage": {
+          "@type": "WebPage",
+          "@id": "https://pdfmaster.co.in/about"
+        },
         "url": "https://pdfmaster.co.in/about",
         "name": "About PDFMaster",
         "description": "PDFMaster provides free, private, on-device PDF and image conversion tools.",
@@ -131,8 +135,15 @@
           "name": "PDFMaster",
           "logo": {
             "@type": "ImageObject",
-            "url": "https://pdfmaster.co.in/assets/apple-touch-icon.png"
+            "url": "https://pdfmaster.co.in/assets/apple-touch-icon.png",
+            "width": "180",
+            "height": "180"
           }
+        },
+        "author": {
+          "@type": "Person",
+          "name": "Happy Gupta",
+          "url": "https://github.com/happy2539"
         }
       }
     </script>
@@ -204,7 +215,8 @@
       <a href="/contact">📩 Contact</a>
     </nav>
 
-    <!-- ═══════════════ HERO ═══════════════ -->
+    <main id="main-content">
+      <!-- ═══════════════ HERO ═══════════════ -->
     <section class="hero">
       <div class="hero-glow hero-glow-1"></div>
       <div class="hero-glow hero-glow-2"></div>
@@ -494,6 +506,7 @@
         </div>
       </div>
     </section>
+    </main>
 
     <!-- ═══════════════ FOOTER ═══════════════ -->
     <footer>
