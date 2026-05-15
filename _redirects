@@ -1,20 +1,36 @@
 # -----------------------------
-# REMOVE INDEX.HTML
+# REMOVE INDEX.HTML     (ROOT PAGE -- HOMEPAGE)
 # -----------------------------
-/index.html / 301!
+
+/index.html          /               301!
 
 # -----------------------------
 # ROOT PAGES REDIRECTS
 # -----------------------------
+
+# -----------------------------
+# ROOT PAGES REDIRECTS      (UTILITY PAGES)
+# -----------------------------
+
 /about.html          /about          301!
 /contact.html        /contact        301!
 /faq.html            /faq            301!
+/privacy.html        /privacy        301!
+/terms.html          /terms          301!
+
+
+
+
+# -----------------------------
+# ROOT PAGES REDIRECTS      (TOOL PAGES)
+# -----------------------------
+
 /merge-pdf.html      /merge-pdf      301!
 /pdf-metadata.html   /pdf-metadata   301!
 /pdf-to-photo.html   /pdf-to-photo   301!
 /photo-to-pdf.html   /photo-to-pdf   301!
-/privacy.html        /privacy        301!
-/terms.html          /terms          301!
+
+
 
 
 # -----------------------------
@@ -26,11 +42,27 @@
 
 
 
+
+
 # -----------------------------
 # BLOG PAGES REDIRECTS
 # -----------------------------
+
+
+# -----------------------------
+# BLOG PAGES REDIRECTS      (PDF TO PHOTO)
+# -----------------------------
+
 /blog/pdf-to-photo/best-free-pdf-to-photo-converter-mobile-desktop-no-internet.html    /blog/pdf-to-photo/best-free-pdf-to-photo-converter-mobile-desktop-no-internet    301!
 /blog/pdf-to-photo/how-to-convert-pdf-to-jpg-offline-without-uploading.html            /blog/pdf-to-photo/how-to-convert-pdf-to-jpg-offline-without-uploading            301!
+
+
+
+
+# -----------------------------
+# BLOG PAGES REDIRECTS      (PHOTO TO PDF)
+# -----------------------------
+
 /blog/photo-to-pdf/fastest-jpg-to-pdf-converter.html                                   /blog/photo-to-pdf/fastest-jpg-to-pdf-converter                                   301!
 /blog/photo-to-pdf/png-to-pdf-converter.html                                           /blog/photo-to-pdf/png-to-pdf-converter                                           301!
 /blog/photo-to-pdf/photo-to-pdf-offline-converter.html                                 /blog/photo-to-pdf/photo-to-pdf-offline-converter                                 301!
@@ -38,3 +70,75 @@
 /blog/photo-to-pdf/jpg-vs-png-which-is-better-for-pdf.html                             /blog/photo-to-pdf/jpg-vs-png-which-is-better-for-pdf                             301!
 /blog/photo-to-pdf/convert-handwritten-notes-to-pdf-for-submission.html                /blog/photo-to-pdf/convert-handwritten-notes-to-pdf-for-submission                301!
 /blog/photo-to-pdf/best-photo-to-pdf-converter-free.html                               /blog/photo-to-pdf/best-photo-to-pdf-converter-free                               301!
+/blog/photo-to-pdf/convert-images-to-pdf-on-mobile-without-app.html                    /blog/photo-to-pdf/convert-images-to-pdf-on-mobile-without-app                    301!
+/blog/photo-to-pdf/convert-multiple-photos-into-one-pdf-online.html                    /blog/photo-to-pdf/convert-multiple-photos-into-one-pdf-online                    301!
+
+
+
+
+# -----------------------------
+# SEO ALIASES PAGES REDIRECTS
+# -----------------------------
+
+# -----------------------------
+# SEO ALIASES PAGES REDIRECTS     (MERGE PDFs)
+# -----------------------------
+
+/pdf-compiler                           /merge-pdf                             301!
+/compile-pdf                            /merge-pdf                             301!
+
+
+
+
+# -----------------------------
+# SEO ALIASES PAGES REDIRECTS     (PDF METADATA)
+# -----------------------------
+
+/pdf-metadata-viewer                    /pdf-metadata                          301!
+/pdf-metadata-viewer-and-remover        /pdf-metadata                          301!
+/pdf-metadata-reader                    /pdf-metadata                          301!
+
+
+
+
+# -----------------------------
+# SEO ALIASES PAGES REDIRECTS     (PDF TO PHOTO)
+# -----------------------------
+
+/pdf-to-jpg                             /pdf-to-photo                          301!
+/pdf-to-jpg-converter                   /pdf-to-photo                          301!
+/pdf-to-photo-converter                 /pdf-to-photo                          301!
+
+
+
+
+# -----------------------------
+# SEO ALIASES PAGES REDIRECTS     (PHOTO TO PDF)
+# -----------------------------
+
+/jpg-to-pdf                             /photo-to-pdf                          301!
+/jpg-to-pdf-converter                   /photo-to-pdf                          301!
+/photo-to-pdf-converter                 /photo-to-pdf                          301!
+
+
+
+
+
+# -----------------------------
+# SEO ALIASES PAGES REDIRECTS     (TERMS)
+# -----------------------------
+
+/terms-and-condition                    /terms                                 301!
+/terms-of-service                       /terms                                 301!
+/terms-of-policy                        /terms                                 301!
+/terms-of-policies                      /terms                                 301!
+/terms-of-services                      /terms                                 301!
+
+
+
+
+# -----------------------------
+# SEO ALIASES PAGES REDIRECTS     (PRIVACY)
+# -----------------------------
+
+/privacy-policy                         /privacy                               301!
