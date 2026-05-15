@@ -10,9 +10,9 @@
   --surface: #fff;
   --surface-2: #f7f7f8;
   --text: #0f0f10;
-  --text-2: #3d3d40;
-  --text-3: #7a7a82;
-  --text-4: #a8a8b2;
+  --text-2: #4b5263;
+  --text-3: #6b7280;
+  --text-4: #8e9aaf;
   --border: rgba(0, 0, 0, 0.08);
   --border-2: rgba(0, 0, 0, 0.05);
   --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04);
@@ -29,9 +29,9 @@
   --surface: #141416;
   --surface-2: #1c1c1f;
   --text: #f0f0f2;
-  --text-2: #c0c0c8;
-  --text-3: #7a7a86;
-  --text-4: #4a4a52;
+  --text-2: #9ba3b8;
+  --text-3: #8e9aaf;
+  --text-4: #525c6e;
   --border: rgba(255, 255, 255, 0.07);
   --border-2: rgba(255, 255, 255, 0.04);
   --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.3);

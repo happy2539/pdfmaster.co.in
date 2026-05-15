@@ -60,28 +60,59 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
+    <link rel="preload" href="/css/faq.css" as="style" />
 
-    <!-- Fonts -->
+    <!-- Preload LCP element (logo) -->
     <link
-      href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&display=swap"
-      rel="stylesheet"
+      rel="preload"
+      href="/assets/apple-touch-icon.png"
+      as="image"
+      fetchpriority="high"
     />
 
-    <!-- CSS -->
-    <link rel="stylesheet" href="css/faq.css" />
+    <!-- Google Fonts – async (non-render-blocking) -->
+    <link
+      rel="preload"
+      href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&display=swap"
+      as="style"
+      onload="this.onload=null;this.rel='stylesheet'"
+    />
+    <noscript>
+      <link
+        href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&display=swap"
+        rel="stylesheet"
+      />
+    </noscript>
 
-    <!-- Google Tag Manager -->
+    <!-- CSS -->
+    <link rel="stylesheet" href="/css/faq.css" />
+
+    <meta name="google-adsense-account" content="ca-pub-9223989888558332" />
+
+    <!-- GTM deferred: loads on first user interaction to eliminate TBT impact -->
     <script>
-      (function (w, d, s, l, i) {
-        w[l] = w[l] || [];
-        w[l].push({ "gtm.start": new Date().getTime(), event: "gtm.js" });
-        var f = d.getElementsByTagName(s)[0],
-          j = d.createElement(s),
-          dl = l != "dataLayer" ? "&l=" + l : "";
-        j.async = true;
-        j.src = "https://www.googletagmanager.com/gtm.js?id=" + i + dl;
-        f.parentNode.insertBefore(j, f);
-      })(window, document, "script", "dataLayer", "GTM-PCSVMC65");
+      (function () {
+        var gtmLoaded = false;
+        function loadGTM() {
+          if (gtmLoaded) return;
+          gtmLoaded = true;
+          (function (w, d, s, l, i) {
+            w[l] = w[l] || [];
+            w[l].push({ "gtm.start": new Date().getTime(), event: "gtm.js" });
+            var f = d.getElementsByTagName(s)[0],
+              j = d.createElement(s),
+              dl = l != "dataLayer" ? "&l=" + l : "";
+            j.async = true;
+            j.src = "https://www.googletagmanager.com/gtm.js?id=" + i + dl;
+            f.parentNode.insertBefore(j, f);
+          })(window, document, "script", "dataLayer", "GTM-PCSVMC65");
+        }
+        var evts = ["mousedown", "touchstart", "keydown", "scroll", "wheel"];
+        evts.forEach(function (e) {
+          window.addEventListener(e, loadGTM, { once: true, passive: true });
+        });
+        setTimeout(loadGTM, 4000);
+      })();
     </script>
 
     <!-- Schema -->
@@ -191,24 +222,32 @@
     <header>
       <nav class="main-nav">
         <a href="/" class="nav-logo" aria-label="PDFMaster Home">
-          <img src="assets/apple-touch-icon.png" alt="PDFMaster Logo" />
+          <img
+            src="/assets/apple-touch-icon.png"
+            alt="PDFMaster Logo"
+            width="34"
+            height="34"
+            fetchpriority="high"
+          />
           <span class="logo-text">PDF<span>Master</span></span>
         </a>
         <div class="nav-right">
           <div class="toggle-wrap" title="Toggle dark / light mode">
-            <span class="toggle-icon">☀️</span>
+            <span class="toggle-icon" aria-hidden="true">☀️</span>
             <button
               class="theme-btn"
               id="themeBtn"
               aria-label="Toggle theme"
+              type="button"
             ></button>
-            <span class="toggle-icon">🌙</span>
+            <span class="toggle-icon" aria-hidden="true">🌙</span>
           </div>
           <button
             class="hamburger-btn"
             id="hamburgerBtn"
             aria-label="Open navigation menu"
             aria-expanded="false"
+            type="button"
           >
             <span></span><span></span><span></span>
           </button>
@@ -231,31 +270,33 @@
         <a href="#billing-sec"
           ><span class="dd-dot"></span> Free &amp; Billing</a
         >
-        <a href="contact">📩 Contact</a>
+        <a href="/contact">📩 Contact</a>
         <a href="/">🏠 Home</a>
       </div>
     </div>
     <div class="nav-overlay" id="navOverlay"></div>
 
-    <!-- ═══════════════ BREADCRUMB ═══════════════ -->
-    <div class="breadcrumb">
-      <div class="breadcrumb-inner">
-        <a href="/">🏠 Home</a>
-        <svg
-          width="12"
-          height="12"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="2.5"
-        >
-          <path d="M9 18l6-6-6-6" />
-        </svg>
-        <span>FAQ</span>
-      </div>
-    </div>
+    <main id="main-content">
+      <!-- ═══════════════ BREADCRUMB ═══════════════ -->
+      <nav class="breadcrumb" aria-label="Breadcrumb">
+        <div class="breadcrumb-inner">
+          <a href="/">🏠 Home</a>
+          <svg
+            width="12"
+            height="12"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2.5"
+            aria-hidden="true"
+          >
+            <path d="M9 18l6-6-6-6" />
+          </svg>
+          <span aria-current="page">FAQ</span>
+        </div>
+      </nav>
 
-    <!-- ═══════════════ HERO ═══════════════ -->
+      <!-- ═══════════════ HERO ═══════════════ -->
     <section class="page-hero">
       <div class="page-hero-inner">
         <div class="hero-pill">
@@ -358,8 +399,8 @@
             data-cat="general"
             data-q="what is pdfmaster about overview pdf toolkit"
           >
-            <button class="faq-q" aria-expanded="false">
-              What is PDFMaster?<span class="faq-arrow">▾</span>
+            <button class="faq-q" type="button" aria-expanded="false">
+              What is PDFMaster?<span class="faq-arrow" aria-hidden="true">▾</span>
             </button>
             <div class="faq-a">
               <div class="faq-a-inner">
@@ -378,8 +419,8 @@
             data-cat="general"
             data-q="who built pdfmaster team founder developer"
           >
-            <button class="faq-q" aria-expanded="false">
-              Who built PDFMaster?<span class="faq-arrow">▾</span>
+            <button class="faq-q" type="button" aria-expanded="false">
+              Who built PDFMaster?<span class="faq-arrow" aria-hidden="true">▾</span>
             </button>
             <div class="faq-a">
               <div class="faq-a-inner">
@@ -398,7 +439,7 @@
             data-cat="general"
             data-q="why use pdfmaster benefits advantages other pdf tools"
           >
-            <button class="faq-q" aria-expanded="false">
+            <button class="faq-q" type="button" aria-expanded="false">
               Why use PDFMaster over other PDF tools?<span class="faq-arrow"
                 >▾</span
               >
@@ -420,7 +461,7 @@
             data-cat="general"
             data-q="account registration login sign up required email"
           >
-            <button class="faq-q" aria-expanded="false">
+            <button class="faq-q" type="button" aria-expanded="false">
               Do I need to create an account or register?<span class="faq-arrow"
                 >▾</span
               >
@@ -443,7 +484,7 @@
             data-cat="general"
             data-q="how many tools available list all tools"
           >
-            <button class="faq-q" aria-expanded="false">
+            <button class="faq-q" type="button" aria-expanded="false">
               How many tools does PDFMaster offer?<span class="faq-arrow"
                 >▾</span
               >
@@ -466,8 +507,8 @@
             data-cat="general"
             data-q="new tools update roadmap upcoming release schedule"
           >
-            <button class="faq-q" aria-expanded="false">
-              How often are new tools added?<span class="faq-arrow">▾</span>
+            <button class="faq-q" type="button" aria-expanded="false">
+              How often are new tools added?<span class="faq-arrow" aria-hidden="true">▾</span>
             </button>
             <div class="faq-a">
               <div class="faq-a-inner">
@@ -485,8 +526,8 @@
             data-cat="general"
             data-q="report bug issue problem error not working"
           >
-            <button class="faq-q" aria-expanded="false">
-              How do I report a bug or issue?<span class="faq-arrow">▾</span>
+            <button class="faq-q" type="button" aria-expanded="false">
+              How do I report a bug or issue?<span class="faq-arrow" aria-hidden="true">▾</span>
             </button>
             <div class="faq-a">
               <div class="faq-a-inner">
@@ -504,7 +545,7 @@
             data-cat="general"
             data-q="contact support help team response time email"
           >
-            <button class="faq-q" aria-expanded="false">
+            <button class="faq-q" type="button" aria-expanded="false">
               How can I contact the PDFMaster team?<span class="faq-arrow"
                 >▾</span
               >
@@ -538,7 +579,7 @@
             data-cat="privacy"
             data-q="are files safe secure private data server upload"
           >
-            <button class="faq-q" aria-expanded="false">
+            <button class="faq-q" type="button" aria-expanded="false">
               Are my files safe when using PDFMaster?<span class="faq-arrow"
                 >▾</span
               >
@@ -560,7 +601,7 @@
             data-cat="privacy"
             data-q="does pdfmaster upload files cloud server third party"
           >
-            <button class="faq-q" aria-expanded="false">
+            <button class="faq-q" type="button" aria-expanded="false">
               Does PDFMaster upload my files to a server?<span class="faq-arrow"
                 >▾</span
               >
@@ -581,7 +622,7 @@
             data-cat="privacy"
             data-q="what data does pdfmaster collect analytics tracking personal"
           >
-            <button class="faq-q" aria-expanded="false">
+            <button class="faq-q" type="button" aria-expanded="false">
               What data does PDFMaster collect about me?<span class="faq-arrow"
                 >▾</span
               >
@@ -603,8 +644,8 @@
             data-cat="privacy"
             data-q="cookies localStorage data storage browser"
           >
-            <button class="faq-q" aria-expanded="false">
-              Does PDFMaster use cookies?<span class="faq-arrow">▾</span>
+            <button class="faq-q" type="button" aria-expanded="false">
+              Does PDFMaster use cookies?<span class="faq-arrow" aria-hidden="true">▾</span>
             </button>
             <div class="faq-a">
               <div class="faq-a-inner">
@@ -622,8 +663,8 @@
             data-cat="privacy"
             data-q="GDPR data protection compliance privacy law"
           >
-            <button class="faq-q" aria-expanded="false">
-              Is PDFMaster GDPR compliant?<span class="faq-arrow">▾</span>
+            <button class="faq-q" type="button" aria-expanded="false">
+              Is PDFMaster GDPR compliant?<span class="faq-arrow" aria-hidden="true">▾</span>
             </button>
             <div class="faq-a">
               <div class="faq-a-inner">
@@ -642,7 +683,7 @@
             data-cat="privacy"
             data-q="can pdfmaster see read my documents contents staff"
           >
-            <button class="faq-q" aria-expanded="false">
+            <button class="faq-q" type="button" aria-expanded="false">
               Can PDFMaster staff see my document contents?<span
                 class="faq-arrow"
                 >▾</span
@@ -665,7 +706,7 @@
             data-cat="privacy"
             data-q="safe sensitive confidential legal medical financial documents"
           >
-            <button class="faq-q" aria-expanded="false">
+            <button class="faq-q" type="button" aria-expanded="false">
               Is it safe to process sensitive or confidential documents?<span
                 class="faq-arrow"
                 >▾</span
@@ -696,7 +737,7 @@
             data-cat="tools"
             data-q="how to convert photo image jpg png to pdf"
           >
-            <button class="faq-q" aria-expanded="false">
+            <button class="faq-q" type="button" aria-expanded="false">
               How do I convert photos or images to a PDF?<span class="faq-arrow"
                 >▾</span
               >
@@ -719,7 +760,7 @@
             data-cat="tools"
             data-q="how to convert pdf to jpg image photo extract pages"
           >
-            <button class="faq-q" aria-expanded="false">
+            <button class="faq-q" type="button" aria-expanded="false">
               How do I convert a PDF to JPG images?<span class="faq-arrow"
                 >▾</span
               >
@@ -742,7 +783,7 @@
             data-cat="tools"
             data-q="how to merge combine multiple pdf files into one compiler"
           >
-            <button class="faq-q" aria-expanded="false">
+            <button class="faq-q" type="button" aria-expanded="false">
               How do I merge or combine multiple PDF files?<span
                 class="faq-arrow"
                 >▾</span
@@ -766,7 +807,7 @@
             data-cat="tools"
             data-q="how to split divide pdf extract pages into separate files"
           >
-            <button class="faq-q" aria-expanded="false">
+            <button class="faq-q" type="button" aria-expanded="false">
               How do I split a PDF into separate files?<span class="faq-arrow"
                 >▾</span
               >
@@ -787,8 +828,8 @@
             data-cat="tools"
             data-q="how to reorder rearrange pages in pdf drag drop"
           >
-            <button class="faq-q" aria-expanded="false">
-              How do I rearrange pages in a PDF?<span class="faq-arrow">▾</span>
+            <button class="faq-q" type="button" aria-expanded="false">
+              How do I rearrange pages in a PDF?<span class="faq-arrow" aria-hidden="true">▾</span>
             </button>
             <div class="faq-a">
               <div class="faq-a-inner">
@@ -806,7 +847,7 @@
             data-cat="tools"
             data-q="how to remove strip metadata from pdf hidden data author"
           >
-            <button class="faq-q" aria-expanded="false">
+            <button class="faq-q" type="button" aria-expanded="false">
               How do I remove metadata from a PDF?<span class="faq-arrow"
                 >▾</span
               >
@@ -828,8 +869,8 @@
             data-cat="tools"
             data-q="dark mode light mode theme toggle switch preference"
           >
-            <button class="faq-q" aria-expanded="false">
-              Can I use PDFMaster in dark mode?<span class="faq-arrow">▾</span>
+            <button class="faq-q" type="button" aria-expanded="false">
+              Can I use PDFMaster in dark mode?<span class="faq-arrow" aria-hidden="true">▾</span>
             </button>
             <div class="faq-a">
               <div class="faq-a-inner">
@@ -846,7 +887,7 @@
             data-cat="tools"
             data-q="offline no internet connection works without wifi"
           >
-            <button class="faq-q" aria-expanded="false">
+            <button class="faq-q" type="button" aria-expanded="false">
               Does PDFMaster work offline without internet?<span
                 class="faq-arrow"
                 >▾</span
@@ -868,7 +909,7 @@
             data-cat="tools"
             data-q="coming soon tools pdf compressor watermark rotate pages new"
           >
-            <button class="faq-q" aria-expanded="false">
+            <button class="faq-q" type="button" aria-expanded="false">
               What tools are coming to PDFMaster soon?<span class="faq-arrow"
                 >▾</span
               >
@@ -898,7 +939,7 @@
             data-cat="files"
             data-q="what file formats supported input output pdf jpg png webp"
           >
-            <button class="faq-q" aria-expanded="false">
+            <button class="faq-q" type="button" aria-expanded="false">
               What file formats does PDFMaster support?<span class="faq-arrow"
                 >▾</span
               >
@@ -920,8 +961,8 @@
             data-cat="files"
             data-q="file size limit maximum large pdf size restriction"
           >
-            <button class="faq-q" aria-expanded="false">
-              Is there a file size limit?<span class="faq-arrow">▾</span>
+            <button class="faq-q" type="button" aria-expanded="false">
+              Is there a file size limit?<span class="faq-arrow" aria-hidden="true">▾</span>
             </button>
             <div class="faq-a">
               <div class="faq-a-inner">
@@ -940,7 +981,7 @@
             data-cat="files"
             data-q="how many files upload multiple batch processing limit"
           >
-            <button class="faq-q" aria-expanded="false">
+            <button class="faq-q" type="button" aria-expanded="false">
               How many files can I process at once?<span class="faq-arrow"
                 >▾</span
               >
@@ -961,7 +1002,7 @@
             data-cat="files"
             data-q="output quality resolution dpi image pdf quality settings"
           >
-            <button class="faq-q" aria-expanded="false">
+            <button class="faq-q" type="button" aria-expanded="false">
               What quality / resolution are the output files?<span
                 class="faq-arrow"
                 >▾</span
@@ -983,7 +1024,7 @@
             data-cat="files"
             data-q="password protected encrypted locked pdf cannot open"
           >
-            <button class="faq-q" aria-expanded="false">
+            <button class="faq-q" type="button" aria-expanded="false">
               Can PDFMaster process password-protected PDFs?<span
                 class="faq-arrow"
                 >▾</span
@@ -1007,7 +1048,7 @@
             data-cat="files"
             data-q="scanned pdf ocr text recognition image based pdf"
           >
-            <button class="faq-q" aria-expanded="false">
+            <button class="faq-q" type="button" aria-expanded="false">
               Does PDFMaster support scanned PDFs or OCR?<span class="faq-arrow"
                 >▾</span
               >
@@ -1029,7 +1070,7 @@
             data-cat="files"
             data-q="corrupt damaged pdf error cannot process invalid file"
           >
-            <button class="faq-q" aria-expanded="false">
+            <button class="faq-q" type="button" aria-expanded="false">
               Why does my PDF show an error when I try to process it?<span
                 class="faq-arrow"
                 >▾</span
@@ -1060,7 +1101,7 @@
             data-cat="technical"
             data-q="browser compatibility chrome firefox safari edge which browser"
           >
-            <button class="faq-q" aria-expanded="false">
+            <button class="faq-q" type="button" aria-expanded="false">
               Which browsers does PDFMaster support?<span class="faq-arrow"
                 >▾</span
               >
@@ -1081,7 +1122,7 @@
             data-cat="technical"
             data-q="mobile phone tablet works android ios iphone ipad touch screen"
           >
-            <button class="faq-q" aria-expanded="false">
+            <button class="faq-q" type="button" aria-expanded="false">
               Does PDFMaster work on mobile phones and tablets?<span
                 class="faq-arrow"
                 >▾</span
@@ -1104,7 +1145,7 @@
             data-cat="technical"
             data-q="how does on device processing work browser javascript pdf.js pdflib"
           >
-            <button class="faq-q" aria-expanded="false">
+            <button class="faq-q" type="button" aria-expanded="false">
               How does browser-based / on-device processing work?<span
                 class="faq-arrow"
                 >▾</span
@@ -1128,7 +1169,7 @@
             data-cat="technical"
             data-q="tool slow loading performance not working page blank white screen"
           >
-            <button class="faq-q" aria-expanded="false">
+            <button class="faq-q" type="button" aria-expanded="false">
               A tool is loading slowly or not working. What should I do?<span
                 class="faq-arrow"
                 >▾</span
@@ -1153,7 +1194,7 @@
             data-cat="technical"
             data-q="download not working file not downloading pdf not saving popup blocked"
           >
-            <button class="faq-q" aria-expanded="false">
+            <button class="faq-q" type="button" aria-expanded="false">
               The output file isn't downloading. How do I fix this?<span
                 class="faq-arrow"
                 >▾</span
@@ -1185,7 +1226,7 @@
             data-cat="billing"
             data-q="is pdfmaster free really no cost hidden fees charges pay"
           >
-            <button class="faq-q" aria-expanded="false">
+            <button class="faq-q" type="button" aria-expanded="false">
               Is PDFMaster really free? Any hidden costs?<span class="faq-arrow"
                 >▾</span
               >
@@ -1207,8 +1248,8 @@
             data-cat="billing"
             data-q="will pdfmaster stay free forever future policy commitment"
           >
-            <button class="faq-q" aria-expanded="false">
-              Will PDFMaster stay free forever?<span class="faq-arrow">▾</span>
+            <button class="faq-q" type="button" aria-expanded="false">
+              Will PDFMaster stay free forever?<span class="faq-arrow" aria-hidden="true">▾</span>
             </button>
             <div class="faq-a">
               <div class="faq-a-inner">
@@ -1224,7 +1265,7 @@
             data-cat="billing"
             data-q="how does pdfmaster make money business model revenue ads"
           >
-            <button class="faq-q" aria-expanded="false">
+            <button class="faq-q" type="button" aria-expanded="false">
               How does PDFMaster make money if it's free?<span class="faq-arrow"
                 >▾</span
               >
@@ -1245,7 +1286,7 @@
             data-cat="billing"
             data-q="enterprise api business commercial use volume partnership"
           >
-            <button class="faq-q" aria-expanded="false">
+            <button class="faq-q" type="button" aria-expanded="false">
               Does PDFMaster offer an API or enterprise plan?<span
                 class="faq-arrow"
                 >▾</span
@@ -1279,7 +1320,7 @@
             typically respond within 24 hours on working days.
           </p>
           <div class="cta-btns">
-            <a href="contact" class="btn-white">Contact Us →</a>
+            <a href="/contact" class="btn-white">Contact Us →</a>
             <a href="/#tools" class="btn-outline-white">Browse All Tools</a>
           </div>
         </div>
@@ -1315,7 +1356,13 @@
         <div class="footer-grid">
           <div class="fbrand">
             <a href="/" class="nav-logo">
-              <img src="assets/apple-touch-icon.png" alt="PDFMaster" />
+              <img
+                src="/assets/apple-touch-icon.png"
+                alt="PDFMaster Logo"
+                width="34"
+                height="34"
+                loading="lazy"
+              />
               <span class="logo-text">PDF<span>Master</span></span>
             </a>
             <p>
@@ -1352,27 +1399,27 @@
               <li><a href="/#tools">All Tools</a></li>
               <li><a href="/#features">Features</a></li>
               <li><a href="/about">About Us</a></li>
-              <li><a href="contact">Contact</a></li>
-              <li><a href="blog/photo-to-pdf/">Blogs</a></li>
+              <li><a href="/contact">Contact</a></li>
+              <li><a href="/blog/photo-to-pdf/">Blogs</a></li>
             </ul>
           </div>
           <div class="fcol">
             <h4>Popular Tools</h4>
             <ul>
-              <li><a href="photo-to-pdf">Photo to PDF</a></li>
-              <li><a href="pdf-to-photo">PDF to Photo</a></li>
-              <li><a href="merge-pdf">PDF Compiler</a></li>
-              <li><a href="/">All Tools</a></li>
+              <li><a href="/photo-to-pdf">Photo to PDF</a></li>
+              <li><a href="/pdf-to-photo">PDF to Photo</a></li>
+              <li><a href="/merge-pdf">PDF Compiler</a></li>
+              <li><a href="/#tools">All Tools</a></li>
             </ul>
           </div>
           <div class="fcol">
             <h4>Support</h4>
             <ul>
-              <li><a href="contact">Help Center</a></li>
-              <li><a href="privacy">Privacy Policy</a></li>
-              <li><a href="terms">Terms of Service</a></li>
+              <li><a href="/contact">Help Center</a></li>
+              <li><a href="/privacy">Privacy Policy</a></li>
+              <li><a href="/terms">Terms of Service</a></li>
               <li>
-                <a href="faq" style="color: var(--primary); font-weight: 600"
+                <a href="/faq" style="color: var(--primary); font-weight: 600"
                   >FAQ</a
                 >
               </li>
@@ -1381,17 +1428,24 @@
           </div>
         </div>
         <div class="footer-bot">
-          <p>&copy; 2025 pdfmaster.co.in — All rights reserved.</p>
+          <p>&copy; 2026 pdfmaster.co.in — All rights reserved.</p>
           <div class="footer-bot-links">
-            <a href="privacy">Privacy Policy</a>
-            <a href="terms">Terms of Service</a>
-            <a href="contact">Contact</a>
+            <a href="/privacy">Privacy Policy</a>
+            <a href="/terms">Terms of Service</a>
+            <a href="/contact">Contact</a>
           </div>
         </div>
       </div>
     </footer>
 
-    <button class="b2t" id="b2t" aria-label="Back to top">↑</button>
-    <script src="js/faq.js"></script>
+    <button
+      class="b2t"
+      id="b2t"
+      aria-label="Back to top"
+      type="button"
+    >
+      ↑
+    </button>
+    <script src="/js/faq.js"></script>
   </body>
 </html>
