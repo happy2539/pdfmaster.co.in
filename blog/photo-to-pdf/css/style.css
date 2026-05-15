@@ -8,8 +8,8 @@
   --bg-card: #ffffff;
   --bg-card-hover: #f5f5f5;
   --text: #1a1a2e;
-  --text-secondary: #555770;
-  --text-muted: #64647a;
+  --text-secondary: #4b5263;
+  --text-muted: #6b7280;
   --border: #e8eaed;
   --border-light: #f0f1f3;
   --shadow: 0 2px 16px rgba(0, 0, 0, 0.08);
@@ -26,8 +26,8 @@
   --bg-card: #1c1c28;
   --bg-card-hover: #22223a;
   --text: #f0f0f8;
-  --text-secondary: #a8a8c0;
-  --text-muted: #8c8ca5;
+  --text-secondary: #9ba3b8;
+  --text-muted: #8e9aaf;
   --border: #2a2a3e;
   --border-light: #22223a;
   --shadow: 0 2px 16px rgba(0, 0, 0, 0.35);
