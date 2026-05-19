@@ -1,13 +1,27 @@
 // ── Theme ──────────────────────────────────────────
 const btn = document.getElementById("themeBtn");
+const sunIcon = document.getElementById("sunIcon");
+const moonIcon = document.getElementById("moonIcon");
 const root = document.documentElement;
+
+function applyTheme(theme) {
+  root.setAttribute("data-theme", theme);
+  localStorage.setItem("pdfmaster-theme", theme);
+  if (theme === "dark") {
+    sunIcon.style.display = "block";
+    moonIcon.style.display = "none";
+  } else {
+    sunIcon.style.display = "none";
+    moonIcon.style.display = "block";
+  }
+}
+
 const saved = localStorage.getItem("pdfmaster-theme") || "light";
-root.setAttribute("data-theme", saved);
+applyTheme(saved);
 
 btn.addEventListener("click", () => {
   const next = root.getAttribute("data-theme") === "dark" ? "light" : "dark";
-  root.setAttribute("data-theme", next);
-  localStorage.setItem("pdfmaster-theme", next);
+  applyTheme(next);
 });
 
 // ── Filter tabs ────────────────────────────────────
