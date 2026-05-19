@@ -11,16 +11,25 @@ let currentMeta = null;
 let cleanPdfBytes = null;
 
 // ── Theme ─────────────────────────────────────────────
+const btn = document.getElementById("themeBtn");
+const sunIcon = document.getElementById("sunIcon");
+const moonIcon = document.getElementById("moonIcon");
+const root = document.documentElement;
+
 const applyTheme = (t) => {
-  document.documentElement.setAttribute("data-theme", t);
+  root.setAttribute("data-theme", t);
   localStorage.setItem("pdfm-theme", t);
+  if (t === "dark") {
+    sunIcon.style.display = "block";
+    moonIcon.style.display = "none";
+  } else {
+    sunIcon.style.display = "none";
+    moonIcon.style.display = "block";
+  }
 };
 applyTheme(localStorage.getItem("pdfm-theme") || "light");
-document.getElementById("themeBtn").addEventListener("click", () => {
-  const next =
-    document.documentElement.getAttribute("data-theme") === "dark"
-      ? "light"
-      : "dark";
+btn.addEventListener("click", () => {
+  const next = root.getAttribute("data-theme") === "dark" ? "light" : "dark";
   applyTheme(next);
 });
 

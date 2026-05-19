@@ -1,28 +1,36 @@
 /* ═══════════════════════════════════════════════════
    THEME TOGGLE
 ═══════════════════════════════════════════════════ */
-const html = document.documentElement;
-const themeBtn = document.getElementById("themeBtn");
-function applyTheme(theme) {
-  html.setAttribute("data-theme", theme);
-  localStorage.setItem("pmTheme", theme);
-}
-(function () {
-  const saved = localStorage.getItem("pmTheme");
-  if (saved) {
-    applyTheme(saved);
-    return;
-  }
-  applyTheme(
-    window.matchMedia("(prefers-color-scheme: dark)").matches
-      ? "dark"
-      : "light",
-  );
-})();
-document.getElementById("themeToggle").addEventListener("click", () => {
-  applyTheme(html.getAttribute("data-theme") === "dark" ? "light" : "dark");
-});
+const btn = document.getElementById("themeBtn");
+const sunIcon = document.getElementById("sunIcon");
+const moonIcon = document.getElementById("moonIcon");
+const root = document.documentElement;
 
+function applyTheme(theme) {
+  root.setAttribute("data-theme", theme);
+  localStorage.setItem("pmTheme", theme);
+  if (theme === "dark") {
+    sunIcon.style.display = "block";
+    moonIcon.style.display = "none";
+  } else {
+    sunIcon.style.display = "none";
+    moonIcon.style.display = "block";
+  }
+}
+
+(function () {
+  const saved =
+    localStorage.getItem("pmTheme") ||
+    (window.matchMedia("(prefers-color-scheme: dark)").matches
+      ? "dark"
+      : "light");
+  applyTheme(saved);
+})();
+
+btn.addEventListener("click", () => {
+  const next = root.getAttribute("data-theme") === "dark" ? "light" : "dark";
+  applyTheme(next);
+});
 /* ═══════════════════════════════════════════════════
    HAMBURGER MENU
 ═══════════════════════════════════════════════════ */

@@ -1,12 +1,20 @@
 // ── THEME TOGGLE ──
 const html = document.documentElement;
 const themeBtn = document.getElementById("themeToggle");
+const sunIcon = document.getElementById("sunIcon");
+const moonIcon = document.getElementById("moonIcon");
 const THEME_KEY = "pdfmaster-theme";
 
 function applyTheme(theme) {
   html.setAttribute("data-theme", theme);
-  themeBtn.textContent = theme === "dark" ? "☀️" : "🌙";
   localStorage.setItem(THEME_KEY, theme);
+  if (theme === "dark") {
+    sunIcon.style.display = "block";
+    moonIcon.style.display = "none";
+  } else {
+    sunIcon.style.display = "none";
+    moonIcon.style.display = "block";
+  }
 }
 
 const saved = localStorage.getItem(THEME_KEY);

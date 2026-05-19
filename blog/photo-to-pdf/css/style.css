@@ -159,31 +159,25 @@ ol {
 
 /* Theme Toggle */
 .theme-toggle {
-  width: 44px;
-  height: 44px;
+  width: 40px;
+  height: 40px;
   border: 1px solid var(--border);
-  border-radius: 12px;
+  border-radius: 10px;
   background: var(--bg-secondary);
   color: var(--text-secondary);
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.2rem;
   transition: all var(--transition);
 }
 .theme-toggle:hover {
   border-color: var(--primary);
   color: var(--primary);
 }
-.icon-moon {
-  display: none;
-}
-[data-theme="dark"] .icon-sun {
-  display: none;
-}
-[data-theme="dark"] .icon-moon {
-  display: block;
+.theme-toggle svg {
+  width: 20px;
+  height: 20px;
 }
 
 /* Hamburger (mobile) */

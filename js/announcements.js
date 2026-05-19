@@ -37,7 +37,7 @@
   const html = document.documentElement;
   const sunIcon = $("sunIcon");
   const moonIcon = $("moonIcon");
-  const themeToggle = $("themeToggle");
+  const themeToggle = $("themeBtn");
 
   function applyTheme(theme) {
     html.setAttribute("data-theme", theme);

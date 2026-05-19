@@ -1,14 +1,27 @@
 /* ── Theme Toggle ── */
-const themeBtn = document.getElementById("themeBtn");
-const html = document.documentElement;
+const btn = document.getElementById("themeBtn");
+const sunIcon = document.getElementById("sunIcon");
+const moonIcon = document.getElementById("moonIcon");
+const root = document.documentElement;
+
+function applyTheme(theme) {
+  root.setAttribute("data-theme", theme);
+  localStorage.setItem("pdfmaster-theme", theme);
+  if (theme === "dark") {
+    sunIcon.style.display = "block";
+    moonIcon.style.display = "none";
+  } else {
+    sunIcon.style.display = "none";
+    moonIcon.style.display = "block";
+  }
+}
 
 const saved = localStorage.getItem("pdfmaster-theme") || "light";
-html.setAttribute("data-theme", saved);
+applyTheme(saved);
 
-themeBtn.addEventListener("click", () => {
-  const next = html.getAttribute("data-theme") === "dark" ? "light" : "dark";
-  html.setAttribute("data-theme", next);
-  localStorage.setItem("pdfmaster-theme", next);
+btn.addEventListener("click", () => {
+  const next = root.getAttribute("data-theme") === "dark" ? "light" : "dark";
+  applyTheme(next);
 });
 
 /* ── Hamburger ── */

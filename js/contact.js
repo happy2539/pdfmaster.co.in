@@ -2,18 +2,29 @@
 // Theme Toggle
 // ─────────────────────────────────────────
 
-const themeBtn = document.getElementById("themeBtn");
+const btn = document.getElementById("themeBtn");
+const sunIcon = document.getElementById("sunIcon");
+const moonIcon = document.getElementById("moonIcon");
 const root = document.documentElement;
 
-const savedTheme = localStorage.getItem("pdfmaster-theme") || "light";
-root.setAttribute("data-theme", savedTheme);
+function applyTheme(theme) {
+  root.setAttribute("data-theme", theme);
+  localStorage.setItem("pdfmaster-theme", theme);
+  if (theme === "dark") {
+    sunIcon.style.display = "block";
+    moonIcon.style.display = "none";
+  } else {
+    sunIcon.style.display = "none";
+    moonIcon.style.display = "block";
+  }
+}
 
-themeBtn.addEventListener("click", () => {
-  const nextTheme =
-    root.getAttribute("data-theme") === "dark" ? "light" : "dark";
+const saved = localStorage.getItem("pdfmaster-theme") || "light";
+applyTheme(saved);
 
-  root.setAttribute("data-theme", nextTheme);
-  localStorage.setItem("pdfmaster-theme", nextTheme);
+btn.addEventListener("click", () => {
+  const next = root.getAttribute("data-theme") === "dark" ? "light" : "dark";
+  applyTheme(next);
 });
 
 // ─────────────────────────────────────────

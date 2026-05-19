@@ -150,19 +150,22 @@ ul {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 44px;
-  height: 44px;
+  width: 36px;
+  height: 36px;
   border-radius: 50%;
   border: 1px solid var(--border);
   background: var(--bg-alt);
   cursor: pointer;
   color: var(--text-secondary);
   transition: all var(--transition);
-  font-size: 1.1rem;
 }
 .btn-theme:hover {
   border-color: var(--accent);
   color: var(--accent);
+}
+.btn-theme svg {
+  width: 18px;
+  height: 18px;
 }
 
 /* Hamburger */

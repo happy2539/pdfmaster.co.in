@@ -1,15 +1,27 @@
-/* ═══════════ Inline fallback script (identical logic to privacy-policy.js) ═══════════ */
+/* ═══════════ Theme Toggle ═══════════ */
+const btn = document.getElementById("themeBtn");
+const sunIcon = document.getElementById("sunIcon");
+const moonIcon = document.getElementById("moonIcon");
+const root = document.documentElement;
 
-/* Theme */
-const html = document.documentElement;
-const themeBtn = document.getElementById("themeBtn");
-const savedTheme = localStorage.getItem("pdfmaster-theme");
-if (savedTheme) html.setAttribute("data-theme", savedTheme);
-themeBtn.addEventListener("click", () => {
-  const isDark = html.getAttribute("data-theme") === "dark";
-  const next = isDark ? "light" : "dark";
-  html.setAttribute("data-theme", next);
-  localStorage.setItem("pdfmaster-theme", next);
+function applyTheme(theme) {
+  root.setAttribute("data-theme", theme);
+  localStorage.setItem("pdfmaster-theme", theme);
+  if (theme === "dark") {
+    sunIcon.style.display = "block";
+    moonIcon.style.display = "none";
+  } else {
+    sunIcon.style.display = "none";
+    moonIcon.style.display = "block";
+  }
+}
+
+const saved = localStorage.getItem("pdfmaster-theme") || "light";
+applyTheme(saved);
+
+btn.addEventListener("click", () => {
+  const next = root.getAttribute("data-theme") === "dark" ? "light" : "dark";
+  applyTheme(next);
 });
 
 /* Hamburger dropdown */

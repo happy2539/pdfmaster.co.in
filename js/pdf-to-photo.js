@@ -68,22 +68,29 @@ const pagesText = document.getElementById("pagesText");
 const fmtBtns = document.getElementById("fmtBtns");
 
 // ─── Theme ───────────────────────────────────────────────────────────────
-const html = document.documentElement;
-const savedTheme = localStorage.getItem("pdfmaster-theme") || "light";
-html.setAttribute("data-theme", savedTheme);
+const btn = document.getElementById("themeBtn");
+const sunIcon = document.getElementById("sunIcon");
+const moonIcon = document.getElementById("moonIcon");
+const root = document.documentElement;
 
-function toggleTheme() {
-  const next = html.getAttribute("data-theme") === "dark" ? "light" : "dark";
-  html.setAttribute("data-theme", next);
-  localStorage.setItem("pdfmaster-theme", next);
+function applyTheme(theme) {
+  root.setAttribute("data-theme", theme);
+  localStorage.setItem("pdfmaster-theme", theme);
+  if (theme === "dark") {
+    sunIcon.style.display = "block";
+    moonIcon.style.display = "none";
+  } else {
+    sunIcon.style.display = "none";
+    moonIcon.style.display = "block";
+  }
 }
-document.getElementById("themeToggle").addEventListener("click", toggleTheme);
-document.getElementById("themeBtn").addEventListener("click", (e) => {
-  e.stopPropagation();
-  toggleTheme();
-});
-document.getElementById("themeToggle").addEventListener("keydown", (e) => {
-  if (e.key === "Enter" || e.key === " ") toggleTheme();
+
+const saved = localStorage.getItem("pdfmaster-theme") || "light";
+applyTheme(saved);
+
+btn.addEventListener("click", () => {
+  const next = root.getAttribute("data-theme") === "dark" ? "light" : "dark";
+  applyTheme(next);
 });
 
 // ─── Sidebar / Hamburger ─────────────────────────────────────────────────

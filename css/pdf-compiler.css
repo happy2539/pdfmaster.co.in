@@ -113,45 +113,34 @@ nav {
   gap: 12px;
 }
 
-/* Theme Toggle */
-.toggle-wrap {
+/* Theme toggle */
+.theme-toggle {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: transparent;
+  border: 1px solid var(--border);
   display: flex;
   align-items: center;
-  gap: 6px;
+  justify-content: center;
+  transition:
+    background 0.3s,
+    border-color 0.3s,
+    transform 0.2s;
+  color: var(--text2);
+  flex-shrink: 0;
   cursor: pointer;
 }
-.toggle-icon {
-  font-size: 14px;
+.theme-toggle:hover {
+  background: rgba(229, 62, 62, 0.07);
+  border-color: rgba(229, 62, 62, 0.18);
+  color: var(--accent);
+  transform: scale(1.08);
 }
-.theme-btn {
-  position: relative;
-  width: 44px;
-  height: 24px;
-  background: var(--border);
-  border: none;
-  border-radius: 50px;
-  cursor: pointer;
-  transition: background var(--transition);
-}
-.theme-btn::after {
-  content: "";
-  position: absolute;
-  top: 3px;
-  left: 3px;
+.theme-toggle svg {
   width: 18px;
   height: 18px;
-  background: var(--surface);
-  border-radius: 50%;
-  transition:
-    transform var(--transition),
-    background var(--transition);
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
-}
-[data-theme="dark"] .theme-btn {
-  background: var(--accent);
-}
-[data-theme="dark"] .theme-btn::after {
-  transform: translateX(20px);
+  pointer-events: none;
 }
 
 /* Hamburger Menu */

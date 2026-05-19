@@ -1,14 +1,30 @@
 // ── Theme ───────────────────────────────────────────────────
 const THEME_KEY = "pdfmaster-theme";
 const html = document.documentElement;
+const sunIcon = document.getElementById("sunIcon");
+const moonIcon = document.getElementById("moonIcon");
+
+function applyTheme(theme) {
+  html.setAttribute("data-theme", theme);
+  localStorage.setItem(THEME_KEY, theme);
+  if (sunIcon && moonIcon) {
+    if (theme === "dark") {
+      sunIcon.style.display = "block";
+      moonIcon.style.display = "none";
+    } else {
+      sunIcon.style.display = "none";
+      moonIcon.style.display = "block";
+    }
+  }
+}
+
 const savedTheme = localStorage.getItem(THEME_KEY) || "light";
-html.setAttribute("data-theme", savedTheme);
+applyTheme(savedTheme);
 
 document.getElementById("themeToggle").addEventListener("click", () => {
   const current = html.getAttribute("data-theme");
   const next = current === "dark" ? "light" : "dark";
-  html.setAttribute("data-theme", next);
-  localStorage.setItem(THEME_KEY, next);
+  applyTheme(next);
 });
 
 // ── Hamburger / Drawer ──────────────────────────────────────

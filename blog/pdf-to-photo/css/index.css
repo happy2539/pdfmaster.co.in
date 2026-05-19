@@ -154,11 +154,14 @@ ul {
   cursor: pointer;
   color: var(--text-secondary);
   transition: all var(--transition);
-  font-size: 1rem;
 }
 .btn-theme:hover {
   border-color: var(--accent);
   color: var(--accent);
+}
+.btn-theme svg {
+  width: 18px;
+  height: 18px;
 }
 
 /* Hamburger */
