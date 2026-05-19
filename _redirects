@@ -12,11 +12,12 @@
 # ROOT PAGES REDIRECTS      (UTILITY PAGES)
 # -----------------------------
 
-/about.html          /about          301!
-/contact.html        /contact        301!
-/faq.html            /faq            301!
-/privacy.html        /privacy        301!
-/terms.html          /terms          301!
+/about.html             /about              301!
+/contact.html           /contact            301!
+/faq.html               /faq                301!
+/privacy.html           /privacy            301!
+/terms.html             /terms              301!
+/announcements.html     /announcements      301!
 
 
 
