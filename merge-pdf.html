@@ -80,18 +80,51 @@
       defer
     ></script>
 
-    <!-- Google Tag Manager -->
     <script>
-      (function (w, d, s, l, i) {
-        w[l] = w[l] || [];
-        w[l].push({ "gtm.start": new Date().getTime(), event: "gtm.js" });
-        var f = d.getElementsByTagName(s)[0],
-          j = d.createElement(s),
-          dl = l != "dataLayer" ? "&l=" + l : "";
-        j.async = true;
-        j.src = "https://www.googletagmanager.com/gtm.js?id=" + i + dl;
-        f.parentNode.insertBefore(j, f);
-      })(window, document, "script", "dataLayer", "GTM-PCSVMC65");
+      // Immediate theme initialization to prevent FOUC
+      (function () {
+        const THEME_KEY = "pdfmaster-theme";
+        const savedTheme = localStorage.getItem(THEME_KEY) || "light";
+        document.documentElement.setAttribute("data-theme", savedTheme);
+      })();
+    </script>
+
+    <!-- Google Tag Manager (Delayed) -->
+    <script>
+      (function () {
+        let gtmLoaded = false;
+        const gtmId = "GTM-PCSVMC65";
+
+        function loadGTM() {
+          if (gtmLoaded) return;
+          gtmLoaded = true;
+
+          (function (w, d, s, l, i) {
+            w[l] = w[l] || [];
+            w[l].push({ "gtm.start": new Date().getTime(), event: "gtm.js" });
+            var f = d.getElementsByTagName(s)[0],
+              j = d.createElement(s),
+              dl = l != "dataLayer" ? "&l=" + l : "";
+            j.async = true;
+            j.src = "https://www.googletagmanager.com/gtm.js?id=" + i + dl;
+            f.parentNode.insertBefore(j, f);
+          })(window, document, "script", "dataLayer", gtmId);
+
+          // Clean up listeners
+          window.removeEventListener("scroll", loadGTM);
+          window.removeEventListener("mousemove", loadGTM);
+          window.removeEventListener("touchstart", loadGTM);
+          window.removeEventListener("click", loadGTM);
+        }
+
+        window.addEventListener("scroll", loadGTM, { passive: true });
+        window.addEventListener("mousemove", loadGTM, { passive: true });
+        window.addEventListener("touchstart", loadGTM, { passive: true });
+        window.addEventListener("click", loadGTM, { passive: true });
+
+        // Fallback for very slow interactions
+        setTimeout(loadGTM, 5000);
+      })();
     </script>
 
     <!-- Schema -->
@@ -955,6 +988,7 @@
             <ul>
               <li><a href="photo-to-pdf">Photo to PDF</a></li>
               <li><a href="pdf-to-photo">PDF to Photo</a></li>
+              <li><a href="split-pdf">Split PDF</a></li>
               <li><a href="merge-pdf">PDF Merge</a></li>
               <li><a href="/">All Tools</a></li>
             </ul>
