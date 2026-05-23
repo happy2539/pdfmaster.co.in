@@ -58,13 +58,16 @@ document.getElementById("emailForm").addEventListener("submit", async (e) => {
   }
 
   try {
-    const res = await fetch("https://your-worker-url", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
+    const res = await fetch(
+      "https://email-collector.gamingwithhappy39.workers.dev/",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email, token }),
       },
-      body: JSON.stringify({ email, token }),
-    });
+    );
 
     const text = await res.text();
 
