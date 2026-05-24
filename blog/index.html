@@ -1038,6 +1038,20 @@
     <button class="btt" id="btt" aria-label="Back to top">
       <svg viewBox="0 0 24 24"><polyline points="18 15 12 9 6 15" /></svg>
     </button>
+
+    <!-- ── CUSTOM MODAL ── -->
+<div class="pm-overlay" id="pmOverlay" role="dialog" aria-modal="true" aria-labelledby="pmTitle" hidden>
+  <div class="pm-modal">
+    <div class="pm-icon-wrap" id="pmIconWrap">
+      <!-- icon injected by JS -->
+    </div>
+    <h3 class="pm-title" id="pmTitle"></h3>
+    <p  class="pm-msg"   id="pmMsg"></p>
+    <button class="pm-btn" id="pmBtn">OK</button>
+  </div>
+</div>
+
+
     <script src="script.js" defer></script>
   </body>
 </html>

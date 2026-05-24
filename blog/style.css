@@ -1165,6 +1165,116 @@ button {
   transform: none;
 }
 
+/* ── CUSTOM MODAL ── */
+.pm-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background: rgba(0, 0, 0, 0.55);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+.pm-overlay.pm-visible {
+  opacity: 1;
+}
+.pm-overlay[hidden] {
+  display: none;
+}
+.pm-modal {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--r-xl);
+  box-shadow: var(--sh-h);
+  padding: 36px 32px 28px;
+  max-width: 360px;
+  width: 100%;
+  text-align: center;
+  transform: translateY(12px) scale(0.97);
+  transition:
+    transform 0.22s ease,
+    opacity 0.22s ease;
+  opacity: 0;
+}
+.pm-overlay.pm-visible .pm-modal {
+  transform: translateY(0) scale(1);
+  opacity: 1;
+}
+.pm-icon-wrap {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 18px;
+}
+.pm-icon-wrap.pm-success {
+  background: rgba(34, 197, 94, 0.12);
+}
+.pm-icon-wrap.pm-error {
+  background: var(--accent-soft);
+}
+.pm-icon-wrap.pm-warn {
+  background: rgba(234, 179, 8, 0.12);
+}
+.pm-icon-wrap svg {
+  width: 26px;
+  height: 26px;
+  stroke-width: 2.2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  fill: none;
+}
+.pm-icon-wrap.pm-success svg {
+  stroke: #22c55e;
+}
+.pm-icon-wrap.pm-error svg {
+  stroke: var(--accent);
+}
+.pm-icon-wrap.pm-warn svg {
+  stroke: #eab308;
+}
+.pm-title {
+  font-family: var(--font-d);
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--tx-h);
+  margin-bottom: 8px;
+}
+.pm-msg {
+  font-size: 0.92rem;
+  color: var(--tx-p);
+  line-height: 1.6;
+  margin-bottom: 24px;
+}
+.pm-btn {
+  background: var(--accent);
+  color: #fff;
+  font-family: var(--font-d);
+  font-weight: 600;
+  font-size: 0.9rem;
+  padding: 10px 32px;
+  border-radius: var(--r-md);
+  border: none;
+  cursor: pointer;
+  transition:
+    background var(--ease),
+    transform var(--ease);
+}
+.pm-btn:hover {
+  background: var(--accent-h);
+  transform: translateY(-1px);
+}
+.pm-btn:active {
+  transform: translateY(0);
+}
+
 /* ── RESPONSIVE ── */
 @media (max-width: 1024px) {
   .tool-grid {
