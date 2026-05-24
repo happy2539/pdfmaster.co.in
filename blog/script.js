@@ -50,13 +50,13 @@ document.getElementById("emailForm").addEventListener("submit", async (e) => {
   e.preventDefault();
 
   const email = document.getElementById("emailInput").value;
-  const token = document.querySelector('[name="cf-turnstile-response"]').value;
+  const tokenEl = document.querySelector('[name="cf-turnstile-response"]');
+  const token = tokenEl ? tokenEl.value : null;
 
   if (!token) {
     alert("Please complete verification");
     return;
   }
-
   try {
     const res = await fetch(
       "https://email-collector.gamingwithhappy39.workers.dev/",
