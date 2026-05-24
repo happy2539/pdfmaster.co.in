@@ -1275,6 +1275,13 @@ button {
   transform: translateY(0);
 }
 
+/* Newsletter two-column row */
+.nl-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
 /* ── RESPONSIVE ── */
 @media (max-width: 1024px) {
   .tool-grid {
@@ -1340,5 +1347,9 @@ button {
   }
   .hero-tab {
     text-align: center;
+  }
+
+  .nl-row {
+    grid-template-columns: 1fr;
   }
 }
