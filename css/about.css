@@ -228,6 +228,14 @@ nav {
   transition:
     color var(--trans),
     background var(--trans);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.mobile-nav a svg {
+  width: 20px;
+  height: 20px;
+  stroke-width: 2.25px;
 }
 .mobile-nav a:hover {
   color: var(--red);
@@ -468,6 +476,11 @@ nav {
   justify-content: center;
   font-size: 1.6rem;
   margin-bottom: 20px;
+  color: var(--red);
+}
+.mv-icon svg {
+  width: 28px;
+  height: 28px;
 }
 .mv-card h3 {
   font-family: var(--font-main);
@@ -599,6 +612,11 @@ nav {
   font-size: 2rem;
   margin-bottom: 16px;
   display: block;
+  color: var(--red);
+}
+.vcard-icon svg {
+  width: 32px;
+  height: 32px;
 }
 .vcard h3 {
   font-family: var(--font-main);
@@ -652,6 +670,12 @@ nav {
   justify-content: center;
   font-size: 2rem;
   margin: 0 auto 18px;
+  color: var(--red);
+  overflow: hidden;
+}
+.tcard-avatar svg {
+  width: 36px;
+  height: 36px;
 }
 .tcard h3 {
   font-family: var(--font-main);

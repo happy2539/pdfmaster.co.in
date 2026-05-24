@@ -504,6 +504,9 @@ header {
   transition: all 0.2s;
   white-space: nowrap;
 }
+.ctab svg {
+  margin-bottom: 2px;
+}
 .ctab:hover {
   background: var(--primary-soft);
   color: var(--primary);
@@ -564,6 +567,11 @@ header {
 }
 .faq-group-label .cat-icon {
   font-size: 1rem;
+  display: flex;
+  align-items: center;
+}
+.faq-group-label .cat-icon svg {
+  margin-bottom: 2px;
 }
 
 /* FAQ item */
@@ -788,7 +796,7 @@ header {
   border-radius: 10px;
   background: rgba(255, 255, 255, 0.15);
   flex-shrink: 0;
-  font-size: 1.1rem;
+  color: #fff;
 }
 .cpoint-txt h4 {
   font-size: 0.9rem;
