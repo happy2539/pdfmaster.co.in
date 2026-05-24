@@ -98,78 +98,43 @@ function showModal(type, title, message) {
 document.getElementById("emailForm").addEventListener("submit", async (e) => {
   e.preventDefault();
 
-  const emailForm  = document.getElementById("emailForm");
-  const submitBtn  = emailForm.querySelector(".nl-btn");
+  const emailForm = document.getElementById("emailForm");
+  const submitBtn = emailForm.querySelector(".nl-btn");
 
-  const firstName  = document.getElementById("firstNameInput").value.trim();
-  const lastName   = document.getElementById("lastNameInput").value.trim();
-  const email      = document.getElementById("emailInput").value.trim();
-  const mobile     = document.getElementById("mobileInput").value.trim(); // optional
+  const firstName = document.getElementById("firstNameInput").value.trim();
+  const lastName = document.getElementById("lastNameInput").value.trim();
+  const email = document.getElementById("emailInput").value.trim();
+  const mobile = document.getElementById("mobileInput").value.trim();
 
-  const tokenEl    = document.querySelector('[name="cf-turnstile-response"]');
-  const token      = tokenEl ? tokenEl.value : null;
+  const tokenEl = document.querySelector('[name="cf-turnstile-response"]');
+  const token = tokenEl ? tokenEl.value : null;
 
   // Client-side validation
   if (!firstName || !lastName) {
-    showModal("warn", "Name required", "Please enter your first and last name.");
+    showModal(
+      "warn",
+      "Name required",
+      "Please enter your first and last name.",
+    );
     return;
   }
   if (mobile && !/^\+?[0-9\s\-]{7,15}$/.test(mobile)) {
-    showModal("warn", "Invalid number", "Please enter a valid mobile number or leave it blank.");
+    showModal(
+      "warn",
+      "Invalid number",
+      "Please enter a valid mobile number or leave it blank.",
+    );
     return;
   }
   if (!token) {
-    showModal("warn", "One more step", "Please complete the CAPTCHA verification first.");
+    showModal(
+      "warn",
+      "One more step",
+      "Please complete the CAPTCHA verification first.",
+    );
     return;
   }
 
-  submitBtn.disabled    = true;
-  submitBtn.textContent = "Sending…";
-
-  try {
-    const res = await fetch(
-      "https://email-collector.gamingwithhappy39.workers.dev/",
-      {
-        method:  "POST",
-        headers: { "Content-Type": "application/json" },
-        body:    JSON.stringify({ firstName, lastName, email, mobile, token }),
-      }
-    );
-
-    let data = {};
-    try { data = await res.json(); } catch { /* non-JSON fallback */ }
-
-    if (res.ok && data.success) {
-      showModal("success", "You're in! 🎉", "Thanks for subscribing. Expect PDF tips and tool updates monthly — no spam, ever.");
-      emailForm.reset();
-      if (window.turnstile) window.turnstile.reset();
-
-    } else if (res.status === 429) {
-      showModal("warn", "Too many attempts", "You've hit the limit. Please wait an hour and try again.");
-
-    } else if (res.status === 403) {
-      showModal("error", "Verification failed", "CAPTCHA check failed or request was blocked. Please refresh and try again.");
-
-    } else if (res.status === 400) {
-      showModal("warn", "Invalid input", data.error ?? "Please check your details and try again.");
-
-    } else if (res.status === 409) {
-      showModal("success", "Already subscribed", "This email is already on the list — you're good!");
-
-    } else {
-      showModal("error", "Something went wrong", data.error ?? "An unexpected error occurred. Please try again.");
-    }
-
-  } catch (err) {
-    showModal("error", "Network error", "Could not reach the server. Please check your connection and try again.");
-
-  } finally {
-    submitBtn.disabled    = false;
-    submitBtn.textContent = "Subscribe Free →";
-  }
-});
-
-  // Loading state
   submitBtn.disabled = true;
   submitBtn.textContent = "Sending…";
 
@@ -179,7 +144,7 @@ document.getElementById("emailForm").addEventListener("submit", async (e) => {
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, token }),
+        body: JSON.stringify({ firstName, lastName, email, mobile, token }),
       },
     );
 
@@ -208,13 +173,13 @@ document.getElementById("emailForm").addEventListener("submit", async (e) => {
       showModal(
         "error",
         "Verification failed",
-        "CAPTCHA check failed or request was blocked. Please refresh the page and try again.",
+        "CAPTCHA check failed or request was blocked. Please refresh and try again.",
       );
     } else if (res.status === 400) {
       showModal(
         "warn",
-        "Invalid email",
-        "Please enter a valid email address and try again.",
+        "Invalid input",
+        data.error ?? "Please check your details and try again.",
       );
     } else if (res.status === 409) {
       showModal(
@@ -226,7 +191,7 @@ document.getElementById("emailForm").addEventListener("submit", async (e) => {
       showModal(
         "error",
         "Something went wrong",
-        data.error ?? "An unexpected error occurred. Please try again shortly.",
+        data.error ?? "An unexpected error occurred. Please try again.",
       );
     }
   } catch (err) {
