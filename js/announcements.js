@@ -687,11 +687,21 @@
     try {
       allItems = await fetchData();
 
-      // Hero meta
+      // Sort items: Latest first (ensure newest is at index 0 for pinned banner)
+      allItems.sort((a, b) => {
+        if (!a.dateObj && !b.dateObj) return 0;
+        if (!a.dateObj) return 1;
+        if (!b.dateObj) return -1;
+        return b.dateObj - a.dateObj;
+      });
+
+      // Hero meta - show actual latest announcement date
       const total = allItems.length;
+      const lastUpdateStr =
+        total > 0 ? formatDate(allItems[0].dateObj) : formatDate(new Date());
       heroMetaText.textContent =
         total > 0
-          ? `${total} announcement${total !== 1 ? "s" : ""} — last updated ${formatDate(new Date())}`
+          ? `${total} announcement${total !== 1 ? "s" : ""} — last updated ${lastUpdateStr}`
           : "All systems operational";
 
       // Version pill — populated by parseSheetData when it hits a type=version row
