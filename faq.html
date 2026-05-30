@@ -173,6 +173,62 @@
                   "@type": "Answer",
                   "text": "Yes. All tools are completely free with no hidden charges, subscriptions, or limits."
                 }
+              },
+              {
+                "@type": "Question",
+                "name": "Why should I trust PDFMaster that it does not upload my files?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "You can inspect the network tab to see whether your data is uploaded anywhere or not, and you can also use it without internet (ensure all open-source libraries are downloaded locally). You can also review our codebase at github.com/happy2539/pdfmaster.co.in and even run it locally on your device."
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "Why is PDFMaster open sourced?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "PDFMaster is open source to build trust and transparency. By making the code public, anyone can verify that no data is uploaded or stored, ensuring the tool is secure, private, and truly client-side. It also allows the community to contribute improvements and fixes."
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "What is the announcement page?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "The announcement page is a dedicated space where we share important updates about PDFMaster, including new features, improvements, bug fixes, and service-related notices."
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "How often is the announcement page updated?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "We update the announcement page whenever there is something important to share, such as feature releases, performance improvements, or any temporary issues affecting the tools."
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "Do I need to check the announcement page regularly?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "Not necessarily, but we recommend visiting it occasionally to stay informed about new features. You can also subscribe to our email updates for important notifications; your email remains private and we never spam."
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "Will I be notified about new announcements?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "If you are subscribed to our email updates, you may receive important announcements directly in your inbox. Otherwise, all updates are always available on the announcement page."
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "Can I suggest a feature or report an issue?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "Yes, you can contact us through our support or feedback options. We actively consider user feedback while improving the platform."
+                }
               }
             ],
             "publisher": {
@@ -360,7 +416,7 @@
         <div class="search-count" id="searchCount"></div>
         <div class="stats-strip">
           <div class="sstat">
-            <span class="sstat-num" id="totalFaqs">40</span
+            <span class="sstat-num" id="totalFaqs">48</span
             ><span class="sstat-lbl">Questions</span>
           </div>
           <div class="sstat">
@@ -390,21 +446,21 @@
         <!-- Category tabs -->
         <div class="cat-tabs rv" id="catTabs">
           <button class="ctab active" data-cat="all">
-            All Questions <span class="ctab-count" id="cnt-all">40</span>
+            All Questions <span class="ctab-count" id="cnt-all">48</span>
           </button>
           <button class="ctab" data-cat="general">
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></svg>
-            General <span class="ctab-count" id="cnt-general">8</span>
+            General <span class="ctab-count" id="cnt-general">13</span>
           </button>
           <button class="ctab" data-cat="privacy">
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
             Privacy &amp; Security
-            <span class="ctab-count" id="cnt-privacy">7</span>
+            <span class="ctab-count" id="cnt-privacy">9</span>
           </button>
           <button class="ctab" data-cat="tools">
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="14" x="2" y="6" rx="2"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><path d="M2 11h20"/><path d="M8 11v4"/><path d="M16 11v4"/></svg>
             Tools &amp; Features
-            <span class="ctab-count" id="cnt-tools">9</span>
+            <span class="ctab-count" id="cnt-tools">10</span>
           </button>
           <button class="ctab" data-cat="files">
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9L9.6 3.9A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2Z"/></svg>
@@ -540,13 +596,11 @@
             </button>
             <div class="faq-a">
               <div class="faq-a-inner">
-                PDFMaster currently has <strong>3 live tools</strong> with 15+
-                more in active development. Live tools: Photo to PDF, PDF to
-                Photo, PDF Compiler (merge). Coming soon: PDF Reorder, Split
-                PDF, and PDF Metadata Remover, PDF Compressor, PDF to PNG,
-                Watermark, Page Rotator, Image Extractor, PDF Viewer, Excel to
-                PDF, and more. See the full list on our
-                <a href="/#tools">Tools page</a>.
+                PDFMaster currently has <strong>5 live tools</strong> covering
+                a wide range of document needs. Our tools include Photo to PDF,
+                PDF to Photo, Split PDF, Merge PDF (Compiler), PDF Metadata Remover,
+                and many more. We are constantly building and releasing new tools. See the latest update on our
+                <a href="/announcements">Announcements page</a>.
               </div>
             </div>
           </div>
@@ -612,6 +666,81 @@
                   >support@pdfmaster.co.in</a
                 >. We reply to all enquiries within
                 <strong>24 working hours</strong>, Monday to Saturday.
+              </div>
+            </div>
+          </div>
+
+          <div
+            class="faq-item rv"
+            data-cat="general"
+            data-q="announcement page updates new features improvements bug fixes notices"
+          >
+            <button class="faq-q" type="button" aria-expanded="false">
+              What is the announcement page?<span class="faq-arrow" aria-hidden="true">▾</span>
+            </button>
+            <div class="faq-a">
+              <div class="faq-a-inner">
+                The <a href="/announcements">announcement page</a> is a dedicated space where we share important updates about PDFMaster, including new features, improvements, bug fixes, and service-related notices.
+              </div>
+            </div>
+          </div>
+
+          <div
+            class="faq-item rv"
+            data-cat="general"
+            data-q="how often announcement page updated frequency feature releases"
+          >
+            <button class="faq-q" type="button" aria-expanded="false">
+              How often is the announcement page updated?<span class="faq-arrow" aria-hidden="true">▾</span>
+            </button>
+            <div class="faq-a">
+              <div class="faq-a-inner">
+                We update the announcement page whenever there is something important to share. This includes feature releases, performance improvements, or any temporary issues affecting the tools.
+              </div>
+            </div>
+          </div>
+
+          <div
+            class="faq-item rv"
+            data-cat="general"
+            data-q="check announcement page regularly stay updated subscribe email"
+          >
+            <button class="faq-q" type="button" aria-expanded="false">
+              Do I need to check the announcement page regularly?<span class="faq-arrow" aria-hidden="true">▾</span>
+            </button>
+            <div class="faq-a">
+              <div class="faq-a-inner">
+                Not necessarily. You can check it whenever you want to stay updated, but we recommend visiting it occasionally to learn about new features. You can also subscribe to our email updates for important notifications. (We never spam and your data remains private.)
+              </div>
+            </div>
+          </div>
+
+          <div
+            class="faq-item rv"
+            data-cat="general"
+            data-q="notified new announcements email inbox subscribe"
+          >
+            <button class="faq-q" type="button" aria-expanded="false">
+              Will I be notified about new announcements?<span class="faq-arrow" aria-hidden="true">▾</span>
+            </button>
+            <div class="faq-a">
+              <div class="faq-a-inner">
+                If you are subscribed to our email updates, you may receive important announcements directly in your inbox. Otherwise, all updates are always available on the announcement page.
+              </div>
+            </div>
+          </div>
+
+          <div
+            class="faq-item rv"
+            data-cat="general"
+            data-q="suggest feature report issue feedback support"
+          >
+            <button class="faq-q" type="button" aria-expanded="false">
+              Can I suggest a feature or report an issue?<span class="faq-arrow" aria-hidden="true">▾</span>
+            </button>
+            <div class="faq-a">
+              <div class="faq-a-inner">
+                Yes! You can contact us through our <a href="/contact">Contact page</a> or via our feedback options. We actively consider user feedback while improving the platform.
               </div>
             </div>
           </div>
@@ -776,6 +905,36 @@
             </div>
           </div>
 
+          <div
+            class="faq-item rv"
+            data-cat="privacy"
+            data-q="trust pdfmaster upload files safety security privacy network inspect"
+          >
+            <button class="faq-q" type="button" aria-expanded="false">
+              Why should I trust PDFMaster that it does not upload my files?<span class="faq-arrow" aria-hidden="true">▾</span>
+            </button>
+            <div class="faq-a">
+              <div class="faq-a-inner">
+                You can <strong>inspect the network tab</strong> in your browser to verify that no data is being uploaded anywhere. PDFMaster can also be used entirely offline (once libraries are loaded). Furthermore, our code is public on <a href="https://github.com/happy2539/pdfmaster.co.in" target="_blank" rel="noopener">GitHub</a>, allowing you to review it or even run it locally on your own machine.
+              </div>
+            </div>
+          </div>
+
+          <div
+            class="faq-item rv"
+            data-cat="privacy"
+            data-q="why open source transparency trust community contribution verification"
+          >
+            <button class="faq-q" type="button" aria-expanded="false">
+              Why is PDFMaster open sourced?<span class="faq-arrow" aria-hidden="true">▾</span>
+            </button>
+            <div class="faq-a">
+              <div class="faq-a-inner">
+                PDFMaster is open source to <strong>build trust and transparency</strong>. Since our tools process files directly in your browser, we want users to be able to verify that no data is uploaded or stored. Open source also allows developers to contribute improvements, fix issues, and help make the tool better for everyone.
+              </div>
+            </div>
+          </div>
+
           <!-- ═══ TOOLS & FEATURES ═══ -->
           <div class="faq-group rv" data-group="tools" id="tools-sec">
             <div class="faq-group-label">
@@ -798,7 +957,7 @@
             <div class="faq-a">
               <div class="faq-a-inner">
                 Open the
-                <a href="photo-to-pdf"><strong>Photo to PDF</strong></a>
+                <a href="photo-to-pdf"><strong style="color: red;">Photo to PDF</strong></a>
                 tool: (1) Click "Browse" or drag and drop your image files onto
                 the upload zone. (2) Reorder images by dragging if needed. (3)
                 Choose your page size and orientation. (4) Click "Convert to
@@ -867,7 +1026,7 @@
             </button>
             <div class="faq-a">
               <div class="faq-a-inner">
-                The <a href="#"><strong>Split PDF</strong></a> tool lets you
+                The <a href="pdf-split"><strong>Split PDF</strong></a> tool lets you
                 divide a PDF multiple ways: split every page into individual
                 files, split at specific page numbers, or extract a custom page
                 range (e.g. pages 3–7). All resulting files download as a ZIP
@@ -891,6 +1050,25 @@
                 your PDF. Thumbnail previews of all pages appear. Drag and drop
                 them into your desired order, then click "Save Reordered PDF" to
                 download the updated file instantly.
+              </div>
+            </div>
+          </div>
+
+          <div
+            class="faq-item rv"
+            data-cat="tools"
+            data-q="is split pdf fully functional what features does it have"
+          >
+            <button class="faq-q" type="button" aria-expanded="false">
+              What can I do with the Split PDF tool?<span class="faq-arrow" aria-hidden="true">▾</span>
+            </button>
+            <div class="faq-a">
+              <div class="faq-a-inner">
+                The <a href="pdf-split"><strong>Split PDF</strong></a> tool offers multiple modes:
+                <strong>Custom Ranges</strong> (extract specific pages like 1-3, 5),
+                <strong>Fixed Ranges</strong> (split every X pages), and
+                <strong>Extract All Pages</strong> (save every page as a separate PDF).
+                It provides visual page selection and downloads a ZIP file containing the split documents.
               </div>
             </div>
           </div>
@@ -969,13 +1147,11 @@
             </button>
             <div class="faq-a">
               <div class="faq-a-inner">
-                15+ tools in development including:
-                <strong>PDF Compressor</strong>, PDF to PNG, PDF Watermark, PDF
-                Page Rotator, Image From PDF Extractor, PDF Page Numbering, PDF
-                Dark Mode Toggle, PDF Viewer, Excel to PDF, PDF to Excel, PDF
-                Blank Page Inserter, and more. Check the
+                We are actively developing several new tools including:
+                <strong>PDF Compressor</strong>, <strong>Page Numbering</strong>, <strong>PDF Watermark</strong>,
+                <strong>Excel to PDF</strong>, <strong>PDF to Excel</strong>, <strong>PDF Blank Page Inserter</strong>, and more advanced document management features. Check the
                 <a href="/#tools">homepage tools section</a> for the full
-                upcoming list.
+                list of available and upcoming tools.
               </div>
             </div>
           </div>
