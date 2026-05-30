@@ -163,11 +163,24 @@
     <!-- End Google Tag Manager (noscript) -->
     <!-- ═══════════════ NAVBAR ═══════════════ -->
     <header>
-      <nav>
+      <nav class="container">
         <a href="/" class="nav-logo" aria-label="PDFMaster Home">
-          <img src="assets/apple-touch-icon.png" alt="PDFMaster Logo" />
+          <img
+            src="/assets/apple-touch-icon.png"
+            alt="PDFMaster Logo"
+            width="40"
+            height="40"
+          />
           <span class="logo-text">PDF<span>Master</span></span>
         </a>
+
+        <ul class="nav-links">
+          <li><a href="/#tools">Tools</a></li>
+          <li><a href="/#features">Features</a></li>
+          <li><a href="about">About</a></li>
+          <li><a href="contact">Contact</a></li>
+          <li><a href="announcements">Announcements</a></li>
+        </ul>
 
         <div class="nav-right">
           <button
@@ -208,30 +221,7 @@
               <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
             </svg>
           </button>
-          <button
-            class="hamburger-btn"
-            id="hamburgerBtn"
-            aria-label="Open navigation menu"
-            aria-expanded="false"
-          >
-            <span></span><span></span><span></span>
-          </button>
         </div>
-      </nav>
-
-      <nav
-        class="nav-dropdown"
-        id="navDropdown"
-        role="navigation"
-        aria-label="Tool sections"
-      >
-        <a href="#what-is-it"><span class="dd-dot"></span> What is it</a>
-        <a href="#features"><span class="dd-dot"></span> Features</a>
-        <a href="#how-to-use"><span class="dd-dot"></span> How to Use</a>
-        <a href="#benefits"><span class="dd-dot"></span> Benefits</a>
-        <a href="#faqs"><span class="dd-dot"></span> FAQs</a>
-        <a href="#related-tools"><span class="dd-dot"></span> Related Tools</a>
-        <a href="#contact"><span class="dd-dot"></span> Contact</a>
       </nav>
     </header>
 
@@ -240,7 +230,7 @@
     <!-- ═══════════════ BREADCRUMB ═══════════════ -->
     <div class="breadcrumb">
       <div class="breadcrumb-inner">
-        <a href="/">🏠 Home</a>
+        <a href="/">Home</a>
         <svg
           width="12"
           height="12"
@@ -277,10 +267,79 @@
         pages, reorder files, set metadata, and download instantly.
       </p>
       <div class="tool-pills">
-        <span class="tool-pill">🔒 100% Private</span>
-        <span class="tool-pill">⚡ On-Device Processing</span>
-        <span class="tool-pill">📄 Unlimited Files</span>
-        <span class="tool-pill">🆓 Always Free</span>
+        <span class="tool-pill"
+          ><svg
+            aria-hidden="true"
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <rect width="18" height="11" x="3" y="11" rx="2" ry="2" />
+            <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+          </svg>
+          100% Private</span
+        >
+        <span class="tool-pill"
+          ><svg
+            aria-hidden="true"
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
+          </svg>
+          On-Device Processing</span
+        >
+        <span class="tool-pill"
+          ><svg
+            aria-hidden="true"
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path
+              d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"
+            />
+            <polyline points="14 2 14 8 20 8" />
+          </svg>
+          Unlimited Files</span
+        >
+        <span class="tool-pill"
+          ><svg
+            aria-hidden="true"
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+            <polyline points="22 4 12 14.01 9 11.01" />
+          </svg>
+          Always Free</span
+        >
       </div>
     </section>
 
@@ -289,12 +348,47 @@
       <!-- Upload Card -->
       <div class="tool-card">
         <div class="tool-card-head">
-          <div class="card-icon">📂</div>
+          <div class="card-icon">
+            <svg
+              aria-hidden="true"
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path
+                d="M4 20h16a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.93a2 2 0 0 1-1.66-.9l-.82-1.2A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13c0 1.1.9 2 2 2Z"
+              />
+            </svg>
+          </div>
           Upload PDF Files
         </div>
         <div class="tool-card-body">
           <div class="upload-area" id="uploadArea">
-            <div class="upload-icon">📋</div>
+            <div class="upload-icon">
+              <svg
+                aria-hidden="true"
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <rect width="8" height="4" x="8" y="2" rx="1" ry="1" />
+                <path
+                  d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"
+                />
+              </svg>
+            </div>
             <div class="upload-title">
               Drop PDF files here or click to browse
             </div>
@@ -346,7 +440,25 @@
       <!-- File List Card -->
       <div class="tool-card" id="fileListCard">
         <div class="tool-card-head">
-          <div class="card-icon">📋</div>
+          <div class="card-icon">
+            <svg
+              aria-hidden="true"
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <rect width="8" height="4" x="8" y="2" rx="1" ry="1" />
+              <path
+                d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"
+              />
+            </svg>
+          </div>
           <span style="flex: 1"
             >Uploaded Files
             <span
@@ -362,11 +474,47 @@
         </div>
         <div class="tool-card-body">
           <div class="dup-warn" id="dupWarn">
-            ⚠️ <span id="dupWarnText">Duplicate file detected.</span>
+            <svg
+              aria-hidden="true"
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path
+                d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"
+              />
+              <line x1="12" x2="12" y1="9" y2="13" />
+              <line x1="12" x2="12.01" y1="17" y2="17" />
+            </svg>
+            <span id="dupWarnText">Duplicate file detected.</span>
           </div>
           <div id="fileListContainer">
             <div class="empty-state show" id="emptyState">
-              <div class="es-icon">📄</div>
+              <div class="es-icon">
+                <svg
+                  aria-hidden="true"
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="24"
+                  height="24"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path
+                    d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"
+                  />
+                  <polyline points="14 2 14 8 20 8" />
+                </svg>
+              </div>
               <p>
                 No PDF files added yet.<br />Upload files above to get started.
               </p>
@@ -378,7 +526,25 @@
       <!-- Advanced Options Card -->
       <div class="tool-card">
         <div class="tool-card-head">
-          <div class="card-icon">⚙️</div>
+          <div class="card-icon">
+            <svg
+              aria-hidden="true"
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path
+                d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"
+              />
+              <circle cx="12" cy="12" r="3" />
+            </svg>
+          </div>
           Advanced Options
         </div>
         <div class="tool-card-body">
@@ -557,7 +723,27 @@
         </div>
         <div class="feat-grid">
           <div class="feat-card">
-            <div class="feat-icon">🔗</div>
+            <div class="feat-icon">
+              <svg
+                aria-hidden="true"
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path
+                  d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"
+                />
+                <path
+                  d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"
+                />
+              </svg>
+            </div>
             <h3>Merge Multiple PDFs</h3>
             <p>
               Combine any number of PDF files into a single document in the
@@ -565,7 +751,25 @@
             </p>
           </div>
           <div class="feat-card">
-            <div class="feat-icon">📄</div>
+            <div class="feat-icon">
+              <svg
+                aria-hidden="true"
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path
+                  d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"
+                />
+                <polyline points="14 2 14 8 20 8" />
+              </svg>
+            </div>
             <h3>Selective Page Ranges</h3>
             <p>
               Choose exactly which pages from each PDF to include — no need to
@@ -573,7 +777,24 @@
             </p>
           </div>
           <div class="feat-card">
-            <div class="feat-icon">🔀</div>
+            <div class="feat-icon">
+              <svg
+                aria-hidden="true"
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path
+                  d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"
+                />
+              </svg>
+            </div>
             <h3>Drag &amp; Reorder</h3>
             <p>
               Simply drag and drop to rearrange the order of your uploaded PDF
@@ -581,7 +802,25 @@
             </p>
           </div>
           <div class="feat-card">
-            <div class="feat-icon">🏷️</div>
+            <div class="feat-icon">
+              <svg
+                aria-hidden="true"
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path
+                  d="M12.586 2.586A2 2 0 0 0 11.172 2H4a2 2 0 0 0-2 2v7.172a2 2 0 0 0 .586 1.414l8.704 8.704a2.426 2.426 0 0 0 3.42 0l6.58-6.58a2.426 2.426 0 0 0 0-3.42l-8.704-8.704z"
+                />
+                <circle cx="7.5" cy="7.5" r=".5" fill="currentColor" />
+              </svg>
+            </div>
             <h3>Metadata Editing</h3>
             <p>
               Set the title, author, and subject of your merged PDF for
@@ -605,7 +844,23 @@
         </div>
         <div class="feat-grid">
           <div class="feat-card">
-            <div class="feat-icon">🔒</div>
+            <div class="feat-icon">
+              <svg
+                aria-hidden="true"
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <rect width="18" height="11" x="3" y="11" rx="2" ry="2" />
+                <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+              </svg>
+            </div>
             <h3>100% On-Device</h3>
             <p>
               Every byte of your PDF stays on your device. Zero server uploads,
@@ -613,7 +868,22 @@
             </p>
           </div>
           <div class="feat-card">
-            <div class="feat-icon">⚡</div>
+            <div class="feat-icon">
+              <svg
+                aria-hidden="true"
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
+              </svg>
+            </div>
             <h3>Lightning Fast</h3>
             <p>
               Powered by pdf-lib running natively in your browser — no queue, no
@@ -621,7 +891,28 @@
             </p>
           </div>
           <div class="feat-card">
-            <div class="feat-icon">📑</div>
+            <div class="feat-icon">
+              <svg
+                aria-hidden="true"
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path
+                  d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"
+                />
+                <polyline points="14 2 14 8 20 8" />
+                <line x1="16" x2="8" y1="13" y2="13" />
+                <line x1="16" x2="8" y1="17" y2="17" />
+                <line x1="10" x2="8" y1="9" y2="9" />
+              </svg>
+            </div>
             <h3>Page Range Selection</h3>
             <p>
               Include only the pages you need from each PDF, saving time on
@@ -629,7 +920,24 @@
             </p>
           </div>
           <div class="feat-card">
-            <div class="feat-icon">↕️</div>
+            <div class="feat-icon">
+              <svg
+                aria-hidden="true"
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path d="m8 16 4 4 4-4" />
+                <path d="m8 8 4-4 4 4" />
+                <line x1="12" x2="12" y1="4" y2="20" />
+              </svg>
+            </div>
             <h3>Drag to Reorder</h3>
             <p>
               Intuitive drag-and-drop reordering so the final document follows
@@ -637,7 +945,25 @@
             </p>
           </div>
           <div class="feat-card">
-            <div class="feat-icon">📝</div>
+            <div class="feat-icon">
+              <svg
+                aria-hidden="true"
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path d="M12 20h9" />
+                <path
+                  d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"
+                />
+              </svg>
+            </div>
             <h3>PDF Metadata</h3>
             <p>
               Set title, author, and subject metadata for a professional,
@@ -645,7 +971,25 @@
             </p>
           </div>
           <div class="feat-card">
-            <div class="feat-icon">📌</div>
+            <div class="feat-icon">
+              <svg
+                aria-hidden="true"
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <line x1="12" x2="12" y1="17" y2="22" />
+                <path
+                  d="M5 17h14v-1.76a2 2 0 0 0-1.11-1.79l-1.78-.9A2 2 0 0 1 15 10.6V6a3 3 0 0 0-3-3 3 3 0 0 0-3 3v4.6a2 2 0 0 1-1.11 1.79l-1.78.9A2 2 0 0 0 5 15.24Z"
+                />
+              </svg>
+            </div>
             <h3>Blank Page Separator</h3>
             <p>
               Optionally insert a blank separator page between each merged
@@ -653,7 +997,25 @@
             </p>
           </div>
           <div class="feat-card">
-            <div class="feat-icon">🗜️</div>
+            <div class="feat-icon">
+              <svg
+                aria-hidden="true"
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path d="M4 14h16" />
+                <path d="M4 10h16" />
+                <path d="M6 14v4a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2v-4" />
+                <path d="M6 10V6a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v4" />
+              </svg>
+            </div>
             <h3>Compression Options</h3>
             <p>
               Choose your compression level to balance file size and visual
@@ -661,7 +1023,24 @@
             </p>
           </div>
           <div class="feat-card">
-            <div class="feat-icon">📊</div>
+            <div class="feat-icon">
+              <svg
+                aria-hidden="true"
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <line x1="18" x2="18" y1="20" y2="10" />
+                <line x1="12" x2="12" y1="20" y2="4" />
+                <line x1="6" x2="6" y1="20" y2="14" />
+              </svg>
+            </div>
             <h3>Live Statistics</h3>
             <p>
               See a real-time summary of total files, combined pages, and
@@ -744,7 +1123,22 @@
         </div>
         <div class="benefits-grid">
           <div class="benefit-card">
-            <div class="benefit-icon">🛡️</div>
+            <div class="benefit-icon">
+              <svg
+                aria-hidden="true"
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+              </svg>
+            </div>
             <div>
               <h4>Total Privacy</h4>
               <p>
@@ -754,7 +1148,24 @@
             </div>
           </div>
           <div class="benefit-card">
-            <div class="benefit-icon">💸</div>
+            <div class="benefit-icon">
+              <svg
+                aria-hidden="true"
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <rect width="20" height="14" x="2" y="5" rx="2" />
+                <line x1="2" x2="22" y1="10" y2="10" />
+                <line x1="12" x2="12" y1="14" y2="14" />
+              </svg>
+            </div>
             <div>
               <h4>Free Forever</h4>
               <p>
@@ -764,7 +1175,26 @@
             </div>
           </div>
           <div class="benefit-card">
-            <div class="benefit-icon">🌐</div>
+            <div class="benefit-icon">
+              <svg
+                aria-hidden="true"
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <circle cx="12" cy="12" r="10" />
+                <line x1="2" x2="22" y1="12" y2="12" />
+                <path
+                  d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"
+                />
+              </svg>
+            </div>
             <div>
               <h4>Works Offline</h4>
               <p>
@@ -774,7 +1204,23 @@
             </div>
           </div>
           <div class="benefit-card">
-            <div class="benefit-icon">📱</div>
+            <div class="benefit-icon">
+              <svg
+                aria-hidden="true"
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <rect width="14" height="20" x="5" y="2" rx="2" ry="2" />
+                <path d="M12 18h.01" />
+              </svg>
+            </div>
             <div>
               <h4>Any Device</h4>
               <p>
@@ -784,7 +1230,22 @@
             </div>
           </div>
           <div class="benefit-card">
-            <div class="benefit-icon">🔖</div>
+            <div class="benefit-icon">
+              <svg
+                aria-hidden="true"
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path d="m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16z" />
+              </svg>
+            </div>
             <div>
               <h4>No Registration</h4>
               <p>
@@ -794,7 +1255,31 @@
             </div>
           </div>
           <div class="benefit-card">
-            <div class="benefit-icon">🏆</div>
+            <div class="benefit-icon">
+              <svg
+                aria-hidden="true"
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6" />
+                <path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18" />
+                <path d="M4 22h16" />
+                <path
+                  d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"
+                />
+                <path
+                  d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"
+                />
+                <path d="M18 2H6v7a6 6 0 0 0 12 0V2Z" />
+              </svg>
+            </div>
             <div>
               <h4>Professional Output</h4>
               <p>
@@ -817,9 +1302,19 @@
         <div class="faq-list">
           <div class="faq-item">
             <div class="faq-question">
-              Is PDFMaster's Merge PDF completely free?<span class="faq-arrow"
-                >▾</span
-              >
+              Is PDFMaster's Merge PDF completely free?<svg
+                  class="faq-arrow"
+                  width="18"
+                  height="18"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2.5"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <polyline points="6 9 12 15 18 9" />
+                </svg>
             </div>
             <div class="faq-answer">
               Yes. PDFMaster is 100% free with no hidden fees, no premium plan
@@ -828,10 +1323,19 @@
           </div>
           <div class="faq-item">
             <div class="faq-question">
-              Are my PDF files secure when using this tool?<span
-                class="faq-arrow"
-                >▾</span
-              >
+              Are my PDF files secure when using this tool?<svg
+                  class="faq-arrow"
+                  width="18"
+                  height="18"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2.5"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <polyline points="6 9 12 15 18 9" />
+                </svg>
             </div>
             <div class="faq-answer">
               Absolutely. All PDF processing happens entirely on your device
@@ -841,9 +1345,19 @@
           </div>
           <div class="faq-item">
             <div class="faq-question">
-              How many PDF files can I merge at once?<span class="faq-arrow"
-                >▾</span
-              >
+              How many PDF files can I merge at once?<svg
+                  class="faq-arrow"
+                  width="18"
+                  height="18"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2.5"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <polyline points="6 9 12 15 18 9" />
+                </svg>
             </div>
             <div class="faq-answer">
               There is no hard limit on the number of files. However, very large
@@ -854,9 +1368,19 @@
           </div>
           <div class="faq-item">
             <div class="faq-question">
-              Can I select specific pages from each PDF?<span class="faq-arrow"
-                >▾</span
-              >
+              Can I select specific pages from each PDF?<svg
+                  class="faq-arrow"
+                  width="18"
+                  height="18"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2.5"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <polyline points="6 9 12 15 18 9" />
+                </svg>
             </div>
             <div class="faq-answer">
               Yes! Each uploaded file has a "From page" and "To page" input.
@@ -866,9 +1390,19 @@
           </div>
           <div class="faq-item">
             <div class="faq-question">
-              Does the tool work on mobile and tablets?<span class="faq-arrow"
-                >▾</span
-              >
+              Does the tool work on mobile and tablets?<svg
+                  class="faq-arrow"
+                  width="18"
+                  height="18"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2.5"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <polyline points="6 9 12 15 18 9" />
+                </svg>
             </div>
             <div class="faq-answer">
               Yes. PDFMaster is fully responsive and works on all modern mobile
@@ -877,9 +1411,19 @@
           </div>
           <div class="faq-item">
             <div class="faq-question">
-              Can I merge password-protected PDFs?<span class="faq-arrow"
-                >▾</span
-              >
+              Can I merge password-protected PDFs?<svg
+                  class="faq-arrow"
+                  width="18"
+                  height="18"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2.5"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <polyline points="6 9 12 15 18 9" />
+                </svg>
             </div>
             <div class="faq-answer">
               No. Password-protected or encrypted PDFs cannot be merged. You'll
@@ -889,10 +1433,19 @@
           </div>
           <div class="faq-item">
             <div class="faq-question">
-              Will the quality of my PDFs degrade after merging?<span
-                class="faq-arrow"
-                >▾</span
-              >
+              Will the quality of my PDFs degrade after merging?<svg
+                  class="faq-arrow"
+                  width="18"
+                  height="18"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2.5"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <polyline points="6 9 12 15 18 9" />
+                </svg>
             </div>
             <div class="faq-answer">
               No. PDFMaster uses pdf-lib, which merges PDFs at the document
@@ -917,14 +1470,49 @@
         </div>
         <div class="related-grid">
           <a href="pdf-to-photo" class="related-card">
-            <div class="related-icon">🖼️</div>
+            <div class="related-icon">
+              <svg
+                aria-hidden="true"
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <rect width="18" height="18" x="3" y="3" rx="2" ry="2" />
+                <circle cx="9" cy="9" r="2" />
+                <path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21" />
+              </svg>
+            </div>
             <div>
               <h4>PDF to Photo</h4>
               <span>Convert pages to photos</span>
             </div>
           </a>
           <a href="photo-to-pdf" class="related-card">
-            <div class="related-icon">📷</div>
+            <div class="related-icon">
+              <svg
+                aria-hidden="true"
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path
+                  d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"
+                />
+                <circle cx="12" cy="13" r="3" />
+              </svg>
+            </div>
             <div>
               <h4>Photo to PDF</h4>
               <span>Photos to PDF</span>
@@ -937,17 +1525,16 @@
 
     <!-- ═══════════════ FOOTER ═══════════════ -->
     <footer id="contact">
-      <div class="footer-inner">
+      <div class="container">
         <div class="footer-grid">
           <div class="fbrand">
             <a href="/" class="nav-logo">
-              <img src="assets/apple-touch-icon.png" alt="PDFMaster" />
+              <img src="/assets/apple-touch-icon.png" alt="PDFMaster" />
               <span class="logo-text">PDF<span>Master</span></span>
             </a>
             <p>
-              Professional PDF and image conversion tools for everyone. Free,
-              fast, and completely private — your files never leave your
-              browser.
+              Professional PDF and image conversion tools for individuals and
+              businesses worldwide. Free, fast and private.
             </p>
             <div class="fsocials">
               <a
@@ -972,42 +1559,47 @@
               </a>
             </div>
           </div>
+
           <div class="fcol">
             <h4>Quick Links</h4>
             <ul>
-              <li><a href="/">Home</a></li>
               <li><a href="/#tools">All Tools</a></li>
               <li><a href="/#features">Features</a></li>
               <li><a href="/about">About Us</a></li>
               <li><a href="/announcements">Announcements</a></li>
+              <li><a href="contact">Contact</a></li>
               <li><a href="blog/photo-to-pdf/">Blogs</a></li>
             </ul>
           </div>
+
           <div class="fcol">
-            <h4>PDF Tools</h4>
+            <h4>Popular Tools</h4>
             <ul>
               <li><a href="photo-to-pdf">Photo to PDF</a></li>
               <li><a href="pdf-to-photo">PDF to Photo</a></li>
               <li><a href="split-pdf">Split PDF</a></li>
-              <li><a href="merge-pdf">PDF Merge</a></li>
-              <li><a href="/">All Tools</a></li>
+              <li><a href="pdf-metadata">PDF Metadata</a></li>
+              <li><a href="merge-pdf">PDF Compiler</a></li>
+              <li><a href="/#tools">All Tools</a></li>
             </ul>
           </div>
+
           <div class="fcol">
             <h4>Support</h4>
             <ul>
-              <li><a href="contact">Contact Us</a></li>
+              <li><a href="contact">Help Center</a></li>
               <li><a href="privacy">Privacy Policy</a></li>
               <li><a href="terms">Terms of Service</a></li>
               <li><a href="faq">FAQ</a></li>
             </ul>
           </div>
         </div>
+
         <div class="footer-bot">
-          <p>© 2026 pdfmaster.co.in — All rights reserved.</p>
+          <p>&copy; 2026 pdfmaster.co.in — All rights reserved.</p>
           <div class="footer-bot-links">
             <a href="privacy">Privacy Policy</a>
-            <a href="terms">Terms</a>
+            <a href="terms">Terms of Service</a>
             <a href="contact">Contact</a>
           </div>
         </div>
@@ -1018,7 +1610,18 @@
     <div class="toast-container" id="toastContainer"></div>
 
     <!-- Back to Top -->
-    <button class="b2t" id="b2t" aria-label="Back to top">↑</button>
+    <button class="b2t" id="b2t" aria-label="Back to top">
+      <svg
+        aria-hidden="true"
+        xmlns="http://www.w3.org/2000/svg"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke="currentColor"
+        stroke-width="2.5"
+      >
+        <polyline points="18 15 12 9 6 15" />
+      </svg>
+    </button>
 
     <!-- Hidden file input for "Add More" -->
     <input
