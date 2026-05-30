@@ -157,6 +157,25 @@ class PDFCompiler {
         },
       },
     );
+
+    /* Event Delegation for File Actions */
+    document.addEventListener("click", (e) => {
+      const btn = e.target.closest(".file-order-btn, .file-remove-btn");
+      if (!btn) return;
+
+      const fileItem = btn.closest(".file-item");
+      if (!fileItem) return;
+
+      const id = fileItem.dataset.id;
+
+      if (btn.classList.contains("file-remove-btn")) {
+        this.removeFile(id);
+      } else if (btn.classList.contains("move-up")) {
+        this.moveUp(id);
+      } else if (btn.classList.contains("move-down")) {
+        this.moveDown(id);
+      }
+    });
   }
 
   async handleFiles(fileList) {
@@ -246,8 +265,17 @@ class PDFCompiler {
       .map(
         (f, idx) => `
       <div class="file-item" data-id="${f.id}">
-        <div class="drag-handle" title="Drag to reorder">⠿</div>
-        <div class="file-thumb">PDF</div>
+        <div class="drag-handle" title="Drag to reorder">
+          <svg style="pointer-events:none" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <circle cx="9" cy="5" r="1"/><circle cx="9" cy="12" r="1"/><circle cx="9" cy="19" r="1"/>
+            <circle cx="15" cy="5" r="1"/><circle cx="15" cy="12" r="1"/><circle cx="15" cy="19" r="1"/>
+          </svg>
+        </div>
+        <div class="file-thumb">
+          <svg style="pointer-events:none" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/>
+          </svg>
+        </div>
         <div class="file-main">
           <div class="file-name-row">
             <div class="file-name" title="${f.name}">${this.truncate(f.name, 42)}</div>
@@ -263,10 +291,16 @@ class PDFCompiler {
         </div>
         <div class="file-right">
           <div class="file-order-btns">
-            <button class="file-order-btn" onclick="compiler.moveUp('${f.id}')" title="Move up" ${idx === 0 ? "disabled" : ""}>▲</button>
-            <button class="file-order-btn" onclick="compiler.moveDown('${f.id}')" title="Move down" ${idx === this.files.length - 1 ? "disabled" : ""}>▼</button>
+            <button type="button" class="file-order-btn move-up" title="Move up" ${idx === 0 ? "disabled" : ""}>
+              <svg style="pointer-events:none" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="18 15 12 9 6 15"/></svg>
+            </button>
+            <button type="button" class="file-order-btn move-down" title="Move down" ${idx === this.files.length - 1 ? "disabled" : ""}>
+              <svg style="pointer-events:none" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+            </button>
           </div>
-          <button class="file-remove-btn" onclick="compiler.removeFile('${f.id}')" title="Remove file">✕</button>
+          <button type="button" class="file-remove-btn" title="Remove file">
+            <svg style="pointer-events:none" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+          </button>
         </div>
       </div>
     `,

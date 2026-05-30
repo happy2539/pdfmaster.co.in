@@ -1310,6 +1310,9 @@ footer {
   display: flex;
 }
 
+.file-item svg {
+  pointer-events: none;
+}
 /* ══════════════════ RESPONSIVE ══════════════════ */
 @media (max-width: 768px) {
   nav {
