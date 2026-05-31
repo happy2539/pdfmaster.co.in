@@ -96,12 +96,6 @@
       }
     </script>
 
-    <script
-      src="https://challenges.cloudflare.com/turnstile/v0/api.js"
-      async
-      defer
-    ></script>
-
     <link rel="stylesheet" href="style.css" />
     <!-- Google Tag Manager (Delayed) -->
     <script>
@@ -136,8 +130,6 @@
         window.addEventListener("touchstart", loadGTM, { passive: true });
         window.addEventListener("click", loadGTM, { passive: true });
 
-        // Fallback for very slow interactions
-        setTimeout(loadGTM, 5000);
       })();
     </script>
   </head>
@@ -461,26 +453,9 @@
             <h2>Get PDF Tips in Your Inbox</h2>
             <p>New guides and tool updates monthly — no spam, ever.</p>
           </div>
-          <form class="nl-form" id="emailForm">
-
-  
-  <div class="nl-row">
-    <input type="text"  id="firstNameInput" placeholder="First name"  required />
-    <input type="text"  id="lastNameInput"  placeholder="Last name"   required />
-  </div>
-
-  
-  <input type="email" id="emailInput" placeholder="your@email.com" required />
-
-  
-  <input type="tel" id="mobileInput" placeholder="Mobile number (optional)" />
-
-  <button type="submit" class="nl-btn">Subscribe Free →</button>
-
-  
-  <div class="cf-turnstile" data-sitekey="0x4AAAAAADVBz9pjmW3HWr4b"></div>
-
-</form>
+          <div class="nl-cta">
+            <a href="/subscribe" class="nl-btn">Subscribe Free →</a>
+          </div>
         </div>
       </section>
     </main>

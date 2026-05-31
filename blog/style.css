@@ -961,7 +961,14 @@ button {
   border-color: #fff;
   background: rgba(255, 255, 255, 0.25);
 }
+.nl-cta {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+}
 .nl-btn {
+  display: inline-block;
   background: #fff;
   color: var(--accent);
   font-weight: 700;
