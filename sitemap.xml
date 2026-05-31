@@ -131,4 +131,20 @@
     <lastmod>2026-05-31</lastmod>
   </url>
 
+  <!-- Blog - PDF Metadata Home Page -->
+
+  <url>
+    <loc>https://pdfmaster.co.in/blog/pdf-metadata</loc>
+    <priority>0.9</priority>
+    <lastmod>2026-05-31</lastmod>
+  </url>
+
+  <!-- Blogs PDF Metadata -->
+
+  <url>
+    <loc>https://pdfmaster.co.in/blog/pdf-metadata/pdf-metadata-guide</loc>
+    <priority>0.9</priority>
+    <lastmod>2026-05-31</lastmod>
+  </url>
+
 </urlset>
