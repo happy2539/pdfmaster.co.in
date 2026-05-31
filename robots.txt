@@ -6,6 +6,7 @@ Disallow: /404.html
 Disallow: /vercel.json
 Disallow: /README.md
 Disallow: /CNAME
+Disallow: /thank-you.html
 Disallow: /_redirects
 
 # Block AI Bots

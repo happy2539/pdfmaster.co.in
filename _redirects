@@ -18,6 +18,8 @@
 /privacy.html           /privacy            301!
 /terms.html             /terms              301!
 /announcements.html     /announcements      301!
+/subscribe.html         /subscribe          301!
+/thank-you.html         /thank-you          301!
 
 
 
@@ -30,6 +32,7 @@
 /pdf-metadata.html   /pdf-metadata   301!
 /pdf-to-photo.html   /pdf-to-photo   301!
 /photo-to-pdf.html   /photo-to-pdf   301!
+/pdf-split.html      /split-pdf      301!
 
 
 
