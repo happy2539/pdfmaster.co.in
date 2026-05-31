@@ -1,95 +1,152 @@
-// ── Theme ───────────────────────────────────────────────────
-const THEME_KEY = "pdfmaster-theme";
-const html = document.documentElement;
-const sunIcon = document.getElementById("sunIcon");
-const moonIcon = document.getElementById("moonIcon");
-
-function applyTheme(theme) {
-  html.setAttribute("data-theme", theme);
-  localStorage.setItem(THEME_KEY, theme);
-  if (sunIcon && moonIcon) {
-    if (theme === "dark") {
-      sunIcon.style.display = "block";
-      moonIcon.style.display = "none";
-    } else {
-      sunIcon.style.display = "none";
-      moonIcon.style.display = "block";
-    }
-  }
-}
-
-const savedTheme = localStorage.getItem(THEME_KEY) || "light";
-applyTheme(savedTheme);
-
+const root = document.documentElement;
+(function () {
+  root.setAttribute(
+    "data-theme",
+    localStorage.getItem("pdfmaster-theme") || "light",
+  );
+})();
 document.getElementById("themeToggle").addEventListener("click", () => {
-  const current = html.getAttribute("data-theme");
-  const next = current === "dark" ? "light" : "dark";
-  applyTheme(next);
+  const n = root.getAttribute("data-theme") === "light" ? "dark" : "light";
+  root.setAttribute("data-theme", n);
+  localStorage.setItem("pdfmaster-theme", n);
 });
-
-// ── Hamburger / Drawer ──────────────────────────────────────
-const hamburger = document.getElementById("hamburger");
-const navDrawer = document.getElementById("navDrawer");
-hamburger.addEventListener("click", () => {
-  const isOpen = hamburger.classList.toggle("open");
-  hamburger.setAttribute("aria-expanded", isOpen);
-  navDrawer.classList.toggle("open", isOpen);
+const menuBtn = document.getElementById("menuToggle"),
+  drawer = document.getElementById("mobileDrawer"),
+  overlay = document.getElementById("drawerOverlay"),
+  closeBtn = document.getElementById("drawerClose");
+function openDrawer() {
+  drawer.classList.add("open");
+  overlay.classList.add("open");
+  overlay.setAttribute("aria-hidden", "false");
+  menuBtn.setAttribute("aria-expanded", "true");
+  document.body.style.overflow = "hidden";
+  closeBtn.focus();
+}
+function closeDrawer() {
+  drawer.classList.remove("open");
+  overlay.classList.remove("open");
+  overlay.setAttribute("aria-hidden", "true");
+  menuBtn.setAttribute("aria-expanded", "false");
+  document.body.style.overflow = "";
+  menuBtn.focus();
+}
+menuBtn.addEventListener("click", openDrawer);
+closeBtn.addEventListener("click", closeDrawer);
+overlay.addEventListener("click", closeDrawer);
+drawer
+  .querySelectorAll("a")
+  .forEach((a) => a.addEventListener("click", closeDrawer));
+document.addEventListener("keydown", (e) => {
+  if (e.key === "Escape" && drawer.classList.contains("open")) closeDrawer();
 });
-
-// ── Navbar Scroll Shadow ────────────────────────────────────
-const navbar = document.getElementById("navbar");
+const btt = document.getElementById("btt");
 window.addEventListener(
   "scroll",
-  () => {
-    navbar.classList.toggle("scrolled", window.scrollY > 20);
-  },
-  { passive: true },
-);
-
-// ── Back to Top ─────────────────────────────────────────────
-const btt = document.getElementById("backToTop");
-window.addEventListener(
-  "scroll",
-  () => {
-    btt.classList.toggle("visible", window.scrollY > 400);
-  },
+  () => btt.classList.toggle("vis", window.scrollY > 500),
   { passive: true },
 );
 btt.addEventListener("click", () =>
   window.scrollTo({ top: 0, behavior: "smooth" }),
 );
-
-// ── Scroll Reveal ───────────────────────────────────────────
-const observer = new IntersectionObserver(
+const rbar = document.getElementById("rbar"),
+  tpb = document.getElementById("tprogbar");
+window.addEventListener(
+  "scroll",
+  () => {
+    const p =
+      (
+        (window.scrollY /
+          Math.max(1, document.body.scrollHeight - window.innerHeight)) *
+        100
+      ).toFixed(1) + "%";
+    rbar.style.width = p;
+    if (tpb) tpb.style.width = p;
+  },
+  { passive: true },
+);
+document.querySelectorAll(".fq").forEach((btn) => {
+  btn.addEventListener("click", () => {
+    const item = btn.closest(".fitem"),
+      was = item.classList.contains("open");
+    document.querySelectorAll(".fitem.open").forEach((el) => {
+      el.classList.remove("open");
+      el.querySelector(".fq").setAttribute("aria-expanded", "false");
+    });
+    if (!was) {
+      item.classList.add("open");
+      btn.setAttribute("aria-expanded", "true");
+    }
+  });
+});
+const mtocWrap = document.getElementById("mtoc"),
+  mtocBtn = document.getElementById("mtocToggle");
+if (mtocBtn) {
+  mtocBtn.addEventListener("click", () => {
+    const open = mtocWrap.classList.toggle("open");
+    mtocBtn.setAttribute("aria-expanded", String(open));
+  });
+  mtocWrap.querySelectorAll("a").forEach((a) =>
+    a.addEventListener("click", () => {
+      mtocWrap.classList.remove("open");
+      mtocBtn.setAttribute("aria-expanded", "false");
+    }),
+  );
+}
+const revObs = new IntersectionObserver(
   (entries) => {
     entries.forEach((e) => {
       if (e.isIntersecting) {
         e.target.classList.add("visible");
-        observer.unobserve(e.target);
+        revObs.unobserve(e.target);
       }
     });
   },
   { threshold: 0.1, rootMargin: "0px 0px -40px 0px" },
 );
-document.querySelectorAll(".reveal").forEach((el) => observer.observe(el));
-
-// ── FAQ Accordion ────────────────────────────────────────────
-document.querySelectorAll(".faq-question").forEach((btn) => {
-  btn.addEventListener("click", () => {
-    const id = btn.dataset.faq;
-    const answer = document.getElementById("faq-" + id);
-    const isOpen = answer.classList.contains("open");
-    // Close all
-    document
-      .querySelectorAll(".faq-answer")
-      .forEach((a) => a.classList.remove("open"));
-    document
-      .querySelectorAll(".faq-question")
-      .forEach((b) => b.classList.remove("active"));
-    // Open clicked if it was closed
-    if (!isOpen) {
-      answer.classList.add("open");
-      btn.classList.add("active");
-    }
-  });
-});
+document.querySelectorAll(".reveal").forEach((el) => revObs.observe(el));
+const barObs = new IntersectionObserver(
+  (entries) => {
+    entries.forEach((e) => {
+      if (e.isIntersecting) {
+        e.target.querySelectorAll(".bfill").forEach((b) => {
+          setTimeout(() => {
+            b.style.width = (b.getAttribute("data-width") || "0") + "%";
+          }, 120);
+        });
+        barObs.unobserve(e.target);
+      }
+    });
+  },
+  { threshold: 0.25 },
+);
+document.querySelectorAll(".bchart").forEach((bc) => barObs.observe(bc));
+const dpiObs = new IntersectionObserver(
+  (entries) => {
+    entries.forEach((e) => {
+      if (e.isIntersecting) {
+        e.target.querySelectorAll(".dpi-bar").forEach((b) => {
+          setTimeout(() => {
+            b.style.width = (b.getAttribute("data-dpi") || "0") + "%";
+          }, 120);
+        });
+        dpiObs.unobserve(e.target);
+      }
+    });
+  },
+  { threshold: 0.3 },
+);
+document.querySelectorAll(".dpi-scale").forEach((d) => dpiObs.observe(d));
+const tocLinks = document.querySelectorAll(".toclist a");
+const tocObs = new IntersectionObserver(
+  (entries) => {
+    entries.forEach((e) => {
+      if (e.isIntersecting) {
+        tocLinks.forEach((a) => a.classList.remove("ta"));
+        const a = document.querySelector(`.toclist a[href="#${e.target.id}"]`);
+        if (a) a.classList.add("ta");
+      }
+    });
+  },
+  { rootMargin: `-${68 + 24}px 0px -55% 0px` },
+);
+document.querySelectorAll("section[id]").forEach((s) => tocObs.observe(s));
