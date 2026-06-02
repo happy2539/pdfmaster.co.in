@@ -29,7 +29,7 @@
     <meta property="og:site_name" content="PDFMaster" />
     <meta
       property="og:image"
-      content="https://pdfmaster.co.in/assets/og-split.jpg"
+      content="https://pdfmaster.co.in/assets/android-chrome-512x512.png"
     />
 
     <!-- Twitter Card -->
@@ -41,7 +41,7 @@
     />
     <meta
       name="twitter:image"
-      content="https://pdfmaster.co.in/assets/apple-touch-icon.png"
+      content="https://pdfmaster.co.in/assets/android-chrome-512x512.png"
     />
 
     <!-- Favicon & Icons -->
@@ -104,90 +104,101 @@
 
     <!-- JSON-LD Schemas -->
     <script type="application/ld+json">
-      {
-        "@context": "https://schema.org",
-        "@graph": [
-          {
-            "@type": "WebPage",
-            "@id": "https://pdfmaster.co.in/split-pdf",
-            "name": "Split PDF Online Free – Extract Pages Instantly",
-            "description": "Split PDF files online for free. Extract specific pages, split by range, or divide every N pages.",
-            "url": "https://pdfmaster.co.in/split-pdf",
-            "isPartOf": { "@id": "https://pdfmaster.co.in" },
-            "breadcrumb": {
-              "@type": "BreadcrumbList",
-              "itemListElement": [
-                {
-                  "@type": "ListItem",
-                  "position": 1,
-                  "name": "Home",
-                  "item": "https://pdfmaster.co.in"
-                },
-                {
-                  "@type": "ListItem",
-                  "position": 2,
-                  "name": "Split PDF",
-                  "item": "https://pdfmaster.co.in/split-pdf"
-                }
-              ]
+      [
+        {
+          "@context": "https://schema.org",
+          "@type": "WebApplication",
+          "name": "Split PDF Online Free - PDFMaster",
+          "url": "https://pdfmaster.co.in/split-pdf",
+          "description": "Split PDF files online for free. Extract specific pages, split by range, or divide every N pages. 100% private and secure browser-based tool.",
+          "applicationCategory": "UtilitiesApplication",
+          "operatingSystem": "Any",
+          "offers": {
+            "@type": "Offer",
+            "price": "0",
+            "priceCurrency": "USD"
+          },
+          "publisher": {
+            "@type": "Organization",
+            "name": "PDFMaster",
+            "url": "https://pdfmaster.co.in",
+            "logo": {
+              "@type": "ImageObject",
+              "url": "https://pdfmaster.co.in/assets/apple-touch-icon.png"
             }
-          },
-          {
-            "@type": "SoftwareApplication",
-            "name": "PDF Split Tool",
-            "applicationCategory": "UtilitiesApplication",
-            "operatingSystem": "Any",
-            "url": "https://pdfmaster.co.in/split-pdf",
-            "description": "Free online PDF splitter. Extract pages, split by range, or divide PDFs instantly in your browser.",
-            "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
-          },
-          {
-            "@type": "FAQPage",
-            "mainEntity": [
-              {
-                "@type": "Question",
-                "name": "Is the PDF splitting done on my device?",
-                "acceptedAnswer": {
-                  "@type": "Answer",
-                  "text": "Yes. All processing happens entirely in your browser using pdf-lib. Your files are never uploaded to any server."
-                }
-              },
-              {
-                "@type": "Question",
-                "name": "What split modes are available?",
-                "acceptedAnswer": {
-                  "@type": "Answer",
-                  "text": "You can split by custom page range, extract selected pages, split every N pages, or save each page as a separate PDF."
-                }
-              },
-              {
-                "@type": "Question",
-                "name": "Is there a file size limit?",
-                "acceptedAnswer": {
-                  "@type": "Answer",
-                  "text": "There's no server-imposed limit since everything runs in your browser. Very large PDFs may be limited by your device's memory."
-                }
-              },
-              {
-                "@type": "Question",
-                "name": "Can I preview pages before splitting?",
-                "acceptedAnswer": {
-                  "@type": "Answer",
-                  "text": "Yes. After uploading, you can see page thumbnails and select exactly which pages to extract."
-                }
-              },
-              {
-                "@type": "Question",
-                "name": "Will my PDF quality be affected?",
-                "acceptedAnswer": {
-                  "@type": "Answer",
-                  "text": "No. The splitter copies pages without re-encoding them, preserving original quality, fonts, and images."
-                }
-              }
-            ]
           }
-        ]
-      }
+        },
+        {
+          "@context": "https://schema.org",
+          "@type": "BreadcrumbList",
+          "itemListElement": [
+            {
+              "@type": "ListItem",
+              "position": 1,
+              "name": "Home",
+              "item": "https://pdfmaster.co.in"
+            },
+            {
+              "@type": "ListItem",
+              "position": 2,
+              "name": "Tools",
+              "item": "https://pdfmaster.co.in"
+            },
+            {
+              "@type": "ListItem",
+              "position": 3,
+              "name": "Split PDF",
+              "item": "https://pdfmaster.co.in/split-pdf"
+            }
+          ]
+        },
+        {
+          "@context": "https://schema.org",
+          "@type": "FAQPage",
+          "mainEntity": [
+            {
+              "@type": "Question",
+              "name": "Is the PDF splitting done on my device?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Yes. All processing happens entirely in your browser using pdf-lib. Your files are never uploaded to any server."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "What split modes are available?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "You can split by custom page range, extract selected pages, split every N pages, or save each page as a separate PDF."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "Is there a file size limit?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "There's no server-imposed limit since everything runs in your browser. Very large PDFs may be limited by your device's memory."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "Can I preview pages before splitting?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Yes. After uploading, you can see page thumbnails and select exactly which pages to extract."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "Will my PDF quality be affected?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "No. The splitter copies pages without re-encoding them, preserving original quality, fonts, and images."
+              }
+            }
+          ]
+        }
+      ]
     </script>
     <link rel="stylesheet" href="/css/pdf-split.css" />
   </head>
@@ -1879,7 +1890,7 @@
           <div class="footer__col">
             <h4>Resources</h4>
             <ul>
-              <li><a href="/blog/photo-to-pdf/">Blog</a></li>
+              <li><a href="/blog/photo-to-pdf">Blog</a></li>
               <li><a href="/faq">FAQ</a></li>
               <li><a href="/about">About Us</a></li>
               <li><a href="/#tools">All Tools</a></li>

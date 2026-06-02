@@ -91,7 +91,7 @@
 
 /pdf-compiler                           /merge-pdf                             301!
 /compile-pdf                            /merge-pdf                             301!
-
+/split-pdf                              /pdf-split                             301!
 
 
 

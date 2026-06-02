@@ -13,7 +13,7 @@
   <url>
     <loc>https://pdfmaster.co.in/merge-pdf</loc>
     <priority>0.9</priority>
-    <lastmod>2026-05-31</lastmod>
+    <lastmod>2026-06-03</lastmod>
   </url>
 
   <url>
@@ -31,7 +31,7 @@
   <url>
     <loc>https://pdfmaster.co.in/pdf-metadata</loc>
     <priority>0.9</priority>
-    <lastmod>2026-05-31</lastmod>
+    <lastmod>2026-06-03</lastmod>
   </url>
 
   <url>
@@ -96,7 +96,7 @@
   <!-- Blog - Photo to PDF Home Page -->
 
   <url>
-    <loc>https://pdfmaster.co.in/blog/photo-to-pdf</loc>
+    <loc>https://pdfmaster.co.in/blog/photo-to-pdf/</loc>
     <priority>0.9</priority>
     <lastmod>2026-05-31</lastmod>
   </url>
@@ -118,7 +118,7 @@
    <!-- Blog - PDF to Photo Home Page -->
 
   <url>
-    <loc>https://pdfmaster.co.in/blog/pdf-to-photo</loc>
+    <loc>https://pdfmaster.co.in/blog/pdf-to-photo/</loc>
     <priority>0.9</priority>
     <lastmod>2026-05-31</lastmod>
   </url>
@@ -134,7 +134,7 @@
   <!-- Blog - PDF Metadata Home Page -->
 
   <url>
-    <loc>https://pdfmaster.co.in/blog/pdf-metadata</loc>
+    <loc>https://pdfmaster.co.in/blog/pdf-metadata/</loc>
     <priority>0.9</priority>
     <lastmod>2026-05-31</lastmod>
   </url>

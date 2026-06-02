@@ -84,8 +84,8 @@
     <!-- Main CSS -->
     <link rel="stylesheet" href="css/pdf-metadata.css" />
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js" defer></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js" defer></script>
 
     <!-- ── JSON-LD Structured Data ────────────────────── -->
     <script type="application/ld+json">
@@ -107,7 +107,10 @@
             "@type": "Organization",
             "name": "PDFMaster",
             "url": "https://pdfmaster.co.in",
-            "logo": "https://pdfmaster.co.in/assets/apple-touch-icon.png"
+            "logo": {
+              "@type": "ImageObject",
+              "url": "https://pdfmaster.co.in/assets/apple-touch-icon.png"
+            }
           },
           "featureList": [
             "Deep metadata scan",
@@ -132,7 +135,7 @@
               "@type": "ListItem",
               "position": 2,
               "name": "Tools",
-              "item": "https://pdfmaster.co.in/#tools"
+              "item": "https://pdfmaster.co.in"
             },
             {
               "@type": "ListItem",
@@ -258,11 +261,11 @@
         </a>
 
         <ul class="nav-links" role="navigation" aria-label="Main navigation">
-          <li><a href="/#what-is">What is it?</a></li>
-          <li><a href="/#features">Features</a></li>
-          <li><a href="/#how-to-use">How to Use</a></li>
-          <li><a href="/#benefits">Benefits</a></li>
-          <li><a href="/#faq">FAQ</a></li>
+          <li><a href="#what-is">What is it?</a></li>
+          <li><a href="#features">Features</a></li>
+          <li><a href="#how-to-use">How to Use</a></li>
+          <li><a href="#benefits">Benefits</a></li>
+          <li><a href="#faq">FAQ</a></li>
           <li><a href="/contact">Contact</a></li>
         </ul>
 
@@ -365,7 +368,7 @@
         </button>
       </div>
       <nav class="drawer-nav">
-        <a href="/#what-is"
+        <a href="#what-is"
           ><span class="drawer-icon"
             ><!-- @license lucide-static v0.330.0 - ISC -->
             <svg
@@ -386,7 +389,7 @@
           </span>
           What is PDF Metadata?</a
         >
-        <a href="/#features"
+        <a href="#features"
           ><span class="drawer-icon"
             ><!-- @license lucide-static v0.330.0 - ISC -->
             <svg
@@ -406,7 +409,7 @@
           </span>
           Features</a
         >
-        <a href="/#how-to-use"
+        <a href="#how-to-use"
           ><span class="drawer-icon"
             ><!-- @license lucide-static v0.330.0 - ISC -->
             <svg
@@ -431,7 +434,7 @@
           </span>
           How to Use</a
         >
-        <a href="/#benefits"
+        <a href="#benefits"
           ><span class="drawer-icon"
             ><!-- @license lucide-static v0.330.0 - ISC -->
             <svg
@@ -452,7 +455,7 @@
           </span>
           Benefits</a
         >
-        <a href="/#faq"
+        <a href="#faq"
           ><span class="drawer-icon"
             ><!-- @license lucide-static v0.330.0 - ISC -->
             <svg
@@ -474,7 +477,7 @@
           </span>
           FAQ</a
         >
-        <a href="/#related"
+        <a href="#related"
           ><span class="drawer-icon"
             ><!-- @license lucide-static v0.330.0 - ISC -->
             <svg
@@ -2487,7 +2490,7 @@ Loading…</pre
               <li><a href="/about">About Us</a></li>
               <li><a href="/announcements">Announcements</a></li>
               <li><a href="/contact">Contact</a></li>
-              <li><a href="/blog/photo-to-pdf/">Blogs</a></li>
+              <li><a href="/blog/photo-to-pdf">Blogs</a></li>
               <li><a href="/subscribe">Subscribe</a></li>
             </ul>
           </div>
@@ -2498,6 +2501,7 @@ Loading…</pre
               <li><a href="/photo-to-pdf">Photo to PDF</a></li>
               <li><a href="/pdf-to-photo">PDF to Photo</a></li>
               <li><a href="/split-pdf">Split PDF</a></li>
+              <li><a href="/pdf-metadata">PDF Metadata</a></li>
               <li><a href="/merge-pdf">PDF Merger</a></li>
               <li><a href="/#tools">All Tools</a></li>
             </ul>
