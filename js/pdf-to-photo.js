@@ -94,7 +94,7 @@ btn.addEventListener("click", () => {
 });
 
 // ─── Sidebar / Hamburger ─────────────────────────────────────────────────
-const hamburger = document.getElementById("hamburger");
+const hamburger = document.getElementById("hamburgerBtn");
 const sidebar = document.getElementById("sidebar");
 const overlay = document.getElementById("sidebarOverlay");
 const sidebarClose = document.getElementById("sidebarClose");
