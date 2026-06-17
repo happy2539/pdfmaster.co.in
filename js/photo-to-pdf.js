@@ -2,8 +2,7 @@
 
 /* ── Load jsPDF ── */
 const jsPdfScript = document.createElement("script");
-jsPdfScript.src =
-  "https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js";
+jsPdfScript.src = "assets/vendor/jspdf.umd.min.js";
 document.head.appendChild(jsPdfScript);
 let jsPdfReady = false;
 jsPdfScript.onload = () => {

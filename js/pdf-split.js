@@ -113,7 +113,7 @@
 
         /* ─────────── PDF.js setup ─────────── */
         if (window.pdfjsLib) {
-          pdfjsLib.GlobalWorkerOptions.workerSrc = "assets/pdf.worker.min.js";
+          pdfjsLib.GlobalWorkerOptions.workerSrc = "assets/vendor/pdf.worker.min.js";
         }
 
         /* ─────────── STATE ─────────── */

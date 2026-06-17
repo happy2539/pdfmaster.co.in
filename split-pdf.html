@@ -144,7 +144,7 @@
       }
     </script>
 
-        <link rel="stylesheet" href="css/pdf-split.css" />
+    <link rel="stylesheet" href="css/pdf-split.css" />
   </head>
   <body>
     <!-- ===== NAVBAR ===== -->
@@ -1780,7 +1780,7 @@
             <p>Drag and drop pages to rearrange them in any order you want.</p>
             <span class="tool-card__arrow">Use tool →</span>
           </a>
-          <a href="/pdf-metadata-remover" class="tool-card reveal">
+          <a href="/pdf-metadata" class="tool-card reveal">
             <div class="tool-card__icon">
               <svg
                 width="20"
@@ -1881,7 +1881,7 @@
               <li><a href="/pdf-to-photo">PDF to Photo</a></li>
               <li><a href="/split-pdf">Split PDF</a></li>
               <li><a href="/pdf-reorder">PDF Reorder</a></li>
-              <li><a href="/pdf-metadata-remover">Metadata Remover</a></li>
+              <li><a href="/pdf-metadata">Metadata Remover</a></li>
             </ul>
           </div>
           <div class="footer__col">
@@ -1976,12 +1976,12 @@
 
     <!-- ===== SCRIPTS ===== -->
     <!-- pdf-lib for splitting -->
-    <script src="assets/pdf-lib.min.js"></script>
+    <script src="assets/vendor/pdf-lib.min.js"></script>
     <!-- PDF.js for thumbnails -->
-    <script src="assets/pdf.min.js"></script>
+    <script src="assets/vendor/pdf.min.js"></script>
     <!-- JSZip for ZIP output -->
-    <script src="assets/jszip.min.js"></script>
+    <script src="assets/vendor/jszip.min.js"></script>
 
-        <script src="js/pdf-split.js"></script>
+    <script src="js/pdf-split.js"></script>
   </body>
 </html>
