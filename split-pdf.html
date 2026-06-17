@@ -3741,11 +3741,11 @@
 
     <!-- ===== SCRIPTS ===== -->
     <!-- pdf-lib for splitting -->
-    <script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
+    <script src="assets/pdf-lib.min.js"></script>
     <!-- PDF.js for thumbnails -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+    <script src="assets/pdf.min.js"></script>
     <!-- JSZip for ZIP output -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <script src="assets/jszip.min.js"></script>
 
     <script>
       (function () {
@@ -3863,8 +3863,7 @@
 
         /* ─────────── PDF.js setup ─────────── */
         if (window.pdfjsLib) {
-          pdfjsLib.GlobalWorkerOptions.workerSrc =
-            "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
+          pdfjsLib.GlobalWorkerOptions.workerSrc = "assets/pdf.worker.min.js";
         }
 
         /* ─────────── STATE ─────────── */
