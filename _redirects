@@ -32,6 +32,7 @@
 /pdf-metadata.html   /pdf-metadata   301!
 /pdf-to-photo.html   /pdf-to-photo   301!
 /photo-to-pdf.html   /photo-to-pdf   301!
+/split-pdf.html      /split-pdf      301!
 /pdf-split.html      /split-pdf      301!
 
 
@@ -91,7 +92,7 @@
 
 /pdf-compiler                           /merge-pdf                             301!
 /compile-pdf                            /merge-pdf                             301!
-/split-pdf                              /pdf-split                             301!
+/pdf-split                              /split-pdf                             301!
 
 
 
