@@ -726,8 +726,7 @@
                 <p>What this means in practice:</p>
                 <ul>
                   <li>
-                    You can use PDFMaster tools even when
-                    <strong>offline</strong> after the page loads
+                    You can use PDFMaster tools entirely <strong>offline</strong> without any active internet connection (as all scripts, stylesheets, and fonts are hosted locally on your device).
                   </li>
                   <li>
                     Processing speed is determined by your device's hardware,
@@ -841,20 +840,13 @@
                 </p>
                 <ul>
                   <li>
-                    <strong>Google Fonts</strong> — serves the Sora and DM Sans
-                    typefaces. Google may log the font request, but this is
-                    standard CDN behaviour and contains no personal data from
-                    our users.
+                    <strong>Local Font Hosting (Offline)</strong> — The Sora and DM Sans typefaces are hosted locally on our servers and run completely on-device, meaning Google Fonts APIs are not queried and no font request data is shared with Google.
                   </li>
                   <li>
-                    <strong>Cloudflare CDN (optional)</strong> — may be used to
-                    serve static assets faster globally. Cloudflare processes
-                    request metadata only, not file contents.
+                    <strong>Cloudflare CDN (optional)</strong> — Cloudflare may be used only for DNS routing and delivering the initial static web files faster globally. Cloudflare processes basic connection metadata only, with zero exposure to your processed files or page operations.
                   </li>
                   <li>
-                    <strong>GitHub (asset hosting)</strong> — our logo and icon
-                    assets are hosted on GitHub's CDN. Standard CDN request logs
-                    apply.
+                    <strong>Local Assets &amp; Vendor Libraries</strong> — All code libraries (e.g., pdf-lib, pdf.js, JSZip, Sortable, and jsPDF) and canonical visual resources are hosted on-site, eliminating external requests to third-party vendor CDNs.
                   </li>
                 </ul>
                 <p>
