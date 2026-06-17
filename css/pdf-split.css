@@ -1757,3 +1757,36 @@ ul {
     font-size: 1.55rem;
   }
 }
+
+/* SVG icon alignment & styling */
+.drawer__nav a .nav-icon svg {
+  width: 16px;
+  height: 16px;
+  display: block;
+}
+.footer__badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+.footer__badge svg {
+  width: 12px;
+  height: 12px;
+  flex-shrink: 0;
+}
+.section__tag svg {
+  width: 14px;
+  height: 14px;
+  flex-shrink: 0;
+}
+.toggle-opt {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.toggle-opt svg {
+  width: 14px;
+  height: 14px;
+  flex-shrink: 0;
+}
+

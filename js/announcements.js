@@ -481,7 +481,7 @@
           <div class="card__header">
             <div class="card__meta">
               <span class="badge badge--${typeClass}">${icon}${capitalize(item.type)}</span>
-              ${isHighPriority ? '<span class="badge badge--priority">⚡ High Priority</span>' : ""}
+              ${isHighPriority ? '<span class="badge badge--priority"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg> High Priority</span>' : ""}
             </div>
             <button class="card__id" title="Click to copy Message ID" data-copy-id="${escapeAttr(item.msgId)}" aria-label="Copy Message ID: ${escapeAttr(item.msgId)}">
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>

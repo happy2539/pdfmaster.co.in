@@ -479,7 +479,7 @@ class PDFCompiler {
       document.body.removeChild(a);
       setTimeout(() => URL.revokeObjectURL(url), 5000);
 
-      showToast(`✨ "${name}" downloaded successfully!`, "success", 5000);
+      showToast(`"${name}" downloaded successfully!`, "success", 5000);
     } catch (err) {
       console.error(err);
       this.showLoading(false);

@@ -41,7 +41,7 @@
     />
     <meta
       name="twitter:image"
-      content="https://pdfmaster.co.in/assets/og-split.jpg"
+      content="https://pdfmaster.co.in/assets/apple-touch-icon.png"
     />
 
     <!-- Favicon & Icons -->
@@ -1877,6 +1877,38 @@
           font-size: 1.55rem;
         }
       }
+
+      /* SVG icon alignment & styling */
+      .drawer__nav a .nav-icon svg {
+        width: 16px;
+        height: 16px;
+        display: block;
+      }
+      .footer__badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+      }
+      .footer__badge svg {
+        width: 12px;
+        height: 12px;
+        flex-shrink: 0;
+      }
+      .section__tag svg {
+        width: 14px;
+        height: 14px;
+        flex-shrink: 0;
+      }
+      .toggle-opt {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+      }
+      .toggle-opt svg {
+        width: 14px;
+        height: 14px;
+        flex-shrink: 0;
+      }
     </style>
   </head>
   <body>
@@ -2012,17 +2044,150 @@
         </button>
       </div>
       <nav class="drawer__nav" aria-label="Drawer navigation">
-        <a href="#what-is-it"><span class="nav-icon">📄</span>What is it</a>
-        <a href="#features"><span class="nav-icon">⚡</span>Features</a>
-        <a href="#how-to-use"><span class="nav-icon">🛠</span>How to Use</a>
-        <a href="#benefits"><span class="nav-icon">✨</span>Benefits</a>
-        <a href="#faqs"><span class="nav-icon">❓</span>FAQs</a>
-        <a href="#related-tools"
-          ><span class="nav-icon">🔧</span>Related Tools</a
+        <a href="#what-is-it"
+          ><span class="nav-icon"
+            ><svg
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path
+                d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"
+              ></path>
+              <polyline points="14 2 14 8 20 8"></polyline>
+              <line x1="16" y1="13" x2="8" y2="13"></line>
+              <line x1="16" y1="17" x2="8" y2="17"></line>
+              <polyline points="10 9 9 9 8 9"></polyline></svg></span
+          >What is it</a
         >
-        <a href="#contact"><span class="nav-icon">✉️</span>Contact</a>
+        <a href="#features"
+          ><span class="nav-icon"
+            ><svg
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <polygon
+                points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"
+              ></polygon></svg></span
+          >Features</a
+        >
+        <a href="#how-to-use"
+          ><span class="nav-icon"
+            ><svg
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path d="m14 12-8.5 8.5a2.12 2.12 0 1 1-3-3L11 9" />
+              <path d="M15 13 9 7l4-4 6 6-4 4Z" /></svg></span
+          >How to Use</a
+        >
+        <a href="#benefits"
+          ><span class="nav-icon"
+            ><svg
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path
+                d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"
+              />
+              <path d="m5 3 1 2.5L8.5 6 6 7 5 9.5 4 7 1.5 6 4 5 5 3Z" />
+              <path
+                d="m19 17 1 2.5 2.5.5-2.5 1-1 2.5-1-2.5-2.5-1 2.5-1 1-2.5Z"
+              /></svg></span
+          >Benefits</a
+        >
+        <a href="#faqs"
+          ><span class="nav-icon"
+            ><svg
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <circle cx="12" cy="12" r="10"></circle>
+              <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path>
+              <line x1="12" y1="17" x2="12.01" y2="17"></line></svg></span
+          >FAQs</a
+        >
+        <a href="#related-tools"
+          ><span class="nav-icon"
+            ><svg
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path
+                d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"
+              /></svg></span
+          >Related Tools</a
+        >
+        <a href="#contact"
+          ><span class="nav-icon"
+            ><svg
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path
+                d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"
+              ></path>
+              <polyline points="22,6 12,13 2,6"></polyline></svg></span
+          >Contact</a
+        >
         <div class="drawer__divider"></div>
-        <a href="/"><span class="nav-icon">🏠</span>Homepage</a>
+        <a href="/"
+          ><span class="nav-icon"
+            ><svg
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+              <polyline points="9 22 9 12 15 12 15 22"></polyline></svg></span
+          >Homepage</a
+        >
       </nav>
     </aside>
 
@@ -2465,10 +2630,44 @@
             </div>
             <div class="toggle-group" role="group" aria-label="Output format">
               <button class="toggle-opt active" data-out="zip" type="button">
-                📦 ZIP Bundle
+                <svg
+                  width="14"
+                  height="14"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2.5"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path
+                    d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"
+                  ></path>
+                  <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
+                  <line x1="12" y1="22.08" x2="12" y2="12"></line>
+                </svg>
+                ZIP Bundle
               </button>
               <button class="toggle-opt" data-out="individual" type="button">
-                📄 Individual Files
+                <svg
+                  width="14"
+                  height="14"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path
+                    d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"
+                  ></path>
+                  <polyline points="14 2 14 8 20 8"></polyline>
+                  <line x1="16" y1="13" x2="8" y2="13"></line>
+                  <line x1="16" y1="17" x2="8" y2="17"></line>
+                  <polyline points="10 9 9 9 8 9"></polyline>
+                </svg>
+                Individual Files
               </button>
             </div>
           </div>
@@ -2529,8 +2728,23 @@
           >
             <div class="results-header">
               <h3>
-                ✅ Split Complete — <span id="resultCount">0</span> file(s)
-                ready
+                <svg
+                  width="18"
+                  height="18"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="#10b981"
+                  stroke-width="2.5"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  style="
+                    vertical-align: middle;
+                    margin-right: 6px;
+                    display: inline-block;
+                  "
+                >
+                  <polyline points="20 6 9 17 4 12"></polyline></svg
+                >Split Complete — <span id="resultCount">0</span> file(s) ready
               </h3>
               <div style="display: flex; gap: 8px; flex-wrap: wrap">
                 <button
@@ -2668,7 +2882,23 @@
     <div class="section" id="features" style="background: var(--surface)">
       <div class="container">
         <div class="section__header reveal">
-          <div class="section__tag">⚡ Features</div>
+          <div class="section__tag">
+            <svg
+              width="14"
+              height="14"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <polygon
+                points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"
+              ></polygon>
+            </svg>
+            Features
+          </div>
           <h2 class="section__title">Powerful Splitting Modes</h2>
           <p class="section__sub">
             Four flexible ways to split your PDFs — each designed for a
@@ -2812,7 +3042,22 @@
     <div class="section" id="how-to-use">
       <div class="container">
         <div class="section__header reveal">
-          <div class="section__tag">🛠 How to Use</div>
+          <div class="section__tag">
+            <svg
+              width="14"
+              height="14"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path d="m14 12-8.5 8.5a2.12 2.12 0 1 1-3-3L11 9" />
+              <path d="M15 13 9 7l4-4 6 6-4 4Z" />
+            </svg>
+            How to Use
+          </div>
           <h2 class="section__title">Split Your PDF in 4 Simple Steps</h2>
           <p class="section__sub">
             No learning curve. No account required. Just upload, configure, and
@@ -2859,7 +3104,27 @@
     <div class="section" id="benefits" style="background: var(--surface)">
       <div class="container">
         <div class="section__header reveal">
-          <div class="section__tag">✨ Benefits</div>
+          <div class="section__tag">
+            <svg
+              width="14"
+              height="14"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path
+                d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"
+              />
+              <path d="m5 3 1 2.5L8.5 6 6 7 5 9.5 4 7 1.5 6 4 5 5 3Z" />
+              <path
+                d="m19 17 1 2.5 2.5.5-2.5 1-1 2.5-1-2.5-2.5-1 2.5-1 1-2.5Z"
+              />
+            </svg>
+            Benefits
+          </div>
           <h2 class="section__title">Why Use PDFMaster to Split PDFs?</h2>
           <p class="section__sub">
             A tool built around your privacy, speed, and quality.
@@ -3005,7 +3270,23 @@
     <div class="section" id="faqs">
       <div class="container">
         <div class="section__header reveal">
-          <div class="section__tag">❓ FAQs</div>
+          <div class="section__tag">
+            <svg
+              width="14"
+              height="14"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <circle cx="12" cy="12" r="10"></circle>
+              <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path>
+              <line x1="12" y1="17" x2="12.01" y2="17"></line>
+            </svg>
+            FAQs
+          </div>
           <h2 class="section__title">Frequently Asked Questions</h2>
           <p class="section__sub">
             Everything you need to know about splitting PDFs with PDFMaster.
@@ -3149,7 +3430,23 @@
     <div class="section" id="related-tools" style="background: var(--surface)">
       <div class="container">
         <div class="section__header reveal">
-          <div class="section__tag">🔧 Related Tools</div>
+          <div class="section__tag">
+            <svg
+              width="14"
+              height="14"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path
+                d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"
+              />
+            </svg>
+            Related Tools
+          </div>
           <h2 class="section__title">More PDF Tools You'll Love</h2>
           <p class="section__sub">
             Everything you need to work with PDFs, all free and all private.
@@ -3375,9 +3672,54 @@
             © 2025 <a href="/">PDFMaster</a>. Free PDF tools for everyone.
           </p>
           <div class="footer__badges">
-            <span class="footer__badge">🔒 Private</span>
-            <span class="footer__badge">⚡ On-Device</span>
-            <span class="footer__badge">✅ Free</span>
+            <span class="footer__badge"
+              ><svg
+                width="12"
+                height="12"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+              </svg>
+              Private</span
+            >
+            <span class="footer__badge"
+              ><svg
+                width="12"
+                height="12"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <polygon
+                  points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"
+                ></polygon>
+              </svg>
+              On-Device</span
+            >
+            <span class="footer__badge"
+              ><svg
+                width="12"
+                height="12"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <polyline points="20 6 9 17 4 12"></polyline>
+              </svg>
+              Free</span
+            >
           </div>
         </div>
       </div>
@@ -3509,7 +3851,10 @@
         function showToast(msg, type = "success") {
           clearTimeout(toastTimer);
           toastMsg.textContent = msg;
-          toastIcon.textContent = type === "success" ? "✅" : "❌";
+          toastIcon.innerHTML =
+            type === "success"
+              ? `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>`
+              : `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg>`;
           toastEl.className = `toast ${type}`;
           void toastEl.offsetWidth;
           toastEl.classList.add("show");
