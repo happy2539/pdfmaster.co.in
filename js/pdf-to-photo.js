@@ -4,11 +4,11 @@
 let pdfjsReady = false;
 (function loadPdfJs() {
   const s = document.createElement("script");
-  s.src = "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.min.js";
+  s.src = "assets/vendor/pdf-3.4.120.min.js";
   s.onload = function () {
     const w = document.createElement("script");
     w.src =
-      "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.worker.min.js";
+      "assets/vendor/pdf.worker-3.4.120.min.js";
     w.onload = () => {
       pdfjsLib.GlobalWorkerOptions.workerSrc = w.src;
       pdfjsReady = true;
@@ -22,7 +22,7 @@ let pdfjsReady = false;
 let jsZipReady = false;
 (function loadJsZip() {
   const s = document.createElement("script");
-  s.src = "https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js";
+  s.src = "assets/vendor/jszip.min.js";
   s.onload = () => {
     jsZipReady = true;
   };
