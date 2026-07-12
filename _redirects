@@ -34,6 +34,9 @@
 /photo-to-pdf.html   /photo-to-pdf   301!
 /split-pdf.html      /split-pdf      301!
 /pdf-split.html      /split-pdf      301!
+/pdf-reorder.html    /pdf-reorder    301!
+/reorder-pdf         /pdf-reorder    301!
+/reorganize-pdf      /pdf-reorder    301!
 
 
 
