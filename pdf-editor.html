@@ -1,0 +1,1513 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <meta charset="UTF-8" />
+    <script>
+      (function () {
+        try {
+          var t = localStorage.getItem("pdfmaster-theme");
+          if (!t) {
+            t = window.matchMedia("(prefers-color-scheme: dark)").matches
+              ? "dark"
+              : "light";
+          }
+          document.documentElement.setAttribute("data-theme", t);
+        } catch (e) {
+          document.documentElement.setAttribute("data-theme", "light");
+        }
+      })();
+    </script>
+    <!-- Google Tag Manager -->
+    <script>
+      (function (w, d, s, l, i) {
+        w[l] = w[l] || [];
+        w[l].push({ "gtm.start": new Date().getTime(), event: "gtm.js" });
+        var f = d.getElementsByTagName(s)[0],
+          j = d.createElement(s),
+          dl = l != "dataLayer" ? "&l=" + l : "";
+        j.async = true;
+        j.src = "https://www.googletagmanager.com/gtm.js?id=" + i + dl;
+        f.parentNode.insertBefore(j, f);
+      })(window, document, "script", "dataLayer", "GTM-PCSVMC65");
+    </script>
+    <!-- End Google Tag Manager -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>
+      Free PDF Editor Online &ndash; Edit PDF Files Privately, No Upload |
+      PDFMaster
+    </title>
+    <meta
+      name="description"
+      content="Edit PDF files free online, right inside your browser. Add text, shapes, highlights, images, and a signature, then download instantly. 100% private &mdash; your file never leaves your device."
+    />
+    <link rel="canonical" href="https://pdfmaster.co.in/pdf-editor" />
+    <meta name="robots" content="index, follow" />
+    <link rel="icon" href="/assets/favicon.ico" />
+    <link rel="apple-touch-icon" href="/assets/apple-touch-icon.png" />
+    <meta name="theme-color" content="#e8372a" />
+
+    <meta property="og:type" content="website" />
+    <meta
+      property="og:title"
+      content="Free PDF Editor Online &ndash; Edit PDF Files Privately, No Upload"
+    />
+    <meta
+      property="og:description"
+      content="Add text, shapes, highlights, images, and a signature to any PDF, entirely in your browser. Nothing is ever uploaded."
+    />
+    <meta property="og:url" content="https://pdfmaster.co.in/pdf-editor" />
+    <meta
+      property="og:image"
+      content="https://pdfmaster.co.in/assets/apple-touch-icon.png"
+    />
+    <meta name="twitter:card" content="summary" />
+    <meta
+      name="twitter:title"
+      content="Free PDF Editor Online &ndash; PDFMaster"
+    />
+    <meta
+      name="twitter:description"
+      content="Edit PDFs privately in your browser. No uploads, no sign-up, no watermark."
+    />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=DM+Sans:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebPage",
+        "name": "PDF Editor",
+        "url": "https://pdfmaster.co.in/pdf-editor",
+        "description": "Edit PDF files free online, right inside your browser. Add text, shapes, highlights, images, and a signature, then download instantly.",
+        "isPartOf": {
+          "@type": "WebSite",
+          "name": "PDFMaster",
+          "url": "https://pdfmaster.co.in/"
+        }
+      }
+    </script>
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "SoftwareApplication",
+        "name": "PDF Editor &ndash; PDFMaster",
+        "operatingSystem": "Web",
+        "applicationCategory": "Utility",
+        "description": "Add text, shapes, highlights, images, and signatures to a PDF entirely in your browser. No file upload, no sign-up, no watermark.",
+        "url": "https://pdfmaster.co.in/pdf-editor",
+        "offers": {
+          "@type": "Offer",
+          "price": "0",
+          "priceCurrency": "USD"
+        }
+      }
+    </script>
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        "mainEntity": [
+          {
+            "@type": "Question",
+            "name": "Is this PDF editor really free?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Yes. Every editing tool on this page is free, with no sign-up, no watermark, and no page or file-size caps beyond what your device's memory can handle."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Do you upload my PDF to a server?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "No. Your file is opened and edited using your browser's own memory. It is never sent anywhere, which also means it works without an internet connection once the page has loaded."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Can I edit the existing text inside a PDF?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Not yet. This tool lets you add new text, shapes, images, and a signature on top of your PDF. Rewriting text that is already baked into the file requires rebuilding the whole page layout, which isn't reliably possible from inside a browser."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Will the formatting or quality of my PDF change?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "No. The original pages are kept exactly as they are; your edits are added as a new, thin layer on top, so text stays sharp and searchable and the file size barely changes."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Which devices does this work on?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Any device with a modern browser: Windows, macOS, Linux, Chromebook, Android, or iOS. There's nothing to install."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Can I add a signature to a PDF with this tool?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Yes. Draw a signature with your mouse, trackpad, or finger, then drop it anywhere on the page and resize it to fit."
+            }
+          }
+        ]
+      }
+    </script>
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+          {
+            "@type": "ListItem",
+            "position": 1,
+            "name": "Home",
+            "item": "https://pdfmaster.co.in/"
+          },
+          {
+            "@type": "ListItem",
+            "position": 2,
+            "name": "PDF Editor",
+            "item": "https://pdfmaster.co.in/pdf-editor"
+          }
+        ]
+      }
+    </script>
+
+    <link rel="stylesheet" href="css/pdf-editor.css" />
+  </head>
+  <body>
+    <!-- Google Tag Manager (noscript) -->
+    <noscript
+      ><iframe
+        src="https://www.googletagmanager.com/ns.html?id=GTM-PCSVMC65"
+        height="0"
+        width="0"
+        style="display: none; visibility: hidden"
+      ></iframe
+    ></noscript>
+    <!-- End Google Tag Manager (noscript) -->
+
+    <header class="navbar">
+      <div class="container">
+        <a href="/" class="brand">
+          <img
+            src="/assets/apple-touch-icon.png"
+            alt="PDFMaster logo"
+            width="32"
+            height="32"
+          />
+          <span>PDFMaster</span>
+        </a>
+        <div class="nav-right">
+          <button
+            class="icon-btn theme-toggle"
+            id="theme-toggle"
+            aria-label="Toggle dark mode"
+          >
+            <svg
+              class="icon-sun"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <circle cx="12" cy="12" r="4" />
+              <path
+                d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"
+              />
+            </svg>
+            <svg
+              class="icon-moon"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path d="M21 12.8A9 9 0 1 1 11.2 3 7 7 0 0 0 21 12.8Z" />
+            </svg>
+          </button>
+          <button
+            class="icon-btn hamburger-btn"
+            id="hamburger-btn"
+            aria-label="Open menu"
+            aria-expanded="false"
+            aria-controls="drawer"
+          >
+            <span></span><span></span><span></span>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <div class="drawer-overlay" id="drawer-overlay"></div>
+    <aside class="drawer" id="drawer" aria-hidden="true">
+      <div class="drawer-top">
+        <span class="font-head" style="font-weight: 700">Menu</span>
+        <button class="drawer-close" id="drawer-close" aria-label="Close menu">
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+          >
+            <path d="M18 6 6 18M6 6l12 12" />
+          </svg>
+        </button>
+      </div>
+      <nav>
+        <a href="#what-is-it">What Is It</a>
+        <a href="#features">Features</a>
+        <a href="#how-to-use">How to Use</a>
+        <a href="#benefits">Benefits</a>
+        <a href="#faqs">FAQs</a>
+        <a href="#related-tools">Related Tools</a>
+        <a href="#contact">Contact</a>
+      </nav>
+      <div class="drawer-home">
+        <a href="/">&larr; Back to PDFMaster Home</a>
+      </div>
+    </aside>
+
+    <main>
+      <section class="hero" id="top">
+        <div class="container">
+          <h1 class="rv">
+            Free Online PDF Editor &mdash; Edit PDFs Privately, Right in Your
+            Browser
+          </h1>
+          <p class="lede rv">
+            Add text, shapes, highlights, images, and a signature to any PDF.
+            <strong>Nothing is ever uploaded</strong> &mdash; every edit happens
+            on your own device.
+          </p>
+
+          <div class="upload-card rv" id="upload-card">
+            <svg
+              class="upload-icon"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.6"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path d="M12 3v12m0-12 4.5 4.5M12 3 7.5 7.5" />
+              <path d="M4 16v2a3 3 0 0 0 3 3h10a3 3 0 0 0 3-3v-2" />
+            </svg>
+            <h2>Select a PDF file</h2>
+            <p>or drag and drop it anywhere in this box</p>
+            <input type="file" id="file-input" accept="application/pdf" />
+            <button class="btn btn-primary" id="select-file-btn">
+              Choose PDF File
+            </button>
+            <div class="privacy-note">
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path
+                  d="M12 2 4 5v6c0 5 3.4 8.7 8 10 4.6-1.3 8-5 8-10V5l-8-3Z"
+                />
+              </svg>
+              <span
+                >Processed 100% on your device &mdash; no file transfer, no
+                server, no sign-up.</span
+              >
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="editor-wrap hidden" id="editor-wrap">
+        <div class="container">
+          <div class="editor-shell">
+            <div class="editor-topbar">
+              <div class="group">
+                <span class="editor-filename" id="editor-filename"
+                  >document.pdf</span
+                >
+              </div>
+              <div class="page-nav">
+                <button id="prev-page" aria-label="Previous page">
+                  <svg
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2.2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <path d="m15 18-6-6 6-6" />
+                  </svg>
+                </button>
+                <span id="page-indicator">Page 1 of 1</span>
+                <button id="next-page" aria-label="Next page">
+                  <svg
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2.2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <path d="m9 18 6-6-6-6" />
+                  </svg>
+                </button>
+              </div>
+              <div class="zoom-controls">
+                <button id="zoom-out" aria-label="Zoom out">&minus;</button>
+                <span id="zoom-level">100%</span>
+                <button id="zoom-in" aria-label="Zoom in">+</button>
+              </div>
+            </div>
+
+            <div class="editor-body">
+              <div class="toolbar" id="toolbar">
+                <button
+                  class="tool-btn is-active"
+                  data-tool="select"
+                  title="Select &amp; move"
+                >
+                  <svg
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <path d="m4 4 7 17 2.3-6.7L20 12Z" />
+                  </svg>
+                  Select
+                </button>
+                <button class="tool-btn" data-tool="text" title="Add text">
+                  <svg
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <path d="M5 6h14M12 6v14" />
+                  </svg>
+                  Text
+                </button>
+                <button class="tool-btn" data-tool="pen" title="Freehand pen">
+                  <svg
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <path d="m4 20 1-4L17 4l3 3L8 19l-4 1Z" />
+                  </svg>
+                  Pen
+                </button>
+                <button
+                  class="tool-btn"
+                  data-tool="highlighter"
+                  title="Highlighter"
+                >
+                  <svg
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <path
+                      d="m9 11 4 4M5 19l1.5-4L15 6.5a2.1 2.1 0 0 1 3 3L9.5 18Z"
+                    />
+                  </svg>
+                  Highlight
+                </button>
+                <button class="tool-btn" data-tool="rect" title="Rectangle">
+                  <svg
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <rect x="4" y="6" width="16" height="12" rx="1.5" />
+                  </svg>
+                  Rect
+                </button>
+                <button class="tool-btn" data-tool="ellipse" title="Ellipse">
+                  <svg
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <ellipse cx="12" cy="12" rx="8" ry="6" />
+                  </svg>
+                  Oval
+                </button>
+                <button class="tool-btn" data-tool="line" title="Line">
+                  <svg
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <path d="M5 19 19 5" />
+                  </svg>
+                  Line
+                </button>
+                <button class="tool-btn" data-tool="arrow" title="Arrow">
+                  <svg
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <path d="M5 19 19 5M19 5h-6M19 5v6" />
+                  </svg>
+                  Arrow
+                </button>
+                <button
+                  class="tool-btn"
+                  data-tool="image"
+                  title="Insert image or stamp"
+                >
+                  <svg
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <rect x="3" y="4" width="18" height="16" rx="2" />
+                    <circle cx="9" cy="10" r="1.6" />
+                    <path d="m4 18 5.5-5.5a2 2 0 0 1 2.8 0L18 18" />
+                  </svg>
+                  Image
+                </button>
+                <button
+                  class="tool-btn"
+                  data-tool="signature"
+                  title="Add signature"
+                >
+                  <svg
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <path
+                      d="M3 17s2-1 3.5-1 2 1.5 3.5 1.5S12 15 13.5 15s2.5 2 4 2 3.5-1.5 3.5-1.5"
+                    />
+                    <path d="M4 20h16" />
+                  </svg>
+                  Sign
+                </button>
+                <div class="toolbar-divider"></div>
+                <button class="tool-btn" id="undo-btn" title="Undo">
+                  <svg
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <path d="M9 14 4 9l5-5" />
+                    <path d="M4 9h10.5a5.5 5.5 0 0 1 0 11H11" />
+                  </svg>
+                  Undo
+                </button>
+                <button class="tool-btn" id="redo-btn" title="Redo">
+                  <svg
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <path d="m15 14 5-5-5-5" />
+                    <path d="M20 9H9.5a5.5 5.5 0 0 0 0 11H13" />
+                  </svg>
+                  Redo
+                </button>
+                <button class="tool-btn" id="clear-btn" title="Clear this page">
+                  <svg
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <path
+                      d="M4 7h16M9 7V5a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2m2 0-1 13a1 1 0 0 1-1 1H8a1 1 0 0 1-1-1L6 7"
+                    />
+                  </svg>
+                  Clear
+                </button>
+              </div>
+
+              <div class="tool-options" id="tool-options">
+                <div class="opt-group" id="opt-color">
+                  <label>Color</label>
+                  <div class="swatches" id="color-swatches"></div>
+                </div>
+                <div class="opt-group" id="opt-width">
+                  <label>Stroke width</label>
+                  <input
+                    type="range"
+                    id="stroke-width"
+                    min="1"
+                    max="14"
+                    value="3"
+                  />
+                  <div class="range-val" id="stroke-width-val">3px</div>
+                </div>
+                <div class="opt-group hidden" id="opt-fontsize">
+                  <label>Font size</label>
+                  <select id="font-size">
+                    <option value="14">Small</option>
+                    <option value="18" selected>Medium</option>
+                    <option value="26">Large</option>
+                    <option value="36">Extra large</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="canvas-stage" id="canvas-stage">
+                <div class="loading-panel" id="loading-panel">
+                  <div class="spinner"></div>
+                  <span>Loading your PDF editor&hellip;</span>
+                </div>
+                <div class="canvas-frame hidden" id="canvas-frame">
+                  <canvas id="pdf-canvas" aria-hidden="true"></canvas>
+                  <canvas
+                    id="annotation-canvas"
+                    role="img"
+                    aria-label="PDF page. Use the toolbar to add text, drawings, shapes, images, or a signature."
+                  ></canvas>
+                </div>
+              </div>
+            </div>
+
+            <div class="editor-bottombar">
+              <button class="btn btn-ghost btn-sm" id="start-over-btn">
+                Start Over
+              </button>
+              <button class="btn btn-primary" id="download-btn">
+                Download Edited PDF
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <input type="file" id="image-input" accept="image/*" class="hidden" />
+
+      <div class="drawer-overlay" id="sig-overlay"></div>
+      <div
+        class="drawer"
+        id="sig-modal"
+        role="dialog"
+        aria-modal="true"
+        aria-label="Draw your signature"
+        aria-hidden="true"
+        style="
+          right: auto;
+          left: 50%;
+          top: 50%;
+          width: min(420px, 90vw);
+          height: auto;
+          transform: translate(-50%, -50%) scale(0.94);
+          border-radius: var(--radius-l);
+          opacity: 0;
+          pointer-events: none;
+          transition:
+            opacity 0.2s ease,
+            transform 0.2s ease;
+        "
+      >
+        <div class="drawer-top">
+          <span class="font-head" style="font-weight: 700"
+            >Draw your signature</span
+          >
+          <button class="drawer-close" id="sig-close" aria-label="Close">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+            >
+              <path d="M18 6 6 18M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+        <canvas
+          id="sig-canvas"
+          style="
+            width: 100%;
+            height: 180px;
+            border: 1.5px dashed var(--border);
+            border-radius: var(--radius-s);
+            background: #fff;
+            touch-action: none;
+          "
+        ></canvas>
+        <div style="display: flex; gap: 10px; margin-top: 16px">
+          <button class="btn btn-ghost btn-sm" id="sig-clear" style="flex: 1">
+            Clear
+          </button>
+          <button
+            class="btn btn-primary btn-sm"
+            id="sig-insert"
+            style="flex: 1"
+          >
+            Insert Signature
+          </button>
+        </div>
+      </div>
+
+      <section id="what-is-it">
+        <div class="container">
+          <div class="section-head rv">
+            <div class="eyebrow">What Is It</div>
+            <h2>A PDF editor that runs entirely on your device</h2>
+            <p>
+              PDFMaster's PDF Editor lets you mark up any PDF right inside this
+              browser tab. Add text, shapes, highlights, an image, or a
+              signature, then export a clean new file &mdash; without your
+              document ever leaving your computer or phone.
+            </p>
+          </div>
+          <p class="rv" style="max-width: 760px; color: var(--text-muted)">
+            There's no upload step, so there's nothing to wait on and nothing
+            sitting on a server in the meantime. Open a file, mark it up, and
+            download the result in the same tab &mdash; it works the same way on
+            a laptop at your desk or a phone on the train.
+          </p>
+        </div>
+      </section>
+
+      <section id="features" class="section-alt">
+        <div class="container">
+          <div class="section-head rv">
+            <div class="eyebrow">Features</div>
+            <h2>Everything you need to mark up a PDF</h2>
+          </div>
+          <div class="feature-grid">
+            <div class="feature-card rv">
+              <div class="ic">
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path d="M5 6h14M5 12h9M5 18h14" />
+                </svg>
+              </div>
+              <h3>Add text</h3>
+              <p>
+                Drop in labels, notes, or answers anywhere on the page, in the
+                size and colour you pick.
+              </p>
+            </div>
+            <div class="feature-card rv">
+              <div class="ic">
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path d="m4 20 1-4L17 4l3 3L8 19l-4 1Z" />
+                </svg>
+              </div>
+              <h3>Draw &amp; highlight</h3>
+              <p>
+                Sketch freehand with the pen, or sweep a highlighter over
+                anything that needs attention.
+              </p>
+            </div>
+            <div class="feature-card rv">
+              <div class="ic">
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <rect x="3" y="10" width="9" height="9" rx="1.2" />
+                  <circle cx="16.5" cy="7.5" r="4" />
+                </svg>
+              </div>
+              <h3>Shapes &amp; arrows</h3>
+              <p>
+                Box something in, circle it, or point straight at it with
+                rectangles, ellipses, lines, and arrows.
+              </p>
+            </div>
+            <div class="feature-card rv">
+              <div class="ic">
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <rect x="3" y="4" width="18" height="16" rx="2" />
+                  <circle cx="9" cy="10" r="1.6" />
+                  <path d="m4 18 5.5-5.5a2 2 0 0 1 2.8 0L18 18" />
+                </svg>
+              </div>
+              <h3>Images &amp; stamps</h3>
+              <p>
+                Drop in your own logo, photo, or approval stamp, then resize it
+                right on the page.
+              </p>
+            </div>
+            <div class="feature-card rv">
+              <div class="ic">
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path
+                    d="M3 17s2-1 3.5-1 2 1.5 3.5 1.5S12 15 13.5 15s2.5 2 4 2 3.5-1.5 3.5-1.5"
+                  />
+                  <path d="M4 20h16" />
+                </svg>
+              </div>
+              <h3>Draw a signature</h3>
+              <p>
+                Sign with a mouse, trackpad, or finger, then place and size it
+                wherever it needs to go.
+              </p>
+            </div>
+            <div class="feature-card rv">
+              <div class="ic">
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path d="M12 3v12m0 0 4-4m-4 4-4-4" />
+                  <path d="M5 19h14" />
+                </svg>
+              </div>
+              <h3>Export instantly</h3>
+              <p>
+                Save your marked-up file as a new PDF in one tap. The original
+                pages stay untouched underneath.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="how-to-use">
+        <div class="container">
+          <div class="section-head rv">
+            <div class="eyebrow">How to Use</div>
+            <h2>Three steps, no waiting around</h2>
+          </div>
+          <div class="steps">
+            <div class="step rv">
+              <span class="num">01</span>
+              <h3>Add your PDF</h3>
+              <p>
+                Choose a file or drag it into the box above. It loads straight
+                into your browser's own memory.
+              </p>
+            </div>
+            <div class="step rv">
+              <span class="num">02</span>
+              <h3>Mark it up</h3>
+              <p>
+                Pick a tool from the sidebar, then click or drag on the page to
+                add text, shapes, an image, or your signature.
+              </p>
+            </div>
+            <div class="step rv">
+              <span class="num">03</span>
+              <h3>Download</h3>
+              <p>
+                Tap "Download Edited PDF" to save your changes as a new file,
+                ready to send or print.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="benefits" class="section-alt">
+        <div class="container">
+          <div class="section-head rv">
+            <div class="eyebrow">Benefits</div>
+            <h2>Why edit PDFs this way</h2>
+          </div>
+          <div class="benefit-grid">
+            <div class="benefit rv">
+              <div class="ic">
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path
+                    d="M12 2 4 5v6c0 5 3.4 8.7 8 10 4.6-1.3 8-5 8-10V5l-8-3Z"
+                  />
+                </svg>
+              </div>
+              <div>
+                <h3>Nothing leaves your device</h3>
+                <p>
+                  Your file is read and edited locally, so it's never sent to a
+                  server.
+                </p>
+              </div>
+            </div>
+            <div class="benefit rv">
+              <div class="ic">
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path
+                    d="M2 8.82a15 15 0 0 1 20 0M5 12.86a10 10 0 0 1 14 0M8.5 17a5 5 0 0 1 7 0"
+                  />
+                  <path d="M12 20h.01" />
+                </svg>
+              </div>
+              <div>
+                <h3>Works without an upload queue</h3>
+                <p>
+                  Once the page has loaded, editing keeps working even on a slow
+                  or spotty connection.
+                </p>
+              </div>
+            </div>
+            <div class="benefit rv">
+              <div class="ic">
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path d="M8 12.5l2.5 2.5L16 9" />
+                  <circle cx="12" cy="12" r="9" />
+                </svg>
+              </div>
+              <div>
+                <h3>No sign-up, no watermark</h3>
+                <p>
+                  Every tool here is free to use &mdash; no account, no email,
+                  no mark left on your file.
+                </p>
+              </div>
+            </div>
+            <div class="benefit rv">
+              <div class="ic">
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <rect x="3" y="4" width="18" height="12" rx="1.5" />
+                  <path d="M8 20h8M12 16v4" />
+                </svg>
+              </div>
+              <div>
+                <h3>Any device, any OS</h3>
+                <p>
+                  Windows, macOS, Linux, Chromebook, Android, or iPhone &mdash;
+                  all you need is a browser.
+                </p>
+              </div>
+            </div>
+            <div class="benefit rv">
+              <div class="ic">
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path
+                    d="m12 3 1.9 4.6L18 9l-4.1 1.4L12 15l-1.9-4.6L6 9l4.1-1.4Z"
+                  />
+                </svg>
+              </div>
+              <div>
+                <h3>Original quality kept</h3>
+                <p>
+                  Your source pages stay untouched; edits sit on top as a sharp,
+                  searchable layer.
+                </p>
+              </div>
+            </div>
+            <div class="benefit rv">
+              <div class="ic">
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path d="M13 2 4 14h7l-1 8 9-12h-7l1-8Z" />
+                </svg>
+              </div>
+              <div>
+                <h3>Fast, even on large files</h3>
+                <p>
+                  Rendering happens on your own hardware, so there's no upload
+                  wait before you can start.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="faqs">
+        <div class="container">
+          <div class="section-head rv">
+            <div class="eyebrow">FAQs</div>
+            <h2>Common questions</h2>
+          </div>
+          <div class="faq-list rv">
+            <div class="faq-item">
+              <button class="faq-q">
+                <span>Is this PDF editor really free?</span
+                ><svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2.2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path d="m6 9 6 6 6-6" />
+                </svg>
+              </button>
+              <div class="faq-a">
+                <p>
+                  Yes. Every editing tool on this page is free, with no sign-up,
+                  no watermark, and no page or file-size caps beyond what your
+                  own device can handle.
+                </p>
+              </div>
+            </div>
+            <div class="faq-item">
+              <button class="faq-q">
+                <span>Do you upload my PDF to a server?</span
+                ><svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2.2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path d="m6 9 6 6 6-6" />
+                </svg>
+              </button>
+              <div class="faq-a">
+                <p>
+                  No. Your file is opened and edited using your browser's own
+                  memory. It's never sent anywhere, which also means it keeps
+                  working without an internet connection once the page has
+                  loaded.
+                </p>
+              </div>
+            </div>
+            <div class="faq-item">
+              <button class="faq-q">
+                <span>Can I edit the existing text inside a PDF?</span
+                ><svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2.2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path d="m6 9 6 6 6-6" />
+                </svg>
+              </button>
+              <div class="faq-a">
+                <p>
+                  Not yet. This tool adds new text, shapes, images, and a
+                  signature on top of your PDF. Rewriting text that's already
+                  baked into the file means rebuilding the whole page layout,
+                  which isn't something a browser can do reliably.
+                </p>
+              </div>
+            </div>
+            <div class="faq-item">
+              <button class="faq-q">
+                <span>Will the formatting or quality of my PDF change?</span
+                ><svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2.2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path d="m6 9 6 6 6-6" />
+                </svg>
+              </button>
+              <div class="faq-a">
+                <p>
+                  No. Your original pages are kept exactly as they are; edits
+                  are added as a thin new layer on top, so existing text stays
+                  sharp and searchable and the file size barely changes.
+                </p>
+              </div>
+            </div>
+            <div class="faq-item">
+              <button class="faq-q">
+                <span>Which devices does this work on?</span
+                ><svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2.2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path d="m6 9 6 6 6-6" />
+                </svg>
+              </button>
+              <div class="faq-a">
+                <p>
+                  Any device with a modern browser &mdash; Windows, macOS,
+                  Linux, Chromebook, Android, or iOS. There's nothing to
+                  install.
+                </p>
+              </div>
+            </div>
+            <div class="faq-item">
+              <button class="faq-q">
+                <span>Can I add a signature to a PDF with this tool?</span
+                ><svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2.2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path d="m6 9 6 6 6-6" />
+                </svg>
+              </button>
+              <div class="faq-a">
+                <p>
+                  Yes. Draw a signature with your mouse, trackpad, or finger,
+                  then drop it anywhere on the page and resize it to fit.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="related-tools" class="section-alt">
+        <div class="container">
+          <div class="section-head rv">
+            <div class="eyebrow">Related Tools</div>
+            <h2>More free, on-device PDF tools</h2>
+          </div>
+          <div class="tools-grid">
+            <a href="pdf-compressor" class="tool-link rv">
+              <div class="ic">
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path
+                    d="M8 3v4a1 1 0 0 1-1 1H3m18 0h-4a1 1 0 0 1-1-1V3M8 21v-4a1 1 0 0 0-1-1H3m18 0h-4a1 1 0 0 0-1 1v4"
+                  />
+                </svg>
+              </div>
+              <span>PDF Compressor</span>
+            </a>
+            <a href="pdf-split" class="tool-link rv">
+              <div class="ic">
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <rect x="3" y="4" width="7" height="16" rx="1" />
+                  <rect x="14" y="4" width="7" height="16" rx="1" />
+                </svg>
+              </div>
+              <span>PDF Split</span>
+            </a>
+            <a href="pdf-reorder" class="tool-link rv">
+              <div class="ic">
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <rect x="6" y="3" width="12" height="7" rx="1" />
+                  <rect x="6" y="14" width="12" height="7" rx="1" />
+                  <path d="m9 12 3 2 3-2" />
+                </svg>
+              </div>
+              <span>PDF Reorder</span>
+            </a>
+            <a href="pdf-metadata" class="tool-link rv">
+              <div class="ic">
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path d="M7 7h10M7 12h6M4 4h16v16H4z" />
+                  <path d="m4 20 16-16" />
+                </svg>
+              </div>
+              <span>PDF Metadata Remover</span>
+            </a>
+            <a href="photo-to-pdf" class="tool-link rv">
+              <div class="ic">
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <rect x="3" y="4" width="18" height="16" rx="2" />
+                  <circle cx="9" cy="10" r="1.6" />
+                  <path d="m4 18 5.5-5.5a2 2 0 0 1 2.8 0L18 18" />
+                </svg>
+              </div>
+              <span>Photo to PDF</span>
+            </a>
+          </div>
+        </div>
+      </section>
+
+      <section id="contact">
+        <div class="container" style="display: flex; justify-content: center">
+          <div class="contact-card rv">
+            <div class="ic">
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <rect x="3" y="5" width="18" height="14" rx="2" />
+                <path d="m3 7 9 6 9-6" />
+              </svg>
+            </div>
+            <h2 style="font-size: 1.3rem; margin-bottom: 8px">Need a hand?</h2>
+            <p style="color: var(--text-muted); margin-bottom: 18px">
+              Questions, feedback, or something not working the way it should?
+              We read every message.
+            </p>
+            <a class="email" href="mailto:support@pdfmaster.co.in"
+              >support@pdfmaster.co.in</a
+            >
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <div class="container">
+        <div class="footer-grid">
+          <div class="footer-col footer-brand">
+            <a href="/" class="brand">
+              <img
+                src="/assets/apple-touch-icon.png"
+                alt="PDFMaster logo"
+                width="32"
+                height="32"
+              />
+              <span>PDFMaster</span>
+            </a>
+            <p>
+              Free, private PDF tools that run entirely in your browser. No
+              uploads, no sign-up.
+            </p>
+          </div>
+          <div class="footer-col">
+            <h4>Tools</h4>
+            <ul>
+              <li><a href="pdf-editor">PDF Editor</a></li>
+              <li><a href="pdf-compressor">PDF Compressor</a></li>
+              <li><a href="pdf-split">PDF Split</a></li>
+              <li><a href="pdf-reorder">PDF Reorder</a></li>
+              <li><a href="photo-to-pdf">Photo to PDF</a></li>
+            </ul>
+          </div>
+          <div class="footer-col">
+            <h4>Company</h4>
+            <ul>
+              <li><a href="/">Home</a></li>
+              <li><a href="/blog">Blog</a></li>
+              <li><a href="/about">About</a></li>
+              <li><a href="/privacy">Privacy Policy</a></li>
+              <li><a href="/terms">Terms of Service</a></li>
+            </ul>
+          </div>
+          <div class="footer-col">
+            <h4>Support</h4>
+            <ul>
+              <li><a href="#faqs">FAQs</a></li>
+              <li><a href="#contact">Contact</a></li>
+              <li>
+                <a href="mailto:support@pdfmaster.co.in"
+                  >support@pdfmaster.co.in</a
+                >
+              </li>
+            </ul>
+          </div>
+        </div>
+        <div class="footer-bottom">
+          <span
+            >&copy; <span id="footer-year">2026</span> PDFMaster. All rights
+            reserved.</span
+          >
+          <span>Built for privacy &mdash; every tool runs on your device.</span>
+        </div>
+      </div>
+    </footer>
+
+    <button class="to-top" id="to-top" aria-label="Back to top">
+      <svg
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2.2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      >
+        <path d="M12 19V5M5 12l7-7 7 7" />
+      </svg>
+    </button>
+    <div class="toast" id="toast"></div>
+
+    <script>
+      (function () {
+        var themeBtn = document.getElementById("theme-toggle");
+        if (themeBtn) {
+          themeBtn.addEventListener("click", function () {
+            var current = document.documentElement.getAttribute("data-theme");
+            var next = current === "dark" ? "light" : "dark";
+            document.documentElement.setAttribute("data-theme", next);
+            try {
+              localStorage.setItem("pdfmaster-theme", next);
+            } catch (e) {}
+          });
+        }
+
+        var hamburger = document.getElementById("hamburger-btn");
+        var drawer = document.getElementById("drawer");
+        var overlay = document.getElementById("drawer-overlay");
+        var drawerClose = document.getElementById("drawer-close");
+        function openDrawer() {
+          drawer.classList.add("is-open");
+          overlay.classList.add("is-open");
+          hamburger.classList.add("is-open");
+          hamburger.setAttribute("aria-expanded", "true");
+          drawer.setAttribute("aria-hidden", "false");
+        }
+        function closeDrawer() {
+          drawer.classList.remove("is-open");
+          overlay.classList.remove("is-open");
+          hamburger.classList.remove("is-open");
+          hamburger.setAttribute("aria-expanded", "false");
+          drawer.setAttribute("aria-hidden", "true");
+        }
+        if (hamburger) {
+          hamburger.addEventListener("click", function () {
+            drawer.classList.contains("is-open") ? closeDrawer() : openDrawer();
+          });
+        }
+        if (drawerClose) {
+          drawerClose.addEventListener("click", closeDrawer);
+        }
+        if (overlay) {
+          overlay.addEventListener("click", closeDrawer);
+        }
+        if (drawer) {
+          drawer.querySelectorAll("nav a").forEach(function (a) {
+            a.addEventListener("click", closeDrawer);
+          });
+        }
+        document.addEventListener("keydown", function (e) {
+          if (e.key === "Escape") closeDrawer();
+        });
+
+        document.querySelectorAll(".faq-item").forEach(function (item) {
+          var q = item.querySelector(".faq-q");
+          var a = item.querySelector(".faq-a");
+          q.addEventListener("click", function () {
+            var isOpen = item.classList.contains("is-open");
+            document
+              .querySelectorAll(".faq-item.is-open")
+              .forEach(function (other) {
+                if (other !== item) {
+                  other.classList.remove("is-open");
+                  other.querySelector(".faq-a").style.maxHeight = null;
+                }
+              });
+            if (isOpen) {
+              item.classList.remove("is-open");
+              a.style.maxHeight = null;
+            } else {
+              item.classList.add("is-open");
+              a.style.maxHeight = a.scrollHeight + "px";
+            }
+          });
+        });
+
+        var revealEls = document.querySelectorAll(".rv");
+        if ("IntersectionObserver" in window) {
+          var io = new IntersectionObserver(
+            function (entries) {
+              entries.forEach(function (entry) {
+                if (entry.isIntersecting) {
+                  entry.target.classList.add("rv-in");
+                  io.unobserve(entry.target);
+                }
+              });
+            },
+            { threshold: 0.12 },
+          );
+          revealEls.forEach(function (el) {
+            io.observe(el);
+          });
+        } else {
+          revealEls.forEach(function (el) {
+            el.classList.add("rv-in");
+          });
+        }
+
+        var toTop = document.getElementById("to-top");
+        window.addEventListener(
+          "scroll",
+          function () {
+            if (window.scrollY > 500) {
+              toTop.classList.add("is-visible");
+            } else {
+              toTop.classList.remove("is-visible");
+            }
+          },
+          { passive: true },
+        );
+        toTop.addEventListener("click", function () {
+          window.scrollTo({ top: 0, behavior: "smooth" });
+        });
+
+        window.showToast = function (msg) {
+          var toast = document.getElementById("toast");
+          toast.textContent = msg;
+          toast.classList.add("is-visible");
+          clearTimeout(window._toastTimer);
+          window._toastTimer = setTimeout(function () {
+            toast.classList.remove("is-visible");
+          }, 3200);
+        };
+
+        var fy = document.getElementById("footer-year");
+        if (fy) {
+          fy.textContent = new Date().getFullYear();
+        }
+      })();
+    </script>
+    <script src="js/pdf-editor.js"></script>
+  </body>
+</html>
