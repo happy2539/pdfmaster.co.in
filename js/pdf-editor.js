@@ -947,7 +947,8 @@
       if (isCustom) {
         customTrigger.style.background = currentColor;
       } else {
-        customTrigger.style.background = "linear-gradient(135deg, #ff0000 0%, #ffff00 17%, #00ff00 33%, #00ffff 50%, #0000ff 67%, #ff00ff 83%, #ff0000 100%)";
+        customTrigger.style.background =
+          "linear-gradient(135deg, #ff0000 0%, #ffff00 17%, #00ff00 33%, #00ffff 50%, #0000ff 67%, #ff00ff 83%, #ff0000 100%)";
       }
     }
     var customInput = document.getElementById("custom-color-input");
@@ -968,7 +969,10 @@
           ann.color = currentColor;
           changed = true;
         }
-        if (ann.strokeWidth !== undefined && ann.strokeWidth !== currentStrokeWidth) {
+        if (
+          ann.strokeWidth !== undefined &&
+          ann.strokeWidth !== currentStrokeWidth
+        ) {
           if (!changed) pushHistory();
           ann.strokeWidth = currentStrokeWidth;
           changed = true;
@@ -1096,6 +1100,9 @@
   var sigActiveTab = "type";
   var sigFontName = "Pacifico";
   var sigUploadedDataUrl = null;
+  var sigOriginalFile = null;
+  var sigOriginalDataUrl = null;
+  var sigProcessedDataUrl = null;
 
   function setSigTab(tab) {
     sigActiveTab = tab;
@@ -1143,11 +1150,20 @@
       input.dispatchEvent(new Event("input"));
     }
     sigUploadedDataUrl = null;
+    sigOriginalFile = null;
+    sigOriginalDataUrl = null;
+    sigProcessedDataUrl = null;
     var uploadInput = document.getElementById("sig-upload-input");
     if (uploadInput) uploadInput.value = "";
+    var chk = document.getElementById("sig-bg-remove-chk");
+    if (chk) chk.checked = false;
+    var chkWrap = document.getElementById("sig-bg-remove-wrap");
+    if (chkWrap) chkWrap.classList.add("hidden");
     var dropZone = document.getElementById("sig-drop-zone");
     if (dropZone) dropZone.classList.remove("hidden");
-    var previewContainer = document.getElementById("sig-upload-preview-container");
+    var previewContainer = document.getElementById(
+      "sig-upload-preview-container",
+    );
     if (previewContainer) previewContainer.classList.add("hidden");
   }
   function closeSignatureModal(revertTool) {
@@ -1804,11 +1820,20 @@
       sigHasDrawn = false;
     } else if (sigActiveTab === "upload") {
       sigUploadedDataUrl = null;
+      sigOriginalFile = null;
+      sigOriginalDataUrl = null;
+      sigProcessedDataUrl = null;
       var fileInput = document.getElementById("sig-upload-input");
       if (fileInput) fileInput.value = "";
+      var chk = document.getElementById("sig-bg-remove-chk");
+      if (chk) chk.checked = false;
+      var chkWrap = document.getElementById("sig-bg-remove-wrap");
+      if (chkWrap) chkWrap.classList.add("hidden");
       var dropZone = document.getElementById("sig-drop-zone");
       if (dropZone) dropZone.classList.remove("hidden");
-      var previewContainer = document.getElementById("sig-upload-preview-container");
+      var previewContainer = document.getElementById(
+        "sig-upload-preview-container",
+      );
       if (previewContainer) previewContainer.classList.add("hidden");
     }
   });
@@ -1816,7 +1841,7 @@
   document.getElementById("sig-insert").addEventListener("click", function () {
     var dataUrl = null;
     var aspect = 0.3; // Default for typed signature
-    
+
     if (sigActiveTab === "type") {
       var text = document.getElementById("sig-type-input").value.trim();
       if (!text) {
@@ -1878,9 +1903,11 @@
   if (sigTypeInput) {
     sigTypeInput.addEventListener("input", function (e) {
       var val = e.target.value.trim() || "Signature";
-      document.querySelectorAll(".sig-type-preview-card").forEach(function (card) {
-        card.textContent = val;
-      });
+      document
+        .querySelectorAll(".sig-type-preview-card")
+        .forEach(function (card) {
+          card.textContent = val;
+        });
     });
   }
 
@@ -1937,15 +1964,27 @@
       window.showToast("Please upload an image file.");
       return;
     }
+    sigOriginalFile = file;
     readFileAsDataURL(file)
       .then(function (dataUrl) {
+        sigOriginalDataUrl = dataUrl;
         sigUploadedDataUrl = dataUrl;
+        sigProcessedDataUrl = null;
+
+        var chk = document.getElementById("sig-bg-remove-chk");
+        if (chk) chk.checked = false;
+
         var imgEl = document.getElementById("sig-upload-preview-img");
         imgEl.src = dataUrl;
-        
+
         // Hide drop zone and show preview
         document.getElementById("sig-drop-zone").classList.add("hidden");
-        document.getElementById("sig-upload-preview-container").classList.remove("hidden");
+        document
+          .getElementById("sig-upload-preview-container")
+          .classList.remove("hidden");
+        document
+          .getElementById("sig-bg-remove-wrap")
+          .classList.remove("hidden");
       })
       .catch(function () {
         window.showToast("Could not load image.");
@@ -1958,10 +1997,97 @@
     sigUploadRemove.addEventListener("click", function (e) {
       e.stopPropagation();
       sigUploadedDataUrl = null;
+      sigOriginalFile = null;
+      sigOriginalDataUrl = null;
+      sigProcessedDataUrl = null;
       var fileInput = document.getElementById("sig-upload-input");
       if (fileInput) fileInput.value = "";
+      var chk = document.getElementById("sig-bg-remove-chk");
+      if (chk) chk.checked = false;
+      var chkWrap = document.getElementById("sig-bg-remove-wrap");
+      if (chkWrap) chkWrap.classList.add("hidden");
       document.getElementById("sig-drop-zone").classList.remove("hidden");
-      document.getElementById("sig-upload-preview-container").classList.add("hidden");
+      document
+        .getElementById("sig-upload-preview-container")
+        .classList.add("hidden");
+    });
+  }
+
+  // WASM Background Removal Trigger
+  var bgRemoveChk = document.getElementById("sig-bg-remove-chk");
+  if (bgRemoveChk) {
+    bgRemoveChk.addEventListener("change", function () {
+      var isChecked = bgRemoveChk.checked;
+      var imgEl = document.getElementById("sig-upload-preview-img");
+      var loader = document.getElementById("sig-upload-loading-overlay");
+
+      if (isChecked) {
+        if (sigProcessedDataUrl) {
+          sigUploadedDataUrl = sigProcessedDataUrl;
+          imgEl.src = sigProcessedDataUrl;
+        } else {
+          if (!sigOriginalFile) return;
+          loader.classList.remove("hidden");
+
+          // Reset progress bar elements
+          var progressContainer = document.getElementById("sig-upload-progress-container");
+          var progressBar = document.getElementById("sig-upload-progress-bar");
+          var progressText = document.getElementById("sig-upload-progress-text");
+          var loadingStatus = document.getElementById("sig-upload-loading-status");
+
+          if (progressBar) progressBar.style.width = "0%";
+          if (progressText) progressText.textContent = "0%";
+          if (loadingStatus) loadingStatus.textContent = "Loading WASM AI...";
+          if (progressContainer) progressContainer.classList.remove("hidden");
+
+          import("https://cdn.jsdelivr.net/npm/@imgly/background-removal@1.5.6/+esm")
+            .then(function (module) {
+              return module.removeBackground(sigOriginalFile, {
+                publicPath:
+                  "https://staticimgly.com/@imgly/background-removal-data/1.5.6/dist/",
+                model: "isnet_quint8",
+                progress: function (key, current, total) {
+                  if (total && total > 0) {
+                    var percentage = Math.round((current / total) * 100);
+                    if (progressBar) progressBar.style.width = percentage + "%";
+                    if (progressText) progressText.textContent = percentage + "%";
+                    if (loadingStatus) {
+                      var cleanKey = key;
+                      if (key.indexOf("fetch:") === 0) {
+                        cleanKey = "Downloading " + key.substring(key.lastIndexOf("/") + 1);
+                      } else if (key.indexOf("compute:") === 0) {
+                        cleanKey = "Removing background...";
+                      }
+                      loadingStatus.textContent = cleanKey;
+                    }
+                  } else {
+                    if (loadingStatus) loadingStatus.textContent = "Removing background...";
+                  }
+                }
+              });
+            })
+            .then(function (blob) {
+              if (progressContainer) progressContainer.classList.add("hidden");
+              return readFileAsDataURL(blob);
+            })
+            .then(function (dataUrl) {
+              sigProcessedDataUrl = dataUrl;
+              sigUploadedDataUrl = dataUrl;
+              imgEl.src = dataUrl;
+              loader.classList.add("hidden");
+            })
+            .catch(function (err) {
+              console.error("WASM background removal failed:", err);
+              window.showToast("Background removal failed.");
+              bgRemoveChk.checked = false;
+              loader.classList.add("hidden");
+              if (progressContainer) progressContainer.classList.add("hidden");
+            });
+        }
+      } else {
+        sigUploadedDataUrl = sigOriginalDataUrl;
+        imgEl.src = sigOriginalDataUrl;
+      }
     });
   }
 

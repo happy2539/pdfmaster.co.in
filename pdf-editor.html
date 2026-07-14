@@ -77,6 +77,7 @@
       rel="stylesheet"
     />
 
+
     <script type="application/ld+json">
       {
         "@context": "https://schema.org",
@@ -830,6 +831,16 @@
             "
           >
             <img id="sig-upload-preview-img" alt="Uploaded signature" style="max-width: 90%; max-height: 90%; object-fit: contain; pointer-events: none;" />
+            <div id="sig-upload-loading-overlay" class="hidden" style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: var(--surface); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px;">
+              <div class="spinner" style="width: 28px; height: 28px; border: 3px solid var(--border); border-top-color: var(--accent); border-radius: 50%; animation: spin 1s linear infinite;"></div>
+              <span id="sig-upload-loading-status" style="font-size: 0.8rem; font-weight: 700; color: var(--text);">Removing background...</span>
+              <span style="font-size: 0.65rem; color: var(--text-muted); font-weight: 500; text-align: center; padding: 0 16px;">Downloading WASM models (first run may take a moment)</span>
+              <!-- Progress Bar -->
+              <div id="sig-upload-progress-container" class="hidden" style="width: 80%; height: 6px; background: var(--border); border-radius: 3px; overflow: hidden; margin-top: 4px;">
+                <div id="sig-upload-progress-bar" style="width: 0%; height: 100%; background: var(--accent); transition: width 0.1s ease;"></div>
+              </div>
+              <span id="sig-upload-progress-text" style="font-size: 0.65rem; color: var(--accent); font-weight: 700;">0%</span>
+            </div>
             <button
               type="button"
               id="sig-upload-remove"
@@ -849,12 +860,19 @@
                 align-items: center;
                 justify-content: center;
                 padding: 0;
+                z-index: 10;
               "
             >
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" style="width: 12px; height: 12px;">
                 <path d="M18 6 6 18M6 6l12 12" />
               </svg>
             </button>
+          </div>
+          <div id="sig-bg-remove-wrap" class="hidden" style="margin-top: 10px; display: flex; align-items: center; gap: 8px;">
+            <input type="checkbox" id="sig-bg-remove-chk" style="width: 16px; height: 16px; cursor: pointer; accent-color: var(--accent);" />
+            <label for="sig-bg-remove-chk" style="font-size: 0.85rem; font-weight: 600; cursor: pointer; color: var(--text); display: inline-flex; align-items: center; gap: 4px; user-select: none;">
+              Remove background <span style="font-size: 0.7rem; color: var(--accent); font-weight: 700; background: var(--accent-soft); padding: 1px 5px; border-radius: 4px;">WASM AI</span>
+            </label>
           </div>
         </div>
 
