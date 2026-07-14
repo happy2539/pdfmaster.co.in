@@ -1260,9 +1260,13 @@ body.editor-active .tool-options.is-open {
 }
 
 body.editor-active .opt-group {
-  display: flex !important;
+  display: flex;
   align-items: center !important;
   gap: 12px !important;
+}
+
+body.editor-active .opt-group.hidden {
+  display: none !important;
 }
 
 body.editor-active .opt-group label {
