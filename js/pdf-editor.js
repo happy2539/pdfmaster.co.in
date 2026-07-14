@@ -18,6 +18,7 @@
   var idCounter = 0;
   var selectedAnnotation = null;
   var currentTool = "select",
+    lastActiveDrawingTool = null,
     currentColor = "#e8372a",
     currentStrokeWidth = 3,
     currentFontSize = 18;
@@ -652,6 +653,9 @@
     );
     if (selectedAnnotation && selectedAnnotation.id === id) {
       selectedAnnotation = null;
+      if (lastActiveDrawingTool) {
+        setActiveTool(lastActiveDrawingTool);
+      }
     }
     redrawAnnotations();
   }
@@ -911,7 +915,7 @@
       s.classList.toggle("is-active", s.dataset.color === currentColor);
     });
   }
-  function setActiveTool(tool) {
+  function setActiveTool(tool, isManual) {
     finalizeAnyOpenTextBox();
     livePath = null;
     liveShape = null;
@@ -919,6 +923,13 @@
     dragOrigin = null;
     if (tool !== "image" && tool !== "signature") {
       pendingPlaceable = null;
+    }
+    if (tool === "select") {
+      if (isManual) {
+        lastActiveDrawingTool = null;
+      }
+    } else {
+      lastActiveDrawingTool = tool;
     }
     currentTool = tool;
     document.querySelectorAll(".tool-btn[data-tool]").forEach(function (b) {
@@ -1164,7 +1175,11 @@
         redrawAnnotations();
       } else if (selectedAnnotation) {
         selectedAnnotation = null;
-        redrawAnnotations();
+        if (lastActiveDrawingTool) {
+          setActiveTool(lastActiveDrawingTool);
+        } else {
+          redrawAnnotations();
+        }
       }
       return;
     }
@@ -1494,6 +1509,7 @@
     numPages = 1;
     zoomFactor = 1;
     pendingPlaceable = null;
+    lastActiveDrawingTool = null;
     document.getElementById("file-input").value = "";
     showHero();
   }
@@ -1504,7 +1520,7 @@
 
   document.querySelectorAll(".tool-btn[data-tool]").forEach(function (btn) {
     btn.addEventListener("click", function () {
-      setActiveTool(btn.dataset.tool);
+      setActiveTool(btn.dataset.tool, true);
     });
   });
   document.getElementById("undo-btn").addEventListener("click", undo);
@@ -1634,12 +1650,18 @@
   document.getElementById("prev-page").addEventListener("click", function () {
     if (currentPage > 1) {
       selectedAnnotation = null;
+      if (lastActiveDrawingTool) {
+        setActiveTool(lastActiveDrawingTool);
+      }
       renderPage(currentPage - 1);
     }
   });
   document.getElementById("next-page").addEventListener("click", function () {
     if (currentPage < numPages) {
       selectedAnnotation = null;
+      if (lastActiveDrawingTool) {
+        setActiveTool(lastActiveDrawingTool);
+      }
       renderPage(currentPage + 1);
     }
   });
