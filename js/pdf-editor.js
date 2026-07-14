@@ -1061,6 +1061,65 @@
       r.readAsDataURL(file);
     });
   }
+
+  function resizeImageIfTooLarge(file, maxDimension) {
+    return new Promise(function (resolve, reject) {
+      if (!file) {
+        resolve(null);
+        return;
+      }
+      var reader = new FileReader();
+      reader.onload = function (e) {
+        var img = new Image();
+        img.onload = function () {
+          var w = img.width;
+          var h = img.height;
+          if (w <= maxDimension && h <= maxDimension) {
+            resolve({ file: file, dataUrl: e.target.result });
+            return;
+          }
+          if (w > h) {
+            if (w > maxDimension) {
+              h = Math.round((h * maxDimension) / w);
+              w = maxDimension;
+            }
+          } else {
+            if (h > maxDimension) {
+              w = Math.round((w * maxDimension) / h);
+              h = maxDimension;
+            }
+          }
+          var canvas = document.createElement("canvas");
+          canvas.width = w;
+          canvas.height = h;
+          var ctx = canvas.getContext("2d");
+          if (ctx) {
+            ctx.drawImage(img, 0, 0, w, h);
+          }
+          canvas.toBlob(function (blob) {
+            if (!blob) {
+              resolve({ file: file, dataUrl: e.target.result });
+              return;
+            }
+            var resizedFile = new File([blob], file.name, {
+              type: file.type || "image/png",
+              lastModified: Date.now()
+            });
+            var dataUrl = canvas.toDataURL(file.type || "image/png");
+            resolve({ file: resizedFile, dataUrl: dataUrl });
+          }, file.type || "image/png");
+        };
+        img.onerror = function () {
+          reject(new Error("Failed to load image for resizing"));
+        };
+        img.src = e.target.result;
+      };
+      reader.onerror = function () {
+        reject(new Error("Failed to read file for resizing"));
+      };
+      reader.readAsDataURL(file);
+    });
+  }
   function getImageDims(dataUrl) {
     return new Promise(function (resolve, reject) {
       var img = new Image();
@@ -1964,9 +2023,13 @@
       window.showToast("Please upload an image file.");
       return;
     }
-    sigOriginalFile = file;
-    readFileAsDataURL(file)
-      .then(function (dataUrl) {
+
+    // Downscale the image to a max dimension of 1024px to prevent WASM out-of-memory crashes on low-end devices
+    resizeImageIfTooLarge(file, 1024)
+      .then(function (result) {
+        sigOriginalFile = result.file;
+        var dataUrl = result.dataUrl;
+
         sigOriginalDataUrl = dataUrl;
         sigUploadedDataUrl = dataUrl;
         sigProcessedDataUrl = null;
@@ -1986,8 +2049,9 @@
           .getElementById("sig-bg-remove-wrap")
           .classList.remove("hidden");
       })
-      .catch(function () {
-        window.showToast("Could not load image.");
+      .catch(function (err) {
+        console.error("Resizing image failed:", err);
+        window.showToast("Could not process image.");
       });
   }
 
