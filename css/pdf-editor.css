@@ -1394,6 +1394,53 @@ body.editor-active .swatch-special-btn.is-active {
   box-shadow: 0 0 0 2px var(--bg) !important;
 }
 
+body.editor-active .sig-tab-btn {
+  flex: 1;
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid transparent;
+  color: var(--text-muted);
+  font-family: var(--font-head);
+  font-weight: 600;
+  font-size: 0.9rem;
+  padding: 10px 6px;
+  cursor: pointer;
+  text-align: center;
+  transition: color 0.15s ease, border-color 0.15s ease;
+}
+body.editor-active .sig-tab-btn.active {
+  color: var(--accent);
+  border-bottom-color: var(--accent);
+}
+body.editor-active .sig-type-preview-card {
+  height: 84px;
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-s);
+  background: var(--surface-2);
+  color: #16181d;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px;
+  cursor: pointer;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  transition: border-color 0.15s ease, background 0.15s ease, box-shadow 0.15s ease;
+  user-select: none;
+}
+html[data-theme="dark"] body.editor-active .sig-type-preview-card {
+  background: #fbfbfc;
+}
+body.editor-active .sig-type-preview-card.active {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 1px var(--accent);
+  background: var(--accent-soft-2);
+}
+body.editor-active .sig-type-preview-card:hover {
+  border-color: var(--accent);
+}
+
 @media (max-width: 768px) {
   body.editor-active .toolbar-spacer {
     display: none !important;

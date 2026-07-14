@@ -73,7 +73,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=DM+Sans:wght@400;500;600;700&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=DM+Sans:wght@400;500;600;700&family=Pacifico&family=Homemade+Apple&family=Mrs+Saint+Delafield&family=Caveat:wght@600&display=swap"
       rel="stylesheet"
     />
 
@@ -703,13 +703,13 @@
         id="sig-modal"
         role="dialog"
         aria-modal="true"
-        aria-label="Draw your signature"
+        aria-label="Create your signature"
         aria-hidden="true"
         style="
           right: auto;
           left: 50%;
           top: 50%;
-          width: min(420px, 90vw);
+          width: min(460px, 90vw);
           height: auto;
           transform: translate(-50%, -50%) scale(0.94);
           border-radius: var(--radius-l);
@@ -720,9 +720,9 @@
             transform 0.2s ease;
         "
       >
-        <div class="drawer-top">
+        <div class="drawer-top" style="margin-bottom: 12px;">
           <span class="font-head" style="font-weight: 700"
-            >Draw your signature</span
+            >Create Signature</span
           >
           <button class="drawer-close" id="sig-close" aria-label="Close">
             <svg
@@ -736,25 +736,138 @@
             </svg>
           </button>
         </div>
-        <canvas
-          id="sig-canvas"
-          style="
-            width: 100%;
-            height: 180px;
-            border: 1.5px dashed var(--border);
-            border-radius: var(--radius-s);
-            background: #fff;
-            touch-action: none;
-          "
-        ></canvas>
-        <div style="display: flex; gap: 10px; margin-top: 16px">
-          <button class="btn btn-ghost btn-sm" id="sig-clear" style="flex: 1">
+
+        <!-- Cursive Tabs -->
+        <div class="sig-tabs" style="display: flex; border-bottom: 1.5px solid var(--border); margin-bottom: 16px; flex-shrink: 0;">
+          <button class="sig-tab-btn active" data-tab="type" type="button">Type</button>
+          <button class="sig-tab-btn" data-tab="draw" type="button">Draw</button>
+          <button class="sig-tab-btn" data-tab="upload" type="button">Upload</button>
+        </div>
+
+        <!-- Tab 1: Type Cursive -->
+        <div class="sig-tab-content" id="sig-tab-type">
+          <input
+            type="text"
+            id="sig-type-input"
+            placeholder="Type your name..."
+            maxlength="24"
+            style="width: 100%; padding: 10px 14px; border: 1.5px solid var(--border); border-radius: var(--radius-s); background: var(--surface); color: var(--text); font-size: 0.95rem; margin-bottom: 12px; outline: none;"
+          />
+          <div class="sig-type-previews" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 4px;">
+            <div class="sig-type-preview-card active" data-font="Pacifico" style="font-family: 'Pacifico', cursive;">John Doe</div>
+            <div class="sig-type-preview-card" data-font="Homemade Apple" style="font-family: 'Homemade Apple', cursive; font-size: 1.15rem;">John Doe</div>
+            <div class="sig-type-preview-card" data-font="Mrs Saint Delafield" style="font-family: 'Mrs Saint Delafield', cursive; font-size: 1.9rem;">John Doe</div>
+            <div class="sig-type-preview-card" data-font="Caveat" style="font-family: 'Caveat', cursive; font-size: 1.45rem;">John Doe</div>
+          </div>
+        </div>
+
+        <!-- Tab 2: Draw Signature -->
+        <div class="sig-tab-content hidden" id="sig-tab-draw">
+          <canvas
+            id="sig-canvas"
+            style="
+              width: 100%;
+              height: 180px;
+              border: 1.5px dashed var(--border);
+              border-radius: var(--radius-s);
+              background: #fff;
+              touch-action: none;
+              display: block;
+            "
+          ></canvas>
+        </div>
+
+        <!-- Tab 3: Upload Signature File -->
+        <div class="sig-tab-content hidden" id="sig-tab-upload">
+          <input type="file" id="sig-upload-input" accept="image/*" style="display: none;" />
+          <div
+            id="sig-drop-zone"
+            style="
+              height: 180px;
+              border: 1.5px dashed var(--border);
+              border-radius: var(--radius-s);
+              background: var(--surface-2);
+              display: flex;
+              flex-direction: column;
+              align-items: center;
+              justify-content: center;
+              cursor: pointer;
+              padding: 16px;
+              transition: border-color 0.2s ease, background 0.2s ease;
+              text-align: center;
+              gap: 8px;
+            "
+          >
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.8"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              style="width: 32px; height: 32px; color: var(--accent);"
+            >
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+              <polyline points="17 8 12 3 7 8" />
+              <line x1="12" y1="3" x2="12" y2="15" />
+            </svg>
+            <span style="font-size: 0.88rem; font-weight: 600; color: var(--text);">Click or Drag signature image</span>
+            <span style="font-size: 0.72rem; color: var(--text-faint);">Supports PNG, JPG, SVG</span>
+          </div>
+          <div
+            id="sig-upload-preview-container"
+            class="hidden"
+            style="
+              position: relative;
+              height: 180px;
+              border: 1.5px solid var(--border);
+              border-radius: var(--radius-s);
+              background: #fff;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              overflow: hidden;
+            "
+          >
+            <img id="sig-upload-preview-img" alt="Uploaded signature" style="max-width: 90%; max-height: 90%; object-fit: contain; pointer-events: none;" />
+            <button
+              type="button"
+              id="sig-upload-remove"
+              title="Remove image"
+              style="
+                position: absolute;
+                top: 8px;
+                right: 8px;
+                width: 24px;
+                height: 24px;
+                border-radius: 50%;
+                border: none;
+                background: rgba(232, 55, 42, 0.9);
+                color: #fff;
+                cursor: pointer;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                padding: 0;
+              "
+            >
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" style="width: 12px; height: 12px;">
+                <path d="M18 6 6 18M6 6l12 12" />
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <!-- Modal Footer Buttons -->
+        <div style="display: flex; gap: 10px; margin-top: 16px; flex-shrink: 0;">
+          <button class="btn btn-ghost btn-sm" id="sig-clear" style="flex: 1" type="button">
             Clear
           </button>
           <button
             class="btn btn-primary btn-sm"
             id="sig-insert"
             style="flex: 1"
+            type="button"
           >
             Insert Signature
           </button>
