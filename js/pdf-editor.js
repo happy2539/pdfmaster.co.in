@@ -161,12 +161,17 @@
     document.getElementById("editor-wrap").classList.remove("hidden");
     document.getElementById("loading-panel").classList.remove("hidden");
     document.getElementById("canvas-frame").classList.add("hidden");
-    var wrap = document.getElementById("editor-wrap");
-    window.scrollTo({ top: wrap.offsetTop - 90, behavior: "smooth" });
+    document.body.classList.add("editor-active");
+    var navWrap = document.getElementById("nav-filename-wrap");
+    if (navWrap) navWrap.style.display = "flex";
+    window.scrollTo({ top: 0, behavior: "instant" });
   }
   function showHero() {
     document.getElementById("editor-wrap").classList.add("hidden");
     document.getElementById("top").classList.remove("hidden");
+    document.body.classList.remove("editor-active");
+    var navWrap = document.getElementById("nav-filename-wrap");
+    if (navWrap) navWrap.style.display = "none";
     window.scrollTo({ top: 0, behavior: "smooth" });
   }
 

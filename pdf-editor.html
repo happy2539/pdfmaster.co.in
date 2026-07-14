@@ -200,15 +200,20 @@
 
     <header class="navbar">
       <div class="container">
-        <a href="/" class="brand">
-          <img
-            src="/assets/apple-touch-icon.png"
-            alt="PDFMaster logo"
-            width="32"
-            height="32"
-          />
-          <span>PDFMaster</span>
-        </a>
+        <div style="display: flex; align-items: center; gap: 12px; overflow: hidden; flex: 1; margin-right: 16px;">
+          <a href="/" class="brand" style="flex-shrink: 0;">
+            <img
+              src="/assets/apple-touch-icon.png"
+              alt="PDFMaster logo"
+              width="32"
+              height="32"
+            />
+            <span>PDFMaster</span>
+          </a>
+          <div class="nav-filename-wrap" id="nav-filename-wrap" style="display: none; align-items: center; gap: 8px; color: var(--text-muted); font-size: 0.85rem; border-left: 1.5px solid var(--border); padding-left: 12px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+            <span id="editor-filename">document.pdf</span>
+          </div>
+        </div>
         <div class="nav-right">
           <button
             class="icon-btn theme-toggle"
@@ -341,48 +346,27 @@
       <section class="editor-wrap hidden" id="editor-wrap">
         <div class="container">
           <div class="editor-shell">
-            <div class="editor-topbar">
-              <div class="group">
-                <span class="editor-filename" id="editor-filename"
-                  >document.pdf</span
-                >
-              </div>
-              <div class="page-nav">
-                <button id="prev-page" aria-label="Previous page">
-                  <svg
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="2.2"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                  >
-                    <path d="m15 18-6-6 6-6" />
-                  </svg>
-                </button>
-                <span id="page-indicator">Page 1 of 1</span>
-                <button id="next-page" aria-label="Next page">
-                  <svg
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="2.2"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                  >
-                    <path d="m9 18 6-6-6-6" />
-                  </svg>
-                </button>
-              </div>
-              <div class="zoom-controls">
-                <button id="zoom-out" aria-label="Zoom out">&minus;</button>
-                <span id="zoom-level">100%</span>
-                <button id="zoom-in" aria-label="Zoom in">+</button>
-              </div>
-            </div>
-
             <div class="editor-body">
               <div class="toolbar" id="toolbar">
+                <!-- Restart/Start Over Group -->
+                <button class="tool-btn" id="start-over-btn" title="Start over / load new file">
+                  <svg
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
+                    <path d="M3 3v5h5" />
+                  </svg>
+                  Reset
+                </button>
+
+                <div class="toolbar-divider"></div>
+
+                <!-- Annotation Tools -->
                 <button
                   class="tool-btn is-active"
                   data-tool="select"
@@ -536,7 +520,10 @@
                   </svg>
                   Sign
                 </button>
+
                 <div class="toolbar-divider"></div>
+
+                <!-- History Operations -->
                 <button class="tool-btn" id="undo-btn" title="Undo">
                   <svg
                     viewBox="0 0 24 24"
@@ -565,7 +552,7 @@
                   </svg>
                   Redo
                 </button>
-                <button class="tool-btn" id="clear-btn" title="Clear this page">
+                <button class="tool-btn" id="clear-btn" title="Clear page">
                   <svg
                     viewBox="0 0 24 24"
                     fill="none"
@@ -579,6 +566,72 @@
                     />
                   </svg>
                   Clear
+                </button>
+
+                <div class="toolbar-divider"></div>
+
+                <!-- Page Navigation Widget -->
+                <div class="toolbar-widget-group">
+                  <button class="widget-btn" id="prev-page" title="Previous page" aria-label="Previous page">
+                    <svg
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2.5"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      style="width: 14px; height: 14px; display: block;"
+                    >
+                      <path d="m15 18-6-6 6-6" />
+                    </svg>
+                  </button>
+                  <span id="page-indicator" class="widget-indicator">Page 1 of 1</span>
+                  <button class="widget-btn" id="next-page" title="Next page" aria-label="Next page">
+                    <svg
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2.5"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      style="width: 14px; height: 14px; display: block;"
+                    >
+                      <path d="m9 18 6-6-6-6" />
+                    </svg>
+                  </button>
+                </div>
+
+                <div class="toolbar-divider"></div>
+
+                <!-- Zoom Widget -->
+                <div class="toolbar-widget-group">
+                  <button class="widget-btn" id="zoom-out" title="Zoom out" aria-label="Zoom out" style="font-size: 15px; line-height: 1; padding: 0 6px;">&minus;</button>
+                  <span id="zoom-level" class="widget-indicator">100%</span>
+                  <button class="widget-btn" id="zoom-in" title="Zoom in" aria-label="Zoom in" style="font-size: 15px; line-height: 1; padding: 0 6px;">+</button>
+                </div>
+
+                <!-- Spacer to push download to the far right -->
+                <div class="toolbar-spacer" style="flex: 1; min-width: 16px;"></div>
+
+                <!-- Download Primary Action -->
+                <button
+                  class="tool-btn download-btn"
+                  id="download-btn"
+                  title="Download Edited PDF"
+                >
+                  <svg
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                    <polyline points="7 10 12 15 17 10" />
+                    <line x1="12" y1="15" x2="12" y2="3" />
+                  </svg>
+                  Download
                 </button>
               </div>
 
@@ -623,15 +676,6 @@
                   ></canvas>
                 </div>
               </div>
-            </div>
-
-            <div class="editor-bottombar">
-              <button class="btn btn-ghost btn-sm" id="start-over-btn">
-                Start Over
-              </button>
-              <button class="btn btn-primary" id="download-btn">
-                Download Edited PDF
-              </button>
             </div>
           </div>
         </div>
