@@ -40,11 +40,15 @@
 
   var PALETTE = [
     "#e8372a",
-    "#16181d",
-    "#2563eb",
+    "#ea580c",
+    "#f59e0b",
     "#16a34a",
-    "#f6c344",
+    "#0d9488",
+    "#2563eb",
     "#7c3aed",
+    "#db2777",
+    "#16181d",
+    "#ffffff",
   ];
   var TOOL_DEFAULTS = {
     pen: { width: 3 },
@@ -655,6 +659,8 @@
       selectedAnnotation = null;
       if (lastActiveDrawingTool) {
         setActiveTool(lastActiveDrawingTool);
+      } else {
+        updateToolOptionsPanel("select");
       }
     }
     redrawAnnotations();
@@ -885,21 +891,43 @@
   /* ---------- tool switching ---------- */
   function updateToolOptionsPanel(tool) {
     var panel = document.getElementById("tool-options");
-    var showColor =
-      [
-        "text",
-        "pen",
-        "highlighter",
-        "rect",
-        "ellipse",
-        "line",
-        "arrow",
-      ].indexOf(tool) !== -1;
-    var showWidth =
-      ["pen", "highlighter", "rect", "ellipse", "line", "arrow"].indexOf(
-        tool,
-      ) !== -1;
-    var showFont = tool === "text";
+    var showColor = false;
+    var showWidth = false;
+    var showFont = false;
+
+    if (tool === "select") {
+      if (selectedAnnotation && selectedAnnotation.page === currentPage) {
+        var ann = findAnnotation(currentPage, selectedAnnotation.id);
+        if (ann) {
+          if (ann.type === "text") {
+            showColor = true;
+            showFont = true;
+          } else if (ann.type === "image") {
+            // images have no color/stroke options
+          } else {
+            showColor = true;
+            showWidth = true;
+          }
+        }
+      }
+    } else {
+      showColor =
+        [
+          "text",
+          "pen",
+          "highlighter",
+          "rect",
+          "ellipse",
+          "line",
+          "arrow",
+        ].indexOf(tool) !== -1;
+      showWidth =
+        ["pen", "highlighter", "rect", "ellipse", "line", "arrow"].indexOf(
+          tool,
+        ) !== -1;
+      showFont = tool === "text";
+    }
+
     panel.classList.toggle("is-open", showColor || showWidth || showFont);
     document.getElementById("opt-color").classList.toggle("hidden", !showColor);
     document.getElementById("opt-width").classList.toggle("hidden", !showWidth);
@@ -911,9 +939,50 @@
     document.getElementById("stroke-width").value = currentStrokeWidth;
     document.getElementById("stroke-width-val").textContent =
       currentStrokeWidth + "px";
+
+    var isCustom = PALETTE.indexOf(currentColor) === -1;
+    var customTrigger = document.getElementById("custom-color-trigger");
+    if (customTrigger) {
+      customTrigger.classList.toggle("is-active", isCustom);
+      if (isCustom) {
+        customTrigger.style.background = currentColor;
+      } else {
+        customTrigger.style.background = "linear-gradient(135deg, #ff0000 0%, #ffff00 17%, #00ff00 33%, #00ffff 50%, #0000ff 67%, #ff00ff 83%, #ff0000 100%)";
+      }
+    }
+    var customInput = document.getElementById("custom-color-input");
+    if (customInput) {
+      customInput.value = currentColor;
+    }
+
     document.querySelectorAll(".swatch").forEach(function (s) {
       s.classList.toggle("is-active", s.dataset.color === currentColor);
     });
+
+    if (selectedAnnotation && selectedAnnotation.page === currentPage) {
+      var ann = findAnnotation(currentPage, selectedAnnotation.id);
+      if (ann) {
+        var changed = false;
+        if (ann.color !== undefined && ann.color !== currentColor) {
+          pushHistory();
+          ann.color = currentColor;
+          changed = true;
+        }
+        if (ann.strokeWidth !== undefined && ann.strokeWidth !== currentStrokeWidth) {
+          if (!changed) pushHistory();
+          ann.strokeWidth = currentStrokeWidth;
+          changed = true;
+        }
+        if (ann.fontSize !== undefined && ann.fontSize !== currentFontSize) {
+          if (!changed) pushHistory();
+          ann.fontSize = currentFontSize;
+          changed = true;
+        }
+        if (changed) {
+          redrawAnnotations();
+        }
+      }
+    }
   }
   function setActiveTool(tool, isManual) {
     finalizeAnyOpenTextBox();
@@ -1172,12 +1241,26 @@
         dragMode = "move";
         dragOrigin = JSON.parse(JSON.stringify(hit));
         dragStartPoint = pt;
+        if (hit.color !== undefined) {
+          currentColor = hit.color;
+        }
+        if (hit.strokeWidth !== undefined) {
+          currentStrokeWidth = hit.strokeWidth;
+        }
+        if (hit.fontSize !== undefined) {
+          currentFontSize = hit.fontSize;
+          var fsInput = document.getElementById("font-size");
+          if (fsInput) fsInput.value = currentFontSize;
+        }
+        updateToolOptionsPanel("select");
+        syncOptionInputs();
         redrawAnnotations();
       } else if (selectedAnnotation) {
         selectedAnnotation = null;
         if (lastActiveDrawingTool) {
           setActiveTool(lastActiveDrawingTool);
         } else {
+          updateToolOptionsPanel("select");
           redrawAnnotations();
         }
       }
@@ -1532,12 +1615,55 @@
     .getElementById("stroke-width")
     .addEventListener("input", function (e) {
       currentStrokeWidth = parseInt(e.target.value, 10);
-      document.getElementById("stroke-width-val").textContent =
-        currentStrokeWidth + "px";
+      syncOptionInputs();
     });
-  document.getElementById("font-size").addEventListener("change", function (e) {
-    currentFontSize = parseInt(e.target.value, 10);
-  });
+  var fontSizeInput = document.getElementById("font-size");
+  if (fontSizeInput) {
+    var handleFontSizeChange = function (e) {
+      currentFontSize = parseInt(e.target.value, 10) || 18;
+      syncOptionInputs();
+    };
+    fontSizeInput.addEventListener("change", handleFontSizeChange);
+    fontSizeInput.addEventListener("input", handleFontSizeChange);
+  }
+
+  // Custom Color Trigger
+  var customColorInput = document.getElementById("custom-color-input");
+  var customColorTrigger = document.getElementById("custom-color-trigger");
+  if (customColorTrigger && customColorInput) {
+    customColorTrigger.addEventListener("click", function () {
+      customColorInput.click();
+    });
+    customColorInput.addEventListener("input", function (e) {
+      currentColor = e.target.value;
+      syncOptionInputs();
+    });
+    customColorInput.addEventListener("change", function (e) {
+      currentColor = e.target.value;
+      syncOptionInputs();
+    });
+  }
+
+  // Eyedropper API
+  var eyedropperBtn = document.getElementById("eyedropper-btn");
+  if (eyedropperBtn) {
+    if (window.EyeDropper) {
+      eyedropperBtn.addEventListener("click", function () {
+        var eyeDropper = new window.EyeDropper();
+        eyeDropper
+          .open()
+          .then(function (result) {
+            currentColor = result.sRGBHex;
+            syncOptionInputs();
+          })
+          .catch(function (err) {
+            console.log("Eyedropper cancelled or failed", err);
+          });
+      });
+    } else {
+      eyedropperBtn.style.display = "none";
+    }
+  }
 
   document
     .getElementById("select-file-btn")

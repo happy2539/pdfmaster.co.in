@@ -638,7 +638,18 @@
               <div class="tool-options" id="tool-options">
                 <div class="opt-group" id="opt-color">
                   <label>Color</label>
-                  <div class="swatches" id="color-swatches"></div>
+                  <div class="swatches-container" style="display: flex; align-items: center; gap: 8px;">
+                    <div class="swatches" id="color-swatches"></div>
+                    <div style="width: 1px; height: 20px; background: var(--border); flex-shrink: 0;"></div>
+                    <button type="button" class="swatch-special-btn" id="custom-color-trigger" title="Custom color picker" style="width: 26px; height: 26px; border-radius: 50%; border: 2px solid var(--border); cursor: pointer; padding: 0; background: linear-gradient(135deg, #ff0000 0%, #ffff00 17%, #00ff00 33%, #00ffff 50%, #0000ff 67%, #ff00ff 83%, #ff0000 100%); flex-shrink: 0; box-shadow: var(--shadow-s);"></button>
+                    <input type="color" id="custom-color-input" style="position: absolute; visibility: hidden; width: 0; height: 0; pointer-events: none;" />
+                    <button type="button" class="swatch-special-btn" id="eyedropper-btn" title="Pick color from screen (Eyedropper)" style="width: 26px; height: 26px; border-radius: 50%; border: 2px solid var(--border); cursor: pointer; padding: 0; background: var(--surface); display: flex; align-items: center; justify-content: center; flex-shrink: 0; color: var(--text);">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="width: 14px; height: 14px;">
+                        <path d="m2 22 1-1c.7-.7.7-1.9 0-2.6l-5-5-2.6-2.6c-.7-.7-.7-1.9 0-2.6l4-4c.7-.7 1.9-.7 2.6 0L17 9.4c.7.7.7 1.9 0 2.6l-4 4c-.7.7-1.9.7-2.6 0l-5-5L2 19v3Z" />
+                        <path d="m19 5 3-3" />
+                      </svg>
+                    </button>
+                  </div>
                 </div>
                 <div class="opt-group" id="opt-width">
                   <label>Stroke width</label>
@@ -653,12 +664,15 @@
                 </div>
                 <div class="opt-group hidden" id="opt-fontsize">
                   <label>Font size</label>
-                  <select id="font-size">
-                    <option value="14">Small</option>
-                    <option value="18" selected>Medium</option>
-                    <option value="26">Large</option>
-                    <option value="36">Extra large</option>
-                  </select>
+                  <input
+                    type="number"
+                    id="font-size"
+                    min="8"
+                    max="120"
+                    value="18"
+                    style="width: 72px; padding: 4px 8px; border-radius: var(--radius-s); border: 1px solid var(--border); background: var(--surface); color: var(--text); font-family: var(--font-body); font-weight: 600;"
+                  />
+                  <span style="font-size: 0.72rem; color: var(--text-faint); font-weight: 700; margin-left: 2px;">PX</span>
                 </div>
               </div>
 
