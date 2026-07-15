@@ -76,6 +76,10 @@
   var ZOOM_STEPS = [0.5, 0.75, 1, 1.25, 1.5, 2, 2.5];
   var PDFJS_SOURCES = [
     {
+      lib: "assets/vendor/pdf-3.11.174.min.js",
+      worker: "assets/vendor/pdf.worker-3.11.174.min.js",
+    },
+    {
       lib: "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js",
       worker:
         "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js",
@@ -91,6 +95,7 @@
     },
   ];
   var PDFLIB_SOURCES = [
+    "assets/vendor/pdf-lib-1.17.1.min.js",
     "https://cdn.jsdelivr.net/npm/pdf-lib@1.17.1/dist/pdf-lib.min.js",
     "https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js",
     "https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js",
@@ -185,6 +190,17 @@
     var navWrap = document.getElementById("nav-filename-wrap");
     if (navWrap) navWrap.style.display = "flex";
     window.scrollTo({ top: 0, behavior: "instant" });
+    checkMobileWarning();
+  }
+  var mobileWarningDismissed = false;
+  function checkMobileWarning() {
+    var banner = document.getElementById("mobile-warning-banner");
+    if (!banner) return;
+    if (window.innerWidth < 768 && !mobileWarningDismissed) {
+      banner.style.display = "flex";
+    } else {
+      banner.style.display = "none";
+    }
   }
   function showHero() {
     document.getElementById("editor-wrap").classList.add("hidden");
@@ -2665,11 +2681,13 @@
           if (loadingStatus) loadingStatus.textContent = "Loading WASM AI...";
           if (progressContainer) progressContainer.classList.remove("hidden");
 
-          import("https://cdn.jsdelivr.net/npm/@imgly/background-removal@1.5.6/+esm")
+          import("./assets/vendor/background-removal-1.5.6.esm.js")
+            .catch(function () {
+              return import("https://cdn.jsdelivr.net/npm/@imgly/background-removal@1.5.6/+esm");
+            })
             .then(function (module) {
               return module.removeBackground(sigOriginalFile, {
-                publicPath:
-                  "https://staticimgly.com/@imgly/background-removal-data/1.5.6/dist/",
+                publicPath: "./assets/vendor/imgly-data/",
                 model: "isnet_quint8",
                 progress: function (key, current, total) {
                   if (total && total > 0) {
@@ -2965,6 +2983,17 @@
     clearTimeout(resizeTimer);
     resizeTimer = setTimeout(function () {
       renderPage(currentPage);
+      checkMobileWarning();
     }, 200);
   });
+
+  // Close mobile warning banner
+  var closeWarningBtn = document.getElementById("close-mobile-warning");
+  if (closeWarningBtn) {
+    closeWarningBtn.addEventListener("click", function () {
+      mobileWarningDismissed = true;
+      var banner = document.getElementById("mobile-warning-banner");
+      if (banner) banner.style.display = "none";
+    });
+  }
 })();

@@ -347,6 +347,22 @@
       <section class="editor-wrap hidden" id="editor-wrap">
         <div class="container">
           <div class="editor-shell">
+            <div id="mobile-warning-banner" style="display: none; background: var(--accent-soft); border-bottom: 1.5px solid var(--border); color: var(--text); padding: 10px 16px; font-size: 0.82rem; align-items: center; justify-content: space-between; gap: 12px; font-weight: 500; font-family: var(--font-body);">
+              <div style="display: flex; align-items: center; gap: 8px;">
+                <svg viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="width: 16px; height: 16px; flex-shrink: 0;">
+                  <circle cx="12" cy="12" r="10" />
+                  <line x1="12" y1="8" x2="12" y2="12" />
+                  <line x1="12" y1="16" x2="12.01" y2="16" />
+                </svg>
+                <span>For a better editing experience, we recommend using a larger screen device or enabling <strong>"Desktop Site"</strong> mode in your mobile browser.</span>
+              </div>
+              <button id="close-mobile-warning" type="button" style="background: transparent; border: none; color: var(--text-muted); cursor: pointer; padding: 4px; display: flex; align-items: center; justify-content: center; border-radius: 4px;">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 14px; height: 14px;">
+                  <line x1="18" y1="6" x2="6" y2="18" />
+                  <line x1="6" y1="6" x2="18" y2="18" />
+                </svg>
+              </button>
+            </div>
             <div class="editor-body">
               <div class="toolbar" id="toolbar">
                 <!-- Restart/Start Over Group -->
