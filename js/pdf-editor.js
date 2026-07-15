@@ -22,6 +22,9 @@
     currentColor = "#e8372a",
     currentStrokeWidth = 3,
     currentFontSize = 18;
+  var currentIsBold = false,
+    currentIsItalic = false,
+    currentIsUnderline = false;
   var isPointerDown = false,
     dragMode = null,
     dragOrigin = null,
@@ -480,10 +483,24 @@
     ctx.save();
     switch (ann.type) {
       case "text": {
-        ctx.font = ann.fontSize * scale + "px 'DM Sans', sans-serif";
+        var style = "";
+        if (ann.isItalic) style += "italic ";
+        if (ann.isBold) style += "bold ";
+        ctx.font = style + (ann.fontSize * scale) + "px 'DM Sans', sans-serif";
         ctx.fillStyle = ann.color;
         ctx.textBaseline = "top";
         ctx.fillText(ann.text, ann.x * scale, ann.y * scale);
+        
+        if (ann.isUnderline) {
+          ctx.strokeStyle = ann.color;
+          ctx.lineWidth = Math.max(1, ann.fontSize * scale * 0.08);
+          var textWidth = ctx.measureText(ann.text).width;
+          var underlineY = ann.y * scale + ann.fontSize * scale * 0.95;
+          ctx.beginPath();
+          ctx.moveTo(ann.x * scale, underlineY);
+          ctx.lineTo(ann.x * scale + textWidth, underlineY);
+          ctx.stroke();
+        }
         break;
       }
       case "rect": {
@@ -848,6 +865,9 @@
         text: value,
         fontSize: currentFontSize,
         color: currentColor,
+        isBold: currentIsBold,
+        isItalic: currentIsItalic,
+        isUnderline: currentIsUnderline
       };
       addAnnotation(currentPage, ann);
       selectedAnnotation = { page: currentPage, id: ann.id };
@@ -871,6 +891,9 @@
     box.style.top = pt.cy + "px";
     box.style.fontSize = currentFontSize * currentScale + "px";
     box.style.color = currentColor;
+    box.style.fontWeight = currentIsBold ? "bold" : "normal";
+    box.style.fontStyle = currentIsItalic ? "italic" : "normal";
+    box.style.textDecoration = currentIsUnderline ? "underline" : "none";
     box.rows = 1;
     box.spellcheck = false;
     frame.appendChild(box);
@@ -970,6 +993,11 @@
       .getElementById("opt-fontsize")
       .classList.toggle("hidden", !showFont);
 
+    var formattingOpt = document.getElementById("opt-formatting");
+    if (formattingOpt) {
+      formattingOpt.classList.toggle("hidden", !showFont);
+    }
+
     var cropOpt = document.getElementById("opt-crop");
     if (cropOpt) {
       cropOpt.classList.toggle("hidden", !showCrop);
@@ -1000,6 +1028,25 @@
       s.classList.toggle("is-active", s.dataset.color === currentColor);
     });
 
+    var boldBtn = document.getElementById("format-bold");
+    if (boldBtn) {
+      boldBtn.style.background = currentIsBold ? "var(--accent)" : "var(--surface)";
+      boldBtn.style.color = currentIsBold ? "#fff" : "var(--text)";
+      boldBtn.style.borderColor = currentIsBold ? "var(--accent)" : "var(--border)";
+    }
+    var italicBtn = document.getElementById("format-italic");
+    if (italicBtn) {
+      italicBtn.style.background = currentIsItalic ? "var(--accent)" : "var(--surface)";
+      italicBtn.style.color = currentIsItalic ? "#fff" : "var(--text)";
+      italicBtn.style.borderColor = currentIsItalic ? "var(--accent)" : "var(--border)";
+    }
+    var underlineBtn = document.getElementById("format-underline");
+    if (underlineBtn) {
+      underlineBtn.style.background = currentIsUnderline ? "var(--accent)" : "var(--surface)";
+      underlineBtn.style.color = currentIsUnderline ? "#fff" : "var(--text)";
+      underlineBtn.style.borderColor = currentIsUnderline ? "var(--accent)" : "var(--border)";
+    }
+
     if (selectedAnnotation && selectedAnnotation.page === currentPage) {
       var ann = findAnnotation(currentPage, selectedAnnotation.id);
       if (ann) {
@@ -1021,6 +1068,23 @@
           if (!changed) pushHistory();
           ann.fontSize = currentFontSize;
           changed = true;
+        }
+        if (ann.type === "text") {
+          if (ann.isBold !== currentIsBold) {
+            if (!changed) pushHistory();
+            ann.isBold = currentIsBold;
+            changed = true;
+          }
+          if (ann.isItalic !== currentIsItalic) {
+            if (!changed) pushHistory();
+            ann.isItalic = currentIsItalic;
+            changed = true;
+          }
+          if (ann.isUnderline !== currentIsUnderline) {
+            if (!changed) pushHistory();
+            ann.isUnderline = currentIsUnderline;
+            changed = true;
+          }
         }
         if (changed) {
           redrawAnnotations();
@@ -1595,6 +1659,15 @@
           var fsInput = document.getElementById("font-size");
           if (fsInput) fsInput.value = currentFontSize;
         }
+        if (hit.type === "text") {
+          currentIsBold = !!hit.isBold;
+          currentIsItalic = !!hit.isItalic;
+          currentIsUnderline = !!hit.isUnderline;
+        } else {
+          currentIsBold = false;
+          currentIsItalic = false;
+          currentIsUnderline = false;
+        }
         updateToolOptionsPanel("select");
         syncOptionInputs();
         redrawAnnotations();
@@ -1850,19 +1923,40 @@
       color: color,
     });
   }
-  function drawAnnotationOnPdf(pdfLibDoc, page, ann, pageHeight, helv, rgb) {
+  function drawAnnotationOnPdf(pdfLibDoc, page, ann, pageHeight, fonts, rgb) {
     var rgbArr = hexToRgb01(ann.color);
     var color = rgb(rgbArr[0], rgbArr[1], rgbArr[2]);
     var p;
     switch (ann.type) {
       case "text":
+        var fontToUse = fonts.regular;
+        if (ann.isBold && ann.isItalic) {
+          fontToUse = fonts.boldItalic;
+        } else if (ann.isBold) {
+          fontToUse = fonts.bold;
+        } else if (ann.isItalic) {
+          fontToUse = fonts.italic;
+        }
+
         page.drawText(ann.text, {
           x: ann.x,
           y: pageHeight - (ann.y + ann.fontSize),
           size: ann.fontSize,
-          font: helv,
+          font: fontToUse,
           color: color,
         });
+
+        // Underline support on PDF
+        if (ann.isUnderline) {
+          var textWidth = fontToUse.widthOfTextAtSize(ann.text, ann.fontSize);
+          var underlineY = pageHeight - (ann.y + ann.fontSize) - (ann.fontSize * 0.1);
+          page.drawLine({
+            start: { x: ann.x, y: underlineY },
+            end: { x: ann.x + textWidth, y: underlineY },
+            thickness: Math.max(1, ann.fontSize * 0.08),
+            color: color
+          });
+        }
         return Promise.resolve();
       case "rect":
         page.drawRectangle({
@@ -1896,19 +1990,18 @@
         drawArrowOnPdf(page, ann, pageHeight, color);
         return Promise.resolve();
       case "path":
-        for (var k = 0; k < ann.points.length - 1; k++) {
-          page.drawLine({
-            start: {
-              x: ann.points[k].x,
-              y: pageHeight - ann.points[k].y,
-            },
-            end: {
-              x: ann.points[k + 1].x,
-              y: pageHeight - ann.points[k + 1].y,
-            },
-            thickness: ann.strokeWidth,
-            color: color,
-            opacity: ann.opacity != null ? ann.opacity : 1,
+        if (ann.points && ann.points.length > 0) {
+          var svgPathString = "M " + ann.points[0].x + "," + ann.points[0].y;
+          for (var k = 1; k < ann.points.length; k++) {
+            svgPathString += " L " + ann.points[k].x + "," + ann.points[k].y;
+          }
+          page.drawSvgPath(svgPathString, {
+            x: 0,
+            y: pageHeight,
+            borderColor: color,
+            borderWidth: ann.strokeWidth,
+            borderOpacity: ann.opacity != null ? ann.opacity : 1,
+            borderLineCap: (window.PDFLib && window.PDFLib.LineCapStyle && window.PDFLib.LineCapStyle.Round !== undefined) ? window.PDFLib.LineCapStyle.Round : 1
           });
         }
         return Promise.resolve();
@@ -1942,32 +2035,52 @@
         var PDFLibNS = window.PDFLib;
         return PDFLibNS.PDFDocument.load(originalBytes.slice(0)).then(
           function (pdfLibDoc) {
-            return pdfLibDoc
-              .embedFont(PDFLibNS.StandardFonts.Helvetica)
-              .then(function (helv) {
-                var pages = pdfLibDoc.getPages();
-                var chain = Promise.resolve();
-                pages.forEach(function (page, i) {
-                  var pageNum = i + 1;
-                  var pageHeight = page.getHeight();
-                  var anns = annotationsByPage[pageNum] || [];
-                  anns.forEach(function (ann) {
-                    chain = chain.then(function () {
-                      return drawAnnotationOnPdf(
-                        pdfLibDoc,
-                        page,
-                        ann,
-                        pageHeight,
-                        helv,
-                        PDFLibNS.rgb,
-                      );
-                    });
+            var embedHelvetica = pdfLibDoc.embedFont(PDFLibNS.StandardFonts.Helvetica);
+            var embedHelveticaBold = pdfLibDoc.embedFont(PDFLibNS.StandardFonts.HelveticaBold);
+            var embedHelveticaOblique = pdfLibDoc.embedFont(PDFLibNS.StandardFonts.HelveticaOblique);
+            var embedHelveticaBoldOblique = pdfLibDoc.embedFont(PDFLibNS.StandardFonts.HelveticaBoldOblique);
+
+            return Promise.all([
+              embedHelvetica,
+              embedHelveticaBold,
+              embedHelveticaOblique,
+              embedHelveticaBoldOblique
+            ]).then(function (fonts) {
+              var helv = fonts[0];
+              var helvBold = fonts[1];
+              var helvOblique = fonts[2];
+              var helvBoldOblique = fonts[3];
+
+              var fontMap = {
+                regular: helv,
+                bold: helvBold,
+                italic: helvOblique,
+                boldItalic: helvBoldOblique
+              };
+
+              var pages = pdfLibDoc.getPages();
+              var chain = Promise.resolve();
+              pages.forEach(function (page, i) {
+                var pageNum = i + 1;
+                var pageHeight = page.getHeight();
+                var anns = annotationsByPage[pageNum] || [];
+                anns.forEach(function (ann) {
+                  chain = chain.then(function () {
+                    return drawAnnotationOnPdf(
+                      pdfLibDoc,
+                      page,
+                      ann,
+                      pageHeight,
+                      fontMap,
+                      PDFLibNS.rgb,
+                    );
                   });
                 });
-                return chain.then(function () {
-                  return pdfLibDoc.save();
-                });
               });
+              return chain.then(function () {
+                return pdfLibDoc.save();
+              });
+            });
           },
         );
       })
@@ -2624,6 +2737,32 @@
     canvas.addEventListener("pointerup", up);
     canvas.addEventListener("pointercancel", up);
   })();
+
+  // Formatting Button Click Listeners
+  var boldBtn = document.getElementById("format-bold");
+  if (boldBtn) {
+    boldBtn.addEventListener("click", function () {
+      currentIsBold = !currentIsBold;
+      syncOptionInputs();
+      redrawAnnotations();
+    });
+  }
+  var italicBtn = document.getElementById("format-italic");
+  if (italicBtn) {
+    italicBtn.addEventListener("click", function () {
+      currentIsItalic = !currentIsItalic;
+      syncOptionInputs();
+      redrawAnnotations();
+    });
+  }
+  var underlineBtn = document.getElementById("format-underline");
+  if (underlineBtn) {
+    underlineBtn.addEventListener("click", function () {
+      currentIsUnderline = !currentIsUnderline;
+      syncOptionInputs();
+      redrawAnnotations();
+    });
+  }
 
   document.addEventListener("keydown", function (e) {
     var tag = document.activeElement && document.activeElement.tagName;
