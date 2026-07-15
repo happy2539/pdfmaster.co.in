@@ -675,6 +675,16 @@
                   />
                   <span style="font-size: 0.72rem; color: var(--text-faint); font-weight: 700; margin-left: 2px;">PX</span>
                 </div>
+                <div class="opt-group hidden" id="opt-crop">
+                  <label>Image Actions</label>
+                  <button type="button" class="btn btn-primary btn-sm" id="crop-btn" style="display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; border-radius: var(--radius-s); font-weight: 600; cursor: pointer; background: var(--accent); color: #fff; border: none;">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="width: 14px; height: 14px;">
+                      <path d="M6 2v14a2 2 0 0 0 2 2h14" />
+                      <path d="M18 22V8a2 2 0 0 0-2-2H2" />
+                    </svg>
+                    Crop
+                  </button>
+                </div>
               </div>
 
               <div class="canvas-stage" id="canvas-stage">
@@ -888,6 +898,64 @@
             type="button"
           >
             Insert Signature
+          </button>
+        </div>
+      </div>
+
+      <!-- Crop Modal -->
+      <div class="drawer-overlay" id="crop-overlay"></div>
+      <div
+        class="drawer"
+        id="crop-modal"
+        role="dialog"
+        aria-modal="true"
+        aria-label="Crop Image"
+        aria-hidden="true"
+        style="
+          right: auto;
+          left: 50%;
+          top: 50%;
+          width: min(550px, 95vw);
+          height: auto;
+          transform: translate(-50%, -50%) scale(0.94);
+          border-radius: var(--radius-l);
+          opacity: 0;
+          pointer-events: none;
+          transition:
+            opacity 0.2s ease,
+            transform 0.2s ease;
+          display: flex;
+          flex-direction: column;
+        "
+      >
+        <div class="drawer-top" style="margin-bottom: 12px;">
+          <span class="font-head" style="font-weight: 700">Crop Image</span>
+          <button class="drawer-close" id="crop-close" aria-label="Close">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+            >
+              <path d="M18 6 6 18M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+
+        <div style="display: flex; flex-direction: column; gap: 12px; align-items: center; justify-content: center; background: var(--surface-2); border-radius: var(--radius-s); padding: 16px; border: 1.5px dashed var(--border); overflow: hidden; position: relative;">
+          <canvas id="crop-canvas" style="max-width: 100%; max-height: 380px; display: block; background: #fff; cursor: crosshair; user-select: none; touch-action: none; border-radius: var(--radius-s); box-shadow: var(--shadow-m);"></canvas>
+          <div style="font-size: 0.75rem; color: var(--text-muted); text-align: center; width: 100%;">
+            Drag the corner handles or draw a rectangle to specify the crop area.
+          </div>
+        </div>
+
+        <div style="display: flex; gap: 10px; margin-top: 16px; flex-shrink: 0;">
+          <button class="btn btn-ghost btn-sm" id="crop-cancel" style="flex: 1" type="button">
+            Cancel
+          </button>
+          <button class="btn btn-primary btn-sm" id="crop-apply" style="flex: 1" type="button">
+            Apply Crop
           </button>
         </div>
       </div>

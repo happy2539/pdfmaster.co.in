@@ -38,6 +38,18 @@
     measCtx = null;
   var resizeTimer = null;
 
+  /* ---------- cropping state ---------- */
+  var cropState = {
+    img: null,
+    ann: null,
+    cropRect: null,
+    scale: 1,
+    activeHandle: null,
+    dragStart: { x: 0, y: 0 },
+    startCropRect: null,
+    drawCrop: null
+  };
+
   var PALETTE = [
     "#e8372a",
     "#ea580c",
@@ -419,15 +431,22 @@
       w = b.w * scale,
       h = b.h * scale;
     var deleteBtn = { x: x + w + 8, y: y - 8, r: 11 };
-    var resizeHandle = { x: x + w + 4, y: y + h + 4, size: 9 };
-    var resizeRight = { x: x + w + 4, y: y + h / 2, size: 9 };
-    var resizeBottom = { x: x + w / 2, y: y + h + 4, size: 9 };
+    var cropBtn = (ann.type === "image") ? { x: x - 8, y: y - 8, r: 11 } : null;
+
     return {
       box: { x: x, y: y, w: w, h: h },
       deleteBtn: deleteBtn,
-      resizeHandle: resizeHandle,
-      resizeRight: resizeRight,
-      resizeBottom: resizeBottom,
+      cropBtn: cropBtn,
+      // Corners
+      tl: { x: x, y: y, size: 8 },
+      tr: { x: x + w, y: y, size: 8 },
+      br: { x: x + w, y: y + h, size: 8 },
+      bl: { x: x, y: y + h, size: 8 },
+      // Sides
+      t: { x: x + w / 2, y: y, size: 8 },
+      b: { x: x + w / 2, y: y + h, size: 8 },
+      l: { x: x, y: y + h / 2, size: 8 },
+      r: { x: x + w, y: y + h / 2, size: 8 }
     };
   }
 
@@ -583,18 +602,44 @@
     ctx.lineTo(handles.deleteBtn.x - 4, handles.deleteBtn.y + 4);
     ctx.stroke();
 
-    var list = [handles.resizeHandle];
-    if (ann.type !== "text") {
-      list.push(handles.resizeRight);
-      list.push(handles.resizeBottom);
+    // Draw crop button handle if available
+    if (handles.cropBtn) {
+      ctx.beginPath();
+      ctx.arc(
+        handles.cropBtn.x,
+        handles.cropBtn.y,
+        handles.cropBtn.r,
+        0,
+        Math.PI * 2,
+      );
+      ctx.fillStyle = "#2563eb"; // Sleek accent blue color for crop
+      ctx.fill();
+      ctx.strokeStyle = "#fff";
+      ctx.lineWidth = 1.6;
+      ctx.beginPath();
+      // Draw a tiny crop icon
+      var cx = handles.cropBtn.x;
+      var cy = handles.cropBtn.y;
+      ctx.moveTo(cx - 4, cy - 1);
+      ctx.lineTo(cx + 1, cy - 1);
+      ctx.lineTo(cx + 1, cy + 4);
+      ctx.moveTo(cx - 1, cy - 4);
+      ctx.lineTo(cx - 1, cy + 1);
+      ctx.lineTo(cx + 4, cy + 1);
+      ctx.stroke();
     }
+
+    var list = [
+      handles.tl, handles.tr, handles.br, handles.bl,
+      handles.t, handles.b, handles.l, handles.r
+    ];
 
     ctx.fillStyle = "#fff";
     ctx.strokeStyle = "#e8372a";
     ctx.lineWidth = 1.6;
     list.forEach(function (h) {
       ctx.beginPath();
-      ctx.rect(h.x - 6, h.y - 6, 12, 12);
+      ctx.rect(h.x - 5, h.y - 5, 10, 10);
       ctx.fill();
       ctx.stroke();
     });
@@ -729,64 +774,53 @@
         break;
     }
   }
-  function applyResize(ann, origin, dx, dy, type) {
-    var originalBounds = getBounds(origin);
-    if (originalBounds.w === 0 || originalBounds.h === 0) return;
+  function applyBoundsResize(ann, origin, newBox) {
+    var originBounds = getBounds(origin);
+    if (originBounds.w === 0 || originBounds.h === 0) return;
 
-    var ratioX = 1;
-    var ratioY = 1;
-
-    if (type === "width" || type === "both") {
-      ratioX = (originalBounds.w + dx) / originalBounds.w;
-      if (ratioX <= 0.1) ratioX = 0.1;
-    }
-    if (type === "height" || type === "both") {
-      ratioY = (originalBounds.h + dy) / originalBounds.h;
-      if (ratioY <= 0.1) ratioY = 0.1;
-    }
-
-    if (type === "both") {
-      if (ann.type === "image" || ann.type === "path" || ann.type === "text") {
-        ratioY = ratioX;
-      }
-    }
+    var ratioX = newBox.w / originBounds.w;
+    var ratioY = newBox.h / originBounds.h;
 
     switch (ann.type) {
       case "image":
       case "rect": {
-        ann.width = originalBounds.w * ratioX;
-        ann.height = originalBounds.h * ratioY;
+        ann.x = newBox.x;
+        ann.y = newBox.y;
+        ann.width = newBox.w;
+        ann.height = newBox.h;
         break;
       }
       case "ellipse": {
-        ann.rx = origin.rx * ratioX;
-        ann.ry = origin.ry * ratioY;
-        ann.cx = origin.cx + origin.rx * (ratioX - 1);
-        ann.cy = origin.cy + origin.ry * (ratioY - 1);
+        ann.rx = newBox.w / 2;
+        ann.ry = newBox.h / 2;
+        ann.cx = newBox.x + ann.rx;
+        ann.cy = newBox.y + ann.ry;
         break;
       }
       case "line":
       case "arrow": {
-        var ox = originalBounds.x;
-        var oy = originalBounds.y;
-        ann.x1 = ox + (origin.x1 - ox) * ratioX;
-        ann.y1 = oy + (origin.y1 - oy) * ratioY;
-        ann.x2 = ox + (origin.x2 - ox) * ratioX;
-        ann.y2 = oy + (origin.y2 - oy) * ratioY;
+        var ox = originBounds.x;
+        var oy = originBounds.y;
+        ann.x1 = newBox.x + (origin.x1 - ox) * ratioX;
+        ann.y1 = newBox.y + (origin.y1 - oy) * ratioY;
+        ann.x2 = newBox.x + (origin.x2 - ox) * ratioX;
+        ann.y2 = newBox.y + (origin.y2 - oy) * ratioY;
         break;
       }
       case "path": {
-        var ox = originalBounds.x;
-        var oy = originalBounds.y;
+        var ox = originBounds.x;
+        var oy = originBounds.y;
         ann.points = origin.points.map(function (p) {
           return {
-            x: ox + (p.x - ox) * ratioX,
-            y: oy + (p.y - oy) * ratioY,
+            x: newBox.x + (p.x - ox) * ratioX,
+            y: newBox.y + (p.y - oy) * ratioY,
           };
         });
         break;
       }
       case "text": {
+        ann.x = newBox.x;
+        ann.y = newBox.y;
         ann.fontSize = Math.max(6, Math.round(origin.fontSize * ratioX));
         break;
       }
@@ -894,6 +928,7 @@
     var showColor = false;
     var showWidth = false;
     var showFont = false;
+    var showCrop = false;
 
     if (tool === "select") {
       if (selectedAnnotation && selectedAnnotation.page === currentPage) {
@@ -903,7 +938,7 @@
             showColor = true;
             showFont = true;
           } else if (ann.type === "image") {
-            // images have no color/stroke options
+            showCrop = true;
           } else {
             showColor = true;
             showWidth = true;
@@ -928,12 +963,17 @@
       showFont = tool === "text";
     }
 
-    panel.classList.toggle("is-open", showColor || showWidth || showFont);
+    panel.classList.toggle("is-open", showColor || showWidth || showFont || showCrop);
     document.getElementById("opt-color").classList.toggle("hidden", !showColor);
     document.getElementById("opt-width").classList.toggle("hidden", !showWidth);
     document
       .getElementById("opt-fontsize")
       .classList.toggle("hidden", !showFont);
+
+    var cropOpt = document.getElementById("opt-crop");
+    if (cropOpt) {
+      cropOpt.classList.toggle("hidden", !showCrop);
+    }
   }
   function syncOptionInputs() {
     document.getElementById("stroke-width").value = currentStrokeWidth;
@@ -1150,8 +1190,8 @@
     };
     addAnnotation(currentPage, ann);
     pendingPlaceable = null;
-    setActiveTool("select");
     selectedAnnotation = { page: currentPage, id: ann.id };
+    setActiveTool("select");
     redrawAnnotations();
   }
 
@@ -1271,6 +1311,185 @@
     }
   }
 
+  /* ---------- cropping helpers ---------- */
+  function openCropModal(ann) {
+    var img = new Image();
+    img.onload = function () {
+      cropState.img = img;
+      cropState.ann = ann;
+      cropState.cropRect = {
+        x: 0,
+        y: 0,
+        w: img.naturalWidth,
+        h: img.naturalHeight
+      };
+
+      document.getElementById("crop-overlay").classList.add("is-open");
+      var modal = document.getElementById("crop-modal");
+      modal.style.opacity = "1";
+      modal.style.pointerEvents = "auto";
+      modal.style.transform = "translate(-50%,-50%) scale(1)";
+      modal.setAttribute("aria-hidden", "false");
+
+      setupCropInterface();
+    };
+    img.onerror = function () {
+      window.showToast("Couldn't load image for cropping.");
+    };
+    img.src = ann.dataUrl;
+  }
+
+  function closeCropModal() {
+    document.getElementById("crop-overlay").classList.remove("is-open");
+    var modal = document.getElementById("crop-modal");
+    modal.style.opacity = "0";
+    modal.style.pointerEvents = "none";
+    modal.style.transform = "translate(-50%,-50%) scale(.94)";
+    modal.setAttribute("aria-hidden", "true");
+
+    cropState.img = null;
+    cropState.ann = null;
+    cropState.cropRect = null;
+    cropState.activeHandle = null;
+  }
+
+  function setupCropInterface() {
+    var canvas = document.getElementById("crop-canvas");
+    if (!canvas) return;
+    var ctx = canvas.getContext("2d");
+    var img = cropState.img;
+
+    var maxW = Math.min(500, document.getElementById("crop-modal").clientWidth - 64) - 40; // 20px padding on left & right
+    var maxH = 380 - 40; // 20px padding on top & bottom
+    var scale = Math.min(maxW / img.naturalWidth, maxH / img.naturalHeight);
+    cropState.scale = scale;
+
+    canvas.width = img.naturalWidth * scale + 40;
+    canvas.height = img.naturalHeight * scale + 40;
+
+    function drawCrop() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      // Draw checkered background only inside the image boundaries (signatures have transparent backgrounds)
+      var checkSize = 10;
+      ctx.fillStyle = "#f3f4f6";
+      ctx.fillRect(20, 20, canvas.width - 40, canvas.height - 40);
+      ctx.fillStyle = "#e5e7eb";
+      for (var y = 20; y < canvas.height - 20; y += checkSize * 2) {
+        for (var x = 20; x < canvas.width - 20; x += checkSize * 2) {
+          ctx.fillRect(x, y, checkSize, checkSize);
+          ctx.fillRect(x + checkSize, y + checkSize, checkSize, checkSize);
+        }
+      }
+
+      ctx.drawImage(img, 20, 20, img.naturalWidth * scale, img.naturalHeight * scale);
+
+      // Draw image boundary outline
+      ctx.strokeStyle = "rgba(0, 0, 0, 0.15)";
+      ctx.lineWidth = 1;
+      ctx.strokeRect(20, 20, img.naturalWidth * scale, img.naturalHeight * scale);
+
+      var rect = cropState.cropRect;
+      var cx = 20 + rect.x * scale;
+      var cy = 20 + rect.y * scale;
+      var cw = rect.w * scale;
+      var ch = rect.h * scale;
+
+      // Draw overlay (outside cropRect but inside image bounds)
+      ctx.fillStyle = "rgba(0, 0, 0, 0.45)";
+      // Top overlay
+      ctx.fillRect(20, 20, img.naturalWidth * scale, cy - 20);
+      // Bottom overlay
+      ctx.fillRect(20, cy + ch, img.naturalWidth * scale, (20 + img.naturalHeight * scale) - (cy + ch));
+      // Left overlay
+      ctx.fillRect(20, cy, cx - 20, ch);
+      // Right overlay
+      ctx.fillRect(cx + cw, cy, (20 + img.naturalWidth * scale) - (cx + cw), ch);
+
+      // Draw crop rect border
+      ctx.strokeStyle = "#e8372a";
+      ctx.lineWidth = 2;
+      ctx.setLineDash([6, 4]);
+      ctx.strokeRect(cx, cy, cw, ch);
+      ctx.setLineDash([]);
+
+      // Draw corner handles
+      ctx.fillStyle = "#fff";
+      ctx.strokeStyle = "#e8372a";
+      ctx.lineWidth = 2.5;
+      var r = 9;
+      var corners = [
+        { x: cx, y: cy },
+        { x: cx + cw, y: cy },
+        { x: cx, y: cy + ch },
+        { x: cx + cw, y: cy + ch }
+      ];
+      corners.forEach(function (c) {
+        ctx.beginPath();
+        ctx.arc(c.x, c.y, r, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.stroke();
+      });
+    }
+
+    cropState.drawCrop = drawCrop;
+    drawCrop();
+  }
+
+  function applyCrop() {
+    if (!cropState.img || !cropState.ann) return;
+    var rect = cropState.cropRect;
+    if (rect.w < 5 || rect.h < 5) {
+      window.showToast("Crop area is too small.");
+      return;
+    }
+
+    var tempCanvas = document.createElement("canvas");
+    tempCanvas.width = rect.w;
+    tempCanvas.height = rect.h;
+    var tempCtx = tempCanvas.getContext("2d");
+    if (!tempCtx) return;
+
+    tempCtx.drawImage(
+      cropState.img,
+      rect.x,
+      rect.y,
+      rect.w,
+      rect.h,
+      0,
+      0,
+      rect.w,
+      rect.h
+    );
+
+    var croppedDataUrl = tempCanvas.toDataURL("image/png");
+
+    pushHistory();
+
+    var ann = cropState.ann;
+    var origW = cropState.img.naturalWidth;
+    var origH = cropState.img.naturalHeight;
+
+    var relX = rect.x / origW;
+    var relY = rect.y / origH;
+    var relW = rect.w / origW;
+    var relH = rect.h / origH;
+
+    ann.x = ann.x + ann.width * relX;
+    ann.y = ann.y + ann.height * relY;
+    ann.width = ann.width * relW;
+    ann.height = ann.height * relH;
+    ann.dataUrl = croppedDataUrl;
+
+    if (imageElCache[ann.id]) {
+      delete imageElCache[ann.id];
+    }
+
+    redrawAnnotations();
+    closeCropModal();
+    window.showToast("Cropped successfully.");
+  }
+
   /* ---------- pointer interaction on the page ---------- */
   function getCanvasPagePoint(evt) {
     var canvas = document.getElementById("annotation-canvas");
@@ -1304,42 +1523,41 @@
             isPointerDown = false;
             return;
           }
-          if (handles.resizeHandle) {
-            var rDist = Math.hypot(
-              pt.cx - handles.resizeHandle.x,
-              pt.cy - handles.resizeHandle.y,
+          if (handles.cropBtn) {
+            var cDist = Math.hypot(
+              pt.cx - handles.cropBtn.x,
+              pt.cy - handles.cropBtn.y,
             );
-            if (rDist <= handles.resizeHandle.size + 6) {
-              dragMode = "resize-both";
+            if (cDist <= handles.cropBtn.r + 4) {
+              openCropModal(ann);
+              isPointerDown = false;
+              return;
+            }
+          }
+          // Corner Resizers Click Detection
+          var cornerNames = ["tl", "tr", "br", "bl"];
+          for (var i = 0; i < cornerNames.length; i++) {
+            var name = cornerNames[i];
+            var h = handles[name];
+            var dist = Math.hypot(pt.cx - h.x, pt.cy - h.y);
+            if (dist <= h.size + 6) {
+              dragMode = "resize-" + name;
               dragOrigin = JSON.parse(JSON.stringify(ann));
               dragStartPoint = pt;
               return;
             }
           }
-          if (ann.type !== "text") {
-            if (handles.resizeRight) {
-              var rightDist = Math.hypot(
-                pt.cx - handles.resizeRight.x,
-                pt.cy - handles.resizeRight.y,
-              );
-              if (rightDist <= handles.resizeRight.size + 6) {
-                dragMode = "resize-width";
-                dragOrigin = JSON.parse(JSON.stringify(ann));
-                dragStartPoint = pt;
-                return;
-              }
-            }
-            if (handles.resizeBottom) {
-              var bottomDist = Math.hypot(
-                pt.cx - handles.resizeBottom.x,
-                pt.cy - handles.resizeBottom.y,
-              );
-              if (bottomDist <= handles.resizeBottom.size + 6) {
-                dragMode = "resize-height";
-                dragOrigin = JSON.parse(JSON.stringify(ann));
-                dragStartPoint = pt;
-                return;
-              }
+          // Side Resizers Click Detection
+          var sideNames = ["t", "b", "l", "r"];
+          for (var i = 0; i < sideNames.length; i++) {
+            var name = sideNames[i];
+            var h = handles[name];
+            var dist = Math.hypot(pt.cx - h.x, pt.cy - h.y);
+            if (dist <= h.size + 6) {
+              dragMode = "resize-" + name;
+              dragOrigin = JSON.parse(JSON.stringify(ann));
+              dragStartPoint = pt;
+              return;
             }
           }
           // Allow dragging by clicking anywhere inside the selected element's bounding box
@@ -1354,6 +1572,8 @@
             dragMode = "move";
             dragOrigin = JSON.parse(JSON.stringify(ann));
             dragStartPoint = pt;
+            updateToolOptionsPanel("select");
+            syncOptionInputs();
             return;
           }
         }
@@ -1436,12 +1656,91 @@
       }
       if (dragMode === "move") {
         applyMove(ann, dragOrigin, dx, dy);
-      } else if (dragMode === "resize" || dragMode === "resize-both") {
-        applyResize(ann, dragOrigin, dx, dy, "both");
-      } else if (dragMode === "resize-width") {
-        applyResize(ann, dragOrigin, dx, dy, "width");
-      } else if (dragMode === "resize-height") {
-        applyResize(ann, dragOrigin, dx, dy, "height");
+      } else if (dragMode.indexOf("resize-") === 0) {
+        var direction = dragMode.substring(7); // "tl", "tr", "br", "bl", "t", "b", "l", "r"
+        var origBounds = getBounds(dragOrigin);
+        var ox = origBounds.x,
+          oy = origBounds.y,
+          ow = origBounds.w,
+          oh = origBounds.h;
+
+        var newX = ox, newY = oy, newW = ow, newH = oh;
+
+        // Apply dx and dy based on direction
+        if (direction.indexOf("l") !== -1) { // tl, bl, l
+          newX = ox + dx;
+          newW = ow - dx;
+        }
+        if (direction.indexOf("r") !== -1) { // tr, br, r
+          newW = ow + dx;
+        }
+        if (direction.indexOf("t") !== -1) { // tl, tr, t
+          newY = oy + dy;
+          newH = oh - dy;
+        }
+        if (direction.indexOf("b") !== -1) { // bl, br, b
+          newH = oh + dy;
+        }
+
+        // Constrain min dimensions
+        var minW = 10;
+        var minH = 10;
+
+        if (newW < minW) {
+          if (direction.indexOf("l") !== -1) newX = ox + ow - minW;
+          newW = minW;
+        }
+        if (newH < minH) {
+          if (direction.indexOf("t") !== -1) newY = oy + oh - minH;
+          newH = minH;
+        }
+
+        // Proportional constraint (images, path, text)
+        if (ann.type === "image" || ann.type === "path" || ann.type === "text") {
+          var ratio = oh / ow;
+          
+          if (direction === "t" || direction === "b") {
+            var s = newH / oh;
+            newW = ow * s;
+            if (newW < minW) {
+              newW = minW;
+              newH = minW * ratio;
+              if (direction === "t") newY = oy + oh - newH;
+            }
+            newX = ox;
+          } else if (direction === "l" || direction === "r") {
+            var s = newW / ow;
+            newH = oh * s;
+            if (newH < minH) {
+              newH = minH;
+              newW = minH / ratio;
+              if (direction === "l") newX = ox + ow - newW;
+            }
+            newY = oy;
+          } else {
+            var s = newW / ow;
+            newH = oh * s;
+            if (newH < minH) {
+              newH = minH;
+              newW = minH / ratio;
+            }
+            if (direction === "tl") {
+              newX = ox + ow - newW;
+              newY = oy + oh - newH;
+            } else if (direction === "tr") {
+              newX = ox;
+              newY = oy + oh - newH;
+            } else if (direction === "bl") {
+              newX = ox + ow - newW;
+              newY = oy;
+            } else if (direction === "br") {
+              newX = ox;
+              newY = oy;
+            }
+          }
+        }
+
+        applyBoundsResize(ann, dragOrigin, { x: newX, y: newY, w: newW, h: newH });
       }
       redrawAnnotations();
       return;
@@ -2190,6 +2489,142 @@
   window.addEventListener("pointerup", onPointerUp);
   window.addEventListener("pointercancel", onPointerUp);
 
+  // Crop Action events
+  var cropBtnEl = document.getElementById("crop-btn");
+  if (cropBtnEl) {
+    cropBtnEl.addEventListener("click", function () {
+      if (selectedAnnotation && selectedAnnotation.page === currentPage) {
+        var ann = findAnnotation(currentPage, selectedAnnotation.id);
+        if (ann && ann.type === "image") {
+          openCropModal(ann);
+        }
+      }
+    });
+  }
+  var cropCloseEl = document.getElementById("crop-close");
+  if (cropCloseEl) cropCloseEl.addEventListener("click", closeCropModal);
+  var cropOverlayEl = document.getElementById("crop-overlay");
+  if (cropOverlayEl) cropOverlayEl.addEventListener("click", closeCropModal);
+  var cropCancelEl = document.getElementById("crop-cancel");
+  if (cropCancelEl) cropCancelEl.addEventListener("click", closeCropModal);
+  var cropApplyEl = document.getElementById("crop-apply");
+  if (cropApplyEl) cropApplyEl.addEventListener("click", applyCrop);
+
+  // Crop Canvas interaction setup
+  (function () {
+    var canvas = document.getElementById("crop-canvas");
+    if (!canvas) return;
+
+    canvas.addEventListener("pointerdown", function (e) {
+      if (!cropState.img) return;
+      e.preventDefault();
+      try {
+        canvas.setPointerCapture(e.pointerId);
+      } catch (err) {}
+
+      var rect = canvas.getBoundingClientRect();
+      var mx = e.clientX - rect.left;
+      var my = e.clientY - rect.top;
+
+      var scale = cropState.scale;
+      var img = cropState.img;
+      var cropRect = cropState.cropRect;
+
+      var handleSize = 16;
+      var cx1 = 20 + cropRect.x * scale;
+      var cy1 = 20 + cropRect.y * scale;
+      var cx2 = cx1 + cropRect.w * scale;
+      var cy2 = cy1 + cropRect.h * scale;
+
+      if (Math.hypot(mx - cx1, my - cy1) < handleSize) cropState.activeHandle = "tl";
+      else if (Math.hypot(mx - cx2, my - cy1) < handleSize) cropState.activeHandle = "tr";
+      else if (Math.hypot(mx - cx1, my - cy2) < handleSize) cropState.activeHandle = "bl";
+      else if (Math.hypot(mx - cx2, my - cy2) < handleSize) cropState.activeHandle = "br";
+      else if (mx >= cx1 && mx <= cx2 && my >= cy1 && my <= cy2) {
+        cropState.activeHandle = "move";
+      } else {
+        cropState.activeHandle = "draw";
+        var clickX = Math.max(0, Math.min(img.naturalWidth, (mx - 20) / scale));
+        var clickY = Math.max(0, Math.min(img.naturalHeight, (my - 20) / scale));
+        cropState.cropRect = { x: clickX, y: clickY, w: 0, h: 0 };
+      }
+
+      cropState.dragStart = { x: mx, y: my };
+      cropState.startCropRect = JSON.parse(JSON.stringify(cropState.cropRect));
+    });
+
+    canvas.addEventListener("pointermove", function (e) {
+      if (!cropState.img || !cropState.activeHandle) return;
+      e.preventDefault();
+      var rect = canvas.getBoundingClientRect();
+      var mx = e.clientX - rect.left;
+      var my = e.clientY - rect.top;
+
+      var scale = cropState.scale;
+      var img = cropState.img;
+      var dx = (mx - cropState.dragStart.x) / scale;
+      var dy = (my - cropState.dragStart.y) / scale;
+      var start = cropState.startCropRect;
+
+      if (cropState.activeHandle === "move") {
+        var newX = start.x + dx;
+        var newY = start.y + dy;
+        newX = Math.max(0, Math.min(img.naturalWidth - start.w, newX));
+        newY = Math.max(0, Math.min(img.naturalHeight - start.h, newY));
+        cropState.cropRect.x = newX;
+        cropState.cropRect.y = newY;
+      } else if (cropState.activeHandle === "draw") {
+        var curX = Math.max(0, Math.min(img.naturalWidth, (mx - 20) / scale));
+        var curY = Math.max(0, Math.min(img.naturalHeight, (my - 20) / scale));
+        cropState.cropRect = {
+          x: Math.min(start.x, curX),
+          y: Math.min(start.y, curY),
+          w: Math.abs(start.x - curX),
+          h: Math.abs(start.y - curY)
+        };
+      } else {
+        var x1 = start.x;
+        var y1 = start.y;
+        var x2 = start.x + start.w;
+        var y2 = start.y + start.h;
+
+        if (cropState.activeHandle === "tl") {
+          x1 = Math.max(0, Math.min(x2 - 10, x1 + dx));
+          y1 = Math.max(0, Math.min(y2 - 10, y1 + dy));
+        } else if (cropState.activeHandle === "tr") {
+          x2 = Math.max(x1 + 10, Math.min(img.naturalWidth, x2 + dx));
+          y1 = Math.max(0, Math.min(y2 - 10, y1 + dy));
+        } else if (cropState.activeHandle === "bl") {
+          x1 = Math.max(0, Math.min(x2 - 10, x1 + dx));
+          y2 = Math.max(y1 + 10, Math.min(img.naturalHeight, y2 + dy));
+        } else if (cropState.activeHandle === "br") {
+          x2 = Math.max(x1 + 10, Math.min(img.naturalWidth, x2 + dx));
+          y2 = Math.max(y1 + 10, Math.min(img.naturalHeight, y2 + dy));
+        }
+        cropState.cropRect = { x: x1, y: y1, w: x2 - x1, h: y2 - y1 };
+      }
+
+      if (cropState.drawCrop) cropState.drawCrop();
+    });
+
+    var up = function (e) {
+      if (!cropState.img || !cropState.activeHandle) return;
+      cropState.activeHandle = null;
+      var img = cropState.img;
+      if (cropState.cropRect.w < 5 || cropState.cropRect.h < 5) {
+        cropState.cropRect = {
+          x: 0,
+          y: 0,
+          w: img.naturalWidth,
+          h: img.naturalHeight
+        };
+        if (cropState.drawCrop) cropState.drawCrop();
+      }
+    };
+    canvas.addEventListener("pointerup", up);
+    canvas.addEventListener("pointercancel", up);
+  })();
+
   document.addEventListener("keydown", function (e) {
     var tag = document.activeElement && document.activeElement.tagName;
     if (
@@ -2200,6 +2635,10 @@
     ) {
       e.preventDefault();
       deleteAnnotation(selectedAnnotation.page, selectedAnnotation.id);
+    }
+    if (e.key === "Escape") {
+      closeCropModal();
+      closeSignatureModal(true);
     }
   });
   window.addEventListener("resize", function () {
