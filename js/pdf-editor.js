@@ -483,6 +483,7 @@
     ctx.save();
     switch (ann.type) {
       case "text": {
+        if (ann.isEditing) break;
         var style = "";
         if (ann.isItalic) style += "italic ";
         if (ann.isBold) style += "bold ";
@@ -850,29 +851,174 @@
       return;
     }
     var value = box.value.trim();
-    var pt = box._pagePoint;
     box.remove();
     if (window._activeTextBox === box) {
       window._activeTextBox = null;
     }
-    if (value) {
-      var ann = {
-        id: nextId(),
-        type: "text",
-        page: currentPage,
-        x: pt.x,
-        y: pt.y,
-        text: value,
-        fontSize: currentFontSize,
-        color: currentColor,
-        isBold: currentIsBold,
-        isItalic: currentIsItalic,
-        isUnderline: currentIsUnderline
-      };
-      addAnnotation(currentPage, ann);
-      selectedAnnotation = { page: currentPage, id: ann.id };
-      setActiveTool("select");
+
+    if (box._editingAnnotation) {
+      var ann = box._editingAnnotation;
+      ann.isEditing = false;
+      if (value) {
+        if (ann.text !== value) {
+          pushHistory();
+          ann.text = value;
+        }
+        selectedAnnotation = { page: currentPage, id: ann.id };
+      } else {
+        pushHistory();
+        deleteAnnotation(currentPage, ann.id);
+      }
       redrawAnnotations();
+    } else {
+      var pt = box._pagePoint;
+      if (value) {
+        var ann = {
+          id: nextId(),
+          type: "text",
+          page: currentPage,
+          x: pt.x,
+          y: pt.y,
+          text: value,
+          fontSize: currentFontSize,
+          color: currentColor,
+          isBold: currentIsBold,
+          isItalic: currentIsItalic,
+          isUnderline: currentIsUnderline
+        };
+        addAnnotation(currentPage, ann);
+        selectedAnnotation = { page: currentPage, id: ann.id };
+        setActiveTool("select");
+        redrawAnnotations();
+      }
+    }
+  }
+
+  function startTextEditingOf(ann) {
+    finalizeAnyOpenTextBox();
+    var frame = document.getElementById("canvas-frame");
+    var box = document.createElement("textarea");
+    box.className = "text-edit-box";
+    
+    box.style.left = (ann.x * currentScale) + "px";
+    box.style.top = (ann.y * currentScale) + "px";
+    box.style.fontSize = (ann.fontSize * currentScale) + "px";
+    box.style.color = ann.color;
+    box.style.fontWeight = ann.isBold ? "bold" : "normal";
+    box.style.fontStyle = ann.isItalic ? "italic" : "normal";
+    box.style.textDecoration = ann.isUnderline ? "underline" : "none";
+    box.value = ann.text;
+    box.rows = 1;
+    box.spellcheck = false;
+    
+    frame.appendChild(box);
+    box.focus();
+    
+    box.style.width = Math.max(60, box.scrollWidth + 6) + "px";
+    box.style.height = Math.max(24, box.scrollHeight) + "px";
+    box.setSelectionRange(ann.text.length, ann.text.length);
+    
+    ann.isEditing = true;
+    selectedAnnotation = null;
+    redrawAnnotations();
+    
+    window._activeTextBox = box;
+    box._editingAnnotation = ann;
+
+    box.addEventListener("input", function () {
+      box.style.width = Math.max(60, box.scrollWidth + 6) + "px";
+      box.style.height = Math.max(24, box.scrollHeight) + "px";
+    });
+
+    box.addEventListener("keydown", function (e) {
+      if (e.key === "Escape") {
+        box.value = ann.text;
+        finalizeTextBox(box);
+      } else if (e.key === "Enter" && !e.shiftKey) {
+        e.preventDefault();
+        finalizeTextBox(box);
+      }
+    });
+
+    box.addEventListener("blur", function () {
+      finalizeTextBox(box);
+    });
+  }
+
+  function updateCursorStyle(e) {
+    if (isPointerDown || currentTool !== "select" || !pdfDoc) return;
+    var canvas = document.getElementById("annotation-canvas");
+    if (!canvas) return;
+
+    var pt = getCanvasPagePoint(e);
+    if (selectedAnnotation && selectedAnnotation.page === currentPage) {
+      var ann = findAnnotation(currentPage, selectedAnnotation.id);
+      if (ann) {
+        var handles = getSelectionHandles(ann, currentScale);
+        
+        if (Math.hypot(pt.cx - handles.deleteBtn.x, pt.cy - handles.deleteBtn.y) <= handles.deleteBtn.r + 4) {
+          canvas.style.cursor = "pointer";
+          return;
+        }
+        
+        if (handles.cropBtn && Math.hypot(pt.cx - handles.cropBtn.x, pt.cy - handles.cropBtn.y) <= handles.cropBtn.r + 4) {
+          canvas.style.cursor = "pointer";
+          return;
+        }
+
+        if (Math.hypot(pt.cx - handles.tl.x, pt.cy - handles.tl.y) <= handles.tl.size + 4) {
+          canvas.style.cursor = "nwse-resize";
+          return;
+        }
+        if (Math.hypot(pt.cx - handles.br.x, pt.cy - handles.br.y) <= handles.br.size + 4) {
+          canvas.style.cursor = "nwse-resize";
+          return;
+        }
+        if (Math.hypot(pt.cx - handles.tr.x, pt.cy - handles.tr.y) <= handles.tr.size + 4) {
+          canvas.style.cursor = "nesw-resize";
+          return;
+        }
+        if (Math.hypot(pt.cx - handles.bl.x, pt.cy - handles.bl.y) <= handles.bl.size + 4) {
+          canvas.style.cursor = "nesw-resize";
+          return;
+        }
+
+        if (Math.hypot(pt.cx - handles.t.x, pt.cy - handles.t.y) <= handles.t.size + 4) {
+          canvas.style.cursor = "ns-resize";
+          return;
+        }
+        if (Math.hypot(pt.cx - handles.b.x, pt.cy - handles.b.y) <= handles.b.size + 4) {
+          canvas.style.cursor = "ns-resize";
+          return;
+        }
+        if (Math.hypot(pt.cx - handles.l.x, pt.cy - handles.l.y) <= handles.l.size + 4) {
+          canvas.style.cursor = "ew-resize";
+          return;
+        }
+        if (Math.hypot(pt.cx - handles.r.x, pt.cy - handles.r.y) <= handles.r.size + 4) {
+          canvas.style.cursor = "ew-resize";
+          return;
+        }
+
+        var b = getBounds(ann);
+        var tol = 6 / currentScale;
+        if (
+          pt.x >= b.x - tol &&
+          pt.x <= b.x + b.w + tol &&
+          pt.y >= b.y - tol &&
+          pt.y <= b.y + b.h + tol
+        ) {
+          canvas.style.cursor = "move";
+          return;
+        }
+      }
+    }
+    
+    var hit = hitTest(pt);
+    if (hit) {
+      canvas.style.cursor = "pointer";
+    } else {
+      canvas.style.cursor = "default";
     }
   }
   function finalizeAnyOpenTextBox() {
@@ -1578,11 +1724,12 @@
         var ann = findAnnotation(currentPage, selectedAnnotation.id);
         if (ann) {
           var handles = getSelectionHandles(ann, currentScale);
+          var isTouch = e.pointerType === "touch";
           var dDist = Math.hypot(
             pt.cx - handles.deleteBtn.x,
             pt.cy - handles.deleteBtn.y,
           );
-          if (dDist <= handles.deleteBtn.r + 4) {
+          if (dDist <= handles.deleteBtn.r + (isTouch ? 12 : 4)) {
             deleteAnnotation(currentPage, ann.id);
             isPointerDown = false;
             return;
@@ -1592,32 +1739,33 @@
               pt.cx - handles.cropBtn.x,
               pt.cy - handles.cropBtn.y,
             );
-            if (cDist <= handles.cropBtn.r + 4) {
+            if (cDist <= handles.cropBtn.r + (isTouch ? 12 : 4)) {
               openCropModal(ann);
               isPointerDown = false;
               return;
             }
           }
-          // Corner Resizers Click Detection
+          // Corner Resizers Click Detection (with touch adaptation)
+          var tolerance = isTouch ? 16 : 6;
           var cornerNames = ["tl", "tr", "br", "bl"];
           for (var i = 0; i < cornerNames.length; i++) {
             var name = cornerNames[i];
             var h = handles[name];
             var dist = Math.hypot(pt.cx - h.x, pt.cy - h.y);
-            if (dist <= h.size + 6) {
+            if (dist <= h.size + tolerance) {
               dragMode = "resize-" + name;
               dragOrigin = JSON.parse(JSON.stringify(ann));
               dragStartPoint = pt;
               return;
             }
           }
-          // Side Resizers Click Detection
+          // Side Resizers Click Detection (with touch adaptation)
           var sideNames = ["t", "b", "l", "r"];
           for (var i = 0; i < sideNames.length; i++) {
             var name = sideNames[i];
             var h = handles[name];
             var dist = Math.hypot(pt.cx - h.x, pt.cy - h.y);
-            if (dist <= h.size + 6) {
+            if (dist <= h.size + tolerance) {
               dragMode = "resize-" + name;
               dragOrigin = JSON.parse(JSON.stringify(ann));
               dragStartPoint = pt;
@@ -1717,6 +1865,7 @@
   }
   function onPointerMove(e) {
     if (!isPointerDown) {
+      updateCursorStyle(e);
       return;
     }
     var pt = getCanvasPagePoint(e);
@@ -2599,6 +2748,14 @@
   var annCanvasEl = document.getElementById("annotation-canvas");
   annCanvasEl.addEventListener("pointerdown", onPointerDown);
   annCanvasEl.addEventListener("pointermove", onPointerMove);
+  annCanvasEl.addEventListener("dblclick", function (e) {
+    if (currentTool !== "select" || !pdfDoc) return;
+    var pt = getCanvasPagePoint(e);
+    var hit = hitTest(pt);
+    if (hit && hit.type === "text") {
+      startTextEditingOf(hit);
+    }
+  });
   window.addEventListener("pointerup", onPointerUp);
   window.addEventListener("pointercancel", onPointerUp);
 
@@ -2774,6 +2931,27 @@
     ) {
       e.preventDefault();
       deleteAnnotation(selectedAnnotation.page, selectedAnnotation.id);
+    }
+    if (
+      selectedAnnotation &&
+      tag !== "INPUT" &&
+      tag !== "TEXTAREA" &&
+      ["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"].indexOf(e.key) !== -1
+    ) {
+      e.preventDefault();
+      var ann = findAnnotation(currentPage, selectedAnnotation.id);
+      if (ann) {
+        pushHistory();
+        var amount = e.shiftKey ? 10 : 1;
+        var dx = 0, dy = 0;
+        if (e.key === "ArrowUp") dy = -amount;
+        else if (e.key === "ArrowDown") dy = amount;
+        else if (e.key === "ArrowLeft") dx = -amount;
+        else if (e.key === "ArrowRight") dx = amount;
+        
+        applyMove(ann, ann, dx, dy);
+        redrawAnnotations();
+      }
     }
     if (e.key === "Escape") {
       closeCropModal();
