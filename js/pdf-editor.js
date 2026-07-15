@@ -2687,7 +2687,8 @@
             })
             .then(function (module) {
               return module.removeBackground(sigOriginalFile, {
-                publicPath: "./assets/vendor/imgly-data/",
+                publicPath:
+                  "https://staticimgly.com/@imgly/background-removal-data/1.5.6/dist/",
                 model: "isnet_quint8",
                 progress: function (key, current, total) {
                   if (total && total > 0) {

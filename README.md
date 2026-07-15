@@ -60,37 +60,56 @@ Modify document properties including Title, Author, Subject, and Keywords.
 
 ## 📁 Project Structure
 
-```
-/
+The project has a flat HTML structure at the root, with corresponding styling and scripting organized inside the `css/` and `js/` directories.
+
+```text
+pdfmaster.co.in/
 ├── index.html                  # Homepage (Main Portal)
-├── pdf-editor.html             # PDF Editor Interface
-├── merge-pdf.html              # Merge PDF Interface
-├── split-pdf.html              # Split PDF Interface
-├── pdf-reorder.html            # Reorder PDF Interface
-├── pdf-to-photo.html           # PDF to Photo (Export Images)
-├── photo-to-pdf.html           # Photo to PDF (Compile Images)
-├── pdf-metadata.html           # Metadata Editor Interface
-├── about.html                  # About Page
-├── contact.html                # Contact Page
-├── privacy.html                # Privacy Policy
-├── terms.html                  # Terms of Service
-├── manifest.json               # Web App Manifest
-├── CNAME                       # Domain Routing Configuration
-├── download_local_assets.py    # Python Offline Assets Installer
-├── css/                        # Global and Tool Stylesheets
+├── merge-pdf.html              # Merge PDF Page
+├── split-pdf.html              # Split PDF Page
+├── pdf-reorder.html            # Reorder PDF Page
+├── pdf-to-photo.html           # PDF to Photo Page
+├── photo-to-pdf.html           # Photo to PDF Page
+├── pdf-metadata.html           # PDF Metadata Editor Page
+├── pdf-editor.html             # Advanced PDF Editor Page
+│
+├── css/                        # Stylesheets for each page
 │   ├── index.css
-│   └── pdf-editor.css          # Customized Editor styles & Mobile Overrides
-├── js/                         # Browser Processing Logic
+│   ├── pdf-compiler.css        # Styles for Merge PDF
+│   ├── pdf-split.css           # Styles for Split PDF
+│   ├── pdf-reorder.css         # Styles for Reorder PDF
+│   ├── pdf-to-photo.css        # Styles for PDF to Photo
+│   ├── photo-to-pdf.css        # Styles for Photo to PDF
+│   ├── pdf-metadata.css        # Styles for Metadata Editor
+│   └── pdf-editor.css          # Styles for PDF Editor (contains Mobile Layouts)
+│
+├── js/                         # Client-Side Processing Logic
 │   ├── index.js
-│   └── pdf-editor.js           # Core Editor Canvas & pdf-lib controller
-└── assets/                     # Media & Icons
-    ├── favicon.ico
-    └── vendor/                 # Localized JS & CSS Libraries
-        ├── pdf-3.11.174.min.js
-        ├── pdf.worker-3.11.174.min.js
-        ├── pdf-lib-1.17.1.min.js
-        ├── background-removal-1.5.6.esm.js
-        └── imgly-data/         # Offline AI Background Removal models & WASM
+│   ├── pdf-compiler.js         # Logic for Merge PDF
+│   ├── pdf-split.js            # Logic for Split PDF
+│   ├── pdf-reorder.js          # Logic for Reorder PDF
+│   ├── pdf-to-photo.js         # Logic for PDF to Photo
+│   ├── photo-to-pdf.js         # Logic for Photo to PDF
+│   ├── pdf-metadata.js         # Logic for Metadata Editor
+│   └── pdf-editor.js           # Core Canvas logic for PDF Editor
+│
+├── assets/                     # Graphic assets and icons
+│   ├── apple-touch-icon.png
+│   └── vendor/                 # Localized JS/CSS Library files
+│       ├── Sortable.min.js     # For drag-and-drop page sorting
+│       ├── jspdf.umd.min.js    # For document building (Photo-to-PDF)
+│       ├── jszip.min.js        # For zipping files (PDF-to-Photo)
+│       ├── pdf-3.11.174.min.js
+│       ├── pdf.worker-3.11.174.min.js
+│       ├── pdf-lib-1.17.1.min.js
+│       ├── background-removal-1.5.6.esm.js
+│       └── imgly-data/         # Model and WASM chunks for background removal
+│
+├── download_local_assets.py    # Python Offline Assets Installer
+├── manifest.json               # Web App Manifest for PWA support
+├── sitemap.xml                 # Search Engine Sitemap
+├── robots.txt                  # Robots crawler guides
+└── vercel.json                 # Vercel deployment configurations
 ```
 
 ---
