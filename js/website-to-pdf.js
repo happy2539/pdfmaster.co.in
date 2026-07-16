@@ -1,7 +1,3 @@
-/* ══════════════════════════════════════════════════════
-   ALL JAVASCRIPT — single clean block, no unclosed comments
-══════════════════════════════════════════════════════ */
-
 /* 1. Theme init (also done inline above for anti-FOUC) */
 (function () {
   var s = localStorage.getItem("pdfmaster-theme");
@@ -250,7 +246,11 @@ document.addEventListener("DOMContentLoaded", function () {
     }
     // If we have a successful proxy that returns raw content, use it.
     if (proxy && typeof proxy.url === "function") {
-      if (!proxy.direct && proxy.name !== "AllOrigins-get" && proxy.name !== "HTMLDriven") {
+      if (
+        !proxy.direct &&
+        proxy.name !== "AllOrigins-get" &&
+        proxy.name !== "HTMLDriven"
+      ) {
         return proxy.url(s);
       }
     }
@@ -335,7 +335,19 @@ document.addEventListener("DOMContentLoaded", function () {
 
     var style = doc.createElement("style");
     style.textContent =
-      "*,*::before,*::after{box-sizing:border-box}body{margin:0!important;overflow:visible!important;height:auto!important}html{overflow:visible!important;height:auto!important}.sticky,.is-sticky{position:relative!important;top:auto!important}::-webkit-scrollbar{display:none} [style*='fixed'] {position:absolute!important;}";
+      "*,*::before,*::after{box-sizing:border-box}body{margin:0!important;overflow:visible!important;height:auto!important}html{overflow:visible!important;height:auto!important}.sticky,.is-sticky{position:relative!important;top:auto!important}::-webkit-scrollbar{display:none} [style*='fixed'] {position:absolute!important;}" +
+      /* Scroll-reveal libraries (AOS, WOW.js, custom IntersectionObserver
+         patterns like this site's own .rv/.in) hide sections at opacity:0
+         until JS adds a class on scroll-into-view. Scripts are stripped
+         above, so that class never gets added and the section stays
+         invisible forever — while still reserving its layout space, which
+         is exactly what produces a blank gap of the right height instead
+         of missing content. Force everything to its already-revealed
+         state instead. We deliberately don't touch `visibility` or
+         `transform` here: those are also used for legitimately-hidden UI
+         (drawers, dropdowns) and for centering tricks, and overriding them
+         broadly would trade one visual bug for another. */
+      "*,*::before,*::after{opacity:1!important;animation:none!important;transition:none!important;animation-delay:0s!important;transition-delay:0s!important}";
     doc.head.appendChild(style);
 
     doc.querySelectorAll("base").forEach(function (el) {
@@ -345,21 +357,83 @@ document.addEventListener("DOMContentLoaded", function () {
     return "<!DOCTYPE html>" + doc.documentElement.outerHTML;
   }
 
+  /* ── waitForImages ── resolves once every <img> in the doc has either
+     loaded or errored (or a safety ceiling is hit). Proxied images can take
+     a while to arrive; capturing before they land is what produces missing
+     elements, so this is real settle time, not a guess. */
+  function waitForImages(iDoc, maxWaitMs, onProgress) {
+    return new Promise(function (resolve) {
+      var imgs;
+      try {
+        imgs = Array.prototype.slice.call(
+          iDoc.images || iDoc.querySelectorAll("img"),
+        );
+      } catch (e) {
+        imgs = [];
+      }
+      var total = imgs.length;
+      if (!total) return resolve();
+
+      var remaining = total;
+      var settled = false;
+
+      function report() {
+        if (onProgress) onProgress(total - remaining, total);
+      }
+
+      function settle() {
+        if (settled) return;
+        settled = true;
+        resolve();
+      }
+
+      function markDone() {
+        remaining--;
+        report();
+        if (remaining <= 0) settle();
+      }
+
+      imgs.forEach(function (img) {
+        if (img.complete) {
+          markDone();
+          return;
+        }
+        img.addEventListener("load", markDone, { once: true });
+        img.addEventListener("error", markDone, { once: true });
+      });
+
+      report();
+      setTimeout(settle, maxWaitMs); // never block conversion on one stalled image
+    });
+  }
+
+  /* ── nextFrame ── waits for the browser to actually paint before we read
+     layout (scrollHeight) or capture — one rAF is often not enough right
+     after a resize/style change, so we wait two. */
+  function nextFrame(win) {
+    return new Promise(function (resolve) {
+      var w = win && win.requestAnimationFrame ? win : window;
+      w.requestAnimationFrame(function () {
+        w.requestAnimationFrame(resolve);
+      });
+    });
+  }
+
   /* ── renderIframe with live countdown ── */
-  function renderIframe(html, delayMs, onTick) {
+  function renderIframe(html, delayMs, onTick, onImgWait) {
     return new Promise(function (resolve) {
       var blob = new Blob([html], { type: "text/html;charset=utf-8" });
       var blobUrl = URL.createObjectURL(blob);
       var frame = document.createElement("iframe");
       frame.style.cssText =
-        "position:fixed;left:-100vw;top:0;width:1280px;height:900px;border:none;visibility:hidden;z-index:-9999;pointer-events:none";
+        "position:fixed;left:0;top:0;width:1280px;height:900px;border:none;z-index:-9999;pointer-events:none;opacity:0.01;background:#ffffff;";
       frame.setAttribute("sandbox", "allow-same-origin allow-scripts");
-      document.body.appendChild(frame);
+      frame._blobUrl = blobUrl;
 
       var done = false;
       var countId = null;
       var absId = null;
-      frame._blobUrl = blobUrl;
+      var loadTriggered = false;
 
       function finish() {
         if (done) return;
@@ -369,10 +443,11 @@ document.addEventListener("DOMContentLoaded", function () {
         resolve(frame);
       }
 
-      frame.addEventListener("load", function () {
+      function startCountdown() {
         var wait = Math.max(delayMs || 4000, 500);
         var t0 = Date.now();
         if (onTick) onTick(Math.ceil(wait / 1000), 0, wait);
+
         countId = setInterval(function () {
           var elapsed = Date.now() - t0;
           var left = Math.max(0, wait - elapsed);
@@ -383,10 +458,47 @@ document.addEventListener("DOMContentLoaded", function () {
             finish();
           }
         }, 500);
+      }
+
+      function startTimer() {
+        if (loadTriggered) return;
+        loadTriggered = true;
+        if (absId) clearTimeout(absId);
+
+        // Wait for real network images (fetched through the CORS proxy)
+        // BEFORE the user's Page Load Wait countdown starts, so that
+        // countdown is genuine settle time instead of racing downloads.
+        var iDoc;
+        try {
+          iDoc = frame.contentDocument || frame.contentWindow.document;
+        } catch (e) {
+          iDoc = null;
+        }
+        if (iDoc) {
+          waitForImages(iDoc, 20000, onImgWait).then(startCountdown);
+        } else {
+          startCountdown();
+        }
+      }
+
+      frame.addEventListener("load", function () {
+        var isBlob = false;
+        try {
+          var href = frame.contentWindow.location.href;
+          isBlob = href && href.indexOf("blob:") === 0;
+        } catch (e) {
+          isBlob = true; // Security error means sandboxed blob URL loaded
+        }
+        if (isBlob) {
+          startTimer();
+        }
       });
 
-      absId = setTimeout(finish, (delayMs || 4000) + 15000);
+      document.body.appendChild(frame);
       frame.src = blobUrl;
+
+      // Fallback: start timer if load event fails to fire after 6 seconds
+      absId = setTimeout(startTimer, 6000);
     });
   }
 
@@ -425,8 +537,8 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   }
 
-  /* ── captureFrame ── */
-  function captureFrame(frame, opts) {
+  /* ── captureViewport ── */
+  function captureViewport(frame, yOff, height, opts) {
     return new Promise(function (resolve, reject) {
       var iDoc;
       try {
@@ -439,114 +551,38 @@ document.addEventListener("DOMContentLoaded", function () {
         );
       }
 
-      var fullH = Math.max(
-        iDoc.documentElement ? iDoc.documentElement.scrollHeight : 0,
-        iDoc.body ? iDoc.body.scrollHeight : 0,
-        900,
-      );
-      frame.style.height = Math.min(fullH, 26000) + "px";
+      var scale = parseFloat(opts.scale || 1.5);
+      var h2cOpts = {
+        allowTaint: false,
+        useCORS: true,
+        scale: scale,
+        width: 1280,
+        height: height,
+        windowWidth: 1280,
+        windowHeight: height,
+        scrollX: 0,
+        scrollY: yOff,
+        logging: false,
+        backgroundColor: "#ffffff",
+        foreignObjectRendering: false,
+        imageTimeout: 8000,
+        removeContainer: true,
+      };
 
-      var preCapDelay = typeof opts.preCap === "number" ? opts.preCap : 1000;
-      setTimeout(function () {
-        var scale = parseFloat(opts.scale || 1.5);
-        var captureH = Math.min(
-          iDoc.documentElement ? iDoc.documentElement.scrollHeight : fullH,
-          24000,
-        );
-        var h2cOpts = {
-          allowTaint: false,
-          useCORS: true,
-          scale: scale,
-          width: 1280,
-          height: captureH,
-          windowWidth: 1280,
-          windowHeight: captureH,
-          scrollX: 0,
-          scrollY: 0,
-          logging: false,
-          backgroundColor: "#ffffff",
-          foreignObjectRendering: false,
-          imageTimeout: 8000,
-          removeContainer: true,
-        };
-
-        function runCapture() {
-          var h2c = window.html2canvas;
-          if (!h2c) return reject(new Error("html2canvas not available."));
-          h2c(iDoc.documentElement, h2cOpts)
-            .then(function (canvas) {
-              if (!canvas || canvas.width === 0)
-                reject(new Error("Capture returned empty canvas."));
-              else resolve(canvas);
-            })
-            .catch(reject);
-        }
-
-        ensureH2c()
-          .then(runCapture)
+      function runCapture() {
+        var h2c = window.html2canvas;
+        if (!h2c) return reject(new Error("html2canvas not available."));
+        h2c(iDoc.documentElement, h2cOpts)
+          .then(function (canvas) {
+            if (!canvas || canvas.width === 0)
+              reject(new Error("Capture returned empty canvas."));
+            else resolve(canvas);
+          })
           .catch(reject);
-      }, preCapDelay);
-    });
-  }
+      }
 
-  /* ── canvas → PDF ── */
-  function canvasToPdf(canvas, opts) {
-    var jsPDF = window.jspdf.jsPDF;
-    var SIZES = {
-      a4: { w: 210, h: 297 },
-      letter: { w: 215.9, h: 279.4 },
-      legal: { w: 215.9, h: 355.6 },
-    };
-    var size = SIZES[opts.size] || SIZES.a4;
-    var pw = opts.orient === "landscape" ? size.h : size.w;
-    var ph = opts.orient === "landscape" ? size.w : size.h;
-    var pdf = new jsPDF({
-      orientation: opts.orient,
-      unit: "mm",
-      format: opts.size,
+      ensureH2c().then(runCapture).catch(reject);
     });
-    var pxPerMm = canvas.width / pw;
-    var pageHpx = ph * pxPerMm;
-    var qual = { high: 0.94, standard: 0.85, low: 0.7 }[opts.quality] || 0.85;
-    var yOff = 0,
-      page = 0;
-    while (yOff < canvas.height) {
-      if (page > 0)
-        pdf.addPage(opts.size, opts.orient);
-      var sliceH = Math.min(pageHpx, canvas.height - yOff);
-      var slice = document.createElement("canvas");
-      slice.width = canvas.width;
-      slice.height = Math.ceil(sliceH);
-      var ctx = slice.getContext("2d");
-      ctx.fillStyle = "#ffffff";
-      ctx.fillRect(0, 0, slice.width, slice.height);
-      ctx.drawImage(
-        canvas,
-        0,
-        yOff,
-        canvas.width,
-        sliceH,
-        0,
-        0,
-        canvas.width,
-        sliceH,
-      );
-      var sliceHmm = sliceH / pxPerMm;
-      pdf.addImage(
-        slice.toDataURL("image/jpeg", qual),
-        "JPEG",
-        0,
-        0,
-        pw,
-        sliceHmm,
-        "",
-        "FAST",
-      );
-      yOff += sliceH;
-      page++;
-      if (page > 120) break;
-    }
-    return pdf;
   }
 
   /* ── CORS proxy waterfall ──────────────────────────────────
@@ -681,8 +717,14 @@ document.addEventListener("DOMContentLoaded", function () {
       return;
     }
 
-    var rawDelay = parseFloat(document.getElementById("inpDelay").value) || 4;
-    var rawPreCap = parseFloat(document.getElementById("inpPreCap").value) || 1;
+    var rawDelayVal = document.getElementById("inpDelay").value.trim();
+    var rawDelay = rawDelayVal !== "" ? parseFloat(rawDelayVal) : 4;
+    if (isNaN(rawDelay)) rawDelay = 4;
+
+    var rawPreCapVal = document.getElementById("inpPreCap").value.trim();
+    var rawPreCap = rawPreCapVal !== "" ? parseFloat(rawPreCapVal) : 1;
+    if (isNaN(rawPreCap)) rawPreCap = 1;
+
     var delayMs = Math.min(Math.max(rawDelay, 1), 120) * 1000;
     var preCapMs = Math.min(Math.max(rawPreCap, 0), 30) * 1000;
     var opts = {
@@ -696,6 +738,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     startUI();
     var frame = null;
+    var successfulProxy = null;
 
     try {
       /* STEP 1: FETCH — try direct then 6 CORS proxies */
@@ -729,6 +772,7 @@ document.addEventListener("DOMContentLoaded", function () {
           html = cand;
           setProg(26, "✅ Fetched via " + proxy.name);
           console.log("[PDFMaster] Fetched via", proxy.name);
+          successfulProxy = proxy;
           break;
         } catch (pe) {
           proxyErrors.push(proxy.name + ": " + pe.message);
@@ -769,25 +813,201 @@ document.addEventListener("DOMContentLoaded", function () {
               : "🖥️ Page ready — preparing capture…";
           setProg(Math.min(pct, 53), label);
         },
+        function (loaded, total) {
+          setProg(21, "🖼️ Loading images… " + loaded + "/" + total);
+        },
       );
 
-      /* STEP 4: CAPTURE */
+      /* STEP 4: CAPTURE & BUILD PDF
+         Phase A scrolls page-by-page waiting Pre-Capture Wait at each
+         section (warm-up only, no capture). Phase B takes one full-height
+         capture once everything has settled, then slices it locally into
+         PDF pages. */
       setStep("capture");
-      setProg(54, "📸 Capturing full page…");
-      var canvas = await captureFrame(frame, opts);
-      if (!canvas || canvas.width === 0)
-        throw new Error(
-          "Capture produced an empty canvas. Try increasing Page Load Wait.",
+
+      var jsPDF = window.jspdf.jsPDF;
+      var SIZES = {
+        a4: { w: 210, h: 297 },
+        letter: { w: 215.9, h: 279.4 },
+        legal: { w: 215.9, h: 355.6 },
+      };
+      var size = SIZES[opts.size] || SIZES.a4;
+      var pw = opts.orient === "landscape" ? size.h : size.w;
+      var ph = opts.orient === "landscape" ? size.w : size.h;
+
+      var pdf = new jsPDF({
+        orientation: opts.orient,
+        unit: "mm",
+        format: opts.size,
+      });
+
+      var iWin = frame.contentWindow;
+      var iDoc = frame.contentDocument || iWin.document;
+
+      // Let the browser paint the fully-loaded document before measuring it.
+      await nextFrame(iWin);
+
+      var totalH = Math.max(
+        iDoc.documentElement.scrollHeight,
+        iDoc.body.scrollHeight,
+        900,
+      );
+
+      var ratio = ph / pw;
+      var pageHpx = Math.round(1280 * ratio);
+
+      // Force body and html to keep their scrollable heights, preventing collapsing when iframe viewport is resized
+      function lockHeight(h) {
+        try {
+          iDoc.documentElement.style.setProperty(
+            "height",
+            h + "px",
+            "important",
+          );
+          iDoc.documentElement.style.setProperty(
+            "min-height",
+            h + "px",
+            "important",
+          );
+          iDoc.body.style.setProperty("height", h + "px", "important");
+          iDoc.body.style.setProperty("min-height", h + "px", "important");
+        } catch (e) {}
+      }
+      lockHeight(totalH);
+
+      // Set iframe height to pageHpx to make it behave as a viewport
+      frame.style.setProperty("height", pageHpx + "px", "important");
+      await nextFrame(iWin);
+
+      var qual = { high: 0.94, standard: 0.85, low: 0.7 }[opts.quality] || 0.85;
+
+      /* ── PHASE A — warm-up pass ──────────────────────────────────
+         Scroll through every page section, waiting Pre-Capture Wait at
+         each one. No capture happens here — this is purely to give
+         images/layout time to settle at each section, the same way a
+         real user scrolling down the page would trigger it. If content
+         grows (late images finishing) we extend totalH so no page is
+         missed. */
+      var warmPages = Math.max(1, Math.ceil(totalH / pageHpx));
+      var yOff = 0;
+      var page = 0;
+      while (yOff < totalH) {
+        iWin.scrollTo(0, yOff);
+        await nextFrame(iWin);
+
+        if (opts.preCap > 0) {
+          var preCapSeconds = Math.ceil(opts.preCap / 1000);
+          for (var i = preCapSeconds; i > 0; i--) {
+            var pctWarm = 54 + (yOff / totalH) * 20;
+            setProg(
+              Math.min(pctWarm, 74),
+              "📜 Page " +
+                (page + 1) +
+                "/" +
+                warmPages +
+                ": waiting " +
+                i +
+                "s for elements…",
+            );
+            await new Promise(function (r) {
+              setTimeout(r, 1000);
+            });
+          }
+        }
+
+        var freshH = Math.max(
+          iDoc.documentElement.scrollHeight,
+          iDoc.body.scrollHeight,
+          totalH,
         );
-      setProg(82, "📸 Capture complete…");
+        if (freshH > totalH) {
+          totalH = freshH;
+          lockHeight(totalH);
+          warmPages = Math.max(1, Math.ceil(totalH / pageHpx));
+        }
+
+        yOff += pageHpx;
+        page++;
+        if (page >= 100) break; // page limit safety
+      }
+
+      /* ── PHASE B — one authoritative capture, sliced locally ──────
+         Repeated per-slice html2canvas calls (small windowHeight +
+         scrollY offset) are a known html2canvas failure mode: it often
+         only paints what fits the given window box instead of the true
+         slice, which is what was producing blank/incomplete pages. A
+         single full-height render is pixel-consistent, so we capture
+         once here and cut it into PDF pages ourselves. */
+      setProg(75, "🧵 Compositing full page…");
+      iWin.scrollTo(0, 0);
+      await nextFrame(iWin);
+      lockHeight(totalH);
+      await nextFrame(iWin);
+
+      var masterCanvas = await captureViewport(frame, 0, totalH, opts);
+      var pxPerCssPx = masterCanvas.height / totalH;
+
+      yOff = 0;
+      page = 0;
+      while (yOff < totalH) {
+        var sliceH = Math.min(pageHpx, totalH - yOff);
+        var pct = 76 + (yOff / totalH) * 10;
+        setProg(Math.min(pct, 86), "📸 Building page " + (page + 1) + "…");
+
+        var sy = Math.round(yOff * pxPerCssPx);
+        var sh = Math.min(
+          Math.round(sliceH * pxPerCssPx),
+          masterCanvas.height - sy,
+        );
+        if (sh <= 0) break;
+
+        var sliceCanvas = document.createElement("canvas");
+        sliceCanvas.width = masterCanvas.width;
+        sliceCanvas.height = sh;
+        var sctx = sliceCanvas.getContext("2d");
+        sctx.fillStyle = "#ffffff";
+        sctx.fillRect(0, 0, sliceCanvas.width, sh);
+        sctx.drawImage(
+          masterCanvas,
+          0,
+          sy,
+          masterCanvas.width,
+          sh,
+          0,
+          0,
+          masterCanvas.width,
+          sh,
+        );
+
+        if (page > 0) {
+          pdf.addPage(opts.size, opts.orient);
+        }
+
+        var sliceHmm = (sliceH / pageHpx) * ph;
+        pdf.addImage(
+          sliceCanvas.toDataURL("image/jpeg", qual),
+          "JPEG",
+          0,
+          0,
+          pw,
+          sliceHmm,
+          "",
+          "FAST",
+        );
+
+        yOff += pageHpx;
+        page++;
+        if (page >= 100) break; // page limit safety
+      }
+
+      setProg(88, "📸 Capture complete…");
 
       /* STEP 5: BUILD PDF */
       setStep("pdf");
-      setProg(84, "📄 Building PDF…");
+      setProg(92, "📄 Finalizing PDF…");
       await new Promise(function (r) {
-        setTimeout(r, 60);
+        setTimeout(r, 100);
       });
-      var pdf = canvasToPdf(canvas, opts);
 
       /* Build blob for Open-in-Browser */
       var pdfBlob = null;
@@ -913,4 +1133,4 @@ document.addEventListener("DOMContentLoaded", function () {
     }
     next();
   })();
-}); /* end DOMContentLoaded */
+});

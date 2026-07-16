@@ -525,7 +525,6 @@ select {
   font-size: 0.88rem;
   outline: none;
   transition: border-color 0.2s;
-  -moz-appearance: textfield;
 }
 .num-input::-webkit-inner-spin-button,
 .num-input::-webkit-outer-spin-button {
