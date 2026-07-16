@@ -242,6 +242,9 @@ section {
   font-size: 1.15rem;
   color: var(--text);
 }
+.brand span span {
+  color: var(--accent);
+}
 .brand img {
   width: 32px;
   height: 32px;

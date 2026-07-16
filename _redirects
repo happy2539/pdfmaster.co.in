@@ -28,6 +28,7 @@
 # ROOT PAGES REDIRECTS      (TOOL PAGES)
 # -----------------------------
 
+/pdf-editor.html     /pdf-editor     301!
 /merge-pdf.html      /merge-pdf      301!
 /pdf-metadata.html   /pdf-metadata   301!
 /pdf-to-photo.html   /pdf-to-photo   301!
@@ -151,3 +152,12 @@
 # -----------------------------
 
 /privacy-policy                         /privacy                               301!
+
+
+
+
+# -----------------------------
+# SEO ALIASES PAGES REDIRECTS
+# -----------------------------
+
+/download_local_assets.py               /404                                   404!
