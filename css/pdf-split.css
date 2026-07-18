@@ -1634,18 +1634,7 @@
         transform: translateY(-2px);
       }
 
-      /* Scroll reveal */
-      .reveal {
-        opacity: 0;
-        transform: translateY(24px);
-        transition:
-          opacity 0.55s ease,
-          transform 0.55s ease;
-      }
-      .reveal.revealed {
-        opacity: 1;
-        transform: none;
-      }
+
 
       /* ===== RESPONSIVE ===== */
       @media (max-width: 1024px) {
