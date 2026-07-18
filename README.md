@@ -2,7 +2,7 @@
 
 PDFMaster is a fast, secure, and completely client-side suite of PDF tools. All processing happens entirely within your web browser — **no files are ever uploaded to a server**, ensuring 100% privacy, data security, and instant performance.
 
-👉 **Live Website**: [https://pdfmaster.co.in/]
+👉 **Live Website**: [https://pdfmaster.co.in/](https://sh.pdfmaster.co.in/github-readme-pdfmaster)
 
 ---
 
@@ -29,7 +29,7 @@ PDFMaster is a fast, secure, and completely client-side suite of PDF tools. All 
 
 ### 1. Advanced PDF Editor (Newly Enhanced!)
 
-👉 **Live Website**: [https://pdfmaster.co.in/pdf-editor]
+👉 **Live Website**: [https://pdfmaster.co.in/pdf-editor](https://sh.pdfmaster.co.in/github-pdf-editor)
 
 
 A comprehensive client-side editing workspace built for annotation, signing, and drawing:
@@ -58,7 +58,7 @@ A comprehensive client-side editing workspace built for annotation, signing, and
 
 ### 2. Merge PDF
 
-👉 **Live Website**: [https://pdfmaster.co.in/merge-pdf]
+👉 **Live Website**: [https://pdfmaster.co.in/merge-pdf](https://sh.pdfmaster.co.in/github-merge-pdf)
 
 
 A fast, privacy-first PDF merging tool that combines multiple PDF files directly in your browser without uploading them to any server.
@@ -119,7 +119,7 @@ A fast, privacy-first PDF merging tool that combines multiple PDF files directly
 
 ### 3. Split PDF
 
-👉 **Live Website**: [https://pdfmaster.co.in/split-pdf]
+👉 **Live Website**: [https://pdfmaster.co.in/split-pdf](https://sh.pdfmaster.co.in/github-split-pdf)
 
 
 A powerful, privacy-first PDF splitting tool that lets you extract exactly the pages you need directly in your browser, without uploading your files to any server.
@@ -180,7 +180,7 @@ A powerful, privacy-first PDF splitting tool that lets you extract exactly the p
 
 ### 4. PDF Reorder & Organizer
 
-👉 **Live Website**: [https://pdfmaster.co.in/pdf-reorder]
+👉 **Live Website**: [https://pdfmaster.co.in/pdf-reorder](https://sh.pdfmaster.co.in/github-pdf-reorder)
 
 
 A powerful, privacy-first PDF organization tool that lets you rearrange, organize, and manage PDF pages directly in your browser without uploading your files to any server.
@@ -241,7 +241,7 @@ A powerful, privacy-first PDF organization tool that lets you rearrange, organiz
 
 ### 5. PDF to Photo
 
-👉 **Live Website**: [https://pdfmaster.co.in/pdf-to-photo]
+👉 **Live Website**: [https://pdfmaster.co.in/pdf-to-photo](https://sh.pdfmaster.co.in/github-pdf-to-photo)
 
 
 A fast, privacy-first PDF to image converter that transforms every page of your PDF into high-quality photos directly in your browser, without uploading your files to any server. 
@@ -302,7 +302,7 @@ A fast, privacy-first PDF to image converter that transforms every page of your 
 
 ### 6. Photo to PDF
 
-👉 **Live Website**: [https://pdfmaster.co.in/photo-to-pdf]
+👉 **Live Website**: [https://pdfmaster.co.in/photo-to-pdf](https://sh.pdfmaster.co.in/github-photo-to-pdf)
 
 
 A powerful, privacy-first image to PDF converter that transforms one or multiple photos into a professional PDF directly in your browser, without uploading your files to any server. It supports all major image formats, customizable page settings, and drag-and-drop organization for complete control over your document. 
@@ -367,7 +367,7 @@ A powerful, privacy-first image to PDF converter that transforms one or multiple
 
 ### 7. PDF Metadata Editor
 
-👉 **Live Website**: [https://pdfmaster.co.in/pdf-metadata]
+👉 **Live Website**: [https://pdfmaster.co.in/pdf-metadata](https://sh.pdfmaster.co.in/github-pdf-metadata)
 
 
 A powerful, privacy-first metadata editor that lets you view, edit, update, or remove PDF metadata directly in your browser without uploading your files to any server.
@@ -599,7 +599,7 @@ Ensure you have **Python 3.6+** installed.
 1.  **Clone the repository**:
     Open Terminal and run:
     ```bash
-    git clone https://github.com/happy2539pdfmaster.co.in.git
+    git clone https://github.com/happy2539/pdfmaster.co.in.git
     ```
 
 2.  **Install Dependencies** :
