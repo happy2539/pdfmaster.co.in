@@ -20,7 +20,7 @@
 /announcements.html     /announcements      301!
 /subscribe.html         /subscribe          301!
 /thank-you.html         /thank-you          301!
-
+/happy-gupta-founder-of-pdfmaster.html              /happy-gupta-founder-of--pdfmaster              301!
 
 
 
@@ -164,3 +164,6 @@
 
 /download_local_assets.py               /404                                   404!
 /README.md                              /404                                   404!
+/founder                                /happy-gupta-founder-of-pdfmaster      301!
+/happy-gupta                            /happy-gupta-founder-of-pdfmaster      301!
+/about-happy-gupta                      /happy-gupta-founder-of-pdfmaster      301!
