@@ -633,9 +633,10 @@ nav {
 }
 .faq-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1fr;
+  max-width: 860px;
+  margin: 40px auto 0;
   gap: 16px;
-  margin-top: 40px;
 }
 .faq-item {
   background: var(--bg);

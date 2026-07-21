@@ -538,7 +538,9 @@ header {
 /* FAQ layout */
 .faq-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1fr;
+  max-width: 860px;
+  margin: 0 auto;
   gap: 12px;
   align-items: start;
 }
