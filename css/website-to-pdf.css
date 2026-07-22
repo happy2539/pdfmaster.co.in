@@ -1356,30 +1356,6 @@ select {
   background: var(--ac-dk);
 }
 
-/* ── SCROLL REVEAL ── */
-.rv {
-  opacity: 0;
-  transform: translateY(22px);
-  transition:
-    opacity 0.55s ease,
-    transform 0.55s ease;
-}
-.rv.in {
-  opacity: 1;
-  transform: translateY(0);
-}
-.d1 {
-  transition-delay: 0.08s;
-}
-.d2 {
-  transition-delay: 0.16s;
-}
-.d3 {
-  transition-delay: 0.24s;
-}
-.d4 {
-  transition-delay: 0.32s;
-}
 
 /* ── RESPONSIVE ── */
 @media (max-width: 900px) {

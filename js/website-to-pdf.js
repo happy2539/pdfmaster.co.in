@@ -15,7 +15,9 @@ document.addEventListener("DOMContentLoaded", function () {
   var themeBtn = document.getElementById("themeBtn");
   function syncTheme() {
     var dark = document.documentElement.getAttribute("data-theme") === "dark";
-    themeBtn.textContent = dark ? "☀️" : "🌙";
+    themeBtn.innerHTML = dark
+      ? '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>'
+      : '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>';
     themeBtn.setAttribute(
       "aria-label",
       dark ? "Switch to light mode" : "Switch to dark mode",
@@ -69,21 +71,6 @@ document.addEventListener("DOMContentLoaded", function () {
     advPanel.setAttribute("aria-hidden", String(!open));
   });
 
-  /* ── SCROLL REVEAL ── */
-  var ro = new IntersectionObserver(
-    function (entries) {
-      entries.forEach(function (e) {
-        if (e.isIntersecting) {
-          e.target.classList.add("in");
-          ro.unobserve(e.target);
-        }
-      });
-    },
-    { threshold: 0.08, rootMargin: "0px 0px -36px 0px" },
-  );
-  document.querySelectorAll(".rv").forEach(function (el) {
-    ro.observe(el);
-  });
 
   /* ── BACK TO TOP ── */
   var btt = document.getElementById("btt");
@@ -186,7 +173,7 @@ document.addEventListener("DOMContentLoaded", function () {
   function resetBtn() {
     converting = false;
     convertBtn.disabled = false;
-    btnIco.innerHTML = "🔄";
+    btnIco.innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.5 2v6h-6M2.5 22v-6h6"/><path d="M2 11.5a10 10 0 0 1 18.8-4.3M22 12.5a10 10 0 0 1-18.8 4.2"/></svg>';
     btnTxt.textContent = "Convert to PDF";
   }
 
@@ -198,7 +185,7 @@ document.addEventListener("DOMContentLoaded", function () {
     progBox.classList.add("show");
     errBox.classList.remove("show");
     resBox.classList.remove("show");
-    setProg(0, "🔄 Starting…");
+    setProg(0, "Starting…");
   }
 
   /* ── URL helpers ── */
@@ -743,7 +730,7 @@ document.addEventListener("DOMContentLoaded", function () {
     try {
       /* STEP 1: FETCH — try direct then 6 CORS proxies */
       setStep("fetch");
-      setProg(3, "🌐 Fetching page…");
+      setProg(3, "Fetching page…");
       var html = null;
       var proxyErrors = [];
 
@@ -759,7 +746,7 @@ document.addEventListener("DOMContentLoaded", function () {
             continue;
           }
         }
-        setProg(3 + pi * 4, "🌐 Trying " + proxy.name + "…");
+        setProg(3 + pi * 4, "Trying " + proxy.name + "…");
         /* Direct attempt: 12 s (fast fail); proxy attempts: 28 s */
         var tms = proxy.direct ? 12000 : 28000;
         try {
@@ -770,7 +757,7 @@ document.addEventListener("DOMContentLoaded", function () {
             throw new Error("Response too short");
           if (cand.indexOf("<") === -1) throw new Error("Not HTML");
           html = cand;
-          setProg(26, "✅ Fetched via " + proxy.name);
+          setProg(26, "Fetched via " + proxy.name);
           console.log("[PDFMaster] Fetched via", proxy.name);
           successfulProxy = proxy;
           break;
@@ -793,7 +780,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
       /* STEP 2: PROCESS */
       setStep("process");
-      setProg(20, "⚙️ Processing HTML…");
+      setProg(20, "Processing HTML…");
       await new Promise(function (r) {
         setTimeout(r, 60);
       });
@@ -801,7 +788,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
       /* STEP 3: RENDER + COUNTDOWN */
       setStep("render");
-      setProg(22, "🖥️ Rendering layout…");
+      setProg(22, "Rendering layout…");
       frame = await renderIframe(
         processed,
         opts.delay,
@@ -809,12 +796,12 @@ document.addEventListener("DOMContentLoaded", function () {
           var pct = 22 + (elapsed / total) * 32;
           var label =
             secLeft > 0
-              ? "⏳ Waiting for page… " + secLeft + "s remaining"
-              : "🖥️ Page ready — preparing capture…";
+              ? "Waiting for page… " + secLeft + "s remaining"
+              : "Page ready — preparing capture…";
           setProg(Math.min(pct, 53), label);
         },
         function (loaded, total) {
-          setProg(21, "🖼️ Loading images… " + loaded + "/" + total);
+          setProg(21, "Loading images… " + loaded + "/" + total);
         },
       );
 
@@ -901,7 +888,7 @@ document.addEventListener("DOMContentLoaded", function () {
             var pctWarm = 54 + (yOff / totalH) * 20;
             setProg(
               Math.min(pctWarm, 74),
-              "📜 Page " +
+              "Page " +
                 (page + 1) +
                 "/" +
                 warmPages +
@@ -938,7 +925,7 @@ document.addEventListener("DOMContentLoaded", function () {
          slice, which is what was producing blank/incomplete pages. A
          single full-height render is pixel-consistent, so we capture
          once here and cut it into PDF pages ourselves. */
-      setProg(75, "🧵 Compositing full page…");
+      setProg(75, "Compositing full page…");
       iWin.scrollTo(0, 0);
       await nextFrame(iWin);
       lockHeight(totalH);
@@ -952,7 +939,7 @@ document.addEventListener("DOMContentLoaded", function () {
       while (yOff < totalH) {
         var sliceH = Math.min(pageHpx, totalH - yOff);
         var pct = 76 + (yOff / totalH) * 10;
-        setProg(Math.min(pct, 86), "📸 Building page " + (page + 1) + "…");
+        setProg(Math.min(pct, 86), "Building page " + (page + 1) + "…");
 
         var sy = Math.round(yOff * pxPerCssPx);
         var sh = Math.min(
@@ -1000,11 +987,11 @@ document.addEventListener("DOMContentLoaded", function () {
         if (page >= 100) break; // page limit safety
       }
 
-      setProg(88, "📸 Capture complete…");
+      setProg(88, "Capture complete…");
 
       /* STEP 5: BUILD PDF */
       setStep("pdf");
-      setProg(92, "📄 Finalizing PDF…");
+      setProg(92, "Finalizing PDF…");
       await new Promise(function (r) {
         setTimeout(r, 100);
       });
@@ -1017,7 +1004,7 @@ document.addEventListener("DOMContentLoaded", function () {
         });
       } catch (e) {}
 
-      setProg(100, "✅ Done!");
+      setProg(100, "Done!");
 
       var hostname = new URL(pageUrl).hostname.replace(/^www\./, "");
       var fname = hostname + "-" + Date.now() + ".pdf";
