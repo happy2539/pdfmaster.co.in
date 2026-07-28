@@ -24,7 +24,7 @@
  * visit - see the activate handler below.
  */
 
-const CACHE_VERSION = "v1";
+const CACHE_VERSION = "v2";
 const CACHE_PREFIX = "pdfmaster-";
 
 const STATIC_CACHE = `${CACHE_PREFIX}static-${CACHE_VERSION}`;
@@ -72,18 +72,19 @@ const PRECACHE_URLS = [
   "/assets/favicon.ico",
   "/assets/founder.png",
   "/assets/site.webmanifest",
+  "/manifest.json",
   "/blog/pdf-metadata/css/style.css",
   "/blog/pdf-metadata/js/script.js",
   "/blog/pdf-to-photo/css/index.css",
   "/blog/pdf-to-photo/css/style.css",
-  "/blog/pdf-to-photo/js/index.js",
-  "/blog/pdf-to-photo/js/script.js",
+  "/blog/pdf-to-photo/script/index.js",
+  "/blog/pdf-to-photo/script/script.js",
   "/blog/photo-to-pdf/css/index.css",
   "/blog/photo-to-pdf/css/photo-to-pdf-mobile-guide.css",
   "/blog/photo-to-pdf/css/style.css",
-  "/blog/photo-to-pdf/js/index.js",
-  "/blog/photo-to-pdf/js/photo-to-pdf-mobile-guide.js",
-  "/blog/photo-to-pdf/js/script.js",
+  "/blog/photo-to-pdf/script/index.js",
+  "/blog/photo-to-pdf/script/photo-to-pdf-mobile-guide.js",
+  "/blog/photo-to-pdf/script/script.js",
   "/blog/script.js",
   "/blog/style.css",
   "/css/404.css",
@@ -163,7 +164,15 @@ const MAX_CDN_ENTRIES = 40;
 // ---------------------------------------------------------------------
 self.addEventListener("install", (event) => {
   event.waitUntil(
-    caches.open(STATIC_CACHE).then((cache) => cache.addAll(PRECACHE_URLS)),
+    caches.open(STATIC_CACHE).then((cache) =>
+      Promise.all(
+        PRECACHE_URLS.map((url) =>
+          cache.add(url).catch((err) => {
+            console.warn(`[PDFMaster SW] Precache warning for ${url}:`, err);
+          }),
+        ),
+      ),
+    ),
   );
   // Deliberately NOT calling self.skipWaiting() here. The new worker
   // sits in "waiting" until the visitor agrees to refresh, so nobody's
@@ -224,7 +233,7 @@ self.addEventListener("fetch", (event) => {
 
   if (url.origin === self.location.origin) {
     if (STATIC_EXTENSIONS.test(url.pathname)) {
-      event.respondWith(staleWhileRevalidate(request, STATIC_CACHE));
+      event.respondWith(staleWhileRevalidate(request, STATIC_CACHE, event));
     }
     // Same-origin requests that aren't recognised static assets are
     // left alone and go straight to the network as usual.
@@ -264,7 +273,7 @@ async function networkFirstPage(request) {
 // Same-origin static assets: serve the cached copy instantly if one
 // exists, while quietly fetching a fresh copy in the background for
 // next time. A first-ever request just falls back to the network.
-async function staleWhileRevalidate(request, cacheName) {
+async function staleWhileRevalidate(request, cacheName, event) {
   const cache = await caches.open(cacheName);
   const cached = await cache.match(request);
 
@@ -274,6 +283,10 @@ async function staleWhileRevalidate(request, cacheName) {
       return fresh;
     })
     .catch(() => null);
+
+  if (event && event.waitUntil) {
+    event.waitUntil(networkFetch);
+  }
 
   return cached || (await networkFetch) || Response.error();
 }

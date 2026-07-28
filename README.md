@@ -443,6 +443,9 @@ pdfmaster.co.in/
 ├── pdf-editor.html             # Advanced PDF Editor Page
 ├── about.html                  # About Page
 ├── announcements.html          # Announcement Page
+├── happy-gupta-founder-of-pdfmaster.html       #Founder Page of PDF Master
+├── offline.html                #sw utility
+├── sw.js                       #sw file
 │
 ├── css/                        # Stylesheets for each page
 │   │
@@ -461,6 +464,7 @@ pdfmaster.co.in/
 │   ├── pdf-editor.css             # CSS Advanced PDF Editor Page
 │   ├── about.css                  # CSS About Page
 │   ├── announcements.css          # CSS Announcement Page
+|   ├── happy-gupta-founder-of-pdfmaster.css        #stylesheet
 │   └── 404.css                    # CSS 404 Page
 │
 ├── js/                         # Client-Side Processing Logic
@@ -480,6 +484,8 @@ pdfmaster.co.in/
 │   ├── pdf-editor.js             # Js Advanced PDF Editor Page
 │   ├── about.js                  # Js About Page
 │   ├── announcements.js          # Js Announcement Page
+|   ├── happy-gupta-founder-of-pdf master         #JS file for the founder page
+|   ├── sw-register.js            # Js for the service worker
 │   └── 404.js                    # Js 404 Page
 │
 ├── assets/                     # Graphic assets and icons

@@ -16,14 +16,20 @@
 
   var reloadingAfterUpdate = false;
 
-  window.addEventListener('load', function () {
+  function doRegister() {
     navigator.serviceWorker
       .register('/sw.js')
       .then(setupUpdateFlow)
       .catch(function (err) {
         console.error('PDFMaster: service worker registration failed', err);
       });
-  });
+  }
+
+  if (document.readyState === 'complete') {
+    doRegister();
+  } else {
+    window.addEventListener('load', doRegister);
+  }
 
   navigator.serviceWorker.addEventListener('controllerchange', function () {
     // Fires once the visitor has approved an update (see notifyUpdate
