@@ -1,13 +1,14 @@
 {
-  "name": "PDFMaster - Free PDF & Image Tools",
+  "name": "PDFMaster - Free Privacy-First PDF Tools",
   "short_name": "PDFMaster",
-  "description": "Free JPG to PDF, PDF to JPG, and other PDF tools. 100% private, no uploads, browser-based.",
+  "description": "Compress, convert, edit, and manage PDFs entirely in your browser. No uploads, no servers - files never leave your device.",
   "start_url": "/",
   "scope": "/",
+  "id": "/",
   "display": "standalone",
-  "orientation": "portrait",
-  "background_color": "#0f172a",
-  "theme_color": "#0f172a",
+  "orientation": "portrait-primary",
+  "background_color": "#ffffff",
+  "theme_color": "#d1301f",
 
   "icons": [
     {

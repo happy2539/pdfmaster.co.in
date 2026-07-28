@@ -62,23 +62,18 @@
     <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
 
     <!-- Fonts -->
-    <link
-      href="assets/fonts/fonts.css"
-      rel="stylesheet"
-    />
+    <link href="assets/fonts/fonts.css" rel="stylesheet" />
 
     <!-- CSS -->
     <link rel="stylesheet" href="css/pdf-compiler.css" />
 
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <script src="/js/sw-register.js" defer></script>
+
     <!-- Scripts (deferred for performance) -->
-    <script
-      src="assets/vendor/pdf-lib.min.js"
-      defer
-    ></script>
-    <script
-      src="assets/vendor/Sortable.min.js"
-      defer
-    ></script>
+    <script src="assets/vendor/pdf-lib.min.js" defer></script>
+    <script src="assets/vendor/Sortable.min.js" defer></script>
 
     <script>
       // Immediate theme initialization to prevent FOUC
@@ -1671,7 +1666,11 @@
               <li><a href="/#tools">All Tools</a></li>
               <li><a href="/#features">Features</a></li>
               <li><a href="/about">About Us</a></li>
-              <li><a href="/happy-gupta-founder-of-pdfmaster">About Happy Gupta</a></li>
+              <li>
+                <a href="/happy-gupta-founder-of-pdfmaster"
+                  >About Happy Gupta</a
+                >
+              </li>
               <li><a href="/announcements">Announcements</a></li>
               <li><a href="/contact">Contact</a></li>
               <li><a href="/blog/">Blogs</a></li>

@@ -49,12 +49,8 @@
     <link rel="apple-touch-icon" href="/assets/apple-touch-icon.png" />
 
     <!-- ── Fonts ── -->
-    
-    
-    <link
-      href="assets/fonts/fonts.css"
-      rel="stylesheet"
-    />
+
+    <link href="assets/fonts/fonts.css" rel="stylesheet" />
 
     <!-- ── JSON-LD Structured Data ── -->
     <script type="application/ld+json">
@@ -94,6 +90,10 @@
     </script>
 
     <link rel="stylesheet" href="css/announcements.css" />
+
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <script src="/js/sw-register.js" defer></script>
 
     <!-- GTM deferred: loads on first user interaction to eliminate TBT impact -->
     <script>
@@ -719,7 +719,11 @@
             <h4>Company</h4>
             <ul>
               <li><a href="/about">About Us</a></li>
-              <li><a href="/happy-gupta-founder-of-pdfmaster">About Happy Gupta</a></li>
+              <li>
+                <a href="/happy-gupta-founder-of-pdfmaster"
+                  >About Happy Gupta</a
+                >
+              </li>
               <li><a href="/blog/photo-to-pdf/">Blog</a></li>
               <li><a href="/announcements">Announcements</a></li>
               <li><a href="/faq">FAQ</a></li>

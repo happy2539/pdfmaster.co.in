@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex">
+  <title>You're Offline - PDFMaster</title>
+  <link rel="icon" href="/assets/favicon.ico">
+  <style>
+    :root {
+      --accent-solid: #d1301f;
+      --accent-text: #d1301f;
+      --bg: #ffffff;
+      --surface: #f7f5f3;
+      --text: #1a1a1a;
+      --text-muted: #5c5c5c;
+      --border: #e5e2df;
+    }
+    html[data-theme="dark"] {
+      --accent-text: #ff6b5f;
+      --bg: #121212;
+      --surface: #1c1c1c;
+      --text: #f2f2f2;
+      --text-muted: #b3b3b3;
+      --border: #2e2e2e;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      background: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      text-align: center;
+      transition: background 0.2s ease, color 0.2s ease;
+    }
+    .theme-toggle {
+      position: fixed;
+      top: 16px;
+      right: 16px;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--text);
+      border-radius: 999px;
+      padding: 8px 14px;
+      font-size: 13px;
+      cursor: pointer;
+    }
+    .theme-toggle:focus-visible,
+    .btn:focus-visible,
+    a:focus-visible {
+      outline: 2px solid var(--accent-text);
+      outline-offset: 2px;
+    }
+    .logo {
+      width: 64px;
+      height: 64px;
+      border-radius: 16px;
+      margin-bottom: 24px;
+    }
+    h1 {
+      font-size: clamp(1.5rem, 4vw, 2rem);
+      margin: 0 0 12px;
+    }
+    p {
+      color: var(--text-muted);
+      max-width: 440px;
+      line-height: 1.6;
+      margin: 0 0 8px;
+    }
+    .hint {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 14px 18px;
+      margin: 20px 0;
+      max-width: 440px;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+    .actions {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      justify-content: center;
+      margin-top: 12px;
+    }
+    .btn {
+      display: inline-block;
+      padding: 12px 22px;
+      border-radius: 10px;
+      font-size: 15px;
+      font-weight: 600;
+      text-decoration: none;
+      cursor: pointer;
+      border: none;
+    }
+    .btn-primary {
+      background: var(--accent-solid);
+      color: #ffffff;
+    }
+    .btn-secondary {
+      background: transparent;
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+    @media (max-width: 480px) {
+      .actions { flex-direction: column; width: 100%; }
+      .btn { width: 100%; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      body { transition: none; }
+    }
+  </style>
+
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <script src="/js/sw-register.js" defer></script>
+    
+</head>
+<body>
+  <button type="button" class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">🌙 Dark</button>
+
+  <img class="logo" src="/assets/apple-touch-icon.png" alt="PDFMaster logo" width="64" height="64">
+
+  <h1>You're offline</h1>
+  <p>Check your internet connection and try again.</p>
+
+  <div class="hint">
+    PDFMaster tools run entirely in your browser. If you've already opened a tool
+    on this device before, it may still work from a cached tab even without a
+    connection - your files are never sent to a server either way.
+  </div>
+
+  <div class="actions">
+    <button type="button" class="btn btn-primary" id="retryBtn">Try Again</button>
+    <a class="btn btn-secondary" href="/">Back to Homepage</a>
+  </div>
+
+  <script>
+    (function () {
+      var root = document.documentElement;
+      var toggle = document.getElementById('themeToggle');
+      var STORAGE_KEY = 'pdfmaster-theme';
+
+      function getStored() {
+        try { return window.localStorage.getItem(STORAGE_KEY); } catch (e) { return null; }
+      }
+      function setStored(value) {
+        try { window.localStorage.setItem(STORAGE_KEY, value); } catch (e) { /* ignore */ }
+      }
+
+      var prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+      var initial = getStored() || (prefersDark ? 'dark' : 'light');
+      applyTheme(initial);
+
+      function applyTheme(theme) {
+        root.setAttribute('data-theme', theme);
+        toggle.textContent = theme === 'dark' ? '☀️ Light' : '🌙 Dark';
+      }
+
+      toggle.addEventListener('click', function () {
+        var next = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+        applyTheme(next);
+        setStored(next);
+      });
+
+      document.getElementById('retryBtn').addEventListener('click', function () {
+        window.location.reload();
+      });
+    })();
+  </script>
+</body>
+</html>
