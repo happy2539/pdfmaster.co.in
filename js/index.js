@@ -49,36 +49,6 @@ document.querySelectorAll('a[href^="#"]').forEach((a) => {
   });
 });
 
-// ── Scroll Reveal ──────────────────────────────────
-const ro = new IntersectionObserver(
-  (es) => {
-    es.forEach((e) => {
-      if (e.isIntersecting) {
-        e.target.classList.add("in");
-        ro.unobserve(e.target);
-      }
-    });
-  },
-  { threshold: 0.1, rootMargin: "0px 0px -36px 0px" },
-);
-document.querySelectorAll(".rv").forEach((el) => ro.observe(el));
-
-// Tool cards stagger
-const co = new IntersectionObserver(
-  (es) => {
-    es.forEach((e) => {
-      if (e.isIntersecting) {
-        e.target.style.opacity = "1";
-        e.target.style.transform = "translateY(0)";
-      }
-    });
-  },
-  { threshold: 0.06 },
-);
-document.querySelectorAll(".tcard").forEach((c, i) => {
-  c.style.cssText += `opacity:0;transform:translateY(22px);transition:opacity .5s ease ${i * 0.04}s, transform .5s ease ${i * 0.04}s, box-shadow .25s, border-color .25s;`;
-  co.observe(c);
-});
 
 // ── Back to top ────────────────────────────────────
 const b2t = document.getElementById("b2t");

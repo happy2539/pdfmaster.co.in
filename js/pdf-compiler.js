@@ -32,11 +32,48 @@ btn.addEventListener("click", () => {
   applyTheme(next);
 });
 /* ═══════════════════════════════════════════════════
+   HAMBURGER MENU & OPTIONS TOGGLE
+═══════════════════════════════════════════════════ */
+const hamburgerBtn = document.getElementById("hamburgerBtn");
+const navDropdown = document.getElementById("navDropdown");
+const navOverlay = document.getElementById("navOverlay");
+if (hamburgerBtn && navDropdown && navOverlay) {
+  const openMenu = () => {
+    hamburgerBtn.classList.add("open");
+    navDropdown.classList.add("open");
+    navOverlay.classList.add("active");
+    hamburgerBtn.setAttribute("aria-expanded", "true");
+  };
+  const closeMenu = () => {
+    hamburgerBtn.classList.remove("open");
+    navDropdown.classList.remove("open");
+    navOverlay.classList.remove("active");
+    hamburgerBtn.setAttribute("aria-expanded", "false");
+  };
+  hamburgerBtn.addEventListener("click", () =>
+    hamburgerBtn.classList.contains("open") ? closeMenu() : openMenu(),
+  );
+  navOverlay.addEventListener("click", closeMenu);
+  navDropdown
+    .querySelectorAll("a")
+    .forEach((a) => a.addEventListener("click", closeMenu));
+}
+
+const optionsToggleBtn = document.getElementById("optionsToggleBtn");
+const optionsSection = document.getElementById("optionsSection");
+if (optionsToggleBtn && optionsSection) {
+  optionsToggleBtn.addEventListener("click", () => {
+    optionsSection.classList.toggle("open");
+  });
+}
+
+/* ═══════════════════════════════════════════════════
    MINI TOGGLES
 ═══════════════════════════════════════════════════ */
 document.querySelectorAll(".mini-toggle").forEach((btn) => {
   btn.addEventListener("click", () => btn.classList.toggle("on"));
 });
+
 
 /* ═══════════════════════════════════════════════════
    TOAST NOTIFICATIONS

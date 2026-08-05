@@ -1002,18 +1002,6 @@ footer {
   text-shadow: 0 4px 16px rgba(230, 57, 70, 0.22);
 }
 
-/* ── Reveal ── */
-.rv {
-  opacity: 0;
-  transform: translateY(22px);
-  transition:
-    opacity 0.6s ease,
-    transform 0.6s ease;
-}
-.rv.in {
-  opacity: 1;
-  transform: translateY(0);
-}
 
 /* ── Animations ── */
 @keyframes fadeDown {

@@ -686,18 +686,6 @@ header {
   font-size: 0.9rem;
 }
 
-/* ════════ SCROLL REVEAL ════════ */
-.rv {
-  opacity: 0;
-  transform: translateY(20px);
-  transition:
-    opacity 0.55s ease,
-    transform 0.55s ease;
-}
-.rv.in {
-  opacity: 1;
-  transform: translateY(0);
-}
 
 /* ════════ CTA ════════ */
 .cta-sec {

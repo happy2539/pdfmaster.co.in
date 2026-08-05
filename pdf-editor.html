@@ -210,6 +210,7 @@
 
     <link rel="stylesheet" href="/css/pdf-editor.css" />
 
+    <meta name="mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="default" />
     <script src="/js/sw-register.js" defer></script>
@@ -1020,8 +1021,134 @@
                       <path d="M6 2v14a2 2 0 0 0 2 2h14" />
                       <path d="M18 22V8a2 2 0 0 0-2-2H2" />
                     </svg>
-                    Crop
+                    Crop Image
                   </button>
+                </div>
+                <div class="opt-group hidden" id="opt-rotation">
+                  <label>Rotate</label>
+                  <div style="display: flex; align-items: center; gap: 6px">
+                    <button
+                      type="button"
+                      id="rotate-ccw-btn"
+                      title="Rotate 90° Counter-Clockwise"
+                      style="
+                        width: 32px;
+                        height: 32px;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        border-radius: var(--radius-s);
+                        border: 1px solid var(--border);
+                        background: var(--surface);
+                        color: var(--text);
+                        cursor: pointer;
+                        transition: all 0.15s ease;
+                      "
+                    >
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 15px; height: 15px">
+                        <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/>
+                        <path d="M3 3v5h5"/>
+                      </svg>
+                    </button>
+                    <button
+                      type="button"
+                      id="rotate-cw-btn"
+                      title="Rotate 90° Clockwise"
+                      style="
+                        width: 32px;
+                        height: 32px;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        border-radius: var(--radius-s);
+                        border: 1px solid var(--border);
+                        background: var(--surface);
+                        color: var(--text);
+                        cursor: pointer;
+                        transition: all 0.15s ease;
+                      "
+                    >
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 15px; height: 15px">
+                        <path d="M21 12a9 9 0 1 1-9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/>
+                        <path d="M21 3v5h-5"/>
+                      </svg>
+                    </button>
+                    <input
+                      type="number"
+                      id="rotation-val"
+                      min="-360"
+                      max="360"
+                      value="0"
+                      style="
+                        width: 64px;
+                        padding: 4px 6px;
+                        border-radius: var(--radius-s);
+                        border: 1px solid var(--border);
+                        background: var(--surface);
+                        color: var(--text);
+                        font-family: var(--font-body);
+                        font-weight: 600;
+                      "
+                    />
+                    <span style="font-size: 0.72rem; color: var(--text-faint); font-weight: 700;">°</span>
+                  </div>
+                </div>
+                <div class="opt-group hidden" id="opt-layer">
+                  <label>Layer Order</label>
+                  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px">
+                    <button
+                      type="button"
+                      id="layer-to-front-btn"
+                      class="layer-btn"
+                      title="Bring to Front (Ctrl+Shift+])"
+                      aria-label="Bring to Front"
+                    >
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 14px; height: 14px; flex-shrink: 0">
+                        <path d="m17 11-5-5-5 5"/>
+                        <path d="m17 17-5-5-5 5"/>
+                        <line x1="5" y1="4" x2="19" y2="4"/>
+                      </svg>
+                      To Front
+                    </button>
+                    <button
+                      type="button"
+                      id="layer-forward-btn"
+                      class="layer-btn"
+                      title="Bring Forward (Ctrl+])"
+                      aria-label="Bring Forward"
+                    >
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 14px; height: 14px; flex-shrink: 0">
+                        <path d="m18 15-6-6-6 6"/>
+                      </svg>
+                      Forward
+                    </button>
+                    <button
+                      type="button"
+                      id="layer-backward-btn"
+                      class="layer-btn"
+                      title="Send Backward (Ctrl+[)"
+                      aria-label="Send Backward"
+                    >
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 14px; height: 14px; flex-shrink: 0">
+                        <path d="m6 9 6 6 6-6"/>
+                      </svg>
+                      Backward
+                    </button>
+                    <button
+                      type="button"
+                      id="layer-to-back-btn"
+                      class="layer-btn"
+                      title="Send to Back (Ctrl+Shift+[)"
+                      aria-label="Send to Back"
+                    >
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 14px; height: 14px; flex-shrink: 0">
+                        <path d="m7 13 5 5 5-5"/>
+                        <path d="m7 7 5 5 5-5"/>
+                        <line x1="5" y1="20" x2="19" y2="20"/>
+                      </svg>
+                      To Back
+                    </button>
+                  </div>
                 </div>
               </div>
 
@@ -2308,6 +2435,36 @@
       </svg>
     </button>
     <div class="toast" id="toast"></div>
+
+    <!-- Context Menu for Canvas Elements -->
+    <div id="editor-context-menu" class="editor-context-menu hidden">
+      <button type="button" class="ctx-item" id="ctx-to-front">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m17 11-5-5-5 5"/><path d="m17 17-5-5-5 5"/><line x1="5" y1="4" x2="19" y2="4"/></svg>
+        Bring to Front
+        <span class="ctx-shortcut">Ctrl+Shift+]</span>
+      </button>
+      <button type="button" class="ctx-item" id="ctx-forward">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m18 15-6-6-6 6"/></svg>
+        Bring Forward
+        <span class="ctx-shortcut">Ctrl+]</span>
+      </button>
+      <button type="button" class="ctx-item" id="ctx-backward">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+        Send Backward
+        <span class="ctx-shortcut">Ctrl+[</span>
+      </button>
+      <button type="button" class="ctx-item" id="ctx-to-back">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m7 13 5 5 5-5"/><path d="m7 7 5 5 5-5"/><line x1="5" y1="20" x2="19" y2="20"/></svg>
+        Send to Back
+        <span class="ctx-shortcut">Ctrl+Shift+[</span>
+      </button>
+      <div class="ctx-divider"></div>
+      <button type="button" class="ctx-item ctx-danger" id="ctx-delete">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+        Delete
+        <span class="ctx-shortcut">Del</span>
+      </button>
+    </div>
 
     <script>
       (function () {

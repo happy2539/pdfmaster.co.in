@@ -28,7 +28,9 @@
   var isPointerDown = false,
     dragMode = null,
     dragOrigin = null,
-    dragStartPoint = null;
+    dragStartPoint = null,
+    dragCenter = null,
+    dragStartAngle = 0;
   var livePath = null,
     liveShape = null,
     pendingPlaceable = null;
@@ -382,6 +384,36 @@
         return { x: 0, y: 0, w: 0, h: 0 };
     }
   }
+  function getCenter(ann) {
+    if (ann.type === "ellipse") {
+      return { x: ann.cx, y: ann.cy };
+    }
+    if (ann.type === "line" || ann.type === "arrow") {
+      return { x: (ann.x1 + ann.x2) / 2, y: (ann.y1 + ann.y2) / 2 };
+    }
+    var b = getBounds(ann);
+    return { x: b.x + b.w / 2, y: b.y + b.h / 2 };
+  }
+  function unrotatePoint(pt, center, angleDeg) {
+    if (!angleDeg) return pt;
+    var rad = (-angleDeg * Math.PI) / 180;
+    var dx = pt.x - center.x;
+    var dy = pt.y - center.y;
+    var unrotX = center.x + (dx * Math.cos(rad) - dy * Math.sin(rad));
+    var unrotY = center.y + (dx * Math.sin(rad) + dy * Math.cos(rad));
+
+    var dcx = pt.cx - center.x * currentScale;
+    var dcy = pt.cy - center.y * currentScale;
+    var unrotCx = center.x * currentScale + (dcx * Math.cos(rad) - dcy * Math.sin(rad));
+    var unrotCy = center.y * currentScale + (dcx * Math.sin(rad) + dcy * Math.cos(rad));
+
+    return {
+      x: unrotX,
+      y: unrotY,
+      cx: unrotCx,
+      cy: unrotCy
+    };
+  }
   function distToSegment(p, a, b) {
     var l2 = Math.pow(b.x - a.x, 2) + Math.pow(b.y - a.y, 2);
     if (l2 === 0) {
@@ -403,10 +435,13 @@
     var tol = 6 / currentScale;
     for (var i = list.length - 1; i >= 0; i--) {
       var ann = list[i];
+      var center = getCenter(ann);
+      var upt = unrotatePoint(pt, center, ann.rotation || 0);
+
       if (ann.type === "line" || ann.type === "arrow") {
         if (
           distToSegment(
-            pt,
+            upt,
             { x: ann.x1, y: ann.y1 },
             { x: ann.x2, y: ann.y2 },
           ) <= Math.max(tol, ann.strokeWidth)
@@ -419,7 +454,7 @@
         var hit = false;
         for (var k = 0; k < ann.points.length - 1; k++) {
           if (
-            distToSegment(pt, ann.points[k], ann.points[k + 1]) <=
+            distToSegment(upt, ann.points[k], ann.points[k + 1]) <=
             Math.max(tol, ann.strokeWidth)
           ) {
             hit = true;
@@ -433,10 +468,10 @@
       }
       var b = getBounds(ann);
       if (
-        pt.x >= b.x - tol &&
-        pt.x <= b.x + b.w + tol &&
-        pt.y >= b.y - tol &&
-        pt.y <= b.y + b.h + tol
+        upt.x >= b.x - tol &&
+        upt.x <= b.x + b.w + tol &&
+        upt.y >= b.y - tol &&
+        upt.y <= b.y + b.h + tol
       ) {
         return ann;
       }
@@ -451,11 +486,13 @@
       h = b.h * scale;
     var deleteBtn = { x: x + w + 8, y: y - 8, r: 11 };
     var cropBtn = (ann.type === "image") ? { x: x - 8, y: y - 8, r: 11 } : null;
+    var rotateBtn = { x: x + w / 2, y: y - 26, r: 10 };
 
     return {
       box: { x: x, y: y, w: w, h: h },
       deleteBtn: deleteBtn,
       cropBtn: cropBtn,
+      rotateBtn: rotateBtn,
       // Corners
       tl: { x: x, y: y, size: 8 },
       tr: { x: x + w, y: y, size: 8 },
@@ -497,6 +534,13 @@
   }
   function drawAnnotation(ctx, ann, scale) {
     ctx.save();
+    var rot = ann.rotation || 0;
+    if (rot !== 0) {
+      var center = getCenter(ann);
+      ctx.translate(center.x * scale, center.y * scale);
+      ctx.rotate((rot * Math.PI) / 180);
+      ctx.translate(-center.x * scale, -center.y * scale);
+    }
     switch (ann.type) {
       case "text": {
         if (ann.isEditing) break;
@@ -612,11 +656,57 @@
     var handles = getSelectionHandles(ann, scale);
     var b = handles.box;
     ctx.save();
+    var rot = ann.rotation || 0;
+    if (rot !== 0) {
+      var center = getCenter(ann);
+      ctx.translate(center.x * scale, center.y * scale);
+      ctx.rotate((rot * Math.PI) / 180);
+      ctx.translate(-center.x * scale, -center.y * scale);
+    }
     ctx.strokeStyle = "#e8372a";
     ctx.setLineDash([5, 4]);
     ctx.lineWidth = 1.5;
     ctx.strokeRect(b.x - 4, b.y - 4, b.w + 8, b.h + 8);
     ctx.setLineDash([]);
+
+    // Stalk line to rotate handle
+    ctx.beginPath();
+    ctx.moveTo(b.x + b.w / 2, b.y - 4);
+    ctx.lineTo(handles.rotateBtn.x, handles.rotateBtn.y + handles.rotateBtn.r);
+    ctx.strokeStyle = "#10b981";
+    ctx.lineWidth = 1.5;
+    ctx.stroke();
+
+    // Rotate handle circle
+    ctx.beginPath();
+    ctx.arc(
+      handles.rotateBtn.x,
+      handles.rotateBtn.y,
+      handles.rotateBtn.r,
+      0,
+      Math.PI * 2
+    );
+    ctx.fillStyle = "#10b981";
+    ctx.fill();
+    ctx.strokeStyle = "#fff";
+    ctx.lineWidth = 1.6;
+    ctx.stroke();
+
+    // Rotate icon inside circle
+    ctx.beginPath();
+    ctx.arc(handles.rotateBtn.x, handles.rotateBtn.y, 4.5, 0.2 * Math.PI, 1.5 * Math.PI);
+    ctx.strokeStyle = "#fff";
+    ctx.lineWidth = 1.5;
+    ctx.stroke();
+    var ahX = handles.rotateBtn.x + 4.5 * Math.cos(1.5 * Math.PI);
+    var ahY = handles.rotateBtn.y + 4.5 * Math.sin(1.5 * Math.PI);
+    ctx.beginPath();
+    ctx.moveTo(ahX - 3, ahY - 1);
+    ctx.lineTo(ahX, ahY);
+    ctx.lineTo(ahX - 1, ahY + 3);
+    ctx.stroke();
+
+    // Delete button
     ctx.beginPath();
     ctx.arc(
       handles.deleteBtn.x,
@@ -636,7 +726,7 @@
     ctx.lineTo(handles.deleteBtn.x - 4, handles.deleteBtn.y + 4);
     ctx.stroke();
 
-    // Draw crop button handle if available
+    // Crop button handle if available
     if (handles.cropBtn) {
       ctx.beginPath();
       ctx.arc(
@@ -646,12 +736,11 @@
         0,
         Math.PI * 2,
       );
-      ctx.fillStyle = "#2563eb"; // Sleek accent blue color for crop
+      ctx.fillStyle = "#2563eb";
       ctx.fill();
       ctx.strokeStyle = "#fff";
       ctx.lineWidth = 1.6;
       ctx.beginPath();
-      // Draw a tiny crop icon
       var cx = handles.cropBtn.x;
       var cy = handles.cropBtn.y;
       ctx.moveTo(cx - 4, cy - 1);
@@ -712,6 +801,111 @@
   }
 
   /* ---------- annotation mutation + undo/redo ---------- */
+  function getAnnotationIndex(page, id) {
+    var list = annotationsByPage[page] || [];
+    for (var i = 0; i < list.length; i++) {
+      if (list[i].id === id) return i;
+    }
+    return -1;
+  }
+
+  /* ---------- layer ordering ---------- */
+  function bringToFront() {
+    if (!selectedAnnotation || selectedAnnotation.page !== currentPage) return;
+    var list = annotationsByPage[currentPage] || [];
+    var idx = getAnnotationIndex(currentPage, selectedAnnotation.id);
+    if (idx === -1 || idx === list.length - 1) return;
+
+    pushHistory();
+    var ann = list.splice(idx, 1)[0];
+    list.push(ann);
+    redrawAnnotations();
+    updateToolOptionsPanel("select");
+  }
+
+  function bringForward() {
+    if (!selectedAnnotation || selectedAnnotation.page !== currentPage) return;
+    var list = annotationsByPage[currentPage] || [];
+    var idx = getAnnotationIndex(currentPage, selectedAnnotation.id);
+    if (idx === -1 || idx === list.length - 1) return;
+
+    pushHistory();
+    var temp = list[idx];
+    list[idx] = list[idx + 1];
+    list[idx + 1] = temp;
+    redrawAnnotations();
+    updateToolOptionsPanel("select");
+  }
+
+  function sendBackward() {
+    if (!selectedAnnotation || selectedAnnotation.page !== currentPage) return;
+    var list = annotationsByPage[currentPage] || [];
+    var idx = getAnnotationIndex(currentPage, selectedAnnotation.id);
+    if (idx === -1 || idx <= 0) return;
+
+    pushHistory();
+    var temp = list[idx];
+    list[idx] = list[idx - 1];
+    list[idx - 1] = temp;
+    redrawAnnotations();
+    updateToolOptionsPanel("select");
+  }
+
+  function sendToBack() {
+    if (!selectedAnnotation || selectedAnnotation.page !== currentPage) return;
+    var list = annotationsByPage[currentPage] || [];
+    var idx = getAnnotationIndex(currentPage, selectedAnnotation.id);
+    if (idx === -1 || idx <= 0) return;
+
+    pushHistory();
+    var ann = list.splice(idx, 1)[0];
+    list.unshift(ann);
+    redrawAnnotations();
+    updateToolOptionsPanel("select");
+  }
+
+  /* ---------- context menu ---------- */
+  function hideContextMenu() {
+    var ctxMenu = document.getElementById("editor-context-menu");
+    if (ctxMenu) {
+      ctxMenu.classList.add("hidden");
+    }
+  }
+
+  function showContextMenu(x, y) {
+    var ctxMenu = document.getElementById("editor-context-menu");
+    if (!ctxMenu || !selectedAnnotation) return;
+    var ann = findAnnotation(currentPage, selectedAnnotation.id);
+    if (!ann) return;
+
+    var list = annotationsByPage[currentPage] || [];
+    var idx = getAnnotationIndex(currentPage, selectedAnnotation.id);
+    var isAtFront = idx === -1 || idx === list.length - 1;
+    var isAtBack = idx === -1 || idx === 0;
+
+    var ctxToFront = document.getElementById("ctx-to-front");
+    var ctxForward = document.getElementById("ctx-forward");
+    var ctxBackward = document.getElementById("ctx-backward");
+    var ctxToBack = document.getElementById("ctx-to-back");
+
+    if (ctxToFront) ctxToFront.disabled = isAtFront;
+    if (ctxForward) ctxForward.disabled = isAtFront;
+    if (ctxBackward) ctxBackward.disabled = isAtBack;
+    if (ctxToBack) ctxToBack.disabled = isAtBack;
+
+    ctxMenu.style.left = x + "px";
+    ctxMenu.style.top = y + "px";
+    ctxMenu.classList.remove("hidden");
+
+    var rect = ctxMenu.getBoundingClientRect();
+    if (rect.right > window.innerWidth - 10) {
+      ctxMenu.style.left = Math.max(10, x - rect.width) + "px";
+    }
+    if (rect.bottom > window.innerHeight - 10) {
+      ctxMenu.style.top = Math.max(10, y - rect.height) + "px";
+    }
+  }
+
   function pushHistory() {
     history.push(JSON.parse(JSON.stringify(annotationsByPage)));
     if (history.length > 40) {
@@ -728,6 +922,7 @@
     annotationsByPage[page].push(ann);
   }
   function deleteAnnotation(page, id) {
+    hideContextMenu();
     pushHistory();
     annotationsByPage[page] = (annotationsByPage[page] || []).filter(
       function (a) {
@@ -970,48 +1165,55 @@
     if (selectedAnnotation && selectedAnnotation.page === currentPage) {
       var ann = findAnnotation(currentPage, selectedAnnotation.id);
       if (ann) {
+        var center = getCenter(ann);
+        var upt = unrotatePoint(pt, center, ann.rotation || 0);
         var handles = getSelectionHandles(ann, currentScale);
         
-        if (Math.hypot(pt.cx - handles.deleteBtn.x, pt.cy - handles.deleteBtn.y) <= handles.deleteBtn.r + 4) {
+        if (Math.hypot(upt.cx - handles.deleteBtn.x, upt.cy - handles.deleteBtn.y) <= handles.deleteBtn.r + 4) {
           canvas.style.cursor = "pointer";
           return;
         }
         
-        if (handles.cropBtn && Math.hypot(pt.cx - handles.cropBtn.x, pt.cy - handles.cropBtn.y) <= handles.cropBtn.r + 4) {
+        if (handles.cropBtn && Math.hypot(upt.cx - handles.cropBtn.x, upt.cy - handles.cropBtn.y) <= handles.cropBtn.r + 4) {
           canvas.style.cursor = "pointer";
           return;
         }
 
-        if (Math.hypot(pt.cx - handles.tl.x, pt.cy - handles.tl.y) <= handles.tl.size + 4) {
+        if (handles.rotateBtn && Math.hypot(upt.cx - handles.rotateBtn.x, upt.cy - handles.rotateBtn.y) <= handles.rotateBtn.r + 4) {
+          canvas.style.cursor = "grab";
+          return;
+        }
+
+        if (Math.hypot(upt.cx - handles.tl.x, upt.cy - handles.tl.y) <= handles.tl.size + 4) {
           canvas.style.cursor = "nwse-resize";
           return;
         }
-        if (Math.hypot(pt.cx - handles.br.x, pt.cy - handles.br.y) <= handles.br.size + 4) {
+        if (Math.hypot(upt.cx - handles.br.x, upt.cy - handles.br.y) <= handles.br.size + 4) {
           canvas.style.cursor = "nwse-resize";
           return;
         }
-        if (Math.hypot(pt.cx - handles.tr.x, pt.cy - handles.tr.y) <= handles.tr.size + 4) {
+        if (Math.hypot(upt.cx - handles.tr.x, upt.cy - handles.tr.y) <= handles.tr.size + 4) {
           canvas.style.cursor = "nesw-resize";
           return;
         }
-        if (Math.hypot(pt.cx - handles.bl.x, pt.cy - handles.bl.y) <= handles.bl.size + 4) {
+        if (Math.hypot(upt.cx - handles.bl.x, upt.cy - handles.bl.y) <= handles.bl.size + 4) {
           canvas.style.cursor = "nesw-resize";
           return;
         }
 
-        if (Math.hypot(pt.cx - handles.t.x, pt.cy - handles.t.y) <= handles.t.size + 4) {
+        if (Math.hypot(upt.cx - handles.t.x, upt.cy - handles.t.y) <= handles.t.size + 4) {
           canvas.style.cursor = "ns-resize";
           return;
         }
-        if (Math.hypot(pt.cx - handles.b.x, pt.cy - handles.b.y) <= handles.b.size + 4) {
+        if (Math.hypot(upt.cx - handles.b.x, upt.cy - handles.b.y) <= handles.b.size + 4) {
           canvas.style.cursor = "ns-resize";
           return;
         }
-        if (Math.hypot(pt.cx - handles.l.x, pt.cy - handles.l.y) <= handles.l.size + 4) {
+        if (Math.hypot(upt.cx - handles.l.x, upt.cy - handles.l.y) <= handles.l.size + 4) {
           canvas.style.cursor = "ew-resize";
           return;
         }
-        if (Math.hypot(pt.cx - handles.r.x, pt.cy - handles.r.y) <= handles.r.size + 4) {
+        if (Math.hypot(upt.cx - handles.r.x, upt.cy - handles.r.y) <= handles.r.size + 4) {
           canvas.style.cursor = "ew-resize";
           return;
         }
@@ -1019,10 +1221,10 @@
         var b = getBounds(ann);
         var tol = 6 / currentScale;
         if (
-          pt.x >= b.x - tol &&
-          pt.x <= b.x + b.w + tol &&
-          pt.y >= b.y - tol &&
-          pt.y <= b.y + b.h + tol
+          upt.x >= b.x - tol &&
+          upt.x <= b.x + b.w + tol &&
+          upt.y >= b.y - tol &&
+          upt.y <= b.y + b.h + tol
         ) {
           canvas.style.cursor = "move";
           return;
@@ -1079,7 +1281,7 @@
 
   /* ---------- shape helpers ---------- */
   function shapeFromDrag(tool, start, end) {
-    var base = { color: currentColor, strokeWidth: currentStrokeWidth };
+    var base = { color: currentColor, strokeWidth: currentStrokeWidth, rotation: 0 };
     if (tool === "rect") {
       return Object.assign(base, {
         type: "rect",
@@ -1107,159 +1309,15 @@
     });
   }
 
-  /* ---------- tool switching ---------- */
-  function updateToolOptionsPanel(tool) {
-    var panel = document.getElementById("tool-options");
-    var showColor = false;
-    var showWidth = false;
-    var showFont = false;
-    var showCrop = false;
 
-    if (tool === "select") {
-      if (selectedAnnotation && selectedAnnotation.page === currentPage) {
-        var ann = findAnnotation(currentPage, selectedAnnotation.id);
-        if (ann) {
-          if (ann.type === "text") {
-            showColor = true;
-            showFont = true;
-          } else if (ann.type === "image") {
-            showCrop = true;
-          } else {
-            showColor = true;
-            showWidth = true;
-          }
-        }
-      }
-    } else {
-      showColor =
-        [
-          "text",
-          "pen",
-          "highlighter",
-          "rect",
-          "ellipse",
-          "line",
-          "arrow",
-        ].indexOf(tool) !== -1;
-      showWidth =
-        ["pen", "highlighter", "rect", "ellipse", "line", "arrow"].indexOf(
-          tool,
-        ) !== -1;
-      showFont = tool === "text";
-    }
-
-    panel.classList.toggle("is-open", showColor || showWidth || showFont || showCrop);
-    document.getElementById("opt-color").classList.toggle("hidden", !showColor);
-    document.getElementById("opt-width").classList.toggle("hidden", !showWidth);
-    document
-      .getElementById("opt-fontsize")
-      .classList.toggle("hidden", !showFont);
-
-    var formattingOpt = document.getElementById("opt-formatting");
-    if (formattingOpt) {
-      formattingOpt.classList.toggle("hidden", !showFont);
-    }
-
-    var cropOpt = document.getElementById("opt-crop");
-    if (cropOpt) {
-      cropOpt.classList.toggle("hidden", !showCrop);
-    }
-  }
-  function syncOptionInputs() {
-    document.getElementById("stroke-width").value = currentStrokeWidth;
-    document.getElementById("stroke-width-val").textContent =
-      currentStrokeWidth + "px";
-
-    var isCustom = PALETTE.indexOf(currentColor) === -1;
-    var customTrigger = document.getElementById("custom-color-trigger");
-    if (customTrigger) {
-      customTrigger.classList.toggle("is-active", isCustom);
-      if (isCustom) {
-        customTrigger.style.background = currentColor;
-      } else {
-        customTrigger.style.background =
-          "linear-gradient(135deg, #ff0000 0%, #ffff00 17%, #00ff00 33%, #00ffff 50%, #0000ff 67%, #ff00ff 83%, #ff0000 100%)";
-      }
-    }
-    var customInput = document.getElementById("custom-color-input");
-    if (customInput) {
-      customInput.value = currentColor;
-    }
-
-    document.querySelectorAll(".swatch").forEach(function (s) {
-      s.classList.toggle("is-active", s.dataset.color === currentColor);
-    });
-
-    var boldBtn = document.getElementById("format-bold");
-    if (boldBtn) {
-      boldBtn.style.background = currentIsBold ? "var(--accent)" : "var(--surface)";
-      boldBtn.style.color = currentIsBold ? "#fff" : "var(--text)";
-      boldBtn.style.borderColor = currentIsBold ? "var(--accent)" : "var(--border)";
-    }
-    var italicBtn = document.getElementById("format-italic");
-    if (italicBtn) {
-      italicBtn.style.background = currentIsItalic ? "var(--accent)" : "var(--surface)";
-      italicBtn.style.color = currentIsItalic ? "#fff" : "var(--text)";
-      italicBtn.style.borderColor = currentIsItalic ? "var(--accent)" : "var(--border)";
-    }
-    var underlineBtn = document.getElementById("format-underline");
-    if (underlineBtn) {
-      underlineBtn.style.background = currentIsUnderline ? "var(--accent)" : "var(--surface)";
-      underlineBtn.style.color = currentIsUnderline ? "#fff" : "var(--text)";
-      underlineBtn.style.borderColor = currentIsUnderline ? "var(--accent)" : "var(--border)";
-    }
-
-    if (selectedAnnotation && selectedAnnotation.page === currentPage) {
-      var ann = findAnnotation(currentPage, selectedAnnotation.id);
-      if (ann) {
-        var changed = false;
-        if (ann.color !== undefined && ann.color !== currentColor) {
-          pushHistory();
-          ann.color = currentColor;
-          changed = true;
-        }
-        if (
-          ann.strokeWidth !== undefined &&
-          ann.strokeWidth !== currentStrokeWidth
-        ) {
-          if (!changed) pushHistory();
-          ann.strokeWidth = currentStrokeWidth;
-          changed = true;
-        }
-        if (ann.fontSize !== undefined && ann.fontSize !== currentFontSize) {
-          if (!changed) pushHistory();
-          ann.fontSize = currentFontSize;
-          changed = true;
-        }
-        if (ann.type === "text") {
-          if (ann.isBold !== currentIsBold) {
-            if (!changed) pushHistory();
-            ann.isBold = currentIsBold;
-            changed = true;
-          }
-          if (ann.isItalic !== currentIsItalic) {
-            if (!changed) pushHistory();
-            ann.isItalic = currentIsItalic;
-            changed = true;
-          }
-          if (ann.isUnderline !== currentIsUnderline) {
-            if (!changed) pushHistory();
-            ann.isUnderline = currentIsUnderline;
-            changed = true;
-          }
-        }
-        if (changed) {
-          redrawAnnotations();
-        }
-      }
-    }
-  }
   function setActiveTool(tool, isManual) {
     finalizeAnyOpenTextBox();
     livePath = null;
     liveShape = null;
     dragMode = null;
     dragOrigin = null;
+    dragCenter = null;
+    dragStartAngle = 0;
     if (tool !== "image" && tool !== "signature") {
       pendingPlaceable = null;
     }
@@ -1713,7 +1771,196 @@
 
     redrawAnnotations();
     closeCropModal();
-    window.showToast("Cropped successfully.");
+  }
+
+  /* ---------- tool switching ---------- */
+  function updateToolOptionsPanel(tool) {
+    var panel = document.getElementById("tool-options");
+    var showColor = false;
+    var showWidth = false;
+    var showFont = false;
+    var showCrop = false;
+    var showRotation = false;
+    var showLayer = false;
+
+    if (tool === "select") {
+      if (selectedAnnotation && selectedAnnotation.page === currentPage) {
+        var ann = findAnnotation(currentPage, selectedAnnotation.id);
+        if (ann) {
+          showRotation = true;
+          showLayer = true;
+          if (ann.type === "text") {
+            showColor = true;
+            showFont = true;
+          } else if (ann.type === "image") {
+            showCrop = true;
+          } else {
+            showColor = true;
+            showWidth = true;
+          }
+        }
+      }
+    } else {
+      showColor =
+        [
+          "text",
+          "pen",
+          "highlighter",
+          "rect",
+          "ellipse",
+          "line",
+          "arrow",
+        ].indexOf(tool) !== -1;
+      showWidth =
+        ["pen", "highlighter", "rect", "ellipse", "line", "arrow"].indexOf(
+          tool,
+        ) !== -1;
+      showFont = tool === "text";
+    }
+
+    panel.classList.toggle("is-open", showColor || showWidth || showFont || showCrop || showRotation || showLayer);
+    document.getElementById("opt-color").classList.toggle("hidden", !showColor);
+    document.getElementById("opt-width").classList.toggle("hidden", !showWidth);
+    document
+      .getElementById("opt-fontsize")
+      .classList.toggle("hidden", !showFont);
+
+    var formattingOpt = document.getElementById("opt-formatting");
+    if (formattingOpt) {
+      formattingOpt.classList.toggle("hidden", !showFont);
+    }
+
+    var cropOpt = document.getElementById("opt-crop");
+    if (cropOpt) {
+      cropOpt.classList.toggle("hidden", !showCrop);
+    }
+
+    var rotationOpt = document.getElementById("opt-rotation");
+    if (rotationOpt) {
+      rotationOpt.classList.toggle("hidden", !showRotation);
+      if (showRotation && selectedAnnotation) {
+        var selAnn = findAnnotation(currentPage, selectedAnnotation.id);
+        if (selAnn) {
+          var rotInput = document.getElementById("rotation-val");
+          if (rotInput) rotInput.value = Math.round(selAnn.rotation || 0);
+        }
+      }
+    }
+
+    var layerOpt = document.getElementById("opt-layer");
+    if (layerOpt) {
+      layerOpt.classList.toggle("hidden", !showLayer);
+      if (showLayer && selectedAnnotation) {
+        var list = annotationsByPage[currentPage] || [];
+        var idx = getAnnotationIndex(currentPage, selectedAnnotation.id);
+        var isAtFront = idx === -1 || idx === list.length - 1;
+        var isAtBack = idx === -1 || idx === 0;
+
+        var toFrontBtn = document.getElementById("layer-to-front-btn");
+        var fwdBtn = document.getElementById("layer-forward-btn");
+        var bwdBtn = document.getElementById("layer-backward-btn");
+        var toBackBtn = document.getElementById("layer-to-back-btn");
+
+        if (toFrontBtn) toFrontBtn.disabled = isAtFront;
+        if (fwdBtn) fwdBtn.disabled = isAtFront;
+        if (bwdBtn) bwdBtn.disabled = isAtBack;
+        if (toBackBtn) toBackBtn.disabled = isAtBack;
+      }
+    }
+  }
+  function syncOptionInputs() {
+    document.getElementById("stroke-width").value = currentStrokeWidth;
+    document.getElementById("stroke-width-val").textContent =
+      currentStrokeWidth + "px";
+
+    var fsInput = document.getElementById("font-size");
+    if (fsInput) {
+      fsInput.value = currentFontSize;
+    }
+
+    var isCustom = PALETTE.indexOf(currentColor) === -1;
+    var customTrigger = document.getElementById("custom-color-trigger");
+    if (customTrigger) {
+      customTrigger.classList.toggle("is-active", isCustom);
+      if (isCustom) {
+        customTrigger.style.background = currentColor;
+      } else {
+        customTrigger.style.background =
+          "linear-gradient(135deg, #ff0000 0%, #ffff00 17%, #00ff00 33%, #00ffff 50%, #0000ff 67%, #ff00ff 83%, #ff0000 100%)";
+      }
+    }
+    var customInput = document.getElementById("custom-color-input");
+    if (customInput) {
+      customInput.value = currentColor;
+    }
+
+    document.querySelectorAll(".swatch").forEach(function (s) {
+      s.classList.toggle("is-active", s.dataset.color === currentColor);
+    });
+
+    var boldBtn = document.getElementById("format-bold");
+    if (boldBtn) {
+      boldBtn.style.background = currentIsBold ? "var(--accent)" : "var(--surface)";
+      boldBtn.style.color = currentIsBold ? "#fff" : "var(--text)";
+      boldBtn.style.borderColor = currentIsBold ? "var(--accent)" : "var(--border)";
+    }
+    var italicBtn = document.getElementById("format-italic");
+    if (italicBtn) {
+      italicBtn.style.background = currentIsItalic ? "var(--accent)" : "var(--surface)";
+      italicBtn.style.color = currentIsItalic ? "#fff" : "var(--text)";
+      italicBtn.style.borderColor = currentIsItalic ? "var(--accent)" : "var(--border)";
+    }
+    var underlineBtn = document.getElementById("format-underline");
+    if (underlineBtn) {
+      underlineBtn.style.background = currentIsUnderline ? "var(--accent)" : "var(--surface)";
+      underlineBtn.style.color = currentIsUnderline ? "#fff" : "var(--text)";
+      underlineBtn.style.borderColor = currentIsUnderline ? "var(--accent)" : "var(--border)";
+    }
+
+    if (selectedAnnotation && selectedAnnotation.page === currentPage) {
+      var ann = findAnnotation(currentPage, selectedAnnotation.id);
+      if (ann) {
+        var changed = false;
+        if (ann.color !== undefined && ann.color !== currentColor) {
+          pushHistory();
+          ann.color = currentColor;
+          changed = true;
+        }
+        if (
+          ann.strokeWidth !== undefined &&
+          ann.strokeWidth !== currentStrokeWidth
+        ) {
+          if (!changed) pushHistory();
+          ann.strokeWidth = currentStrokeWidth;
+          changed = true;
+        }
+        if (ann.fontSize !== undefined && ann.fontSize !== currentFontSize) {
+          if (!changed) pushHistory();
+          ann.fontSize = currentFontSize;
+          changed = true;
+        }
+        if (ann.type === "text") {
+          if (ann.isBold !== currentIsBold) {
+            if (!changed) pushHistory();
+            ann.isBold = currentIsBold;
+            changed = true;
+          }
+          if (ann.isItalic !== currentIsItalic) {
+            if (!changed) pushHistory();
+            ann.isItalic = currentIsItalic;
+            changed = true;
+          }
+          if (ann.isUnderline !== currentIsUnderline) {
+            if (!changed) pushHistory();
+            ann.isUnderline = currentIsUnderline;
+            changed = true;
+          }
+        }
+        if (changed) {
+          redrawAnnotations();
+        }
+      }
+    }
   }
 
   /* ---------- pointer interaction on the page ---------- */
@@ -1724,6 +1971,7 @@
       cy = evt.clientY - rect.top;
     return { x: cx / currentScale, y: cy / currentScale, cx: cx, cy: cy };
   }
+
   function onPointerDown(e) {
     if (!pdfDoc) {
       return;
@@ -1739,11 +1987,14 @@
       if (selectedAnnotation && selectedAnnotation.page === currentPage) {
         var ann = findAnnotation(currentPage, selectedAnnotation.id);
         if (ann) {
+          var center = getCenter(ann);
+          var upt = unrotatePoint(pt, center, ann.rotation || 0);
           var handles = getSelectionHandles(ann, currentScale);
           var isTouch = e.pointerType === "touch";
+
           var dDist = Math.hypot(
-            pt.cx - handles.deleteBtn.x,
-            pt.cy - handles.deleteBtn.y,
+            upt.cx - handles.deleteBtn.x,
+            upt.cy - handles.deleteBtn.y,
           );
           if (dDist <= handles.deleteBtn.r + (isTouch ? 12 : 4)) {
             deleteAnnotation(currentPage, ann.id);
@@ -1752,8 +2003,8 @@
           }
           if (handles.cropBtn) {
             var cDist = Math.hypot(
-              pt.cx - handles.cropBtn.x,
-              pt.cy - handles.cropBtn.y,
+              upt.cx - handles.cropBtn.x,
+              upt.cy - handles.cropBtn.y,
             );
             if (cDist <= handles.cropBtn.r + (isTouch ? 12 : 4)) {
               openCropModal(ann);
@@ -1761,13 +2012,29 @@
               return;
             }
           }
-          // Corner Resizers Click Detection (with touch adaptation)
+          if (handles.rotateBtn) {
+            var rDist = Math.hypot(
+              upt.cx - handles.rotateBtn.x,
+              upt.cy - handles.rotateBtn.y,
+            );
+            if (rDist <= handles.rotateBtn.r + (isTouch ? 12 : 4)) {
+              dragMode = "rotate";
+              dragOrigin = JSON.parse(JSON.stringify(ann));
+              dragCenter = getCenter(ann);
+              var cScreenX = dragCenter.x * currentScale;
+              var cScreenY = dragCenter.y * currentScale;
+              dragStartAngle = Math.atan2(pt.cy - cScreenY, pt.cx - cScreenX);
+              return;
+            }
+          }
+
+          // Corner Resizers Click Detection
           var tolerance = isTouch ? 16 : 6;
           var cornerNames = ["tl", "tr", "br", "bl"];
           for (var i = 0; i < cornerNames.length; i++) {
             var name = cornerNames[i];
             var h = handles[name];
-            var dist = Math.hypot(pt.cx - h.x, pt.cy - h.y);
+            var dist = Math.hypot(upt.cx - h.x, upt.cy - h.y);
             if (dist <= h.size + tolerance) {
               dragMode = "resize-" + name;
               dragOrigin = JSON.parse(JSON.stringify(ann));
@@ -1775,12 +2042,12 @@
               return;
             }
           }
-          // Side Resizers Click Detection (with touch adaptation)
+          // Side Resizers Click Detection
           var sideNames = ["t", "b", "l", "r"];
           for (var i = 0; i < sideNames.length; i++) {
             var name = sideNames[i];
             var h = handles[name];
-            var dist = Math.hypot(pt.cx - h.x, pt.cy - h.y);
+            var dist = Math.hypot(upt.cx - h.x, upt.cy - h.y);
             if (dist <= h.size + tolerance) {
               dragMode = "resize-" + name;
               dragOrigin = JSON.parse(JSON.stringify(ann));
@@ -1788,18 +2055,27 @@
               return;
             }
           }
-          // Allow dragging by clicking anywhere inside the selected element's bounding box
+          // Allow dragging by clicking inside the selected element's bounding box
           var b = getBounds(ann);
           var tol = 6 / currentScale;
           if (
-            pt.x >= b.x - tol &&
-            pt.x <= b.x + b.w + tol &&
-            pt.y >= b.y - tol &&
-            pt.y <= b.y + b.h + tol
+            upt.x >= b.x - tol &&
+            upt.x <= b.x + b.w + tol &&
+            upt.y >= b.y - tol &&
+            upt.y <= b.y + b.h + tol
           ) {
             dragMode = "move";
             dragOrigin = JSON.parse(JSON.stringify(ann));
             dragStartPoint = pt;
+            if (ann.fontSize !== undefined) {
+              currentFontSize = ann.fontSize;
+            }
+            if (ann.color !== undefined) {
+              currentColor = ann.color;
+            }
+            if (ann.strokeWidth !== undefined) {
+              currentStrokeWidth = ann.strokeWidth;
+            }
             updateToolOptionsPanel("select");
             syncOptionInputs();
             return;
@@ -1879,6 +2155,7 @@
       return;
     }
   }
+
   function onPointerMove(e) {
     if (!isPointerDown) {
       updateCursorStyle(e);
@@ -1886,16 +2163,38 @@
     }
     var pt = getCanvasPagePoint(e);
     if (currentTool === "select" && dragMode) {
-      var dx = pt.x - dragStartPoint.x,
-        dy = pt.y - dragStartPoint.y;
       var ann = findAnnotation(currentPage, selectedAnnotation.id);
       if (!ann) {
         return;
       }
+      if (dragMode === "rotate") {
+        var cScreenX = dragCenter.x * currentScale;
+        var cScreenY = dragCenter.y * currentScale;
+        var currentAngle = Math.atan2(pt.cy - cScreenY, pt.cx - cScreenX);
+        var deltaRad = currentAngle - dragStartAngle;
+        var deltaDeg = (deltaRad * 180) / Math.PI;
+        var rawRot = (dragOrigin.rotation || 0) + deltaDeg;
+        if (e.shiftKey) {
+          rawRot = Math.round(rawRot / 15) * 15;
+        }
+        var norm = Math.round(rawRot);
+        while (norm > 180) norm -= 360;
+        while (norm <= -180) norm += 360;
+
+        ann.rotation = norm;
+        var rotInput = document.getElementById("rotation-val");
+        if (rotInput) rotInput.value = norm;
+        redrawAnnotations();
+        return;
+      }
+
+      var dx = pt.x - dragStartPoint.x,
+        dy = pt.y - dragStartPoint.y;
+
       if (dragMode === "move") {
         applyMove(ann, dragOrigin, dx, dy);
       } else if (dragMode.indexOf("resize-") === 0) {
-        var direction = dragMode.substring(7); // "tl", "tr", "br", "bl", "t", "b", "l", "r"
+        var direction = dragMode.substring(7);
         var origBounds = getBounds(dragOrigin);
         var ox = origBounds.x,
           oy = origBounds.y,
@@ -1904,23 +2203,21 @@
 
         var newX = ox, newY = oy, newW = ow, newH = oh;
 
-        // Apply dx and dy based on direction
-        if (direction.indexOf("l") !== -1) { // tl, bl, l
+        if (direction.indexOf("l") !== -1) {
           newX = ox + dx;
           newW = ow - dx;
         }
-        if (direction.indexOf("r") !== -1) { // tr, br, r
+        if (direction.indexOf("r") !== -1) {
           newW = ow + dx;
         }
-        if (direction.indexOf("t") !== -1) { // tl, tr, t
+        if (direction.indexOf("t") !== -1) {
           newY = oy + dy;
           newH = oh - dy;
         }
-        if (direction.indexOf("b") !== -1) { // bl, br, b
+        if (direction.indexOf("b") !== -1) {
           newH = oh + dy;
         }
 
-        // Constrain min dimensions
         var minW = 10;
         var minH = 10;
 
@@ -1933,7 +2230,6 @@
           newH = minH;
         }
 
-        // Proportional constraint (images, path, text)
         if (ann.type === "image" || ann.type === "path" || ann.type === "text") {
           var ratio = oh / ow;
           
@@ -1979,6 +2275,12 @@
         }
 
         applyBoundsResize(ann, dragOrigin, { x: newX, y: newY, w: newW, h: newH });
+
+        if (ann.type === "text" && ann.fontSize !== undefined) {
+          currentFontSize = ann.fontSize;
+          var fsInput = document.getElementById("font-size");
+          if (fsInput) fsInput.value = currentFontSize;
+        }
       }
       redrawAnnotations();
       return;
@@ -1994,6 +2296,7 @@
       return;
     }
   }
+
   function onPointerUp() {
     if (!isPointerDown) {
       return;
@@ -2002,6 +2305,8 @@
     if (currentTool === "select") {
       dragMode = null;
       dragOrigin = null;
+      dragCenter = null;
+      dragStartAngle = 0;
       return;
     }
     if (livePath) {
@@ -2091,9 +2396,13 @@
   function drawAnnotationOnPdf(pdfLibDoc, page, ann, pageHeight, fonts, rgb) {
     var rgbArr = hexToRgb01(ann.color);
     var color = rgb(rgbArr[0], rgbArr[1], rgbArr[2]);
+    var rotDeg = ann.rotation || 0;
+    var pdfRot = window.PDFLib && window.PDFLib.degrees ? window.PDFLib.degrees(-rotDeg) : null;
+    var pdfRad = (-rotDeg * Math.PI) / 180;
     var p;
+
     switch (ann.type) {
-      case "text":
+      case "text": {
         var fontToUse = fonts.regular;
         if (ann.isBold && ann.isItalic) {
           fontToUse = fonts.boldItalic;
@@ -2103,62 +2412,137 @@
           fontToUse = fonts.italic;
         }
 
-        page.drawText(ann.text, {
-          x: ann.x,
-          y: pageHeight - (ann.y + ann.fontSize),
+        var textWidth = fontToUse.widthOfTextAtSize(ann.text, ann.fontSize);
+        var textHeight = ann.fontSize;
+        var cx_pdf = ann.x + textWidth / 2;
+        var cy_pdf = pageHeight - (ann.y + textHeight / 2);
+
+        var rx = cx_pdf - ((textWidth / 2) * Math.cos(pdfRad) - (textHeight / 2) * Math.sin(pdfRad));
+        var ry = cy_pdf - ((textWidth / 2) * Math.sin(pdfRad) + (textHeight / 2) * Math.cos(pdfRad));
+
+        var drawOpts = {
+          x: rx,
+          y: ry,
           size: ann.fontSize,
           font: fontToUse,
           color: color,
-        });
+        };
+        if (rotDeg !== 0 && pdfRot) drawOpts.rotate = pdfRot;
+
+        page.drawText(ann.text, drawOpts);
 
         // Underline support on PDF
         if (ann.isUnderline) {
-          var textWidth = fontToUse.widthOfTextAtSize(ann.text, ann.fontSize);
-          var underlineY = pageHeight - (ann.y + ann.fontSize) - (ann.fontSize * 0.1);
+          var underlineY_rel = -(ann.fontSize * 0.1);
+          var u_start_x = cx_pdf - ((textWidth / 2) * Math.cos(pdfRad) - underlineY_rel * Math.sin(pdfRad));
+          var u_start_y = cy_pdf - ((textWidth / 2) * Math.sin(pdfRad) + underlineY_rel * Math.cos(pdfRad));
+          var u_end_x = cx_pdf - ((-textWidth / 2) * Math.cos(pdfRad) - underlineY_rel * Math.sin(pdfRad));
+          var u_end_y = cy_pdf - ((-textWidth / 2) * Math.sin(pdfRad) + underlineY_rel * Math.cos(pdfRad));
+
           page.drawLine({
-            start: { x: ann.x, y: underlineY },
-            end: { x: ann.x + textWidth, y: underlineY },
+            start: { x: u_start_x, y: u_start_y },
+            end: { x: u_end_x, y: u_end_y },
             thickness: Math.max(1, ann.fontSize * 0.08),
             color: color
           });
         }
         return Promise.resolve();
-      case "rect":
-        page.drawRectangle({
-          x: ann.x,
-          y: pageHeight - (ann.y + ann.height),
-          width: ann.width,
-          height: ann.height,
+      }
+      case "rect": {
+        var w = ann.width, h = ann.height;
+        var cx_pdf = ann.x + w / 2;
+        var cy_pdf = pageHeight - (ann.y + h / 2);
+
+        var rx = cx_pdf - ((w / 2) * Math.cos(pdfRad) - (h / 2) * Math.sin(pdfRad));
+        var ry = cy_pdf - ((w / 2) * Math.sin(pdfRad) + (h / 2) * Math.cos(pdfRad));
+
+        var drawOpts = {
+          x: rx,
+          y: ry,
+          width: w,
+          height: h,
           borderColor: color,
           borderWidth: ann.strokeWidth,
-        });
+        };
+        if (rotDeg !== 0 && pdfRot) drawOpts.rotate = pdfRot;
+
+        page.drawRectangle(drawOpts);
         return Promise.resolve();
-      case "ellipse":
-        page.drawEllipse({
+      }
+      case "ellipse": {
+        var drawOpts = {
           x: ann.cx,
           y: pageHeight - ann.cy,
           xScale: ann.rx,
           yScale: ann.ry,
           borderColor: color,
           borderWidth: ann.strokeWidth,
-        });
+        };
+        if (rotDeg !== 0 && pdfRot) drawOpts.rotate = pdfRot;
+        page.drawEllipse(drawOpts);
         return Promise.resolve();
-      case "line":
-        page.drawLine({
-          start: { x: ann.x1, y: pageHeight - ann.y1 },
-          end: { x: ann.x2, y: pageHeight - ann.y2 },
-          thickness: ann.strokeWidth,
-          color: color,
-        });
+      }
+      case "line": {
+        if (rotDeg !== 0) {
+          var cx = (ann.x1 + ann.x2) / 2, cy = (ann.y1 + ann.y2) / 2;
+          var rad = (rotDeg * Math.PI) / 180;
+          var p1 = {
+            x: cx + (ann.x1 - cx) * Math.cos(rad) - (ann.y1 - cy) * Math.sin(rad),
+            y: cy + (ann.x1 - cx) * Math.sin(rad) + (ann.y1 - cy) * Math.cos(rad)
+          };
+          var p2 = {
+            x: cx + (ann.x2 - cx) * Math.cos(rad) - (ann.y2 - cy) * Math.sin(rad),
+            y: cy + (ann.x2 - cx) * Math.sin(rad) + (ann.y2 - cy) * Math.cos(rad)
+          };
+          page.drawLine({
+            start: { x: p1.x, y: pageHeight - p1.y },
+            end: { x: p2.x, y: pageHeight - p2.y },
+            thickness: ann.strokeWidth,
+            color: color,
+          });
+        } else {
+          page.drawLine({
+            start: { x: ann.x1, y: pageHeight - ann.y1 },
+            end: { x: ann.x2, y: pageHeight - ann.y2 },
+            thickness: ann.strokeWidth,
+            color: color,
+          });
+        }
         return Promise.resolve();
-      case "arrow":
-        drawArrowOnPdf(page, ann, pageHeight, color);
+      }
+      case "arrow": {
+        if (rotDeg !== 0) {
+          var cx = (ann.x1 + ann.x2) / 2, cy = (ann.y1 + ann.y2) / 2;
+          var rad = (rotDeg * Math.PI) / 180;
+          var rotAnn = Object.assign({}, ann, {
+            x1: cx + (ann.x1 - cx) * Math.cos(rad) - (ann.y1 - cy) * Math.sin(rad),
+            y1: cy + (ann.x1 - cx) * Math.sin(rad) + (ann.y1 - cy) * Math.cos(rad),
+            x2: cx + (ann.x2 - cx) * Math.cos(rad) - (ann.y2 - cy) * Math.sin(rad),
+            y2: cy + (ann.x2 - cx) * Math.sin(rad) + (ann.y2 - cy) * Math.cos(rad)
+          });
+          drawArrowOnPdf(page, rotAnn, pageHeight, color);
+        } else {
+          drawArrowOnPdf(page, ann, pageHeight, color);
+        }
         return Promise.resolve();
-      case "path":
+      }
+      case "path": {
         if (ann.points && ann.points.length > 0) {
-          var svgPathString = "M " + ann.points[0].x + "," + ann.points[0].y;
-          for (var k = 1; k < ann.points.length; k++) {
-            svgPathString += " L " + ann.points[k].x + "," + ann.points[k].y;
+          var pts = ann.points;
+          if (rotDeg !== 0) {
+            var b = getBounds(ann);
+            var cx = b.x + b.w / 2, cy = b.y + b.h / 2;
+            var rad = (rotDeg * Math.PI) / 180;
+            pts = ann.points.map(function(p) {
+              return {
+                x: cx + (p.x - cx) * Math.cos(rad) - (p.y - cy) * Math.sin(rad),
+                y: cy + (p.x - cx) * Math.sin(rad) + (p.y - cy) * Math.cos(rad)
+              };
+            });
+          }
+          var svgPathString = "M " + pts[0].x + "," + pts[0].y;
+          for (var k = 1; k < pts.length; k++) {
+            svgPathString += " L " + pts[k].x + "," + pts[k].y;
           }
           page.drawSvgPath(svgPathString, {
             x: 0,
@@ -2170,19 +2554,31 @@
           });
         }
         return Promise.resolve();
-      case "image":
+      }
+      case "image": {
         p =
           ann.dataUrl.indexOf("image/png") !== -1
             ? pdfLibDoc.embedPng(dataUrlToBytes(ann.dataUrl))
             : pdfLibDoc.embedJpg(dataUrlToBytes(ann.dataUrl));
         return p.then(function (embedded) {
-          page.drawImage(embedded, {
-            x: ann.x,
-            y: pageHeight - (ann.y + ann.height),
-            width: ann.width,
-            height: ann.height,
-          });
+          var w = ann.width, h = ann.height;
+          var cx_pdf = ann.x + w / 2;
+          var cy_pdf = pageHeight - (ann.y + h / 2);
+
+          var rx = cx_pdf - ((w / 2) * Math.cos(pdfRad) - (h / 2) * Math.sin(pdfRad));
+          var ry = cy_pdf - ((w / 2) * Math.sin(pdfRad) + (h / 2) * Math.cos(pdfRad));
+
+          var drawOpts = {
+            x: rx,
+            y: ry,
+            width: w,
+            height: h,
+          };
+          if (rotDeg !== 0 && pdfRot) drawOpts.rotate = pdfRot;
+
+          page.drawImage(embedded, drawOpts);
         });
+      }
       default:
         return Promise.resolve();
     }
@@ -2292,9 +2688,27 @@
     numPages = 1;
     zoomFactor = 1;
     pendingPlaceable = null;
-    lastActiveDrawingTool = null;
     document.getElementById("file-input").value = "";
     showHero();
+  }
+
+  function buildSwatches() {
+    var container = document.getElementById("color-swatches");
+    if (!container) return;
+    container.innerHTML = "";
+    PALETTE.forEach(function (color) {
+      var btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "swatch" + (color === currentColor ? " is-active" : "");
+      btn.style.backgroundColor = color;
+      btn.dataset.color = color;
+      btn.title = color;
+      btn.addEventListener("click", function () {
+        currentColor = color;
+        syncOptionInputs();
+      });
+      container.appendChild(btn);
+    });
   }
 
   /* ---------- wire up UI ---------- */
@@ -2326,6 +2740,146 @@
     fontSizeInput.addEventListener("change", handleFontSizeChange);
     fontSizeInput.addEventListener("input", handleFontSizeChange);
   }
+
+  // Rotation controls
+  var rotateCcwBtn = document.getElementById("rotate-ccw-btn");
+  var rotateCwBtn = document.getElementById("rotate-cw-btn");
+  var rotationInput = document.getElementById("rotation-val");
+
+  if (rotateCcwBtn) {
+    rotateCcwBtn.addEventListener("click", function () {
+      if (selectedAnnotation && selectedAnnotation.page === currentPage) {
+        var ann = findAnnotation(currentPage, selectedAnnotation.id);
+        if (ann) {
+          pushHistory();
+          var norm = Math.round(((ann.rotation || 0) - 90) % 360);
+          while (norm > 180) norm -= 360;
+          while (norm <= -180) norm += 360;
+          ann.rotation = norm;
+          if (rotationInput) rotationInput.value = norm;
+          redrawAnnotations();
+        }
+      }
+    });
+  }
+
+  if (rotateCwBtn) {
+    rotateCwBtn.addEventListener("click", function () {
+      if (selectedAnnotation && selectedAnnotation.page === currentPage) {
+        var ann = findAnnotation(currentPage, selectedAnnotation.id);
+        if (ann) {
+          pushHistory();
+          var norm = Math.round(((ann.rotation || 0) + 90) % 360);
+          while (norm > 180) norm -= 360;
+          while (norm <= -180) norm += 360;
+          ann.rotation = norm;
+          if (rotationInput) rotationInput.value = norm;
+          redrawAnnotations();
+        }
+      }
+    });
+  }
+
+  if (rotationInput) {
+    var handleRotationChange = function (e) {
+      if (selectedAnnotation && selectedAnnotation.page === currentPage) {
+        var ann = findAnnotation(currentPage, selectedAnnotation.id);
+        if (ann) {
+          pushHistory();
+          var val = parseInt(e.target.value, 10) || 0;
+          while (val > 180) val -= 360;
+          while (val <= -180) val += 360;
+          ann.rotation = val;
+          redrawAnnotations();
+        }
+      }
+    };
+    rotationInput.addEventListener("change", handleRotationChange);
+    rotationInput.addEventListener("input", handleRotationChange);
+  }
+
+  // Layer controls
+  var layerToFrontBtn = document.getElementById("layer-to-front-btn");
+  if (layerToFrontBtn) {
+    layerToFrontBtn.addEventListener("click", bringToFront);
+  }
+  var layerForwardBtn = document.getElementById("layer-forward-btn");
+  if (layerForwardBtn) {
+    layerForwardBtn.addEventListener("click", bringForward);
+  }
+  var layerBackwardBtn = document.getElementById("layer-backward-btn");
+  if (layerBackwardBtn) {
+    layerBackwardBtn.addEventListener("click", sendBackward);
+  }
+  var layerToBackBtn = document.getElementById("layer-to-back-btn");
+  if (layerToBackBtn) {
+    layerToBackBtn.addEventListener("click", sendToBack);
+  }
+
+  // Context Menu listeners
+  var ctxToFront = document.getElementById("ctx-to-front");
+  if (ctxToFront) {
+    ctxToFront.addEventListener("click", function () {
+      bringToFront();
+      hideContextMenu();
+    });
+  }
+  var ctxForward = document.getElementById("ctx-forward");
+  if (ctxForward) {
+    ctxForward.addEventListener("click", function () {
+      bringForward();
+      hideContextMenu();
+    });
+  }
+  var ctxBackward = document.getElementById("ctx-backward");
+  if (ctxBackward) {
+    ctxBackward.addEventListener("click", function () {
+      sendBackward();
+      hideContextMenu();
+    });
+  }
+  var ctxToBack = document.getElementById("ctx-to-back");
+  if (ctxToBack) {
+    ctxToBack.addEventListener("click", function () {
+      sendToBack();
+      hideContextMenu();
+    });
+  }
+  var ctxDelete = document.getElementById("ctx-delete");
+  if (ctxDelete) {
+    ctxDelete.addEventListener("click", function () {
+      if (selectedAnnotation) {
+        deleteAnnotation(currentPage, selectedAnnotation.id);
+      }
+      hideContextMenu();
+    });
+  }
+
+  document.addEventListener("click", function (e) {
+    var ctxMenu = document.getElementById("editor-context-menu");
+    if (ctxMenu && !ctxMenu.contains(e.target)) {
+      hideContextMenu();
+    }
+  });
+  document.addEventListener("scroll", hideContextMenu, true);
+
+  var annCanvasEl = document.getElementById("annotation-canvas");
+  if (annCanvasEl) {
+    annCanvasEl.addEventListener("contextmenu", function (e) {
+      var pt = getCanvasPagePoint(e);
+      var ann = hitTest(pt);
+      if (ann) {
+        e.preventDefault();
+        selectedAnnotation = { page: currentPage, id: ann.id };
+        setActiveTool("select");
+        redrawAnnotations();
+        showContextMenu(e.pageX, e.pageY);
+      } else {
+        hideContextMenu();
+      }
+    });
+  }
+
 
   // Custom Color Trigger
   var customColorInput = document.getElementById("custom-color-input");
@@ -2942,37 +3496,68 @@
 
   document.addEventListener("keydown", function (e) {
     var tag = document.activeElement && document.activeElement.tagName;
+    var isInput = tag === "INPUT" || tag === "TEXTAREA" || !!window._activeTextBox;
+
     if (
       (e.key === "Delete" || e.key === "Backspace") &&
       selectedAnnotation &&
-      tag !== "INPUT" &&
-      tag !== "TEXTAREA"
+      !isInput
     ) {
       e.preventDefault();
       deleteAnnotation(selectedAnnotation.page, selectedAnnotation.id);
     }
-    if (
-      selectedAnnotation &&
-      tag !== "INPUT" &&
-      tag !== "TEXTAREA" &&
-      ["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"].indexOf(e.key) !== -1
-    ) {
-      e.preventDefault();
-      var ann = findAnnotation(currentPage, selectedAnnotation.id);
-      if (ann) {
-        pushHistory();
-        var amount = e.shiftKey ? 10 : 1;
-        var dx = 0, dy = 0;
-        if (e.key === "ArrowUp") dy = -amount;
-        else if (e.key === "ArrowDown") dy = amount;
-        else if (e.key === "ArrowLeft") dx = -amount;
-        else if (e.key === "ArrowRight") dx = amount;
-        
-        applyMove(ann, ann, dx, dy);
-        redrawAnnotations();
+    if (selectedAnnotation && !isInput) {
+      if (
+        ["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"].indexOf(e.key) !== -1 &&
+        !e.ctrlKey &&
+        !e.metaKey
+      ) {
+        e.preventDefault();
+        var ann = findAnnotation(currentPage, selectedAnnotation.id);
+        if (ann) {
+          pushHistory();
+          var amount = e.shiftKey ? 10 : 1;
+          var dx = 0, dy = 0;
+          if (e.key === "ArrowUp") dy = -amount;
+          else if (e.key === "ArrowDown") dy = amount;
+          else if (e.key === "ArrowLeft") dx = -amount;
+          else if (e.key === "ArrowRight") dx = amount;
+          
+          applyMove(ann, ann, dx, dy);
+          redrawAnnotations();
+        }
+      } else if (e.key === "]" || e.key === "}") {
+        e.preventDefault();
+        if (e.shiftKey || e.ctrlKey || e.metaKey) {
+          bringToFront();
+        } else {
+          bringForward();
+        }
+      } else if (e.key === "[" || e.key === "{") {
+        e.preventDefault();
+        if (e.shiftKey || e.ctrlKey || e.metaKey) {
+          sendToBack();
+        } else {
+          sendBackward();
+        }
+      } else if ((e.ctrlKey || e.metaKey) && e.key === "ArrowUp") {
+        e.preventDefault();
+        if (e.shiftKey) {
+          bringToFront();
+        } else {
+          bringForward();
+        }
+      } else if ((e.ctrlKey || e.metaKey) && e.key === "ArrowDown") {
+        e.preventDefault();
+        if (e.shiftKey) {
+          sendToBack();
+        } else {
+          sendBackward();
+        }
       }
     }
     if (e.key === "Escape") {
+      hideContextMenu();
       closeCropModal();
       closeSignatureModal(true);
     }
@@ -2998,3 +3583,4 @@
     });
   }
 })();
+
