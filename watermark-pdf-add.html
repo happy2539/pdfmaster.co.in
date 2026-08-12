@@ -1,0 +1,1745 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <script>
+      // Apply saved/system theme before first paint to avoid a flash of the wrong theme.
+      (function () {
+        try {
+          var saved = localStorage.getItem("pdfmaster-theme");
+          var theme =
+            saved ||
+            (window.matchMedia &&
+            window.matchMedia("(prefers-color-scheme: dark)").matches
+              ? "dark"
+              : "light");
+          document.documentElement.setAttribute("data-theme", theme);
+        } catch (e) {
+          document.documentElement.setAttribute("data-theme", "light");
+        }
+      })();
+    </script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Add Watermark to PDF Online Free – Text & Image | PDFMaster</title>
+    <meta
+      name="description"
+      content="Add text or image watermarks to PDF files for free. Diagonal, tiled, or custom position. Supports Hindi & Arabic text. 100% private, browser-based — no uploads, no signup."
+    />
+    <meta
+      name="keywords"
+      content="watermark pdf add, add watermark to PDF, PDF watermark online free, text watermark pdf add, image watermark PDF, stamp PDF online, confidential watermark pdf add, tiled watermark PDF, PDFMaster"
+    />
+    <meta name="author" content="PDFMaster" />
+    <meta name="robots" content="index, follow" />
+    <link rel="canonical" href="https://pdfmaster.co.in/watermark-pdf-add" />
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="PDFMaster" />
+    <meta
+      property="og:title"
+      content="Add Watermark to PDF Online Free – Text & Image | PDFMaster"
+    />
+    <meta
+      property="og:description"
+      content="Add text or image watermarks to PDFs — diagonal, tiled or custom position. 100% private, on-device processing. No uploads, ever."
+    />
+    <meta property="og:url" content="https://pdfmaster.co.in/watermark-pdf-add" />
+    <meta
+      property="og:image"
+      content="https://pdfmaster.co.in/assets/og-watermark.jpg"
+    />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta
+      name="twitter:title"
+      content="Watermark PDF Online Free | PDFMaster"
+    />
+    <meta
+      name="twitter:description"
+      content="Add text or image watermarks to PDFs. 100% private, no server uploads, works on any device."
+    />
+    <meta
+      name="twitter:image"
+      content="https://pdfmaster.co.in/assets/og-watermark.jpg"
+    />
+
+    <!-- PWA / mobile -->
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <meta name="theme-color" content="#0f172a" />
+
+    <!-- Icons (relative paths — tool page convention) -->
+    <link rel="icon" href="assets/favicon.ico" />
+    <link rel="apple-touch-icon" href="assets/apple-touch-icon.png" />
+
+    <link rel="stylesheet" href="/css/watermark-pdf-add.css" />
+    <script src="/js/sw-register.js" defer></script>
+
+    <!-- Structured data: SoftwareApplication -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "SoftwareApplication",
+        "name": "PDF Watermark Tool",
+        "url": "https://pdfmaster.co.in/watermark-pdf-add",
+        "applicationCategory": "BusinessApplication",
+        "operatingSystem": "Any (runs in web browser)",
+        "description": "Add text or image watermarks to PDF files directly in your browser. Diagonal, tiled, or custom positioning with Hindi and Arabic text support. No uploads.",
+        "offers": {
+          "@type": "Offer",
+          "price": "0",
+          "priceCurrency": "USD"
+        },
+        "publisher": {
+          "@type": "Organization",
+          "name": "PDFMaster",
+          "url": "https://pdfmaster.co.in/"
+        }
+      }
+    </script>
+
+    <!-- Structured data: Breadcrumb -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+          {
+            "@type": "ListItem",
+            "position": 1,
+            "name": "Home",
+            "item": "https://pdfmaster.co.in/"
+          },
+          {
+            "@type": "ListItem",
+            "position": 2,
+            "name": "Watermark PDF",
+            "item": "https://pdfmaster.co.in/watermark-pdf-add"
+          }
+        ]
+      }
+    </script>
+
+    <!-- Structured data: FAQPage -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        "mainEntity": [
+          {
+            "@type": "Question",
+            "name": "Is my PDF data safe? Does it get uploaded to a server?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "No \u2014 your PDF never leaves your device. All watermarking happens entirely in your browser using pdf-lib, a JavaScript library. There is no server, no cloud storage, and no tracking of your file contents."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "What's the difference between a text and an image watermark?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "A text watermark stamps a word or phrase like CONFIDENTIAL or DRAFT onto every page, with your choice of font, color, size and rotation. An image watermark overlays a logo or picture you upload (PNG or JPG) instead, useful for branding documents."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Can I add a watermark in Hindi or Arabic?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Yes. PDFMaster automatically detects Devanagari (Hindi) and Arabic script in your watermark text and embeds a matching Unicode font, including correct Arabic letter joining. Other non-Latin scripts may not render correctly and will show a warning before you proceed."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Can I watermark only some pages instead of the whole document?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Yes. Choose All Pages, Odd, Even, or enter a custom range like \"1-3, 5, 8-10\" to watermark only the pages you specify."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Will the watermark cover up my text, or sit behind it?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "You choose. \"In front\" places the watermark on top of your content, which is the most visible and reliable option. \"Behind content\" tucks it underneath your existing text, though this can be hidden on pages with a solid full-page background, such as some scanned documents."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Can I watermark multiple PDFs at once?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Yes. Add multiple files to the queue and the same watermark settings are applied to all of them. Download each file individually or get them all at once in a single ZIP archive."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Will watermarking reduce the quality of my PDF?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "No. pdf-lib adds the watermark as new content without re-encoding your existing pages, so text, fonts, images and vector graphics stay exactly as sharp as the original."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Is there a file size or page limit?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "There's no server-imposed limit since nothing is uploaded. The only constraint is your device's available memory, which comfortably handles PDFs of a few hundred pages on most modern phones and computers."
+            }
+          }
+        ]
+      }
+    </script>
+
+    <!-- Google Tag Manager -->
+    <script>
+      (function (w, d, s, l, i) {
+        w[l] = w[l] || [];
+        w[l].push({ "gtm.start": new Date().getTime(), event: "gtm.js" });
+        var f = d.getElementsByTagName(s)[0],
+          j = d.createElement(s),
+          dl = l != "dataLayer" ? "&l=" + l : "";
+        j.async = true;
+        j.src = "https://www.googletagmanager.com/gtm.js?id=" + i + dl;
+        f.parentNode.insertBefore(j, f);
+      })(window, document, "script", "dataLayer", "GTM-PCSVMC65");
+    </script>
+    <!-- End Google Tag Manager -->
+
+    
+  </head>
+  <body>
+    <!-- Google Tag Manager (noscript) -->
+    <noscript
+      ><iframe
+        src="https://www.googletagmanager.com/ns.html?id=GTM-PCSVMC65"
+        height="0"
+        width="0"
+        style="display: none; visibility: hidden"
+      ></iframe
+    ></noscript>
+    <!-- End Google Tag Manager (noscript) -->
+
+    <a href="#tool" class="skip-link">Skip to watermark tool</a>
+
+    <header class="site-header">
+      <div class="container header-inner">
+        <a href="/" class="logo">
+          <img
+            src="assets/apple-touch-icon.png"
+            alt="PDFMaster logo"
+            width="30"
+            height="30"
+          />
+          <span>PDFMaster</span>
+        </a>
+        <div class="header-actions">
+          <button
+            type="button"
+            class="icon-btn recovery-btn"
+            id="recoveryBtn"
+            aria-label="Recovery mode - restore saved session"
+            title="Recovery Mode — Restore saved documents & settings"
+          >
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
+              <path d="M3 3v5h5" />
+              <path d="M12 7v5l4 2" />
+            </svg>
+            <span
+              class="recovery-badge"
+              id="recoveryBadge"
+              style="display: none"
+            ></span>
+          </button>
+          <button
+            type="button"
+            class="icon-btn theme-toggle"
+            id="themeToggle"
+            aria-label="Toggle dark mode"
+          >
+            <svg
+              class="sun"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+            >
+              <circle cx="12" cy="12" r="4" />
+              <path
+                d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"
+              />
+            </svg>
+            <svg
+              class="moon"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z" />
+            </svg>
+          </button>
+          <button
+            type="button"
+            class="icon-btn hamburger"
+            id="hamburgerBtn"
+            aria-label="Open menu"
+            aria-expanded="false"
+            aria-controls="navDrawer"
+          >
+            <span class="bars"><span></span><span></span><span></span></span>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <div class="nav-overlay" id="navOverlay"></div>
+    <nav class="nav-drawer" id="navDrawer" aria-label="Section navigation">
+      <div class="drawer-head">
+        <span>Menu</span>
+        <button
+          type="button"
+          class="icon-btn"
+          id="drawerClose"
+          aria-label="Close menu"
+        >
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+          >
+            <path d="M18 6 6 18M6 6l12 12" />
+          </svg>
+        </button>
+      </div>
+      <div class="drawer-nav">
+        <a href="#what-is-it">What is it</a>
+        <a href="#features">Features</a>
+        <a href="#how-to-use">How to Use</a>
+        <a href="#benefits">Benefits</a>
+        <a href="#faqs">FAQs</a>
+        <a href="#related-tools">Related Tools</a>
+        <a href="#contact">Contact</a>
+      </div>
+      <a href="/" class="drawer-home">
+        <svg
+          viewBox="0 0 24 24"
+          width="17"
+          height="17"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <path d="M3 11.5 12 4l9 7.5" />
+          <path d="M5 10v10h14V10" />
+        </svg>
+        Homepage
+      </a>
+    </nav>
+
+    <div id="toastContainer" class="toast-container" aria-live="polite"></div>
+
+    <main>
+      <div class="container">
+        <nav class="breadcrumb" aria-label="Breadcrumb">
+          <a href="/">Home</a><span class="sep">&rsaquo;</span
+          ><span class="current">Watermark PDF</span>
+        </nav>
+      </div>
+
+      <section class="hero">
+        <div class="container">
+          <span class="badge">
+            <svg
+              viewBox="0 0 24 24"
+              width="14"
+              height="14"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path d="M12 2 4 5v6c0 5 3.5 8.5 8 11 4.5-2.5 8-6 8-11V5l-8-3Z" />
+            </svg>
+            100% Private &middot; No Upload
+          </span>
+          <h1>Add a Watermark to Your <em>PDF</em></h1>
+          <p class="lead">
+            Stamp text or a logo onto your PDF — diagonal, tiled, or precisely
+            positioned — entirely inside your browser. Nothing is ever uploaded.
+          </p>
+          <div class="hero-features">
+            <span
+              ><svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2.5"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path d="M20 6 9 17l-5-5" /></svg
+              >No file size limit</span
+            >
+            <span
+              ><svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2.5"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path d="M20 6 9 17l-5-5" /></svg
+              >On-device processing</span
+            >
+            <span
+              ><svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2.5"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path d="M20 6 9 17l-5-5" /></svg
+              >Hindi &amp; Arabic text support</span
+            >
+            <span
+              ><svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2.5"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path d="M20 6 9 17l-5-5" /></svg
+              >Completely free</span
+            >
+          </div>
+        </div>
+      </section>
+
+      <section id="tool" style="padding-top: 0">
+        <div class="container">
+          <div class="tool-card">
+            <div id="dropzoneView">
+              <div
+                class="dropzone"
+                id="dropzone"
+                role="button"
+                tabindex="0"
+                aria-label="Upload PDF files"
+              >
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.6"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path d="M12 16V4M12 4 7 9M12 4l5 5" />
+                  <path d="M4 16v3a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-3" />
+                </svg>
+                <h3>Drop your PDF here</h3>
+                <p>or click to browse from your device</p>
+                <button type="button" class="btn btn-primary" id="browseBtn">
+                  Choose PDF Files
+                </button>
+                <input
+                  type="file"
+                  id="fileInput"
+                  accept="application/pdf"
+                  multiple
+                  class="visually-hidden"
+                />
+                <div class="hint">
+                  Supports: PDF files, multiple at once &middot; Processed
+                  locally in your browser
+                </div>
+              </div>
+            </div>
+
+            <div id="workspaceView" style="display: none">
+              <div class="file-queue" id="fileQueue"></div>
+              <div class="add-more-row">
+                <button
+                  type="button"
+                  class="btn btn-ghost btn-sm"
+                  id="addMoreBtn"
+                >
+                  + Add more files
+                </button>
+              </div>
+
+              <div class="tool-grid" style="margin-top: 24px">
+                <div class="tool-controls">
+                  <div
+                    class="seg-tabs"
+                    role="tablist"
+                    aria-label="Watermark type"
+                  >
+                    <button
+                      type="button"
+                      role="tab"
+                      class="is-active"
+                      id="tabText"
+                      aria-selected="true"
+                      aria-controls="textPanel"
+                    >
+                      <svg
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      >
+                        <path d="M4 7V4h16v3M9 20h6M12 4v16" />
+                      </svg>
+                      Text Watermark
+                    </button>
+                    <button
+                      type="button"
+                      role="tab"
+                      id="tabImage"
+                      aria-selected="false"
+                      aria-controls="imagePanel"
+                    >
+                      <svg
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      >
+                        <rect x="3" y="3" width="18" height="18" rx="2" />
+                        <circle cx="9" cy="9" r="2" />
+                        <path d="m21 15-5-5L5 21" />
+                      </svg>
+                      Image Watermark
+                    </button>
+                  </div>
+
+                  <div id="textPanel" role="tabpanel">
+                    <div class="control-group">
+                      <label for="wmText">Watermark text</label>
+                      <input
+                        type="text"
+                        id="wmText"
+                        value="CONFIDENTIAL"
+                        maxlength="80"
+                        autocomplete="off"
+                      />
+                      <div class="preset-chips" id="presetChips">
+                        <button
+                          type="button"
+                          class="chip is-active"
+                          data-text="CONFIDENTIAL"
+                        >
+                          CONFIDENTIAL
+                        </button>
+                        <button type="button" class="chip" data-text="DRAFT">
+                          DRAFT
+                        </button>
+                        <button type="button" class="chip" data-text="SAMPLE">
+                          SAMPLE
+                        </button>
+                        <button
+                          type="button"
+                          class="chip"
+                          data-text="DO NOT COPY"
+                        >
+                          DO NOT COPY
+                        </button>
+                        <button type="button" class="chip" data-text="COPY">
+                          COPY
+                        </button>
+                        <button type="button" class="chip" data-text="VOID">
+                          VOID
+                        </button>
+                        <button type="button" class="chip" data-text="APPROVED">
+                          APPROVED
+                        </button>
+                      </div>
+                      <div class="field-hint" id="scriptHint"></div>
+                    </div>
+                    <div class="control-group control-row">
+                      <div>
+                        <label for="wmFont">Font</label>
+                        <select id="wmFont">
+                          <option value="Helvetica">Helvetica</option>
+                          <option value="Helvetica-Bold" selected>
+                            Helvetica Bold
+                          </option>
+                          <option value="Times-Roman">Times Roman</option>
+                          <option value="Times-Bold">Times Bold</option>
+                          <option value="Courier">Courier</option>
+                        </select>
+                      </div>
+                      <div>
+                        <label for="wmColor">Color</label>
+                        <div class="color-row">
+                          <input type="color" id="wmColor" value="#d1301f" />
+                          <input
+                            type="text"
+                            id="wmColorHex"
+                            value="#d1301f"
+                            aria-label="Color hex value"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div id="imagePanel" role="tabpanel" style="display: none">
+                    <div class="control-group">
+                      <label for="wmImageInput">Logo or image</label>
+                      <button
+                        type="button"
+                        class="btn btn-secondary btn-block"
+                        id="wmImageBtn"
+                      >
+                        Choose Image (PNG or JPG)
+                      </button>
+                      <input
+                        type="file"
+                        id="wmImageInput"
+                        accept="image/png,image/jpeg"
+                        class="visually-hidden"
+                      />
+                      <div class="field-hint" id="wmImageName">
+                        No image selected — using default preview logo
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="control-group">
+                    <label id="sizeOpacityLabel">Size &amp; opacity</label>
+                    <div class="slider-row">
+                      <span class="field-hint" style="min-width: 44px"
+                        >Size</span
+                      >
+                      <input
+                        type="range"
+                        id="wmSize"
+                        min="10"
+                        max="120"
+                        value="48"
+                      />
+                      <span class="slider-val" id="wmSizeVal">48px</span>
+                    </div>
+                    <div class="slider-row" style="margin-top: 10px">
+                      <span class="field-hint" style="min-width: 44px"
+                        >Opacity</span
+                      >
+                      <input
+                        type="range"
+                        id="wmOpacity"
+                        min="5"
+                        max="100"
+                        value="30"
+                      />
+                      <span class="slider-val" id="wmOpacityVal">30%</span>
+                    </div>
+                    <div class="slider-row" style="margin-top: 10px">
+                      <span class="field-hint" style="min-width: 44px"
+                        >Rotate</span
+                      >
+                      <input
+                        type="range"
+                        id="wmRotation"
+                        min="-90"
+                        max="90"
+                        value="45"
+                      />
+                      <span class="slider-val" id="wmRotationVal">45&deg;</span>
+                    </div>
+                  </div>
+
+                  <div class="control-group">
+                    <label>Watermark Position &amp; Options</label>
+                    <div class="pos-with-tile">
+                      <div class="pos-pad-container">
+                        <div
+                          class="pos-pad"
+                          id="posPad"
+                          role="region"
+                          aria-label="Interactive page position pad"
+                          tabindex="0"
+                        >
+                          <div class="pos-pad-grid"></div>
+                          <div
+                            class="pos-pad-crosshair"
+                            id="posCrosshair"
+                          ></div>
+                          <div
+                            class="pos-handle"
+                            id="posHandle"
+                            aria-label="Drag position handle"
+                          ></div>
+                        </div>
+                        <div class="pos-readout">
+                          <span>X: <strong id="posReadoutX">50%</strong></span>
+                          <span>Y: <strong id="posReadoutY">50%</strong></span>
+                        </div>
+                        <div
+                          class="preset-chips"
+                          id="posChips"
+                          style="
+                            margin-top: 2px;
+                            gap: 6px;
+                            flex-wrap: wrap;
+                            justify-content: center;
+                          "
+                        >
+                          <button
+                            type="button"
+                            class="chip is-active"
+                            data-pos-x="50"
+                            data-pos-y="50"
+                          >
+                            Center
+                          </button>
+                          <button
+                            type="button"
+                            class="chip"
+                            data-pos-x="0"
+                            data-pos-y="100"
+                          >
+                            Top Left
+                          </button>
+                          <button
+                            type="button"
+                            class="chip"
+                            data-pos-x="50"
+                            data-pos-y="100"
+                          >
+                            Top Center
+                          </button>
+                          <button
+                            type="button"
+                            class="chip"
+                            data-pos-x="100"
+                            data-pos-y="100"
+                          >
+                            Top Right
+                          </button>
+                          <button
+                            type="button"
+                            class="chip"
+                            data-pos-x="0"
+                            data-pos-y="0"
+                          >
+                            Bottom Left
+                          </button>
+                          <button
+                            type="button"
+                            class="chip"
+                            data-pos-x="100"
+                            data-pos-y="0"
+                          >
+                            Bottom Right
+                          </button>
+                        </div>
+                      </div>
+                      <div style="flex: 1; min-width: 180px">
+                        <div class="toggle-row">
+                          <div>
+                            <div class="toggle-label">Tile across page</div>
+                            <div class="toggle-sub">
+                              Repeat in a grid pattern
+                            </div>
+                          </div>
+                          <label class="switch"
+                            ><input type="checkbox" id="tileToggle" /><span
+                              class="track"
+                            ></span
+                          ></label>
+                        </div>
+                        <div class="toggle-row" style="margin-top: 10px">
+                          <div>
+                            <div class="toggle-label">Place behind content</div>
+                            <div class="toggle-sub">Default: in front</div>
+                          </div>
+                          <label class="switch"
+                            ><input type="checkbox" id="behindToggle" /><span
+                              class="track"
+                            ></span
+                          ></label>
+                        </div>
+                      </div>
+                    </div>
+                    <div
+                      class="layer-note"
+                      id="behindNote"
+                      style="display: none"
+                    >
+                      <svg
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      >
+                        <circle cx="12" cy="12" r="10" />
+                        <path d="M12 16v-4M12 8h.01" />
+                      </svg>
+                      <span
+                        >On pages with a solid full-page background (common in
+                        some scanned documents), a "behind content" watermark
+                        may not be visible. Use "in front" if you need
+                        guaranteed visibility.</span
+                      >
+                    </div>
+                  </div>
+
+                  <div class="control-group">
+                    <label for="pageRange">Pages to watermark</label>
+                    <div class="preset-chips">
+                      <button
+                        type="button"
+                        class="chip is-active"
+                        data-range="all"
+                      >
+                        All Pages
+                      </button>
+                      <button type="button" class="chip" data-range="odd">
+                        Odd Only
+                      </button>
+                      <button type="button" class="chip" data-range="even">
+                        Even Only
+                      </button>
+                      <button type="button" class="chip" data-range="custom">
+                        Custom Range
+                      </button>
+                    </div>
+                    <input
+                      type="text"
+                      id="pageRange"
+                      placeholder="e.g. 1-3, 5, 8-10"
+                      style="margin-top: 10px; display: none"
+                    />
+                    <div class="field-hint">
+                      Leave on "All Pages," or switch to Custom Range and use
+                      commas and hyphens.
+                    </div>
+                  </div>
+
+                  <div class="status-line" id="statusLine">
+                    <svg
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    >
+                      <circle cx="12" cy="12" r="10" />
+                      <path d="M12 16v-4M12 8h.01" />
+                    </svg>
+                    <span
+                      >Ready — add a PDF above, adjust your watermark, then
+                      apply.</span
+                    >
+                  </div>
+                  <div
+                    class="progress-bar"
+                    id="progressBar"
+                    style="display: none"
+                  >
+                    <div></div>
+                  </div>
+                  <button
+                    type="button"
+                    class="btn btn-primary btn-block"
+                    id="applyBtn"
+                    disabled
+                  >
+                    Apply Watermark
+                  </button>
+
+                  <div
+                    class="result-panel"
+                    id="resultPanel"
+                    style="display: none"
+                  >
+                    <svg
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    >
+                      <circle cx="12" cy="12" r="10" />
+                      <path d="m9 12 2 2 4-4" />
+                    </svg>
+                    <h3 id="resultTitle">Watermark Applied</h3>
+                    <p id="resultSub">Your file is ready to download.</p>
+                    <div class="result-actions">
+                      <button
+                        type="button"
+                        class="btn btn-primary"
+                        id="downloadBtn"
+                      >
+                        Download
+                      </button>
+                      <button
+                        type="button"
+                        class="btn btn-secondary"
+                        id="resetBtn"
+                      >
+                        Start Over
+                      </button>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="preview-wrap">
+                  <div
+                    class="preview-header"
+                    style="
+                      display: flex;
+                      align-items: center;
+                      justify-content: space-between;
+                      width: 100%;
+                      margin-bottom: 8px;
+                    "
+                  >
+                    <div
+                      class="preview-label"
+                      style="
+                        font-weight: 700;
+                        font-size: 0.86rem;
+                        color: var(--text);
+                      "
+                    >
+                      Live Preview
+                    </div>
+                    <div
+                      class="preview-nav"
+                      id="previewNav"
+                      style="display: flex; align-items: center; gap: 6px"
+                    >
+                      <button
+                        type="button"
+                        class="btn btn-ghost btn-sm"
+                        id="prevPageBtn"
+                        aria-label="Previous page"
+                        disabled
+                        style="
+                          padding: 4px;
+                          height: 28px;
+                          width: 28px;
+                          display: inline-flex;
+                          align-items: center;
+                          justify-content: center;
+                          border-radius: var(--radius-sm);
+                        "
+                      >
+                        <svg
+                          viewBox="0 0 24 24"
+                          width="16"
+                          height="16"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="2.2"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                        >
+                          <path d="m15 18-6-6 6-6" />
+                        </svg>
+                      </button>
+                      <span
+                        style="
+                          font-size: 0.8rem;
+                          font-weight: 600;
+                          color: var(--text-muted);
+                        "
+                      >
+                        Page
+                        <strong id="previewPageNum" style="color: var(--text)"
+                          >1</strong
+                        >
+                        of <span id="previewPageTotal">1</span>
+                      </span>
+                      <button
+                        type="button"
+                        class="btn btn-ghost btn-sm"
+                        id="nextPageBtn"
+                        aria-label="Next page"
+                        disabled
+                        style="
+                          padding: 4px;
+                          height: 28px;
+                          width: 28px;
+                          display: inline-flex;
+                          align-items: center;
+                          justify-content: center;
+                          border-radius: var(--radius-sm);
+                        "
+                      >
+                        <svg
+                          viewBox="0 0 24 24"
+                          width="16"
+                          height="16"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="2.2"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                        >
+                          <path d="m9 18 6-6-6-6" />
+                        </svg>
+                      </button>
+                    </div>
+                  </div>
+                  <div class="preview-stage" id="previewStage">
+                    <div class="preview-placeholder">
+                      <svg
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="1.5"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      >
+                        <path
+                          d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"
+                        />
+                        <path d="M14 2v6h6" />
+                      </svg>
+                      <span>Your preview will appear here</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="what-is-it" class="section-alt">
+        <div class="container">
+          <div class="wii-grid">
+            <div class="wii-copy">
+              <span class="eyebrow">What is it</span>
+              <h2>What Is a PDF Watermark Tool?</h2>
+              <p>
+                A PDF watermark tool stamps text or a logo onto every page of a
+                document — a diagonal <strong>CONFIDENTIAL</strong>, a tiled
+                <strong>SAMPLE</strong> pattern, or your company mark — to
+                label, brand, or discourage unauthorized copying, without
+                altering the underlying content.
+              </p>
+              <p>
+                PDFMaster's watermarking runs entirely in your browser using
+                <strong>pdf-lib</strong> and <strong>PDF.js</strong>, two
+                JavaScript libraries. Your document is parsed, stamped, and
+                rebuilt on your own device — it's
+                <strong>never uploaded to any server</strong>, which makes it a
+                safe choice for contracts, transcripts, invoices, and other
+                sensitive paperwork.
+              </p>
+              <p>
+                Use it to mark drafts before review, brand reports with a logo,
+                protect scanned IDs from misuse, or stamp sample documents
+                before sharing publicly — all free, with a live preview so you
+                see exactly what you'll get before downloading.
+              </p>
+            </div>
+            <div class="wii-visual" aria-hidden="true">
+              <div class="wm-demo-page">
+                <div class="line"></div>
+                <div class="line"></div>
+                <div class="line"></div>
+                <span class="stamp">SAMPLE</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="features">
+        <div class="container">
+          <div class="section-head">
+            <span class="eyebrow">Features</span>
+            <h2>Everything You Need to Stamp a PDF</h2>
+            <p>
+              Flexible watermarking modes built for real documents, not just
+              demos.
+            </p>
+          </div>
+          <div class="grid-3">
+            <div class="feature-card">
+              <div class="f-icon-lg">
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path d="M4 7V4h16v3M9 20h6M12 4v16" />
+                </svg>
+              </div>
+              <h3>Text &amp; Image Watermarks</h3>
+              <p>
+                Stamp custom text with full font, color, and rotation control,
+                or overlay your own logo as a PNG or JPG.
+              </p>
+            </div>
+            <div class="feature-card">
+              <div class="f-icon-lg">
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path
+                    d="M4 4h4v4H4zM10 4h4v4h-4zM16 4h4v4h-4zM4 10h4v4H4zM10 10h4v4h-4zM16 10h4v4h-4zM4 16h4v4H4zM10 16h4v4h-4zM16 16h4v4h-4z"
+                  />
+                </svg>
+              </div>
+              <h3>Tiled or Single Placement</h3>
+              <p>
+                Repeat your watermark in a grid across the whole page for
+                stronger protection, or place it once exactly where you want.
+              </p>
+            </div>
+            <div class="feature-card">
+              <div class="f-icon-lg">
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path
+                    d="m5 8 6 6M4 14l6-6 2-3M2 5h12M7 2h1M22 22l-5-10-5 10M14 18h6"
+                  />
+                </svg>
+              </div>
+              <h3>Hindi &amp; Arabic Text</h3>
+              <p>
+                Type watermark text in Devanagari or Arabic script and PDFMaster
+                automatically embeds a matching Unicode font.
+              </p>
+            </div>
+            <div class="feature-card">
+              <div class="f-icon-lg">
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <rect x="3" y="4" width="18" height="18" rx="2" />
+                  <path d="M16 2v4M8 2v4M3 10h18" />
+                </svg>
+              </div>
+              <h3>Choose Your Pages</h3>
+              <p>
+                Watermark every page, only odd or even pages, or a custom range
+                like "1-3, 5, 8-10".
+              </p>
+            </div>
+            <div class="feature-card">
+              <div class="f-icon-lg">
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path
+                    d="M9 2v6M15 2v6M4 8h16l-1 12a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2z"
+                  />
+                </svg>
+              </div>
+              <h3>In Front or Behind</h3>
+              <p>
+                Layer the watermark on top of your content for maximum
+                visibility, or tuck it behind existing text.
+              </p>
+            </div>
+            <div class="feature-card">
+              <div class="f-icon-lg">
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path
+                    d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"
+                  />
+                </svg>
+              </div>
+              <h3>Batch &amp; ZIP Download</h3>
+              <p>
+                Watermark several PDFs at once with the same settings, then
+                download them all as a single ZIP.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="how-to-use" class="section-alt">
+        <div class="container">
+          <div class="section-head">
+            <span class="eyebrow">How to Use</span>
+            <h2>Watermark a PDF in 4 Steps</h2>
+            <p>No account, no install, no learning curve.</p>
+          </div>
+          <div class="steps-grid">
+            <div class="step">
+              <div class="step-num">1</div>
+              <h3>Upload PDF</h3>
+              <p>
+                Drag your file into the tool, or click to browse. Add multiple
+                files for batch watermarking.
+              </p>
+            </div>
+            <div class="step">
+              <div class="step-num">2</div>
+              <h3>Choose Text or Image</h3>
+              <p>
+                Type a watermark phrase or upload a logo, then set color, size,
+                opacity, and rotation.
+              </p>
+            </div>
+            <div class="step">
+              <div class="step-num">3</div>
+              <h3>Position &amp; Preview</h3>
+              <p>
+                Pick a position or tile it across the page, choose which pages,
+                and check the live preview.
+              </p>
+            </div>
+            <div class="step">
+              <div class="step-num">4</div>
+              <h3>Apply &amp; Download</h3>
+              <p>
+                Click Apply Watermark and download your stamped PDF — or a ZIP
+                if you added several files.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="benefits">
+        <div class="container">
+          <div class="section-head">
+            <span class="eyebrow">Benefits</span>
+            <h2>Why Watermark PDFs with PDFMaster?</h2>
+            <p>Built around your privacy, speed, and document quality.</p>
+          </div>
+          <div class="benefit-grid">
+            <div class="benefit-item">
+              <div class="b-icon">
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path
+                    d="M12 2 4 5v6c0 5 3.5 8.5 8 11 4.5-2.5 8-6 8-11V5l-8-3Z"
+                  />
+                </svg>
+              </div>
+              <div>
+                <h4>Complete Privacy</h4>
+                <p>
+                  Contracts, transcripts, and IDs are stamped in-browser and
+                  never touch a server.
+                </p>
+              </div>
+            </div>
+            <div class="benefit-item">
+              <div class="b-icon">
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path d="M13 2 3 14h8l-1 8 10-12h-8z" />
+                </svg>
+              </div>
+              <div>
+                <h4>Instant Processing</h4>
+                <p>
+                  No upload wait — watermarking a 100-page PDF typically takes
+                  under a second.
+                </p>
+              </div>
+            </div>
+            <div class="benefit-item">
+              <div class="b-icon">
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path d="M20 6 9 17l-5-5" />
+                </svg>
+              </div>
+              <div>
+                <h4>No Quality Loss</h4>
+                <p>
+                  Your original fonts, images, and vector graphics are preserved
+                  exactly as they were.
+                </p>
+              </div>
+            </div>
+            <div class="benefit-item">
+              <div class="b-icon">
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <circle cx="12" cy="12" r="10" />
+                  <path d="M12 6v6l4 2" />
+                </svg>
+              </div>
+              <div>
+                <h4>Free Forever</h4>
+                <p>
+                  No subscription, no account, no trial period, no watermark on
+                  the watermark tool itself.
+                </p>
+              </div>
+            </div>
+            <div class="benefit-item">
+              <div class="b-icon">
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <rect x="5" y="2" width="14" height="20" rx="2" />
+                  <path d="M12 18h.01" />
+                </svg>
+              </div>
+              <div>
+                <h4>Works on Any Device</h4>
+                <p>
+                  Fully responsive — use it on desktop, tablet, or phone with no
+                  app to install.
+                </p>
+              </div>
+            </div>
+            <div class="benefit-item">
+              <div class="b-icon">
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path
+                    d="M9 2v6M15 2v6M4 8h16l-1 12a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2z"
+                  />
+                </svg>
+              </div>
+              <div>
+                <h4>No File Size Limit</h4>
+                <p>
+                  Since there's no server, the only limit is your own device's
+                  available memory.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="faqs" class="section-alt">
+        <div class="container">
+          <div class="section-head">
+            <span class="eyebrow">FAQs</span>
+            <h2>Frequently Asked Questions</h2>
+            <p>
+              Everything you need to know about watermarking PDFs with
+              PDFMaster.
+            </p>
+          </div>
+          <div class="faq-list">
+            <details class="faq-item" open>
+              <summary>
+                Is my PDF data safe? Does it get uploaded to a server?
+                <svg
+                  class="chevron"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path d="m6 9 6 6 6-6" />
+                </svg>
+              </summary>
+              <div class="faq-a">
+                No — your PDF never leaves your device. All watermarking happens
+                entirely in your browser using pdf-lib, a JavaScript library.
+                There is no server, no cloud storage, and no tracking of your
+                file contents.
+              </div>
+            </details>
+            <details class="faq-item">
+              <summary>
+                What's the difference between a text and an image watermark?
+                <svg
+                  class="chevron"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path d="m6 9 6 6 6-6" />
+                </svg>
+              </summary>
+              <div class="faq-a">
+                A text watermark stamps a word or phrase like CONFIDENTIAL or
+                DRAFT onto every page, with your choice of font, color, size,
+                and rotation. An image watermark overlays a logo or picture you
+                upload (PNG or JPG) instead, useful for branding documents.
+              </div>
+            </details>
+            <details class="faq-item">
+              <summary>
+                Can I add a watermark in Hindi or Arabic?
+                <svg
+                  class="chevron"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path d="m6 9 6 6 6-6" />
+                </svg>
+              </summary>
+              <div class="faq-a">
+                Yes. PDFMaster automatically detects Devanagari (Hindi) and
+                Arabic script in your watermark text and embeds a matching
+                Unicode font, including correct Arabic letter joining. Other
+                non-Latin scripts may not render correctly and will show a
+                warning before you proceed.
+              </div>
+            </details>
+            <details class="faq-item">
+              <summary>
+                Can I watermark only some pages instead of the whole document?
+                <svg
+                  class="chevron"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path d="m6 9 6 6 6-6" />
+                </svg>
+              </summary>
+              <div class="faq-a">
+                Yes. Choose All Pages, Odd, Even, or enter a custom range like
+                "1-3, 5, 8-10" to watermark only the pages you specify.
+              </div>
+            </details>
+            <details class="faq-item">
+              <summary>
+                Will the watermark cover up my text, or sit behind it?
+                <svg
+                  class="chevron"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path d="m6 9 6 6 6-6" />
+                </svg>
+              </summary>
+              <div class="faq-a">
+                You choose. "In front" places the watermark on top of your
+                content, which is the most visible and reliable option. "Behind
+                content" tucks it underneath your existing text, though this can
+                be hidden on pages with a solid full-page background, such as
+                some scanned documents.
+              </div>
+            </details>
+            <details class="faq-item">
+              <summary>
+                Can I watermark multiple PDFs at once?
+                <svg
+                  class="chevron"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path d="m6 9 6 6 6-6" />
+                </svg>
+              </summary>
+              <div class="faq-a">
+                Yes. Add multiple files to the queue and the same watermark
+                settings are applied to all of them. Download each file
+                individually or get them all at once in a single ZIP archive.
+              </div>
+            </details>
+            <details class="faq-item">
+              <summary>
+                Will watermarking reduce the quality of my PDF?
+                <svg
+                  class="chevron"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path d="m6 9 6 6 6-6" />
+                </svg>
+              </summary>
+              <div class="faq-a">
+                No. pdf-lib adds the watermark as new content without
+                re-encoding your existing pages, so text, fonts, images, and
+                vector graphics stay exactly as sharp as the original.
+              </div>
+            </details>
+            <details class="faq-item">
+              <summary>
+                Is there a file size or page limit?
+                <svg
+                  class="chevron"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path d="m6 9 6 6 6-6" />
+                </svg>
+              </summary>
+              <div class="faq-a">
+                There's no server-imposed limit since nothing is uploaded. The
+                only constraint is your device's available memory, which
+                comfortably handles PDFs of a few hundred pages on most modern
+                phones and computers.
+              </div>
+            </details>
+          </div>
+        </div>
+      </section>
+
+      <section id="related-tools">
+        <div class="container">
+          <div class="section-head">
+            <span class="eyebrow">Related Tools</span>
+            <h2>More PDF Tools You'll Love</h2>
+            <p>
+              Everything you need to work with PDFs, all free and all private.
+            </p>
+          </div>
+          <div class="related-grid">
+            <a href="/pdf-compiler" class="related-card">
+              <h3>PDF Compiler</h3>
+              <p>
+                Merge multiple PDFs into one. Combine reports, invoices, or
+                chapters in any order.
+              </p>
+              <span class="use-link">Use tool &rarr;</span>
+            </a>
+            <a href="/split-pdf" class="related-card">
+              <h3>Split PDF</h3>
+              <p>
+                Extract pages, split by range, or divide every N pages into
+                separate files.
+              </p>
+              <span class="use-link">Use tool &rarr;</span>
+            </a>
+            <a href="/pdf-editor" class="related-card">
+              <h3>PDF Editor</h3>
+              <p>
+                Add text, shapes, highlights, images, and signatures to your PDF
+                privately.
+              </p>
+              <span class="use-link">Use tool &rarr;</span>
+            </a>
+            <a href="/pdf-metadata" class="related-card">
+              <h3>PDF Metadata Remover</h3>
+              <p>
+                Strip author, title, and creation date metadata from PDF files
+                for privacy.
+              </p>
+              <span class="use-link">Use tool &rarr;</span>
+            </a>
+            <a href="/photo-to-pdf" class="related-card">
+              <h3>Photo to PDF</h3>
+              <p>
+                Combine multiple photos into a single PDF document in seconds.
+              </p>
+              <span class="use-link">Use tool &rarr;</span>
+            </a>
+            <a href="/pdf-reorder" class="related-card">
+              <h3>PDF Reorder</h3>
+              <p>
+                Drag and drop pages to rearrange them in any order you want.
+              </p>
+              <span class="use-link">Use tool &rarr;</span>
+            </a>
+          </div>
+        </div>
+      </section>
+
+      <section id="contact" class="section-alt">
+        <div class="container contact-box">
+          <span class="eyebrow">Contact</span>
+          <h2>Have Questions or Feedback?</h2>
+          <p>
+            We'd love to hear from you. Whether it's a feature request, a bug
+            report, or just a hello — reach out anytime.
+          </p>
+          <a href="mailto:support@pdfmaster.co.in" class="btn btn-primary"
+            >support@pdfmaster.co.in</a
+          >
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <div class="container">
+        <div class="footer-grid">
+          <div class="footer-brand">
+            <a href="/" class="logo">
+              <img
+                src="assets/apple-touch-icon.png"
+                alt="PDFMaster logo"
+                width="30"
+                height="30"
+              />
+              <span>PDFMaster</span>
+            </a>
+            <p>
+              Free, private, browser-based PDF and image tools. No uploads. No
+              accounts. Just results.
+            </p>
+          </div>
+          <div class="footer-col">
+            <h4>Tools</h4>
+            <ul>
+              <li><a href="/pdf-compiler">PDF Compiler</a></li>
+              <li><a href="/pdf-editor">PDF Editor</a></li>
+              <li><a href="/watermark-pdf-add">watermark pdf add</a></li>
+              <li><a href="/split-pdf">Split PDF</a></li>
+              <li><a href="/pdf-reorder">PDF Reorder</a></li>
+              <li><a href="/website-to-pdf">Website to PDF</a></li>
+            </ul>
+          </div>
+          <div class="footer-col">
+            <h4>Resources</h4>
+            <ul>
+              <li><a href="/blog">Blog</a></li>
+              <li><a href="/faq">FAQ</a></li>
+              <li><a href="/about">About Us</a></li>
+              <li>
+                <a href="/happy-gupta-founder-of-pdfmaster"
+                  >About Happy Gupta</a
+                >
+              </li>
+              <li><a href="/#tools">All Tools</a></li>
+            </ul>
+          </div>
+          <div class="footer-col">
+            <h4>Legal</h4>
+            <ul>
+              <li><a href="/privacy-policy">Privacy Policy</a></li>
+              <li><a href="/terms-of-service">Terms of Service</a></li>
+              <li><a href="/contact">Contact</a></li>
+            </ul>
+          </div>
+        </div>
+        <div class="footer-bottom">
+          <span>&copy; 2026 PDFMaster. Free PDF tools for everyone.</span>
+          <div class="legal-links">
+            <a href="/privacy-policy">Privacy Policy</a>
+            <a href="/terms-of-service">Terms of Service</a>
+            <a href="/contact">Contact</a>
+          </div>
+        </div>
+      </div>
+    </footer>
+<script src="/js/watermark-pdf-add.js" defer></script>
+  </body>
+</html>
