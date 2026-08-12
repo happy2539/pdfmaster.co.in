@@ -245,10 +245,123 @@ document.addEventListener("DOMContentLoaded", function () {
     return "https://corsproxy.io/?" + encodeURIComponent(s);
   }
 
+  /* ── CSS & Text Proxy Helpers ── */
+  async function fetchTextViaProxy(url, timeoutMs) {
+    timeoutMs = timeoutMs || 8000;
+    var targetHost = "";
+    try {
+      targetHost = new URL(url).hostname;
+    } catch (e) {}
+
+    for (var pi = 0; pi < PROXIES.length; pi++) {
+      var proxy = PROXIES[pi];
+      if (proxy.direct) {
+        if (targetHost && targetHost !== window.location.hostname) {
+          continue;
+        }
+      }
+      try {
+        var res = await fetchWithTimeout(proxy.url(url), timeoutMs);
+        if (!res.ok) continue;
+        var text = await proxy.parse(res);
+        if (text && text.trim().length > 20) {
+          return { text: text, proxy: proxy };
+        }
+      } catch (e) {
+        // continue to next proxy
+      }
+    }
+    return null;
+  }
+
+  function rewriteCssUrls(cssText, baseUrl, proxy) {
+    if (!cssText) return "";
+    return cssText.replace(
+      /url\(\s*['"]?([^'")\s]+)['"]?\s*\)/gi,
+      function (m, u) {
+        if (
+          !u ||
+          u.startsWith("data:") ||
+          u.startsWith("#") ||
+          u.startsWith("blob:") ||
+          u.startsWith("javascript:")
+        ) {
+          return m;
+        }
+        var abs = resolveUrl(u, baseUrl);
+        var proxied = getProxyUrl(abs, proxy);
+        return "url('" + proxied + "')";
+      },
+    );
+  }
+
   /* ── HTML processing ── */
-  function processHtml(html, pageUrl, proxy) {
+  async function processHtml(html, pageUrl, proxy, onProgress) {
     var parser = new DOMParser();
     var doc = parser.parseFromString(html, "text/html");
+
+    // Ensure <base href="pageUrl"> exists in <head> so any unresolved relative links work
+    var baseEl = doc.querySelector("base");
+    if (!baseEl) {
+      baseEl = doc.createElement("base");
+      if (doc.head) {
+        doc.head.insertBefore(baseEl, doc.head.firstChild);
+      } else {
+        doc.documentElement.insertBefore(
+          baseEl,
+          doc.documentElement.firstChild,
+        );
+      }
+    }
+    baseEl.setAttribute("href", pageUrl);
+
+    // Fetch and inline all external stylesheets (<link rel="stylesheet">)
+    var styleLinks = Array.prototype.slice.call(
+      doc.querySelectorAll(
+        'link[rel="stylesheet"][href], link[rel="preload"][as="style"][href]',
+      ),
+    );
+    if (styleLinks.length > 0 && onProgress) {
+      onProgress("Inlining " + styleLinks.length + " stylesheets…");
+    }
+
+    await Promise.all(
+      styleLinks.map(async function (linkEl) {
+        var href = linkEl.getAttribute("href");
+        if (!href) return;
+        var absCssUrl = resolveUrl(href, pageUrl);
+
+        try {
+          var res = await fetchTextViaProxy(absCssUrl, 8000);
+          if (res && res.text) {
+            var cssText = res.text;
+            var rewrittenCss = rewriteCssUrls(cssText, absCssUrl, proxy);
+            var styleEl = doc.createElement("style");
+            styleEl.setAttribute("data-source-href", absCssUrl);
+            styleEl.textContent = rewrittenCss;
+            if (linkEl.parentNode) {
+              linkEl.parentNode.replaceChild(styleEl, linkEl);
+            }
+            return;
+          }
+        } catch (e) {}
+
+        // Fallback if inline fetch fails: set href to proxied URL
+        linkEl.setAttribute("href", getProxyUrl(absCssUrl, proxy));
+        linkEl.setAttribute("crossorigin", "anonymous");
+      }),
+    );
+
+    // Process inline <style> tags (rewrite relative url(...) declarations)
+    doc.querySelectorAll("style").forEach(function (styleEl) {
+      if (styleEl.textContent) {
+        styleEl.textContent = rewriteCssUrls(
+          styleEl.textContent,
+          pageUrl,
+          proxy,
+        );
+      }
+    });
 
     // Process images (rewriting source to CORS proxy and adding crossorigin attribute)
     doc.querySelectorAll("img").forEach(function (el) {
@@ -278,13 +391,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
     doc.querySelectorAll("source").forEach(function (el) {
       el.remove();
-    });
-
-    // Process stylesheets (rewriting link to CORS proxy and adding crossorigin attribute)
-    doc.querySelectorAll('link[rel="stylesheet"][href]').forEach(function (el) {
-      var abs = resolveUrl(el.getAttribute("href"), pageUrl);
-      el.setAttribute("href", getProxyUrl(abs, proxy));
-      el.setAttribute("crossorigin", "anonymous");
     });
 
     // Process inline styles with background images
@@ -323,23 +429,8 @@ document.addEventListener("DOMContentLoaded", function () {
     var style = doc.createElement("style");
     style.textContent =
       "*,*::before,*::after{box-sizing:border-box}body{margin:0!important;overflow:visible!important;height:auto!important}html{overflow:visible!important;height:auto!important}.sticky,.is-sticky{position:relative!important;top:auto!important}::-webkit-scrollbar{display:none} [style*='fixed'] {position:absolute!important;}" +
-      /* Scroll-reveal libraries (AOS, WOW.js, custom IntersectionObserver
-         patterns like this site's own .rv/.in) hide sections at opacity:0
-         until JS adds a class on scroll-into-view. Scripts are stripped
-         above, so that class never gets added and the section stays
-         invisible forever — while still reserving its layout space, which
-         is exactly what produces a blank gap of the right height instead
-         of missing content. Force everything to its already-revealed
-         state instead. We deliberately don't touch `visibility` or
-         `transform` here: those are also used for legitimately-hidden UI
-         (drawers, dropdowns) and for centering tricks, and overriding them
-         broadly would trade one visual bug for another. */
       "*,*::before,*::after{opacity:1!important;animation:none!important;transition:none!important;animation-delay:0s!important;transition-delay:0s!important}";
     doc.head.appendChild(style);
-
-    doc.querySelectorAll("base").forEach(function (el) {
-      el.remove();
-    });
 
     return "<!DOCTYPE html>" + doc.documentElement.outerHTML;
   }
@@ -593,29 +684,16 @@ document.addEventListener("DOMContentLoaded", function () {
       direct: true /* flag — skip if CORS will definitely fail */,
     },
     {
-      name: "AllOrigins-raw",
+      name: "Corsproxy.org",
       url: function (u) {
-        return "https://api.allorigins.win/raw?url=" + encodeURIComponent(u);
+        return "https://corsproxy.org/?" + encodeURIComponent(u);
       },
       parse: function (r) {
         return r.text();
       },
     },
     {
-      name: "AllOrigins-get",
-      url: function (u) {
-        return "https://api.allorigins.win/get?url=" + encodeURIComponent(u);
-      },
-      parse: function (r) {
-        return r.json().then(function (j) {
-          if (j && j.contents && j.contents.trim().length > 50)
-            return j.contents;
-          return Promise.reject(new Error("Empty contents"));
-        });
-      },
-    },
-    {
-      name: "CORSProxy.io",
+      name: "Corsproxy.io",
       url: function (u) {
         return "https://corsproxy.io/?" + encodeURIComponent(u);
       },
@@ -635,12 +713,25 @@ document.addEventListener("DOMContentLoaded", function () {
       },
     },
     {
-      name: "ThingProxy",
+      name: "AllOrigins-raw",
       url: function (u) {
-        return "https://thingproxy.freeboard.io/fetch/" + u;
+        return "https://api.allorigins.win/raw?url=" + encodeURIComponent(u);
       },
       parse: function (r) {
         return r.text();
+      },
+    },
+    {
+      name: "AllOrigins-get",
+      url: function (u) {
+        return "https://api.allorigins.win/get?url=" + encodeURIComponent(u);
+      },
+      parse: function (r) {
+        return r.json().then(function (j) {
+          if (j && j.contents && j.contents.trim().length > 50)
+            return j.contents;
+          return Promise.reject(new Error("Empty contents"));
+        });
       },
     },
     {
@@ -747,8 +838,8 @@ document.addEventListener("DOMContentLoaded", function () {
           }
         }
         setProg(3 + pi * 4, "Trying " + proxy.name + "…");
-        /* Direct attempt: 12 s (fast fail); proxy attempts: 28 s */
-        var tms = proxy.direct ? 12000 : 28000;
+        /* Direct attempt: 8 s (fast fail); proxy attempts: 12 s */
+        var tms = proxy.direct ? 8000 : 12000;
         try {
           var pr = await fetchWithTimeout(proxy.url(pageUrl), tms);
           if (!pr.ok) throw new Error("HTTP " + pr.status);
@@ -780,11 +871,15 @@ document.addEventListener("DOMContentLoaded", function () {
 
       /* STEP 2: PROCESS */
       setStep("process");
-      setProg(20, "Processing HTML…");
-      await new Promise(function (r) {
-        setTimeout(r, 60);
-      });
-      var processed = processHtml(html, pageUrl, successfulProxy);
+      setProg(20, "Processing HTML & CSS…");
+      var processed = await processHtml(
+        html,
+        pageUrl,
+        successfulProxy,
+        function (statusMsg) {
+          setProg(21, statusMsg);
+        },
+      );
 
       /* STEP 3: RENDER + COUNTDOWN */
       setStep("render");
