@@ -284,14 +284,22 @@ body.nav-open .hamburger span:nth-child(3) {
   transform: translateY(-7px) rotate(-45deg);
 }
 
+body.nav-open {
+  overflow: hidden;
+}
 .mobile-panel {
   display: none;
   position: fixed;
-  inset: 72px 0 0 0;
+  top: 72px;
+  left: 0;
+  right: 0;
+  bottom: 0;
   background: var(--bg);
   z-index: 99;
-  padding: 28px 24px;
+  padding: 20px 24px;
   overflow-y: auto;
+  border-top: 1px solid var(--line);
+  -webkit-overflow-scrolling: touch;
 }
 body.nav-open .mobile-panel {
   display: block;
@@ -299,17 +307,33 @@ body.nav-open .mobile-panel {
 .mobile-panel ul {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 2px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.mobile-panel li {
+  margin: 0;
+  padding: 0;
 }
 .mobile-panel a {
   display: block;
-  padding: 16px 4px;
+  padding: 16px 8px;
   font-size: 1.15rem;
   font-weight: 600;
+  color: var(--ink);
   border-bottom: 1px solid var(--line);
+  transition:
+    color 0.15s var(--ease),
+    padding-left 0.15s var(--ease);
+}
+.mobile-panel a:hover {
+  color: var(--accent-a);
+  padding-left: 12px;
 }
 .mobile-panel a[aria-current="page"] {
   color: var(--accent-a);
+  font-weight: 700;
 }
 
 /* Breadcrumb */
