@@ -44,7 +44,10 @@
       property="og:description"
       content="Add text or image watermarks to PDFs — diagonal, tiled or custom position. 100% private, on-device processing. No uploads, ever."
     />
-    <meta property="og:url" content="https://pdfmaster.co.in/watermark-pdf-add" />
+    <meta
+      property="og:url"
+      content="https://pdfmaster.co.in/watermark-pdf-add"
+    />
     <meta
       property="og:image"
       content="https://pdfmaster.co.in/assets/og-watermark.jpg"
@@ -75,6 +78,9 @@
     <!-- Icons (relative paths — tool page convention) -->
     <link rel="icon" href="assets/favicon.ico" />
     <link rel="apple-touch-icon" href="assets/apple-touch-icon.png" />
+
+    <!-- Fonts -->
+    <link href="assets/fonts/fonts.css" rel="stylesheet" />
 
     <link rel="stylesheet" href="/css/watermark-pdf-add.css" />
     <script src="/js/sw-register.js" defer></script>
@@ -212,8 +218,6 @@
       })(window, document, "script", "dataLayer", "GTM-PCSVMC65");
     </script>
     <!-- End Google Tag Manager -->
-
-    
   </head>
   <body>
     <!-- Google Tag Manager (noscript) -->
@@ -231,14 +235,14 @@
 
     <header class="site-header">
       <div class="container header-inner">
-        <a href="/" class="logo">
+        <a href="/" class="logo" aria-label="PDFMaster Home">
           <img
             src="assets/apple-touch-icon.png"
-            alt="PDFMaster logo"
-            width="30"
-            height="30"
+            alt="PDFMaster Logo"
+            width="34"
+            height="34"
           />
-          <span>PDFMaster</span>
+          <span class="logo-text">PDF<span>Master</span></span>
         </a>
         <div class="header-actions">
           <button
@@ -1682,14 +1686,14 @@
       <div class="container">
         <div class="footer-grid">
           <div class="footer-brand">
-            <a href="/" class="logo">
+            <a href="/" class="logo" aria-label="PDFMaster Home">
               <img
                 src="assets/apple-touch-icon.png"
-                alt="PDFMaster logo"
-                width="30"
-                height="30"
+                alt="PDFMaster Logo"
+                width="34"
+                height="34"
               />
-              <span>PDFMaster</span>
+              <span class="logo-text">PDF<span>Master</span></span>
             </a>
             <p>
               Free, private, browser-based PDF and image tools. No uploads. No
@@ -1740,6 +1744,6 @@
         </div>
       </div>
     </footer>
-<script src="/js/watermark-pdf-add.js" defer></script>
+    <script src="/js/watermark-pdf-add.js" defer></script>
   </body>
 </html>
