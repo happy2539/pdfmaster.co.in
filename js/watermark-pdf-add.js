@@ -433,14 +433,15 @@
           statusLine.innerHTML = icon + "<span>" + msg + "</span>";
         }
 
-        function showToast(msg, kind, duration) {
+        function showToast(msg, kind, duration, onClick, actionText) {
           var container = document.getElementById("toastContainer");
           if (!container) return;
           kind = kind || "info";
           duration = duration || 3500;
 
           var toast = document.createElement("div");
-          toast.className = "toast toast-" + kind;
+          toast.className =
+            "toast toast-" + kind + (onClick ? " toast-clickable" : "");
 
           var iconHtml =
             kind === "error"
@@ -449,15 +450,38 @@
                 ? '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="#10b981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg>'
                 : '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="var(--accent-solid)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>';
 
-          toast.innerHTML = iconHtml + "<span>" + msg + "</span>";
+          var textHtml = '<span style="flex:1;">' + msg + "</span>";
+          var actionHtml = actionText
+            ? '<button type="button" class="toast-btn">' +
+              actionText +
+              "</button>"
+            : "";
+
+          toast.innerHTML = iconHtml + textHtml + actionHtml;
           container.appendChild(toast);
 
-          setTimeout(function () {
+          var leaveTimer = null;
+          var isRemoved = false;
+          function removeToast() {
+            if (isRemoved) return;
+            isRemoved = true;
             toast.classList.add("toast-leaving");
             setTimeout(function () {
-              toast.remove();
+              if (toast.parentNode) {
+                toast.parentNode.removeChild(toast);
+              }
             }, 280);
-          }, duration);
+          }
+
+          leaveTimer = setTimeout(removeToast, duration);
+
+          if (typeof onClick === "function") {
+            toast.addEventListener("click", function (e) {
+              clearTimeout(leaveTimer);
+              removeToast();
+              onClick(e);
+            });
+          }
         }
         function hexToRgb01(hex) {
           var h = hex.replace("#", "");
@@ -1848,7 +1872,7 @@
             .catch(function () {});
         }
 
-        function checkStoredSessionAvailable() {
+        function checkStoredSessionAvailable(notifyOnFound) {
           return openDB()
             .then(function (db) {
               var tx = db.transaction(["files"], "readonly");
@@ -1858,6 +1882,24 @@
                   var files = filesReq.result;
                   var hasFiles = files && files.length > 0;
                   updateRecoveryBadge(hasFiles);
+                  if (hasFiles && notifyOnFound) {
+                    var lastFile = files[files.length - 1];
+                    var fileName =
+                      lastFile && lastFile.name
+                        ? lastFile.name
+                        : "document";
+                    showToast(
+                      "Last saved file (" +
+                        fileName +
+                        ") is available. Click to see & restore.",
+                      "info",
+                      8000,
+                      function () {
+                        loadSessionFromDB(true);
+                      },
+                      "Restore",
+                    );
+                  }
                   res(hasFiles);
                 };
                 filesReq.onerror = function () {
@@ -1914,6 +1956,8 @@
         updateScriptHint();
         updateApplyState();
         showDropzone();
-        checkStoredSessionAvailable();
+        setTimeout(function () {
+          checkStoredSessionAvailable(true);
+        }, 450);
       })();
     
