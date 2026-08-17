@@ -211,6 +211,64 @@ header nav {
   pointer-events: none;
 }
 
+/* Recovery Button & Badge */
+.recovery-btn {
+  position: relative;
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  background: var(--bg-input);
+  color: var(--text-muted);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition:
+    background 0.2s,
+    border-color 0.2s,
+    color 0.2s,
+    transform 0.2s;
+  flex-shrink: 0;
+}
+
+.recovery-btn:hover {
+  background: rgba(230, 57, 70, 0.07);
+  border-color: rgba(230, 57, 70, 0.18);
+  color: var(--accent);
+  transform: scale(1.08);
+}
+
+.recovery-btn svg {
+  width: 18px;
+  height: 18px;
+}
+
+.recovery-badge {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--accent);
+  border: 2px solid var(--bg-card);
+  box-shadow: 0 0 0 1px var(--accent);
+  animation: recoveryPulse 2s infinite ease-in-out;
+}
+
+@keyframes recoveryPulse {
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 0.9;
+  }
+  50% {
+    transform: scale(1.25);
+    opacity: 1;
+  }
+}
+
 /* Hamburger */
 .hamburger {
   width: 40px;
@@ -1349,6 +1407,26 @@ footer {
 }
 .toast.error {
   border-color: var(--accent);
+}
+.toast.toast-clickable {
+  cursor: pointer;
+}
+.toast-btn {
+  background: var(--accent);
+  color: #fff;
+  border: none;
+  border-radius: 999px;
+  padding: 4px 12px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  cursor: pointer;
+  margin-left: 10px;
+  flex-shrink: 0;
+  transition: opacity 0.2s, transform 0.15s;
+}
+.toast-btn:hover {
+  opacity: 0.9;
+  transform: scale(1.05);
 }
 
 /* ═══════════════ ANIMATIONS ═══════════════ */

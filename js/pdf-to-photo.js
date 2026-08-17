@@ -4,11 +4,10 @@
 let pdfjsReady = false;
 (function loadPdfJs() {
   const s = document.createElement("script");
-  s.src = "assets/vendor/pdf-3.4.120.min.js";
+  s.src = "/assets/vendor/pdf-3.4.120.min.js";
   s.onload = function () {
     const w = document.createElement("script");
-    w.src =
-      "assets/vendor/pdf.worker-3.4.120.min.js";
+    w.src = "/assets/vendor/pdf.worker-3.4.120.min.js";
     w.onload = () => {
       pdfjsLib.GlobalWorkerOptions.workerSrc = w.src;
       pdfjsReady = true;
@@ -22,7 +21,7 @@ let pdfjsReady = false;
 let jsZipReady = false;
 (function loadJsZip() {
   const s = document.createElement("script");
-  s.src = "assets/vendor/jszip.min.js";
+  s.src = "/assets/vendor/jszip.min.js";
   s.onload = () => {
     jsZipReady = true;
   };
@@ -31,6 +30,7 @@ let jsZipReady = false;
 
 // ─── State ───────────────────────────────────────────────────────────────
 let pdfFile = null,
+  currentPdfBytes = null,
   pdfDoc = null,
   convertedImages = [],
   totalPages = 0;
@@ -137,20 +137,56 @@ b2t.addEventListener("click", () =>
 
 // ─── Toast ───────────────────────────────────────────────────────────────
 let toastTimer;
-function showToast(msg, type = "") {
+function showToast(
+  msg,
+  type = "",
+  dur = 3200,
+  onClick = null,
+  actionText = null,
+) {
   const t = document.getElementById("toast");
-  t.textContent = msg;
-  t.className = "toast show " + type;
+  if (!t) return;
+  t.innerHTML = "";
+
+  const span = document.createElement("span");
+  span.textContent = msg;
+  t.appendChild(span);
+
+  if (actionText && typeof onClick === "function") {
+    const actBtn = document.createElement("button");
+    actBtn.type = "button";
+    actBtn.className = "toast-btn";
+    actBtn.textContent = actionText;
+    actBtn.onclick = (e) => {
+      e.stopPropagation();
+      t.className = "toast";
+      onClick();
+    };
+    t.appendChild(actBtn);
+    t.classList.add("toast-clickable");
+  } else if (typeof onClick === "function") {
+    t.classList.add("toast-clickable");
+    t.onclick = () => {
+      t.className = "toast";
+      onClick();
+    };
+  } else {
+    t.classList.remove("toast-clickable");
+    t.onclick = null;
+  }
+
+  t.className = "toast show " + type + (onClick ? " toast-clickable" : "");
   clearTimeout(toastTimer);
   toastTimer = setTimeout(() => {
     t.className = "toast";
-  }, 3200);
+  }, dur);
 }
 
 // ─── Quality slider ──────────────────────────────────────────────────────
 qualitySlider.addEventListener("input", () => {
   qualityVal.textContent = qualitySlider.value;
   qualityDisplay.textContent = qualitySlider.value + "%";
+  scheduleDBSave();
 });
 
 // Show/hide quality slider based on format
@@ -158,20 +194,29 @@ function updateQualityVisibility() {
   const fmt = outputFormat.value;
   qualityGroup.style.display = fmt === "png" || fmt === "bmp" ? "none" : "";
 }
-outputFormat.addEventListener("change", updateQualityVisibility);
+outputFormat.addEventListener("change", () => {
+  updateQualityVisibility();
+  scheduleDBSave();
+});
 updateQualityVisibility();
+
+dpiSelect.addEventListener("change", scheduleDBSave);
 
 // ─── Page selection ──────────────────────────────────────────────────────
 radioAll.addEventListener("change", () => {
   pagesInput.classList.remove("visible");
   radioAllLabel.classList.add("selected");
   radioSpecLabel.classList.remove("selected");
+  scheduleDBSave();
 });
 radioSpec.addEventListener("change", () => {
   pagesInput.classList.add("visible");
   radioSpecLabel.classList.add("selected");
   radioAllLabel.classList.remove("selected");
+  scheduleDBSave();
 });
+
+pagesText.addEventListener("input", scheduleDBSave);
 
 // ─── Export format buttons ────────────────────────────────────────────────
 fmtBtns.querySelectorAll(".fmt-btn").forEach((btn) => {
@@ -181,6 +226,7 @@ fmtBtns.querySelectorAll(".fmt-btn").forEach((btn) => {
       .forEach((b) => b.classList.remove("active"));
     btn.classList.add("active");
     downloadFormat = btn.dataset.fmt;
+    scheduleDBSave();
   });
 });
 
@@ -231,18 +277,22 @@ function handleFileSelect(file) {
   fileInfo.classList.add("show");
 
   const reader = new FileReader();
-  reader.onload = (e) => loadPdf(new Uint8Array(e.target.result));
+  reader.onload = (e) => {
+    currentPdfBytes = new Uint8Array(e.target.result);
+    loadPdf(currentPdfBytes);
+  };
   reader.readAsArrayBuffer(file);
 }
 
-function loadPdf(data) {
+function loadPdf(data, isRestore = false) {
   function tryLoad() {
-    if (!pdfjsReady) {
+    if (!pdfjsReady || !window.pdfjsLib) {
       setTimeout(tryLoad, 150);
       return;
     }
+    const clone = new Uint8Array(data.slice().buffer);
     pdfjsLib
-      .getDocument(data)
+      .getDocument({ data: clone })
       .promise.then((pdf) => {
         pdfDoc = pdf;
         totalPages = pdf.numPages;
@@ -254,7 +304,10 @@ function loadPdf(data) {
           (totalPages !== 1 ? "s" : "");
         filePagesEl.textContent = totalPages + " pages";
         convertBtn.disabled = false;
-        showToast("PDF loaded — " + totalPages + " pages", "success");
+        scheduleDBSave();
+        if (!isRestore) {
+          showToast("PDF loaded — " + totalPages + " pages", "success");
+        }
       })
       .catch((err) => {
         showToast("Could not read PDF. Is it password-protected?", "error");
@@ -499,6 +552,7 @@ function triggerDownload(url, name) {
 // ─── Reset ───────────────────────────────────────────────────────────────
 function resetForm() {
   pdfFile = null;
+  currentPdfBytes = null;
   pdfDoc = null;
   convertedImages = [];
   totalPages = 0;
@@ -515,6 +569,7 @@ function resetForm() {
   resultsSection.classList.remove("visible");
   imagesGrid.innerHTML = "";
   progressFill.style.width = "0%";
+  clearSessionFromDB();
 }
 resetBtn.addEventListener("click", resetForm);
 
@@ -525,3 +580,237 @@ document.querySelectorAll(".faq-item").forEach((item) => {
     item.querySelector(".faq-icon").textContent = open ? "+" : "+";
   });
 });
+
+// ─── IndexedDB Recovery Engine ───────────────────────────────────────────
+let dbPromise = null;
+let saveTimer = null;
+
+function openDB() {
+  if (dbPromise) return dbPromise;
+  dbPromise = new Promise((resolve, reject) => {
+    const DB_NAME = "pdfmaster_photo_db";
+    const DB_VERSION = 1;
+    const req = indexedDB.open(DB_NAME, DB_VERSION);
+    req.onupgradeneeded = (e) => {
+      const db = e.target.result;
+      if (!db.objectStoreNames.contains("settings")) {
+        db.createObjectStore("settings");
+      }
+      if (!db.objectStoreNames.contains("photo_data")) {
+        db.createObjectStore("photo_data");
+      }
+    };
+    req.onsuccess = (e) => resolve(e.target.result);
+    req.onerror = (e) => reject(e.target.error);
+  });
+  return dbPromise;
+}
+
+function scheduleDBSave() {
+  if (saveTimer) clearTimeout(saveTimer);
+  saveTimer = setTimeout(() => {
+    saveSessionToDB();
+  }, 400);
+}
+
+async function saveSessionToDB() {
+  if (!currentPdfBytes || !pdfFile) return false;
+  try {
+    const db = await openDB();
+    const tx = db.transaction(["settings", "photo_data"], "readwrite");
+    const settingsStore = tx.objectStore("settings");
+    const dataStore = tx.objectStore("photo_data");
+
+    const sessionData = {
+      timestamp: Date.now(),
+      fileName: pdfFile.name,
+      fileSize: pdfFile.size,
+      outputFormat: outputFormat.value,
+      dpiSelect: dpiSelect.value,
+      qualitySlider: qualitySlider.value,
+      radioMode: radioAll.checked ? "all" : "spec",
+      pagesText: pagesText.value,
+      downloadFormat: downloadFormat,
+    };
+    settingsStore.put(sessionData, "session");
+
+    const clonedBuffer = currentPdfBytes.slice().buffer;
+    const fileData = {
+      fileName: pdfFile.name,
+      fileSize: pdfFile.size,
+      bytes: clonedBuffer,
+      timestamp: Date.now(),
+    };
+    dataStore.put(fileData, "file");
+
+    updateRecoveryBadge(true);
+    return true;
+  } catch (err) {
+    console.warn("IndexedDB save failed:", err);
+    return false;
+  }
+}
+
+async function loadSessionFromDB(isManual = false) {
+  try {
+    const db = await openDB();
+    const tx = db.transaction(["settings", "photo_data"], "readonly");
+    const settingsReq = tx.objectStore("settings").get("session");
+    const dataReq = tx.objectStore("photo_data").get("file");
+
+    const [session, data] = await Promise.all([
+      new Promise((res) => {
+        settingsReq.onsuccess = () => res(settingsReq.result);
+        settingsReq.onerror = () => res(null);
+      }),
+      new Promise((res) => {
+        dataReq.onsuccess = () => res(dataReq.result);
+        dataReq.onerror = () => res(null);
+      }),
+    ]);
+
+    if (!data || !data.bytes) {
+      updateRecoveryBadge(false);
+      if (isManual) {
+        showToast("No stored session found in recovery storage.", "error");
+      }
+      return false;
+    }
+
+    pdfFile = {
+      name: data.fileName || "document.pdf",
+      size: data.fileSize || data.bytes.byteLength,
+    };
+    const rawBytes =
+      data.bytes instanceof Uint8Array ? data.bytes : new Uint8Array(data.bytes);
+    currentPdfBytes = new Uint8Array(rawBytes.slice().buffer);
+
+    convertBtn.disabled = true;
+    resetBtn.disabled = false;
+    resultsSection.classList.remove("visible");
+    convertedImages = [];
+
+    uploadZone.classList.add("has-file");
+    uploadZone.querySelector("h3").textContent = pdfFile.name;
+    uploadZone.querySelector("p").textContent =
+      fmtSize(pdfFile.size) + " — Restoring…";
+
+    fileNameEl.textContent = pdfFile.name + " · " + fmtSize(pdfFile.size);
+    fileInfo.classList.add("show");
+
+    if (session) {
+      if (session.outputFormat && outputFormat) {
+        outputFormat.value = session.outputFormat;
+        updateQualityVisibility();
+      }
+      if (session.dpiSelect && dpiSelect) {
+        dpiSelect.value = session.dpiSelect;
+      }
+      if (session.qualitySlider && qualitySlider) {
+        qualitySlider.value = session.qualitySlider;
+        qualityVal.textContent = session.qualitySlider;
+        qualityDisplay.textContent = session.qualitySlider + "%";
+      }
+      if (session.radioMode === "spec" && radioSpec) {
+        radioSpec.checked = true;
+        radioAll.checked = false;
+        pagesInput.classList.add("visible");
+        radioSpecLabel.classList.add("selected");
+        radioAllLabel.classList.remove("selected");
+      } else if (radioAll) {
+        radioAll.checked = true;
+        radioSpec.checked = false;
+        pagesInput.classList.remove("visible");
+        radioAllLabel.classList.add("selected");
+        radioSpecLabel.classList.remove("selected");
+      }
+      if (session.pagesText && pagesText) {
+        pagesText.value = session.pagesText;
+      }
+      if (session.downloadFormat) {
+        downloadFormat = session.downloadFormat;
+        fmtBtns.querySelectorAll(".fmt-btn").forEach((b) => {
+          b.classList.toggle("active", b.dataset.fmt === downloadFormat);
+        });
+      }
+    }
+
+    loadPdf(currentPdfBytes, true);
+    updateRecoveryBadge(true);
+
+    if (isManual) {
+      showToast(
+        `Restored '${pdfFile.name}' and conversion options!`,
+        "success",
+        4000,
+      );
+    }
+    return true;
+  } catch (err) {
+    console.warn("IndexedDB load failed:", err);
+    if (isManual) {
+      showToast("Could not access recovery storage: " + err.message, "error");
+    }
+    return false;
+  }
+}
+
+async function clearSessionFromDB() {
+  try {
+    const db = await openDB();
+    const tx = db.transaction(["settings", "photo_data"], "readwrite");
+    tx.objectStore("settings").clear();
+    tx.objectStore("photo_data").clear();
+    updateRecoveryBadge(false);
+  } catch (err) {
+    console.warn("IndexedDB clear failed:", err);
+  }
+}
+
+async function checkStoredSessionAvailable(notifyOnFound = false) {
+  try {
+    const db = await openDB();
+    const tx = db.transaction(["photo_data"], "readonly");
+    const dataReq = tx.objectStore("photo_data").get("file");
+    const data = await new Promise((res) => {
+      dataReq.onsuccess = () => res(dataReq.result);
+      dataReq.onerror = () => res(null);
+    });
+
+    const hasData = !!(data && data.bytes);
+    updateRecoveryBadge(hasData);
+
+    if (hasData && notifyOnFound && !currentPdfBytes) {
+      const name = data.fileName ? `'${data.fileName}'` : "Previous PDF";
+      showToast(
+        `Last session (${name}) is available. Click to restore.`,
+        "info",
+        8000,
+        () => loadSessionFromDB(true),
+        "Restore",
+      );
+    }
+    return hasData;
+  } catch {
+    updateRecoveryBadge(false);
+    return false;
+  }
+}
+
+function updateRecoveryBadge(hasData) {
+  const badge = document.getElementById("recoveryBadge");
+  if (badge) {
+    badge.style.display = hasData ? "block" : "none";
+  }
+}
+
+// Wire recovery button
+const recoveryBtn = document.getElementById("recoveryBtn");
+if (recoveryBtn) {
+  recoveryBtn.addEventListener("click", () => {
+    loadSessionFromDB(true);
+  });
+}
+
+// Check stored session on startup
+checkStoredSessionAvailable(true);
