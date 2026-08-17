@@ -189,14 +189,24 @@ section {
   display: flex;
   align-items: center;
   gap: 10px;
-  font-family: var(--font-display);
-  font-weight: 700;
-  font-size: 1.15rem;
 }
 .brand img {
   width: 32px;
   height: 32px;
   border-radius: 8px;
+}
+.logo-text {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 1.25rem;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+}
+.logo-text span {
+  color: var(--accent-a);
+}
+[data-theme="dark"] .logo-text span {
+  color: #ff8a7a;
 }
 .nav-links {
   display: flex;
@@ -1047,10 +1057,10 @@ footer {
   display: flex;
   align-items: center;
   gap: 10px;
-  font-family: var(--font-display);
-  font-weight: 700;
-  font-size: 1.1rem;
   margin-bottom: 12px;
+}
+.footer-brand .logo-text {
+  font-size: 1.15rem;
 }
 .footer-brand img {
   width: 28px;
