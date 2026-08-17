@@ -1025,8 +1025,9 @@
                 return previewDoc;
               clearPreviewCache();
               return getFileBytes(first.file).then(function (bytes) {
+                var clone = bytes.slice ? bytes.slice(0) : new Uint8Array(bytes);
                 return window.pdfjsLib
-                  .getDocument({ data: bytes })
+                  .getDocument({ data: clone })
                   .promise.then(function (doc) {
                     doc.__sourceId = first.id;
                     previewDoc = doc;

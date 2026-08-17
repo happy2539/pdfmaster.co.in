@@ -6,8 +6,8 @@
 
   <!-- Primary SEO -->
   <title>PDF Reorder Pages Online – Free, Fast & Private | PDFMaster</title>
-  <meta name="description" content="Reorder PDF pages instantly in your browser. Drag and drop to rearrange pages, preview thumbnails, and download your reorganized PDF — 100% free, private, no uploads." />
-  <meta name="keywords" content="reorder PDF pages, rearrange PDF pages, PDF page order, change PDF page order, reorganize PDF, reorder pages in PDF online, drag drop PDF pages, free PDF reorder tool" />
+  <meta name="description" content="Reorder PDF pages instantly in your browser. Drag and drop to rearrange pages, preview thumbnails, and restore previous sessions with local IndexedDB file recovery — 100% free, private, no uploads." />
+  <meta name="keywords" content="reorder PDF pages, rearrange PDF pages, PDF page order, change PDF page order, reorganize PDF, reorder pages in PDF online, drag drop PDF pages, PDF restore session, indexeddb recovery, free PDF reorder tool" />
   <meta name="robots" content="index, follow" />
   <meta name="author" content="PDFMaster" />
   <link rel="canonical" href="https://pdfmaster.co.in/pdf-reorder" />
@@ -15,7 +15,7 @@
   <!-- Open Graph -->
   <meta property="og:type" content="website" />
   <meta property="og:title" content="PDF Reorder Pages Online – Free, Fast & Private | PDFMaster" />
-  <meta property="og:description" content="Drag and drop to rearrange PDF pages. Preview thumbnails, reorder instantly, download — all processed locally in your browser. No file uploads, completely private." />
+  <meta property="og:description" content="Drag and drop to rearrange PDF pages. Preview thumbnails, reorder instantly, auto-save in local IndexedDB — all processed locally in your browser. No file uploads, completely private." />
   <meta property="og:url" content="https://pdfmaster.co.in/pdf-reorder" />
   <meta property="og:site_name" content="PDFMaster" />
   <meta property="og:image" content="https://pdfmaster.co.in/assets/og-pdf-reorder.png" />
@@ -23,7 +23,7 @@
   <!-- Twitter Card -->
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="PDF Reorder Pages Online – Free & Private | PDFMaster" />
-  <meta name="twitter:description" content="Rearrange PDF pages in seconds. Drag, drop, download. 100% browser-based, no server uploads." />
+  <meta name="twitter:description" content="Rearrange PDF pages in seconds. Drag, drop, download. Local IndexedDB recovery, 100% browser-based, no server uploads." />
   <meta name="twitter:image" content="https://pdfmaster.co.in/assets/og-pdf-reorder.png" />
 
   <!-- Favicon & Icons -->
@@ -45,7 +45,7 @@
         "@id": "https://pdfmaster.co.in/pdf-reorder",
         "url": "https://pdfmaster.co.in/pdf-reorder",
         "name": "PDF Reorder Pages Online – Free, Fast & Private | PDFMaster",
-        "description": "Reorder PDF pages instantly in your browser with drag-and-drop. Preview thumbnails, rearrange pages, download reorganized PDF. 100% free and private.",
+        "description": "Reorder PDF pages instantly in your browser with drag-and-drop. Preview thumbnails, rearrange pages, download reorganized PDF. Includes local IndexedDB session recovery. 100% free and private.",
         "isPartOf": { "@id": "https://pdfmaster.co.in/#website" },
         "breadcrumb": { "@id": "https://pdfmaster.co.in/pdf-reorder#breadcrumb" }
       },
@@ -63,12 +63,25 @@
         "applicationCategory": "UtilitiesApplication",
         "operatingSystem": "Any",
         "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
-        "description": "Drag and drop to reorder PDF pages in your browser. No uploads, no registration, 100% private.",
-        "url": "https://pdfmaster.co.in/pdf-reorder"
+        "description": "Drag and drop to reorder PDF pages in your browser. Auto-saves session in local IndexedDB. No uploads, no registration, 100% private.",
+        "url": "https://pdfmaster.co.in/pdf-reorder",
+        "featureList": [
+          "Drag-and-drop page reordering",
+          "Visual page thumbnail preview",
+          "Reverse page order with one click",
+          "Delete unwanted pages",
+          "Smart session recovery (IndexedDB)",
+          "100% Client-side processing"
+        ]
       },
       {
         "@type": "FAQPage",
         "mainEntity": [
+          {
+            "@type": "Question",
+            "name": "Can I recover my PDF pages and order if my browser closes?",
+            "acceptedAnswer": { "@type": "Answer", "text": "Yes. PDFMaster has a built-in session recovery feature powered by your browser's local IndexedDB storage. Your document and customized page sequence are saved 100% locally on your device. Click the Recovery button in the header to resume right where you left off without re-uploading." }
+          },
           {
             "@type": "Question",
             "name": "Is the PDF Reorder tool free to use?",
@@ -133,6 +146,33 @@
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M3 9.5L12 3l9 6.5V20a1 1 0 01-1 1H4a1 1 0 01-1-1V9.5z"/><path d="M9 21V12h6v9"/></svg>
           <span>Home</span>
         </a>
+        <button
+          type="button"
+          class="recovery-btn"
+          id="recoveryBtn"
+          aria-label="Recovery mode - restore saved session"
+          title="Recovery Mode — Restore last PDF & page order"
+        >
+          <svg
+            width="18"
+            height="18"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
+            <path d="M3 3v5h5" />
+            <path d="M12 7v5l4 2" />
+          </svg>
+          <span
+            class="recovery-badge"
+            id="recoveryBadge"
+            style="display: none"
+          ></span>
+        </button>
         <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark/light mode">
           <svg class="theme-icon-light" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
           <svg class="theme-icon-dark" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
@@ -221,6 +261,10 @@
         <span class="hero-tag">
           <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/></svg>
           Free Forever
+        </span>
+        <span class="hero-tag">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path><path d="M3 3v5h5"></path><path d="M12 7v5l4 2"></path></svg>
+          Session Recovery (IndexedDB)
         </span>
       </div>
     </div>
@@ -446,6 +490,13 @@
           <h3>Works on All Devices</h3>
           <p>Fully responsive and touch-friendly. Reorder PDF pages on your phone, tablet, or desktop — no app download needed.</p>
         </div>
+        <div class="feature-card">
+          <div class="feature-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path><path d="M3 3v5h5"></path><path d="M12 7v5l4 2"></path></svg>
+          </div>
+          <h3>Smart Session Recovery</h3>
+          <p>Auto-saves your active document and custom page sequence in local browser IndexedDB storage. Restore your entire session with a single click if your browser closes.</p>
+        </div>
       </div>
     </div>
   </section>
@@ -570,6 +621,15 @@
             <p>Uses pdf-lib to produce clean, specification-compliant PDFs that work seamlessly in all PDF viewers and print workflows.</p>
           </div>
         </div>
+        <div class="benefit-card">
+          <div class="benefit-icon-wrap" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path><path d="M3 3v5h5"></path><path d="M12 7v5l4 2"></path></svg>
+          </div>
+          <div>
+            <h3>IndexedDB Session Recovery</h3>
+            <p>Saves your precious time by preserving your last opened PDF and rearranged page order locally on your device without paying any hard-earned money.</p>
+          </div>
+        </div>
       </div>
     </div>
   </section>
@@ -587,6 +647,16 @@
       </header>
 
       <div class="faq-list" role="list">
+
+        <div class="faq-item" role="listitem">
+          <button class="faq-q" aria-expanded="false" data-faq>
+            Can I recover my PDF pages and order if my browser closes?
+            <span class="faq-arrow" aria-hidden="true"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="display:block;"><polyline points="6 9 12 15 18 9"></polyline></svg></span>
+          </button>
+          <div class="faq-a" role="region">
+            Yes. PDFMaster has a built-in session recovery feature powered by your browser's private IndexedDB storage. Your document and rearranged page order are preserved 100% locally on your machine. If your browser or tab closes unexpectedly, click the <strong>Recovery icon</strong> in the header or the Restore prompt to immediately continue your work without re-uploading.
+          </div>
+        </div>
 
         <div class="faq-item" role="listitem">
           <button class="faq-q" aria-expanded="false" data-faq>
@@ -800,6 +870,9 @@
       </div>
     </div>
   </footer>
+
+  <!-- Toast Notifications -->
+  <div class="toast-container" id="toastContainer" aria-live="polite"></div>
 
   <!-- Back to top -->
   <button class="back-to-top" id="backToTop" aria-label="Back to top">↑</button>

@@ -3,8 +3,10 @@
 // =============================================
 //  CONSTANTS & STATE
 // =============================================
-const pdfjsLib = window["pdfjs-dist/build/pdf"];
-pdfjsLib.GlobalWorkerOptions.workerSrc = "/assets/vendor/pdf.worker.min.js";
+const pdfjsLib = window["pdfjs-dist/build/pdf"] || window.pdfjsLib;
+if (pdfjsLib && pdfjsLib.GlobalWorkerOptions) {
+  pdfjsLib.GlobalWorkerOptions.workerSrc = "/assets/vendor/pdf.worker.min.js";
+}
 
 const state = {
   pdfBytes: null, // Original ArrayBuffer
@@ -212,12 +214,12 @@ async function loadFile(file) {
   emptyState.classList.remove("show");
 
   const arrayBuffer = await file.arrayBuffer();
-  state.pdfBytes = arrayBuffer.slice(0);
+  state.pdfBytes = new Uint8Array(arrayBuffer);
 
-  // Load with PDF.js for rendering
+  // Load with PDF.js for rendering - pass a fresh clone so worker transfer cannot detach state.pdfBytes
   try {
-    const typedArray = new Uint8Array(arrayBuffer);
-    state.pdfJsDoc = await pdfjsLib.getDocument({ data: typedArray }).promise;
+    const renderData = new Uint8Array(state.pdfBytes.slice().buffer);
+    state.pdfJsDoc = await pdfjsLib.getDocument({ data: renderData }).promise;
     state.totalPages = state.pdfJsDoc.numPages;
     state.pageOrder = Array.from({ length: state.totalPages }, (_, i) => i);
 
@@ -230,6 +232,7 @@ async function loadFile(file) {
 
     await renderAllThumbs();
     initSortable();
+    scheduleDBSave();
   } catch (err) {
     console.error(err);
     statusMsg.innerHTML = `<span>⚠️ Failed to load PDF: ${err.message}</span>`;
@@ -347,6 +350,7 @@ function rebuildPageOrder() {
     if (delBtn) delBtn.setAttribute("aria-label", `Delete page ${i + 1}`);
   });
   pageCountEl.textContent = state.pageOrder.length;
+  scheduleDBSave();
 }
 
 // =============================================
@@ -383,6 +387,7 @@ changeFileBtn.addEventListener("click", () => {
     state.sortableInstance.destroy();
     state.sortableInstance = null;
   }
+  clearSessionFromDB();
 });
 
 resetOrderBtn.addEventListener("click", async () => {
@@ -394,6 +399,7 @@ resetOrderBtn.addEventListener("click", async () => {
   emptyState.classList.remove("show");
   toolToolbar.style.display = "";
   hintBar.style.display = "";
+  scheduleDBSave();
 });
 
 reverseBtn.addEventListener("click", () => {
@@ -414,8 +420,9 @@ downloadBtn.addEventListener("click", async () => {
   try {
     const { PDFDocument } = PDFLib;
 
-    // Load original
-    const srcDoc = await PDFDocument.load(state.pdfBytes, {
+    // Load original - pass a fresh clone so buffer is never mutated/detached
+    const srcBytes = new Uint8Array(state.pdfBytes.slice().buffer);
+    const srcDoc = await PDFDocument.load(srcBytes, {
       ignoreEncryption: true,
     });
 
@@ -439,9 +446,10 @@ downloadBtn.addEventListener("click", async () => {
     a.click();
     document.body.removeChild(a);
     setTimeout(() => URL.revokeObjectURL(url), 5000);
+    showToast("PDF downloaded successfully!", "success");
   } catch (err) {
     console.error(err);
-    alert("Failed to generate PDF: " + err.message);
+    showToast("Failed to generate PDF: " + err.message, "error", 5000);
   } finally {
     downloadBtn.disabled = false;
     downloadBtn.innerHTML = `
@@ -449,3 +457,247 @@ downloadBtn.addEventListener("click", async () => {
           Download PDF`;
   }
 });
+
+// =============================================
+//  TOAST NOTIFICATIONS
+// =============================================
+function showToast(msg, type = "info", dur = 3500, onClick = null, actionText = null) {
+  const tc = document.getElementById("toastContainer");
+  if (!tc) return;
+  const toast = document.createElement("div");
+  toast.className = `toast ${type}`;
+
+  const span = document.createElement("span");
+  span.textContent = msg;
+  toast.appendChild(span);
+
+  if (actionText && typeof onClick === "function") {
+    const actBtn = document.createElement("button");
+    actBtn.type = "button";
+    actBtn.className = "toast-btn";
+    actBtn.textContent = actionText;
+    actBtn.onclick = (e) => {
+      e.stopPropagation();
+      toast.remove();
+      onClick();
+    };
+    toast.appendChild(actBtn);
+    toast.classList.add("toast-clickable");
+  } else if (typeof onClick === "function") {
+    toast.classList.add("toast-clickable");
+    toast.onclick = () => {
+      toast.remove();
+      onClick();
+    };
+  }
+
+  tc.appendChild(toast);
+  setTimeout(() => {
+    toast.style.opacity = "0";
+    toast.style.transform = "translateY(12px)";
+    setTimeout(() => toast.remove(), 300);
+  }, dur);
+}
+
+// =============================================
+//  INDEXEDDB RECOVERY MODE
+// =============================================
+let dbPromise = null;
+let saveTimer = null;
+
+function openDB() {
+  if (dbPromise) return dbPromise;
+  dbPromise = new Promise((resolve, reject) => {
+    const DB_NAME = "pdfmaster_reorder_db";
+    const DB_VERSION = 1;
+    const req = indexedDB.open(DB_NAME, DB_VERSION);
+    req.onupgradeneeded = (e) => {
+      const db = e.target.result;
+      if (!db.objectStoreNames.contains("settings")) {
+        db.createObjectStore("settings");
+      }
+      if (!db.objectStoreNames.contains("reorder_data")) {
+        db.createObjectStore("reorder_data");
+      }
+    };
+    req.onsuccess = (e) => resolve(e.target.result);
+    req.onerror = (e) => reject(e.target.error);
+  });
+  return dbPromise;
+}
+
+function scheduleDBSave() {
+  if (saveTimer) clearTimeout(saveTimer);
+  saveTimer = setTimeout(() => {
+    saveSessionToDB();
+  }, 400);
+}
+
+async function saveSessionToDB() {
+  if (!state.pdfBytes || !state.fileName) return false;
+  try {
+    const db = await openDB();
+    const tx = db.transaction(["settings", "reorder_data"], "readwrite");
+    const settingsStore = tx.objectStore("settings");
+    const dataStore = tx.objectStore("reorder_data");
+
+    const sessionData = {
+      timestamp: Date.now(),
+      fileName: state.fileName,
+      totalPages: state.totalPages,
+      pageOrder: state.pageOrder,
+    };
+    settingsStore.put(sessionData, "session");
+
+    const clonedBuffer = state.pdfBytes.slice().buffer;
+    const docData = {
+      fileName: state.fileName,
+      bytes: clonedBuffer,
+      pageOrder: state.pageOrder,
+      totalPages: state.totalPages,
+      timestamp: Date.now(),
+    };
+    dataStore.put(docData, "document");
+
+    updateRecoveryBadge(true);
+    return true;
+  } catch (err) {
+    console.warn("IndexedDB save failed:", err);
+    return false;
+  }
+}
+
+async function loadSessionFromDB(isManual = false) {
+  try {
+    const db = await openDB();
+    const tx = db.transaction(["settings", "reorder_data"], "readonly");
+    const settingsReq = tx.objectStore("settings").get("session");
+    const dataReq = tx.objectStore("reorder_data").get("document");
+
+    const [session, data] = await Promise.all([
+      new Promise((res) => {
+        settingsReq.onsuccess = () => res(settingsReq.result);
+        settingsReq.onerror = () => res(null);
+      }),
+      new Promise((res) => {
+        dataReq.onsuccess = () => res(dataReq.result);
+        dataReq.onerror = () => res(null);
+      }),
+    ]);
+
+    if (!data || !data.bytes) {
+      updateRecoveryBadge(false);
+      if (isManual) {
+        showToast("No stored session found in recovery storage.", "error");
+      }
+      return false;
+    }
+
+    state.fileName = data.fileName || "document.pdf";
+    const rawBytes = data.bytes instanceof Uint8Array ? data.bytes : new Uint8Array(data.bytes);
+    state.pdfBytes = new Uint8Array(rawBytes.slice().buffer);
+    state.pageOrder = (session && Array.isArray(session.pageOrder) && session.pageOrder.length > 0)
+      ? session.pageOrder
+      : (data.pageOrder || []);
+
+    // Show workspace
+    uploadZone.style.display = "none";
+    reorderWorkspace.classList.add("active");
+    setLoading("Restoring your PDF session…");
+    toolToolbar.style.display = "none";
+    hintBar.style.display = "none";
+    pagesGrid.innerHTML = "";
+    emptyState.classList.remove("show");
+
+    // Pass a cloned buffer to PDF.js so web worker transfer cannot detach state.pdfBytes
+    const renderData = new Uint8Array(state.pdfBytes.slice().buffer);
+    state.pdfJsDoc = await pdfjsLib.getDocument({ data: renderData }).promise;
+    state.totalPages = state.pdfJsDoc.numPages;
+
+    if (!state.pageOrder || state.pageOrder.length === 0) {
+      state.pageOrder = Array.from({ length: state.totalPages }, (_, i) => i);
+    }
+
+    fileNameEl.textContent = truncateFilename(state.fileName, 36);
+    pageCountEl.textContent = state.pageOrder.length;
+
+    hideStatus();
+    toolToolbar.style.display = "";
+    hintBar.style.display = "";
+
+    await renderAllThumbs();
+    initSortable();
+    updateRecoveryBadge(true);
+
+    if (isManual) {
+      showToast(`Restored '${state.fileName}' and your custom page order!`, "success", 4000);
+    }
+    return true;
+  } catch (err) {
+    console.warn("IndexedDB load failed:", err);
+    if (isManual) {
+      showToast("Could not access recovery storage: " + err.message, "error");
+    }
+    return false;
+  }
+}
+
+async function clearSessionFromDB() {
+  try {
+    const db = await openDB();
+    const tx = db.transaction(["settings", "reorder_data"], "readwrite");
+    tx.objectStore("settings").clear();
+    tx.objectStore("reorder_data").clear();
+    updateRecoveryBadge(false);
+  } catch (err) {
+    console.warn("IndexedDB clear failed:", err);
+  }
+}
+
+async function checkStoredSessionAvailable(notifyOnFound = false) {
+  try {
+    const db = await openDB();
+    const tx = db.transaction(["reorder_data"], "readonly");
+    const dataReq = tx.objectStore("reorder_data").get("document");
+    const data = await new Promise((res) => {
+      dataReq.onsuccess = () => res(dataReq.result);
+      dataReq.onerror = () => res(null);
+    });
+
+    const hasData = !!(data && data.bytes);
+    updateRecoveryBadge(hasData);
+
+    if (hasData && notifyOnFound && !state.pdfBytes) {
+      const name = data.fileName ? `'${data.fileName}'` : "Previous document";
+      showToast(
+        `Last session (${name}) is available. Click to restore.`,
+        "info",
+        8000,
+        () => loadSessionFromDB(true),
+        "Restore"
+      );
+    }
+    return hasData;
+  } catch {
+    updateRecoveryBadge(false);
+    return false;
+  }
+}
+
+function updateRecoveryBadge(hasData) {
+  const badge = document.getElementById("recoveryBadge");
+  if (badge) {
+    badge.style.display = hasData ? "block" : "none";
+  }
+}
+
+// Wire recovery button
+const recoveryBtn = document.getElementById("recoveryBtn");
+if (recoveryBtn) {
+  recoveryBtn.addEventListener("click", () => {
+    loadSessionFromDB(true);
+  });
+}
+
+// Check stored session on startup
+checkStoredSessionAvailable(true);
