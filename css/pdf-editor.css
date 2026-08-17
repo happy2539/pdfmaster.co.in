@@ -265,6 +265,32 @@ section {
   width: 19px;
   height: 19px;
 }
+.recovery-btn {
+  position: relative;
+}
+.recovery-badge {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--accent);
+  border: 2px solid var(--surface);
+  box-shadow: 0 0 0 1px var(--accent);
+  animation: recoveryPulse 2s infinite ease-in-out;
+}
+@keyframes recoveryPulse {
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 0.9;
+  }
+  50% {
+    transform: scale(1.25);
+    opacity: 1;
+  }
+}
 .theme-toggle .icon-moon {
   display: none;
 }
@@ -1064,6 +1090,25 @@ footer {
 .toast.is-visible {
   opacity: 1;
   transform: translateX(-50%) translateY(0);
+}
+.toast.toast-clickable {
+  cursor: pointer;
+  pointer-events: auto;
+}
+.toast-btn {
+  background: var(--accent);
+  color: #fff;
+  border: none;
+  border-radius: 999px;
+  padding: 4px 12px;
+  margin-left: 10px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+.toast-btn:hover {
+  opacity: 0.9;
 }
 
 /* ============ RESPONSIVE ============ */

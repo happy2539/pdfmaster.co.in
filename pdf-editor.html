@@ -38,7 +38,7 @@
     </title>
     <meta
       name="description"
-      content="Edit PDF files free online, right inside your browser. Add text, shapes, highlights, images, and a signature, then download instantly. 100% private &mdash; your file never leaves your device."
+      content="Edit PDF files free online, right inside your browser. Add text, shapes, highlights, images, and a signature with smart IndexedDB file recovery, then download instantly. 100% private — your file never leaves your device."
     />
     <link rel="canonical" href="https://pdfmaster.co.in/pdf-editor" />
     <meta name="robots" content="index, follow" />
@@ -49,11 +49,11 @@
     <meta property="og:type" content="website" />
     <meta
       property="og:title"
-      content="Free PDF Editor Online &ndash; Edit PDF Files Privately, No Upload"
+      content="Free PDF Editor Online – Edit PDF Files Privately, No Upload"
     />
     <meta
       property="og:description"
-      content="Add text, shapes, highlights, images, and a signature to any PDF, entirely in your browser. Nothing is ever uploaded."
+      content="Add text, shapes, highlights, images, and a signature to any PDF with local IndexedDB session recovery, entirely in your browser. Nothing is ever uploaded."
     />
     <meta property="og:url" content="https://pdfmaster.co.in/pdf-editor" />
     <meta
@@ -63,11 +63,11 @@
     <meta name="twitter:card" content="summary" />
     <meta
       name="twitter:title"
-      content="Free PDF Editor Online &ndash; PDFMaster"
+      content="Free PDF Editor Online – PDFMaster"
     />
     <meta
       name="twitter:description"
-      content="Edit PDFs privately in your browser. No uploads, no sign-up, no watermark."
+      content="Edit PDFs privately in your browser with local IndexedDB file recovery. No uploads, no sign-up, no watermark."
     />
 
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -95,11 +95,20 @@
       {
         "@context": "https://schema.org",
         "@type": "SoftwareApplication",
-        "name": "PDF Editor &ndash; PDFMaster",
+        "name": "PDF Editor – PDFMaster",
         "operatingSystem": "Web",
         "applicationCategory": "Utility",
-        "description": "Add text, shapes, highlights, images, and signatures to a PDF entirely in your browser. No file upload, no sign-up, no watermark.",
+        "description": "Add text, shapes, highlights, images, and signatures to a PDF entirely in your browser with smart IndexedDB session recovery. No file upload, no sign-up, no watermark.",
         "url": "https://pdfmaster.co.in/pdf-editor",
+        "featureList": [
+          "Client-side PDF Editing",
+          "Text and shape markup",
+          "Freehand drawing and highlighter",
+          "Image and signature insertion",
+          "Background removal for signatures",
+          "Smart IndexedDB session and file recovery",
+          "100% private, no server upload"
+        ],
         "offers": {
           "@type": "Offer",
           "price": "0",
@@ -174,6 +183,14 @@
             "acceptedAnswer": {
               "@type": "Answer",
               "text": "When you upload a signature image, we use modern WebAssembly AI (WASM) to detect and remove the background directly in your browser. Since it runs completely client-side, your signature image is never sent to any server, keeping your personal data 100% private."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Can I recover my edited PDF and annotations if my tab or browser closes?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Yes. PDFMaster includes a built-in session recovery feature powered by your browser's local IndexedDB storage. Your document and all added annotations (text, shapes, highlights, images, and signatures) are saved 100% locally on your device. Click the Recovery button in the header to restore your work instantly without re-uploading or paying any fee."
             }
           },
           {
@@ -268,6 +285,31 @@
           </div>
         </div>
         <div class="nav-right">
+          <button
+            type="button"
+            class="icon-btn recovery-btn"
+            id="recoveryBtn"
+            aria-label="Recovery mode - restore saved session"
+            title="Recovery Mode — Restore saved document & annotations"
+          >
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
+              <path d="M3 3v5h5" />
+              <path d="M12 7v5l4 2" />
+            </svg>
+            <span
+              class="recovery-badge"
+              id="recoveryBadge"
+              style="display: none"
+            ></span>
+          </button>
           <button
             class="icon-btn theme-toggle"
             id="theme-toggle"
@@ -388,8 +430,7 @@
                 />
               </svg>
               <span
-                >Processed 100% on your device &mdash; no file transfer, no
-                server, no sign-up.</span
+                >Processed 100% on your device &bull; Local IndexedDB file recovery &bull; No upload, no sign-up.</span
               >
             </div>
           </div>
@@ -1693,6 +1734,9 @@
             download the result in the same tab &mdash; it works the same way on
             a laptop at your desk or a phone on the train.
           </p>
+          <p style="max-width: 760px; color: var(--text-muted); margin-top: 14px">
+            Accidentally closed your browser or lost connection? PDFMaster automatically caches your active document and annotations in your browser's private IndexedDB storage. You can restore your entire editing session at any time with a single click &mdash; saving your precious time without paying any money.
+          </p>
         </div>
       </section>
 
@@ -1806,6 +1850,26 @@
                 Draw a signature, type your name using elegant cursive script
                 fonts, or upload an image and use WASM AI to instantly remove
                 the background.
+              </p>
+            </div>
+            <div class="feature-card">
+              <div class="ic">
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
+                  <path d="M3 3v5h5" />
+                  <path d="M12 7v5l4 2" />
+                </svg>
+              </div>
+              <h3>Last File Recovery (IndexedDB)</h3>
+              <p>
+                Never lose your work if your tab refreshes or closes unexpectedly. Your active PDF document and layered annotations are preserved securely in your local browser storage.
               </p>
             </div>
             <div class="feature-card">
@@ -2009,6 +2073,28 @@
                 </p>
               </div>
             </div>
+            <div class="benefit">
+              <div class="ic">
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
+                  <path d="M3 3v5h5" />
+                  <path d="M12 7v5l4 2" />
+                </svg>
+              </div>
+              <div>
+                <h3>Smart Session Recovery</h3>
+                <p>
+                  Auto-saves your active document and edits in local IndexedDB so you can recover your work in one click after unexpected browser restarts.
+                </p>
+              </div>
+            </div>
           </div>
         </div>
       </section>
@@ -2020,6 +2106,26 @@
             <h2>Common questions</h2>
           </div>
           <div class="faq-list">
+            <div class="faq-item">
+              <button class="faq-q">
+                <span>Can I recover my PDF and edits if my tab or browser closes?</span
+                ><svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2.2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path d="m6 9 6 6 6-6" />
+                </svg>
+              </button>
+              <div class="faq-a">
+                <p>
+                  Yes. PDFMaster has a built-in recovery mode powered by your browser's local IndexedDB storage. Your last opened document and customized annotations (text, shapes, highlights, images, and signatures) are saved 100% locally on your device. If your browser unexpectedly closes, simply click the <strong>Recovery icon</strong> in the header to resume right where you left off. This saves your precious time, requires no re-uploading, and is completely free without paying any hard-earned money.
+                </p>
+              </div>
+            </div>
             <div class="faq-item">
               <button class="faq-q">
                 <span>Is this PDF editor really free?</span
@@ -2558,14 +2664,42 @@
           window.scrollTo({ top: 0, behavior: "smooth" });
         });
 
-        window.showToast = function (msg) {
+        window.showToast = function (msg, type, duration, onClick, actionText) {
           var toast = document.getElementById("toast");
-          toast.textContent = msg;
+          if (!toast) return;
+          toast.innerHTML = "";
+          var span = document.createElement("span");
+          span.textContent = msg;
+          toast.appendChild(span);
+
+          if (actionText && typeof onClick === "function") {
+            var btn = document.createElement("button");
+            btn.type = "button";
+            btn.className = "toast-btn";
+            btn.textContent = actionText;
+            btn.onclick = function (e) {
+              e.stopPropagation();
+              toast.classList.remove("is-visible");
+              onClick();
+            };
+            toast.appendChild(btn);
+            toast.classList.add("toast-clickable");
+          } else if (typeof onClick === "function") {
+            toast.classList.add("toast-clickable");
+            toast.onclick = function () {
+              toast.classList.remove("is-visible");
+              onClick();
+            };
+          } else {
+            toast.classList.remove("toast-clickable");
+            toast.onclick = null;
+          }
+
           toast.classList.add("is-visible");
           clearTimeout(window._toastTimer);
           window._toastTimer = setTimeout(function () {
             toast.classList.remove("is-visible");
-          }, 3200);
+          }, duration || 3200);
         };
 
         var fy = document.getElementById("footer-year");
@@ -2574,6 +2708,8 @@
         }
       })();
     </script>
+    <script src="/assets/vendor/pdf-3.11.174.min.js"></script>
+    <script src="/assets/vendor/pdf-lib-1.17.1.min.js"></script>
     <script src="/js/pdf-editor.js"></script>
   </body>
 </html>

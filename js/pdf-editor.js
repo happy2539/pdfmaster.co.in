@@ -42,6 +42,8 @@
   var measCanvas = null,
     measCtx = null;
   var resizeTimer = null;
+  var dbPromise = null,
+    saveTimer = null;
 
   /* ---------- cropping state ---------- */
   var cropState = {
@@ -78,8 +80,12 @@
   var ZOOM_STEPS = [0.5, 0.75, 1, 1.25, 1.5, 2, 2.5];
   var PDFJS_SOURCES = [
     {
-      lib: "assets/vendor/pdf-3.11.174.min.js",
-      worker: "assets/vendor/pdf.worker-3.11.174.min.js",
+      lib: "/assets/vendor/pdf-3.11.174.min.js",
+      worker: "/assets/vendor/pdf.worker-3.11.174.min.js",
+    },
+    {
+      lib: "/assets/vendor/pdf.min.js",
+      worker: "/assets/vendor/pdf.worker.min.js",
     },
     {
       lib: "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js",
@@ -91,13 +97,10 @@
       worker:
         "https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/build/pdf.worker.min.js",
     },
-    {
-      lib: "https://unpkg.com/pdfjs-dist@3.11.174/build/pdf.min.js",
-      worker: "https://unpkg.com/pdfjs-dist@3.11.174/build/pdf.worker.min.js",
-    },
   ];
   var PDFLIB_SOURCES = [
-    "assets/vendor/pdf-lib-1.17.1.min.js",
+    "/assets/vendor/pdf-lib-1.17.1.min.js",
+    "/assets/vendor/pdf-lib.min.js",
     "https://cdn.jsdelivr.net/npm/pdf-lib@1.17.1/dist/pdf-lib.min.js",
     "https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js",
     "https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js",
@@ -124,6 +127,15 @@
     });
   }
   function loadPdfJs() {
+    var pdfjs = window.pdfjsLib || window["pdfjs-dist/build/pdf"];
+    if (pdfjs) {
+      window.pdfjsLib = pdfjs;
+      if (!window.pdfjsLib.GlobalWorkerOptions.workerSrc) {
+        window.pdfjsLib.GlobalWorkerOptions.workerSrc =
+          "/assets/vendor/pdf.worker-3.11.174.min.js";
+      }
+      return Promise.resolve();
+    }
     var i = 0;
     function attempt() {
       if (i >= PDFJS_SOURCES.length) {
@@ -133,7 +145,9 @@
       i += 1;
       return loadScript(src.lib).then(
         function () {
-          if (window.pdfjsLib) {
+          var p = window.pdfjsLib || window["pdfjs-dist/build/pdf"];
+          if (p) {
+            window.pdfjsLib = p;
             window.pdfjsLib.GlobalWorkerOptions.workerSrc = src.worker;
             return;
           }
@@ -147,6 +161,11 @@
     return attempt();
   }
   function loadPdfLibScript() {
+    var pdflib = window.PDFLib || window["pdf-lib"];
+    if (pdflib) {
+      window.PDFLib = pdflib;
+      return Promise.resolve();
+    }
     var i = 0;
     function attempt() {
       if (i >= PDFLIB_SOURCES.length) {
@@ -156,7 +175,9 @@
       i += 1;
       return loadScript(src).then(
         function () {
-          if (window.PDFLib) {
+          var pl = window.PDFLib || window["pdf-lib"];
+          if (pl) {
+            window.PDFLib = pl;
             return;
           }
           return attempt();
@@ -169,6 +190,18 @@
     return attempt();
   }
   function ensureLibraries() {
+    var pdfjs = window.pdfjsLib || window["pdfjs-dist/build/pdf"];
+    var pdflib = window.PDFLib || window["pdf-lib"];
+    if (pdfjs && pdflib) {
+      window.pdfjsLib = pdfjs;
+      window.PDFLib = pdflib;
+      if (!window.pdfjsLib.GlobalWorkerOptions.workerSrc) {
+        window.pdfjsLib.GlobalWorkerOptions.workerSrc =
+          "/assets/vendor/pdf.worker-3.11.174.min.js";
+      }
+      librariesLoaded = true;
+      return Promise.resolve();
+    }
     if (librariesLoaded) {
       return Promise.resolve();
     }
@@ -228,7 +261,12 @@
       })
       .then(function (buf) {
         originalBytes = buf;
-        var task = window.pdfjsLib.getDocument({ data: buf.slice(0) });
+        var pdfjs = window.pdfjsLib || window["pdfjs-dist/build/pdf"];
+        var task = pdfjs.getDocument({
+          data: buf.slice(0),
+          cMapUrl: "https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/cmaps/",
+          cMapPacked: true,
+        });
         return task.promise;
       })
       .then(function (doc) {
@@ -246,10 +284,11 @@
         document.getElementById("editor-filename").textContent = fileName;
         updateUndoRedoButtons();
         setActiveTool("select");
+        scheduleDBSave();
         return renderPage(1);
       })
       .catch(function (err) {
-        console.error(err);
+        console.error("Failed to open PDF:", err);
         var msg = "Couldn't open that PDF. It may be corrupted.";
         if (err && err.name === "PasswordException") {
           msg =
@@ -297,6 +336,7 @@
             Math.round(zoomFactor * 100) + "%";
           document.getElementById("loading-panel").classList.add("hidden");
           document.getElementById("canvas-frame").classList.remove("hidden");
+          scheduleDBSave();
         });
     });
   }
@@ -798,6 +838,7 @@
         drawSelectionUI(ctx, ann, currentScale);
       }
     }
+    scheduleDBSave();
   }
 
   /* ---------- annotation mutation + undo/redo ---------- */
@@ -2689,6 +2730,7 @@
     zoomFactor = 1;
     pendingPlaceable = null;
     document.getElementById("file-input").value = "";
+    clearSessionFromDB();
     showHero();
   }
 
@@ -3582,5 +3624,229 @@
       if (banner) banner.style.display = "none";
     });
   }
+
+  /* ═══════════════════════════════════════════════════
+     INDEXEDDB RECOVERY MODE LOGIC
+  ═══════════════════════════════════════════════════ */
+  function openDB() {
+    if (dbPromise) return dbPromise;
+    dbPromise = new Promise(function (resolve, reject) {
+      var DB_NAME = "pdfmaster_editor_db";
+      var DB_VERSION = 1;
+      var req = indexedDB.open(DB_NAME, DB_VERSION);
+      req.onupgradeneeded = function (e) {
+        var db = e.target.result;
+        if (!db.objectStoreNames.contains("settings")) {
+          db.createObjectStore("settings");
+        }
+        if (!db.objectStoreNames.contains("editor_data")) {
+          db.createObjectStore("editor_data");
+        }
+      };
+      req.onsuccess = function (e) {
+        resolve(e.target.result);
+      };
+      req.onerror = function (e) {
+        reject(e.target.error);
+      };
+    });
+    return dbPromise;
+  }
+
+  function scheduleDBSave() {
+    if (saveTimer) clearTimeout(saveTimer);
+    saveTimer = setTimeout(function () {
+      saveSessionToDB();
+    }, 400);
+  }
+
+  function saveSessionToDB() {
+    if (!originalBytes || !fileName) return Promise.resolve(false);
+    return openDB()
+      .then(function (db) {
+        var tx = db.transaction(["settings", "editor_data"], "readwrite");
+        var settingsStore = tx.objectStore("settings");
+        var dataStore = tx.objectStore("editor_data");
+
+        var sessionData = {
+          timestamp: Date.now(),
+          fileName: fileName,
+          numPages: numPages,
+          currentPage: currentPage,
+          zoomFactor: zoomFactor,
+        };
+        settingsStore.put(sessionData, "session");
+
+        var editorData = {
+          fileName: fileName,
+          bytes: originalBytes,
+          annotationsByPage: annotationsByPage,
+          timestamp: Date.now(),
+        };
+        dataStore.put(editorData, "document");
+
+        updateRecoveryBadge(true);
+        return true;
+      })
+      .catch(function (err) {
+        console.warn("IndexedDB save failed:", err);
+        return false;
+      });
+  }
+
+  function loadSessionFromDB(isManual) {
+    return openDB()
+      .then(function (db) {
+        var tx = db.transaction(["settings", "editor_data"], "readonly");
+        var sessionReq = tx.objectStore("settings").get("session");
+        var dataReq = tx.objectStore("editor_data").get("document");
+
+        return Promise.all([
+          new Promise(function (res) {
+            sessionReq.onsuccess = function () {
+              res(sessionReq.result);
+            };
+            sessionReq.onerror = function () {
+              res(null);
+            };
+          }),
+          new Promise(function (res) {
+            dataReq.onsuccess = function () {
+              res(dataReq.result);
+            };
+            dataReq.onerror = function () {
+              res(null);
+            };
+          }),
+        ]);
+      })
+      .then(function (results) {
+        var session = results[0];
+        var data = results[1];
+
+        if (!data || !data.bytes) {
+          updateRecoveryBadge(false);
+          if (isManual) {
+            window.showToast("No stored session found in recovery storage.", "error");
+          }
+          return false;
+        }
+
+        showEditor();
+        return ensureLibraries()
+          .then(function () {
+            originalBytes = data.bytes;
+            var pdfjs = window.pdfjsLib || window["pdfjs-dist/build/pdf"];
+            var task = pdfjs.getDocument({
+              data: originalBytes.slice(0),
+              cMapUrl: "https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/cmaps/",
+              cMapPacked: true,
+            });
+            return task.promise;
+          })
+          .then(function (doc) {
+            pdfDoc = doc;
+            numPages = doc.numPages;
+            fileName = data.fileName || "document.pdf";
+            annotationsByPage = data.annotationsByPage || {};
+            history = [];
+            redoHistoryStack = [];
+            imageElCache = {};
+            selectedAnnotation = null;
+            currentPage = (session && session.currentPage) || 1;
+            zoomFactor = (session && session.zoomFactor) || 1;
+            pageDimsCache = {};
+            document.getElementById("editor-filename").textContent = fileName;
+            updateUndoRedoButtons();
+            setActiveTool("select");
+            updateRecoveryBadge(true);
+            return renderPage(currentPage);
+          })
+          .then(function () {
+            if (isManual) {
+              window.showToast(
+                "Restored '" + fileName + "' and your annotations successfully!",
+                "success",
+                4500,
+              );
+            }
+            return true;
+          });
+      })
+      .catch(function (err) {
+        console.warn("IndexedDB load failed:", err);
+        if (isManual) {
+          window.showToast("Could not access recovery storage.", "error");
+        }
+        return false;
+      });
+  }
+
+  function clearSessionFromDB() {
+    return openDB()
+      .then(function (db) {
+        var tx = db.transaction(["settings", "editor_data"], "readwrite");
+        tx.objectStore("settings").clear();
+        tx.objectStore("editor_data").clear();
+        updateRecoveryBadge(false);
+      })
+      .catch(function (err) {
+        console.warn("IndexedDB clear failed:", err);
+      });
+  }
+
+  function checkStoredSessionAvailable(notifyOnFound) {
+    return openDB()
+      .then(function (db) {
+        var tx = db.transaction(["editor_data"], "readonly");
+        var dataReq = tx.objectStore("editor_data").get("document");
+        return new Promise(function (res) {
+          dataReq.onsuccess = function () {
+            res(dataReq.result);
+          };
+          dataReq.onerror = function () {
+            res(null);
+          };
+        });
+      })
+      .then(function (data) {
+        var hasData = !!(data && data.bytes);
+        updateRecoveryBadge(hasData);
+        if (hasData && notifyOnFound && !originalBytes) {
+          var name = data.fileName ? "'" + data.fileName + "'" : "Previous document";
+          window.showToast(
+            "Last session (" + name + ") is available. Click to restore.",
+            "info",
+            8000,
+            function () {
+              loadSessionFromDB(true);
+            },
+            "Restore",
+          );
+        }
+        return hasData;
+      })
+      .catch(function () {
+        updateRecoveryBadge(false);
+        return false;
+      });
+  }
+
+  function updateRecoveryBadge(hasData) {
+    var badge = document.getElementById("recoveryBadge");
+    if (badge) {
+      badge.style.display = hasData ? "block" : "none";
+    }
+  }
+
+  var recoveryBtn = document.getElementById("recoveryBtn");
+  if (recoveryBtn) {
+    recoveryBtn.addEventListener("click", function () {
+      loadSessionFromDB(true);
+    });
+  }
+
+  // Check stored session on startup
+  checkStoredSessionAvailable(true);
 })();
 
