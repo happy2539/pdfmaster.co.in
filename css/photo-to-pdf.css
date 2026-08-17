@@ -146,6 +146,142 @@ nav {
   pointer-events: none;
 }
 
+/* Recovery Button & Badge */
+.recovery-btn {
+  position: relative;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: transparent;
+  border: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition:
+    background 0.3s,
+    border-color 0.3s,
+    transform 0.2s;
+  color: var(--text-2);
+  flex-shrink: 0;
+  cursor: pointer;
+}
+
+.recovery-btn:hover {
+  background: rgba(230, 57, 70, 0.07);
+  border-color: rgba(230, 57, 70, 0.18);
+  color: var(--primary);
+  transform: scale(1.08);
+}
+
+.recovery-btn svg {
+  width: 18px;
+  height: 18px;
+}
+
+.recovery-badge {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--primary);
+  border: 2px solid var(--bg-card);
+  box-shadow: 0 0 0 1px var(--primary);
+  animation: recoveryPulse 2s infinite ease-in-out;
+}
+
+@keyframes recoveryPulse {
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 0.9;
+  }
+  50% {
+    transform: scale(1.25);
+    opacity: 1;
+  }
+}
+
+/* Toast Container & Notification */
+.toast-container {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  z-index: 9999;
+  pointer-events: none;
+}
+
+.toast {
+  pointer-events: auto;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--bg-card);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: var(--radius, 14px);
+  padding: 12px 18px;
+  font-size: 0.88rem;
+  font-weight: 500;
+  box-shadow: var(--shadow-lg);
+  animation: toastIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  transition:
+    opacity 0.3s,
+    transform 0.3s;
+}
+
+.toast.toast-clickable {
+  cursor: pointer;
+}
+
+.toast.success {
+  border-left: 4px solid #16a34a;
+}
+
+.toast.error {
+  border-left: 4px solid var(--primary);
+}
+
+.toast.info {
+  border-left: 4px solid var(--primary);
+}
+
+.toast-btn {
+  background: var(--primary);
+  color: #fff;
+  border: none;
+  border-radius: 999px;
+  padding: 4px 12px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  cursor: pointer;
+  margin-left: 8px;
+  flex-shrink: 0;
+  transition:
+    opacity 0.2s,
+    transform 0.15s;
+}
+
+.toast-btn:hover {
+  opacity: 0.9;
+  transform: scale(1.05);
+}
+
+@keyframes toastIn {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 /* Hamburger — tool pages only per spec */
 .hamburger-btn {
   width: 40px;

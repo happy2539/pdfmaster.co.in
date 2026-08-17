@@ -11,12 +11,12 @@
 
     <meta
       name="description"
-      content="Convert Photo to PDF instantly with no upload. Free image to PDF converter supporting PNG, WEBP, GIF and more. 100% private, client-side processing."
+      content="Convert Photo to PDF instantly with no upload. Free image to PDF converter supporting JPG, PNG, WEBP, GIF with local IndexedDB session recovery. 100% private."
     />
 
     <meta
       name="keywords"
-      content="JPG to PDF, image to PDF, Photo to PDF converter convert images to PDF, JPG to PDF free, JPG to PDF without upload, secure PDF converter, client side PDF tool"
+      content="JPG to PDF, image to PDF, Photo to PDF converter, convert images to PDF, restore session, indexeddb recovery, JPG to PDF free, secure PDF converter, client side PDF tool"
     />
 
     <meta name="robots" content="index, follow" />
@@ -37,7 +37,7 @@
     />
     <meta
       property="og:description"
-      content="Convert photos to PDF instantly in your browser. No upload required. Fast and secure."
+      content="Convert photos to PDF instantly in your browser with local IndexedDB session recovery. No upload required. Fast, private and secure."
     />
     <meta property="og:url" content="https://pdfmaster.co.in/photo-to-pdf" />
     <meta property="og:type" content="website" />
@@ -52,7 +52,7 @@
     <meta name="twitter:title" content="Photo to PDF – PDFMaster" />
     <meta
       name="twitter:description"
-      content="Free Photo to PDF converter with no upload. Private and fast."
+      content="Free Photo to PDF converter with no upload and local IndexedDB recovery. Private and fast."
     />
     <meta
       name="twitter:image"
@@ -114,26 +114,51 @@
     <script type="application/ld+json">
       {
         "@context": "https://schema.org",
-        "@type": "WebApplication",
-        "name": "Photo to PDF Converter - PDFMaster",
-        "url": "https://pdfmaster.co.in/photo-to-pdf",
-        "description": "Convert JPG and other images to PDF with no upload. Fully private browser-based tool.",
-        "applicationCategory": "UtilitiesApplication",
-        "operatingSystem": "Any",
-        "offers": {
-          "@type": "Offer",
-          "price": "0",
-          "priceCurrency": "USD"
-        },
-        "publisher": {
-          "@type": "Organization",
-          "name": "PDFMaster",
-          "url": "https://pdfmaster.co.in",
-          "logo": {
-            "@type": "ImageObject",
-            "url": "https://pdfmaster.co.in/assets/apple-touch-icon.png"
+        "@graph": [
+          {
+            "@type": "WebApplication",
+            "name": "Photo to PDF Converter - PDFMaster",
+            "url": "https://pdfmaster.co.in/photo-to-pdf",
+            "description": "Convert JPG, PNG, WEBP and other images to PDF with no upload. Includes local IndexedDB session recovery. Fully private browser-based tool.",
+            "applicationCategory": "UtilitiesApplication",
+            "operatingSystem": "Any",
+            "offers": {
+              "@type": "Offer",
+              "price": "0",
+              "priceCurrency": "USD"
+            },
+            "featureList": [
+              "Convert JPG, PNG, WEBP, GIF, BMP, TIFF, SVG, AVIF to PDF",
+              "Drag and Drop Page Reordering",
+              "Custom Page Sizes (A4, Letter, Legal, Fit)",
+              "Image Compression & Optimisation",
+              "Smart Session Recovery (IndexedDB)",
+              "100% Private Client-Side Processing"
+            ],
+            "publisher": {
+              "@type": "Organization",
+              "name": "PDFMaster",
+              "url": "https://pdfmaster.co.in",
+              "logo": {
+                "@type": "ImageObject",
+                "url": "https://pdfmaster.co.in/assets/apple-touch-icon.png"
+              }
+            }
+          },
+          {
+            "@type": "FAQPage",
+            "mainEntity": [
+              {
+                "@type": "Question",
+                "name": "Can I recover my images and settings if my browser closes?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "Yes. PDFMaster includes a built-in session recovery feature powered by your browser's private IndexedDB storage. Your selected images, page ordering, and PDF settings (page size, orientation, compression) are saved 100% locally on your device. Click the Recovery icon in the header or the Restore prompt to immediately restore your session without re-uploading."
+                }
+              }
+            ]
           }
-        }
+        ]
       }
     </script>
   </head>
@@ -156,6 +181,33 @@
           <span class="logo-text">PDF<span>Master</span></span>
         </a>
         <div class="nav-right">
+          <!-- Recovery button -->
+          <button
+            type="button"
+            class="recovery-btn"
+            id="recoveryBtn"
+            aria-label="Recovery mode - restore saved session"
+            title="Recovery Mode — Restore last photos & settings"
+          >
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
+              <path d="M3 3v5h5" />
+              <path d="M12 7v5l4 2" />
+            </svg>
+            <span
+              class="recovery-badge"
+              id="recoveryBadge"
+              style="display: none"
+            ></span>
+          </button>
+
           <button
             class="theme-toggle"
             id="themeBtn"
@@ -441,7 +493,7 @@
             <span>Photo to PDF</span>
           </div>
           <div class="hero-pill">
-            <span class="pill-dot"></span>100% Free · On-Device · No Uploads
+            <span class="pill-dot"></span>100% Free · On-Device · IndexedDB Session Recovery · No Uploads
           </div>
           <h1>Convert <em>Photo to PDF</em><br />Instantly &amp; Privately</h1>
           <p>
@@ -862,6 +914,29 @@
               browsers.
             </p>
           </div>
+          <div class="fcard rv">
+            <span class="fcard-icon">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="1em"
+                height="1em"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
+                <path d="M3 3v5h5" />
+                <path d="M12 7v5l4 2" />
+              </svg>
+            </span>
+            <h3>Smart Session Recovery</h3>
+            <p>
+              Auto-saves your photos and settings in local IndexedDB so you can resume your conversion if your browser closes.
+            </p>
+          </div>
         </div>
       </div>
     </section>
@@ -1139,6 +1214,31 @@
               </p>
             </div>
           </div>
+          <div class="benefit rv">
+            <span class="ben-icon">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="1em"
+                height="1em"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
+                <path d="M3 3v5h5" />
+                <path d="M12 7v5l4 2" />
+              </svg>
+            </span>
+            <div class="ben-body">
+              <h4>Smart Session Recovery</h4>
+              <p>
+                Saves your selected images and layout choices in local IndexedDB to safeguard your work against accidental tab closures.
+              </p>
+            </div>
+          </div>
         </div>
       </div>
     </section>
@@ -1152,6 +1252,15 @@
           <p>Got questions? Here are the most common ones answered.</p>
         </div>
         <div class="faq-list">
+          <div class="faq-item rv">
+            <div class="faq-q">
+              <h4>Can I recover my images and settings if my browser closes?</h4>
+              <span class="faq-chevron">+</span>
+            </div>
+            <div class="faq-a">
+              Yes! PDFMaster features automatic session recovery powered by your browser's private IndexedDB storage. Your selected images, page ordering, and PDF options (size, orientation, compression) are safely preserved 100% locally on your machine. If your browser or tab closes, simply click the <strong>Recovery button</strong> in the top header or the restore notification prompt to resume your work instantly without re-uploading.
+            </div>
+          </div>
           <div class="faq-item rv">
             <div class="faq-q">
               <h4>Is my image data safe? Are files uploaded to a server?</h4>
@@ -1709,6 +1818,9 @@
         </div>
       </div>
     </div>
+
+    <!-- Toast Container -->
+    <div class="toast-container" id="toastContainer"></div>
 
     <script src="js/photo-to-pdf.js"></script>
   </body>

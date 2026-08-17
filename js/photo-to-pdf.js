@@ -2,12 +2,55 @@
 
 /* ── Load jsPDF ── */
 const jsPdfScript = document.createElement("script");
-jsPdfScript.src = "assets/vendor/jspdf.umd.min.js";
+jsPdfScript.src = "/assets/vendor/jspdf.umd.min.js";
 document.head.appendChild(jsPdfScript);
 let jsPdfReady = false;
 jsPdfScript.onload = () => {
   jsPdfReady = true;
 };
+
+/* ── Toast Notifications ── */
+function showToast(
+  msg,
+  type = "info",
+  dur = 4000,
+  onClick = null,
+  actionText = null,
+) {
+  const container = document.getElementById("toastContainer");
+  if (!container) return;
+  const t = document.createElement("div");
+  t.className = `toast ${type}${onClick ? " toast-clickable" : ""}`;
+
+  const span = document.createElement("span");
+  span.textContent = msg;
+  t.appendChild(span);
+
+  if (actionText && typeof onClick === "function") {
+    const btn = document.createElement("button");
+    btn.type = "button";
+    btn.className = "toast-btn";
+    btn.textContent = actionText;
+    btn.onclick = (e) => {
+      e.stopPropagation();
+      t.remove();
+      onClick();
+    };
+    t.appendChild(btn);
+  } else if (typeof onClick === "function") {
+    t.onclick = () => {
+      t.remove();
+      onClick();
+    };
+  }
+
+  container.appendChild(t);
+  setTimeout(() => {
+    t.style.opacity = "0";
+    t.style.transform = "translateY(10px)";
+    setTimeout(() => t.remove(), 300);
+  }, dur);
+}
 
 /* ── Theme — same localStorage key as homepage (pdfmaster-theme) ── */
 const btn = document.getElementById("themeBtn");
@@ -76,6 +119,7 @@ document.querySelectorAll(".spill").forEach((p) => {
       .forEach((x) => x.classList.remove("active"));
     p.classList.add("active");
     selectedSize = p.dataset.size;
+    scheduleDBSave();
   });
 });
 
@@ -84,6 +128,7 @@ let selectedOrient = "portrait";
 document.querySelectorAll('input[name="orient"]').forEach((r) => {
   r.addEventListener("change", () => {
     selectedOrient = r.value;
+    scheduleDBSave();
   });
 });
 
@@ -110,6 +155,18 @@ const previewGrid = document.getElementById("previewGrid");
 const pdfNameInput = document.getElementById("pdfName");
 const downloadModal = document.getElementById("downloadModal");
 
+if (pdfNameInput) {
+  pdfNameInput.addEventListener("input", scheduleDBSave);
+}
+const chkCompress = document.getElementById("chkCompress");
+if (chkCompress) {
+  chkCompress.addEventListener("change", scheduleDBSave);
+}
+const chkOnePage = document.getElementById("chkOnePage");
+if (chkOnePage) {
+  chkOnePage.addEventListener("change", scheduleDBSave);
+}
+
 /* ── Upload Events ── */
 uploadZone.addEventListener("click", () => fileInput.click());
 uploadZone.addEventListener("dragover", (e) => {
@@ -131,18 +188,28 @@ fileInput.addEventListener("change", () => {
 function handleFiles(list) {
   const valid = Array.from(list).filter((f) => f.type.startsWith("image/"));
   if (!valid.length) {
-    alert("Please select valid image files.");
+    showToast("Please select valid image files.", "error");
     return;
   }
   valid.forEach((file) => {
     const id = `img-${Date.now()}-${Math.random().toString(36).substr(2, 6)}`;
-    imageFiles.push({ id, file });
+    const item = { id, file, bytes: null };
+    imageFiles.push(item);
     imageOrder.push(id);
+    if (typeof file.arrayBuffer === "function") {
+      file
+        .arrayBuffer()
+        .then((buf) => {
+          item.bytes = buf;
+        })
+        .catch(() => {});
+    }
   });
   refreshZone();
   renderPreviews();
   convertBtn.disabled = false;
   resetBtn.disabled = false;
+  scheduleDBSave();
 }
 
 function refreshZone() {
@@ -207,6 +274,9 @@ function removeImg(id) {
   if (!imageFiles.length) {
     convertBtn.disabled = true;
     resetBtn.disabled = true;
+    clearSessionFromDB();
+  } else {
+    scheduleDBSave();
   }
 }
 
@@ -239,6 +309,7 @@ function setupDragDrop() {
         imageOrder.splice(fi, 1);
         imageOrder.splice(ti, 0, fId);
         renderPreviews();
+        scheduleDBSave();
       }
     });
   });
@@ -255,6 +326,7 @@ resetBtn.addEventListener("click", () => {
   loadingWrap.style.display = "none";
   progressFill.style.width = "0%";
   pdfNameInput.value = "converted_document";
+  clearSessionFromDB();
 });
 
 /* ── Image Load Helper ── */
@@ -470,3 +542,254 @@ document.querySelectorAll('a[href^="#"]').forEach((a) => {
     }
   });
 });
+
+// ─── IndexedDB Recovery Engine ───────────────────────────────────────────
+let dbPromise = null;
+let dbSaveTimer = null;
+
+function openDB() {
+  if (dbPromise) return dbPromise;
+  dbPromise = new Promise((resolve, reject) => {
+    const DB_NAME = "pdfmaster_photo_to_pdf_db";
+    const DB_VERSION = 1;
+    const req = indexedDB.open(DB_NAME, DB_VERSION);
+    req.onupgradeneeded = (e) => {
+      const db = e.target.result;
+      if (!db.objectStoreNames.contains("settings")) {
+        db.createObjectStore("settings");
+      }
+      if (!db.objectStoreNames.contains("photo_data")) {
+        db.createObjectStore("photo_data");
+      }
+    };
+    req.onsuccess = (e) => resolve(e.target.result);
+    req.onerror = (e) => reject(e.target.error);
+  });
+  return dbPromise;
+}
+
+function scheduleDBSave() {
+  if (dbSaveTimer) clearTimeout(dbSaveTimer);
+  dbSaveTimer = setTimeout(() => {
+    saveSessionToDB();
+  }, 400);
+}
+
+async function saveSessionToDB() {
+  if (!imageFiles || !imageFiles.length) return false;
+  try {
+    // 1. Read all ArrayBuffers BEFORE opening the IndexedDB transaction
+    const rawImages = await Promise.all(
+      imageFiles.map(async (item) => {
+        let buffer = item.bytes;
+        if (!buffer && item.file) {
+          if (typeof item.file.arrayBuffer === "function") {
+            buffer = await item.file.arrayBuffer();
+          } else {
+            buffer = await new Promise((res, rej) => {
+              const r = new FileReader();
+              r.onload = () => res(r.result);
+              r.onerror = rej;
+              r.readAsArrayBuffer(item.file);
+            });
+          }
+          item.bytes = buffer;
+        }
+        return {
+          id: item.id,
+          name: item.file?.name || "image.jpg",
+          type: item.file?.type || "image/jpeg",
+          size: item.file?.size || (buffer ? buffer.byteLength : 0),
+          bytes: buffer ? buffer.slice(0) : new ArrayBuffer(0),
+        };
+      }),
+    );
+
+    const sessionData = {
+      timestamp: Date.now(),
+      imageOrder: [...imageOrder],
+      selectedSize,
+      selectedOrient,
+      pdfName: pdfNameInput ? pdfNameInput.value : "converted_document",
+      chkCompress: document.getElementById("chkCompress")?.checked ?? true,
+      chkOnePage: document.getElementById("chkOnePage")?.checked ?? true,
+    };
+
+    // 2. Open transaction and write synchronously
+    const db = await openDB();
+    const tx = db.transaction(["settings", "photo_data"], "readwrite");
+    const settingsStore = tx.objectStore("settings");
+    const dataStore = tx.objectStore("photo_data");
+
+    settingsStore.put(sessionData, "session");
+    dataStore.put(rawImages, "images");
+
+    await new Promise((res, rej) => {
+      tx.oncomplete = () => res();
+      tx.onerror = (e) => rej(e.target.error);
+      tx.onabort = (e) => rej(e.target.error);
+    });
+
+    updateRecoveryBadge(true);
+    return true;
+  } catch (err) {
+    console.warn("IndexedDB save failed:", err);
+    return false;
+  }
+}
+
+async function loadSessionFromDB(isManual = false) {
+  try {
+    const db = await openDB();
+    const tx = db.transaction(["settings", "photo_data"], "readonly");
+    const settingsReq = tx.objectStore("settings").get("session");
+    const dataReq = tx.objectStore("photo_data").get("images");
+
+    const [session, images] = await Promise.all([
+      new Promise((res) => {
+        settingsReq.onsuccess = () => res(settingsReq.result);
+        settingsReq.onerror = () => res(null);
+      }),
+      new Promise((res) => {
+        dataReq.onsuccess = () => res(dataReq.result);
+        dataReq.onerror = () => res(null);
+      }),
+    ]);
+
+    if (!images || !Array.isArray(images) || !images.length) {
+      updateRecoveryBadge(false);
+      if (isManual) {
+        showToast("No stored session found in recovery storage.", "error");
+      }
+      return false;
+    }
+
+    imageFiles = images.map((img) => {
+      let fileObj;
+      try {
+        fileObj = new File([img.bytes], img.name || "image.jpg", {
+          type: img.type || "image/jpeg",
+        });
+      } catch (e) {
+        fileObj = new Blob([img.bytes], { type: img.type || "image/jpeg" });
+        fileObj.name = img.name || "image.jpg";
+      }
+      return {
+        id: img.id,
+        file: fileObj,
+        bytes: img.bytes,
+      };
+    });
+
+    imageOrder =
+      session && session.imageOrder && session.imageOrder.length
+        ? session.imageOrder
+        : imageFiles.map((i) => i.id);
+
+    if (session) {
+      if (session.selectedSize) {
+        selectedSize = session.selectedSize;
+        document.querySelectorAll(".spill").forEach((p) => {
+          p.classList.toggle("active", p.dataset.size === selectedSize);
+        });
+      }
+      if (session.selectedOrient) {
+        selectedOrient = session.selectedOrient;
+        document.querySelectorAll('input[name="orient"]').forEach((r) => {
+          r.checked = r.value === selectedOrient;
+        });
+      }
+      if (session.pdfName && pdfNameInput) {
+        pdfNameInput.value = session.pdfName;
+      }
+      if (session.chkCompress !== undefined) {
+        const c = document.getElementById("chkCompress");
+        if (c) c.checked = session.chkCompress;
+      }
+      if (session.chkOnePage !== undefined) {
+        const o = document.getElementById("chkOnePage");
+        if (o) o.checked = session.chkOnePage;
+      }
+    }
+
+    refreshZone();
+    renderPreviews();
+    convertBtn.disabled = false;
+    resetBtn.disabled = false;
+    updateRecoveryBadge(true);
+
+    if (isManual) {
+      showToast(
+        `Restored ${imageFiles.length} photo${imageFiles.length > 1 ? "s" : ""} & settings!`,
+        "success",
+      );
+    }
+    return true;
+  } catch (err) {
+    console.warn("IndexedDB load failed:", err);
+    if (isManual) {
+      showToast("Could not access recovery storage: " + err.message, "error");
+    }
+    return false;
+  }
+}
+
+async function clearSessionFromDB() {
+  try {
+    const db = await openDB();
+    const tx = db.transaction(["settings", "photo_data"], "readwrite");
+    tx.objectStore("settings").clear();
+    tx.objectStore("photo_data").clear();
+    updateRecoveryBadge(false);
+  } catch (err) {
+    console.warn("IndexedDB clear failed:", err);
+  }
+}
+
+async function checkStoredSessionAvailable(notifyOnFound = false) {
+  try {
+    const db = await openDB();
+    const tx = db.transaction(["photo_data"], "readonly");
+    const dataReq = tx.objectStore("photo_data").get("images");
+    const images = await new Promise((res) => {
+      dataReq.onsuccess = () => res(dataReq.result);
+      dataReq.onerror = () => res(null);
+    });
+
+    const hasData = !!(images && Array.isArray(images) && images.length);
+    updateRecoveryBadge(hasData);
+
+    if (hasData && notifyOnFound && !imageFiles.length) {
+      const count = images.length;
+      showToast(
+        `Previous session (${count} photo${count > 1 ? "s" : ""}) is available. Click to restore.`,
+        "info",
+        8000,
+        () => loadSessionFromDB(true),
+        "Restore",
+      );
+    }
+    return hasData;
+  } catch {
+    updateRecoveryBadge(false);
+    return false;
+  }
+}
+
+function updateRecoveryBadge(hasData) {
+  const badge = document.getElementById("recoveryBadge");
+  if (badge) {
+    badge.style.display = hasData ? "block" : "none";
+  }
+}
+
+// Wire recovery button
+const recoveryBtn = document.getElementById("recoveryBtn");
+if (recoveryBtn) {
+  recoveryBtn.addEventListener("click", () => {
+    loadSessionFromDB(true);
+  });
+}
+
+// Check stored session on startup
+checkStoredSessionAvailable(true);
