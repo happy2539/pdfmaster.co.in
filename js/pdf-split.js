@@ -21,28 +21,38 @@
           );
         });
 
-        /* ─────────── DRAWER ─────────── */
-        const menuBtn = document.getElementById("menuBtn");
-        const drawer = document.getElementById("drawer");
-        const drawerOverlay = document.getElementById("drawerOverlay");
-        const drawerClose = document.getElementById("drawerClose");
+        /* ─────────── SIDE MENU ─────────── */
+        const hamburgerBtn =
+          document.getElementById("hamburgerBtn") ||
+          document.getElementById("menuBtn");
+        const sideMenu =
+          document.getElementById("sideMenu") ||
+          document.getElementById("drawer");
+        const sideOverlay =
+          document.getElementById("sideOverlay") ||
+          document.getElementById("drawerOverlay");
+        const closeMenuBtn =
+          document.getElementById("closeMenuBtn") ||
+          document.getElementById("drawerClose");
 
-        function openDrawer() {
-          drawer.classList.add("open");
-          drawerOverlay.classList.add("open");
-          menuBtn.setAttribute("aria-expanded", "true");
+        function openSideMenu() {
+          if (sideMenu) sideMenu.classList.add("open");
+          if (sideOverlay) sideOverlay.classList.add("open");
+          document.body.style.overflow = "hidden";
         }
-        function closeDrawer() {
-          drawer.classList.remove("open");
-          drawerOverlay.classList.remove("open");
-          menuBtn.setAttribute("aria-expanded", "false");
+        function closeSideMenu() {
+          if (sideMenu) sideMenu.classList.remove("open");
+          if (sideOverlay) sideOverlay.classList.remove("open");
+          document.body.style.overflow = "";
         }
-        menuBtn.addEventListener("click", openDrawer);
-        drawerClose.addEventListener("click", closeDrawer);
-        drawerOverlay.addEventListener("click", closeDrawer);
-        drawer
-          .querySelectorAll("a")
-          .forEach((a) => a.addEventListener("click", closeDrawer));
+        if (hamburgerBtn) hamburgerBtn.addEventListener("click", openSideMenu);
+        if (closeMenuBtn) closeMenuBtn.addEventListener("click", closeSideMenu);
+        if (sideOverlay) sideOverlay.addEventListener("click", closeSideMenu);
+        if (sideMenu) {
+          sideMenu
+            .querySelectorAll("a")
+            .forEach((a) => a.addEventListener("click", closeSideMenu));
+        }
 
         /* ─────────── BACK TO TOP ─────────── */
         const backTop = document.getElementById("backTop");
@@ -86,22 +96,58 @@
         const toastMsg = document.getElementById("toastMsg");
         const toastIcon = document.getElementById("toastIcon");
         let toastTimer;
-        function showToast(msg, type = "success") {
+        function showToast(
+          msg,
+          type = "success",
+          dur = 3500,
+          onClick = null,
+          actionText = null,
+        ) {
           clearTimeout(toastTimer);
           toastMsg.textContent = msg;
           toastIcon.innerHTML =
             type === "success"
               ? `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>`
-              : `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg>`;
-          toastEl.className = `toast ${type}`;
+              : type === "info"
+                ? `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>`
+                : `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg>`;
+
+          const existingBtn = toastEl.querySelector(".toast-btn");
+          if (existingBtn) existingBtn.remove();
+
+          if (actionText && typeof onClick === "function") {
+            const btn = document.createElement("button");
+            btn.type = "button";
+            btn.className = "toast-btn";
+            btn.textContent = actionText;
+            btn.onclick = (e) => {
+              e.stopPropagation();
+              toastEl.classList.remove("show");
+              onClick();
+            };
+            toastEl.appendChild(btn);
+            toastEl.classList.add("toast-clickable");
+          } else if (typeof onClick === "function") {
+            toastEl.classList.add("toast-clickable");
+            toastEl.onclick = () => {
+              toastEl.classList.remove("show");
+              onClick();
+            };
+          } else {
+            toastEl.classList.remove("toast-clickable");
+            toastEl.onclick = null;
+          }
+
+          toastEl.className = `toast ${type}${onClick ? " toast-clickable" : ""}`;
           void toastEl.offsetWidth;
           toastEl.classList.add("show");
-          toastTimer = setTimeout(() => toastEl.classList.remove("show"), 3500);
+          toastTimer = setTimeout(() => toastEl.classList.remove("show"), dur);
         }
 
         /* ─────────── PDF.js setup ─────────── */
         if (window.pdfjsLib) {
-          pdfjsLib.GlobalWorkerOptions.workerSrc = "assets/vendor/pdf.worker.min.js";
+          pdfjsLib.GlobalWorkerOptions.workerSrc =
+            "/assets/vendor/pdf.worker.min.js";
         }
 
         /* ─────────── STATE ─────────── */
@@ -183,7 +229,7 @@
           pdfFile = file;
           try {
             pdfArrayBuffer = await file.arrayBuffer();
-            pdfDoc = await PDFLib.PDFDocument.load(pdfArrayBuffer);
+            pdfDoc = await PDFLib.PDFDocument.load(pdfArrayBuffer.slice(0));
             totalPages = pdfDoc.getPageCount();
 
             if (window.pdfjsLib) {
@@ -209,6 +255,7 @@
             if (currentMode === "select") renderThumbnails();
             updateSummary();
             showToast(`Loaded "${file.name}" — ${totalPages} pages`);
+            scheduleDBSave();
           } catch (err) {
             showToast(
               "Could not read PDF. Make sure it's a valid, non-encrypted file.",
@@ -234,21 +281,30 @@
               .classList.add("active");
             if (currentMode === "select" && pdfjsDoc) renderThumbnails();
             updateSummary();
+            scheduleDBSave();
           });
         });
 
-        /* ─────────── STEPPER ─────────── */
+        /* ─────────── STEPPER & INPUTS ─────────── */
         stepDown.addEventListener("click", () => {
           const v = parseInt(nInput.value) || 1;
           if (v > 1) nInput.value = v - 1;
           updateSummary();
+          scheduleDBSave();
         });
         stepUp.addEventListener("click", () => {
           nInput.value = (parseInt(nInput.value) || 1) + 1;
           updateSummary();
+          scheduleDBSave();
         });
-        nInput.addEventListener("input", updateSummary);
-        rangeInput.addEventListener("input", updateSummary);
+        nInput.addEventListener("input", () => {
+          updateSummary();
+          scheduleDBSave();
+        });
+        rangeInput.addEventListener("input", () => {
+          updateSummary();
+          scheduleDBSave();
+        });
 
         /* ─────────── OUTPUT FORMAT ─────────── */
         toggleOpts.forEach((opt) => {
@@ -256,6 +312,7 @@
             toggleOpts.forEach((o) => o.classList.remove("active"));
             opt.classList.add("active");
             outputFormat = opt.dataset.out;
+            scheduleDBSave();
           });
         });
 
@@ -308,6 +365,7 @@
           }
           updateSelectedCount();
           updateSummary();
+          scheduleDBSave();
         }
 
         function updateSelectedCount() {
@@ -323,6 +381,7 @@
               .forEach((c) => c.classList.add("selected"));
             updateSelectedCount();
             updateSummary();
+            scheduleDBSave();
           });
         document.getElementById("clearAllBtn").addEventListener("click", () => {
           selectedPages.clear();
@@ -331,6 +390,7 @@
             .forEach((c) => c.classList.remove("selected"));
           updateSelectedCount();
           updateSummary();
+          scheduleDBSave();
         });
         document.getElementById("invertBtn").addEventListener("click", () => {
           for (let i = 1; i <= totalPages; i++) {
@@ -345,6 +405,7 @@
           }
           updateSelectedCount();
           updateSummary();
+          scheduleDBSave();
         });
         document
           .getElementById("selectOddBtn")
@@ -359,6 +420,7 @@
             });
             updateSelectedCount();
             updateSummary();
+            scheduleDBSave();
           });
         document
           .getElementById("selectEvenBtn")
@@ -373,6 +435,7 @@
             });
             updateSelectedCount();
             updateSummary();
+            scheduleDBSave();
           });
 
         /* ─────────── PARSE RANGES ─────────── */
@@ -618,4 +681,261 @@
           document.body.removeChild(a);
           setTimeout(() => URL.revokeObjectURL(url), 5000);
         }
+
+        /* ═══════════════════════════════════════════════════
+           INDEXEDDB RECOVERY ENGINE
+        ═══════════════════════════════════════════════════ */
+        let dbPromise = null;
+        let dbSaveTimer = null;
+
+        function openDB() {
+          if (dbPromise) return dbPromise;
+          dbPromise = new Promise((resolve, reject) => {
+            const DB_NAME = "pdfmaster_split_db";
+            const DB_VERSION = 1;
+            const req = indexedDB.open(DB_NAME, DB_VERSION);
+            req.onupgradeneeded = (e) => {
+              const db = e.target.result;
+              if (!db.objectStoreNames.contains("settings")) {
+                db.createObjectStore("settings");
+              }
+              if (!db.objectStoreNames.contains("split_data")) {
+                db.createObjectStore("split_data");
+              }
+            };
+            req.onsuccess = (e) => resolve(e.target.result);
+            req.onerror = (e) => reject(e.target.error);
+          });
+          return dbPromise;
+        }
+
+        function scheduleDBSave() {
+          if (dbSaveTimer) clearTimeout(dbSaveTimer);
+          dbSaveTimer = setTimeout(() => {
+            saveSessionToDB();
+          }, 400);
+        }
+
+        async function saveSessionToDB() {
+          if (!pdfArrayBuffer || !pdfFile) return false;
+          try {
+            const sessionData = {
+              timestamp: Date.now(),
+              fileName: pdfFile.name,
+              fileSize: pdfFile.size || pdfArrayBuffer.byteLength,
+              totalPages: totalPages,
+              currentMode: currentMode,
+              rangeValue: rangeInput ? rangeInput.value : "",
+              nValue: nInput ? nInput.value : "1",
+              selectedPages: Array.from(selectedPages),
+              outputFormat: outputFormat,
+            };
+
+            const fileData = {
+              fileName: pdfFile.name,
+              fileSize: pdfFile.size || pdfArrayBuffer.byteLength,
+              bytes: pdfArrayBuffer.slice(0),
+              timestamp: Date.now(),
+            };
+
+            const db = await openDB();
+            const tx = db.transaction(["settings", "split_data"], "readwrite");
+            const settingsStore = tx.objectStore("settings");
+            const dataStore = tx.objectStore("split_data");
+
+            settingsStore.put(sessionData, "session");
+            dataStore.put(fileData, "file");
+
+            await new Promise((res, rej) => {
+              tx.oncomplete = () => res();
+              tx.onerror = (e) => rej(e.target.error);
+              tx.onabort = (e) => rej(e.target.error);
+            });
+
+            updateRecoveryBadge(true);
+            return true;
+          } catch (err) {
+            console.warn("IndexedDB save failed:", err);
+            return false;
+          }
+        }
+
+        async function loadSessionFromDB(isManual = false) {
+          try {
+            const db = await openDB();
+            const tx = db.transaction(["settings", "split_data"], "readonly");
+            const settingsReq = tx.objectStore("settings").get("session");
+            const dataReq = tx.objectStore("split_data").get("file");
+
+            const [session, data] = await Promise.all([
+              new Promise((res) => {
+                settingsReq.onsuccess = () => res(settingsReq.result);
+                settingsReq.onerror = () => res(null);
+              }),
+              new Promise((res) => {
+                dataReq.onsuccess = () => res(dataReq.result);
+                dataReq.onerror = () => res(null);
+              }),
+            ]);
+
+            if (!data || !data.bytes) {
+              updateRecoveryBadge(false);
+              if (isManual) {
+                showToast("No stored session found in recovery storage.", "error");
+              }
+              return false;
+            }
+
+            const rawBytes =
+              data.bytes instanceof Uint8Array
+                ? data.bytes.buffer
+                : data.bytes;
+            pdfArrayBuffer = rawBytes.slice(0);
+            pdfFile = {
+              name: data.fileName || "document.pdf",
+              size: data.fileSize || pdfArrayBuffer.byteLength,
+            };
+
+            // Load into pdfDoc and pdfjsDoc safely with cloned buffers!
+            pdfDoc = await PDFLib.PDFDocument.load(pdfArrayBuffer.slice(0));
+            totalPages = pdfDoc.getPageCount();
+
+            if (window.pdfjsLib) {
+              pdfjsDoc = await pdfjsLib.getDocument({
+                data: pdfArrayBuffer.slice(0),
+              }).promise;
+            }
+
+            fileName.textContent = pdfFile.name;
+            const kb = (pdfFile.size / 1024).toFixed(0);
+            const mb = (pdfFile.size / (1024 * 1024)).toFixed(1);
+            pageCount.textContent = totalPages;
+            fileSize.textContent = `${pdfFile.size > 1024 * 1024 ? mb + " MB" : kb + " KB"} · ${totalPages} pages`;
+
+            selectedPages.clear();
+            resultsSection.classList.remove("active");
+            splitResults = [];
+            progressWrap.classList.remove("active");
+
+            uploadZone.style.display = "none";
+            workspace.classList.add("active");
+
+            if (session) {
+              if (session.currentMode) {
+                currentMode = session.currentMode;
+                modeTabs.forEach((t) => {
+                  const isAct = t.dataset.mode === currentMode;
+                  t.classList.toggle("active", isAct);
+                  t.setAttribute("aria-selected", isAct ? "true" : "false");
+                });
+                configModes.forEach((m) => m.classList.remove("active"));
+                const targetModePanel = document.getElementById(
+                  `mode-${currentMode}`,
+                );
+                if (targetModePanel) targetModePanel.classList.add("active");
+              }
+              if (session.rangeValue !== undefined && rangeInput) {
+                rangeInput.value = session.rangeValue;
+              }
+              if (session.nValue !== undefined && nInput) {
+                nInput.value = session.nValue;
+              }
+              if (
+                session.selectedPages &&
+                Array.isArray(session.selectedPages)
+              ) {
+                session.selectedPages.forEach((p) => selectedPages.add(p));
+              }
+              if (session.outputFormat) {
+                outputFormat = session.outputFormat;
+                toggleOpts.forEach((o) => {
+                  o.classList.toggle("active", o.dataset.out === outputFormat);
+                });
+              }
+            }
+
+            if (currentMode === "select" && pdfjsDoc) {
+              renderThumbnails();
+            }
+            updateSummary();
+            updateRecoveryBadge(true);
+
+            if (isManual) {
+              showToast(
+                `Restored "${pdfFile.name}" and split configuration!`,
+                "success",
+              );
+            }
+            return true;
+          } catch (err) {
+            console.warn("IndexedDB load failed:", err);
+            if (isManual) {
+              showToast(
+                "Could not access recovery storage: " + err.message,
+                "error",
+              );
+            }
+            return false;
+          }
+        }
+
+        async function clearSessionFromDB() {
+          try {
+            const db = await openDB();
+            const tx = db.transaction(["settings", "split_data"], "readwrite");
+            tx.objectStore("settings").clear();
+            tx.objectStore("split_data").clear();
+            updateRecoveryBadge(false);
+          } catch (err) {
+            console.warn("IndexedDB clear failed:", err);
+          }
+        }
+
+        async function checkStoredSessionAvailable(notifyOnFound = false) {
+          try {
+            const db = await openDB();
+            const tx = db.transaction(["split_data"], "readonly");
+            const dataReq = tx.objectStore("split_data").get("file");
+            const data = await new Promise((res) => {
+              dataReq.onsuccess = () => res(dataReq.result);
+              dataReq.onerror = () => res(null);
+            });
+
+            const hasData = !!(data && data.bytes);
+            updateRecoveryBadge(hasData);
+
+            if (hasData && notifyOnFound && !pdfDoc) {
+              const name = data.fileName || "PDF document";
+              showToast(
+                `Previous session ("${name}") is available. Click to restore.`,
+                "info",
+                8000,
+                () => loadSessionFromDB(true),
+                "Restore",
+              );
+            }
+            return hasData;
+          } catch {
+            updateRecoveryBadge(false);
+            return false;
+          }
+        }
+
+        function updateRecoveryBadge(hasData) {
+          const badge = document.getElementById("recoveryBadge");
+          if (badge) {
+            badge.style.display = hasData ? "block" : "none";
+          }
+        }
+
+        // Wire recovery button
+        const recoveryBtn = document.getElementById("recoveryBtn");
+        if (recoveryBtn) {
+          recoveryBtn.addEventListener("click", () => {
+            loadSessionFromDB(true);
+          });
+        }
+
+        // Check stored session on startup
+        checkStoredSessionAvailable(true);
       })();
