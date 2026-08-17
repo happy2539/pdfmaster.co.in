@@ -840,18 +840,14 @@ ul {
   background: var(--accent-hover);
 }
 
-/* ─── SCROLL REVEAL ─── */
+/* ─── SCROLL REVEAL (DISABLED) ─── */
 .rv {
-  opacity: 0;
-  transform: translateY(24px);
-  transition:
-    opacity 0.55s ease,
-    transform 0.55s ease;
-  will-change: opacity, transform;
+  opacity: 1;
+  transform: none;
 }
 .rv.visible {
   opacity: 1;
-  transform: translateY(0);
+  transform: none;
 }
 
 /* ─── RESPONSIVE ─── */

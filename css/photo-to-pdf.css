@@ -1472,17 +1472,14 @@ footer {
   text-shadow: 0 4px 16px rgba(230, 57, 70, 0.22);
 }
 
-/* ══ Scroll reveal ══ */
+/* ══ Scroll reveal (disabled) ══ */
 .rv {
-  opacity: 0;
-  transform: translateY(22px);
-  transition:
-    opacity 0.6s ease,
-    transform 0.6s ease;
+  opacity: 1;
+  transform: none;
 }
 .rv.in {
   opacity: 1;
-  transform: translateY(0);
+  transform: none;
 }
 @keyframes fadeUp {
   from {

@@ -509,20 +509,6 @@ document
   .getElementById("cancelModalBtn")
   .addEventListener("click", () => downloadModal.classList.remove("show"));
 
-/* ── Scroll Reveal — identical to homepage ── */
-const ro = new IntersectionObserver(
-  (es) => {
-    es.forEach((e) => {
-      if (e.isIntersecting) {
-        e.target.classList.add("in");
-        ro.unobserve(e.target);
-      }
-    });
-  },
-  { threshold: 0.1, rootMargin: "0px 0px -36px 0px" },
-);
-document.querySelectorAll(".rv").forEach((el) => ro.observe(el));
-
 /* ── Back to top — identical to homepage ── */
 const b2t = document.getElementById("b2t");
 window.addEventListener("scroll", () =>

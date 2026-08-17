@@ -1491,15 +1491,12 @@ button {
   height: 18px;
 }
 .reveal {
-  opacity: 0;
-  transform: translateY(22px);
-  transition:
-    opacity 0.55s ease,
-    transform 0.55s ease;
+  opacity: 1;
+  transform: none;
 }
 .reveal.visible {
   opacity: 1;
-  transform: translateY(0);
+  transform: none;
 }
 
 /* Performance Optimization */

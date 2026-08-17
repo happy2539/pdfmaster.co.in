@@ -350,7 +350,7 @@
                 <line x1="8" y1="2" x2="8" y2="6"></line>
                 <line x1="3" y1="10" x2="21" y2="10"></line>
               </svg>
-              Last updated: 12 March, 2026
+              Last updated: 17 August, 2026
             </div>
             <div class="meta-item">
               <svg
@@ -534,19 +534,21 @@
                 <p>
                   Welcome to PDFMaster (<strong>pdfmaster.co.in</strong>). This
                   Privacy Policy explains how we collect, use, and protect any
-                  information when you visit our website or use our PDF and
-                  image conversion tools. By using PDFMaster, you agree to the
+                  information when you visit our website or use our suite of PDF and
+                  image tools. By using PDFMaster, you agree to the
                   practices described in this policy.
                 </p>
                 <p>
-                  PDFMaster is a free, browser-based toolkit for converting,
-                  compressing, merging, and manipulating PDF and image files.
-                  The defining feature of our service is that
+                  PDFMaster provides a complete suite of browser-based document utilities including
+                  <strong>PDF Editor &amp; Annotator</strong>, <strong>Photo to PDF</strong>,
+                  <strong>PDF to Photo</strong>, <strong>Split PDF</strong>, <strong>PDF Page Reorder</strong>,
+                  <strong>PDF Compiler (Merge)</strong>, <strong>PDF Metadata Editor &amp; Viewer</strong>,
+                  <strong>Watermark PDF</strong>, and <strong>Website to PDF</strong>.
+                  The fundamental architectural principle of our service is that
                   <strong
-                    >all file processing takes place entirely within your
+                    >all file processing, conversions, manipulations, and session caching take place 100% locally within your
                     browser</strong
-                  >
-                  using client-side JavaScript. No file data is ever transmitted
+                  >. No document bytes, text, images, or metadata are ever transmitted
                   to our servers.
                 </p>
                 <div class="highlight-box">
@@ -570,16 +572,15 @@
                     <path d="M10 22h4"></path>
                   </svg>
                   <p>
-                    PDFMaster's core architecture means we are technically
-                    incapable of accessing, viewing, or storing your documents —
-                    not because we've promised not to, but because our
-                    infrastructure was never designed to receive them in the
-                    first place.
+                    PDFMaster's zero-upload architecture means we are technically
+                    incapable of accessing, viewing, intercepting, or storing your documents —
+                    not simply because of a policy promise, but because our
+                    infrastructure is designed without server-side file reception capabilities.
                   </p>
                 </div>
                 <p>
-                  This policy applies to all visitors of pdfmaster.co.in
-                  regardless of location. If you have any questions, please
+                  This policy applies to all visitors and users of pdfmaster.co.in
+                  globally. If you have any questions, please
                   <a href="/contact">contact us</a> before using our tools.
                 </p>
               </div>
@@ -606,54 +607,51 @@
                     ></path>
                     <rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect>
                   </svg>
-                  Information We Collect
+                  Information We Collect &amp; Store
                 </h2>
                 <p>
-                  We believe in collecting only what is absolutely necessary.
-                  Here is a complete, transparent list of information that may
-                  be associated with your visit:
+                  We believe in radical transparency and collecting only the bare minimum technical data required to operate and maintain the website:
                 </p>
 
-                <p><strong>Information we collect automatically:</strong></p>
+                <p><strong>1. Technical data collected automatically:</strong></p>
                 <ul>
                   <li>
-                    General browser type and version (e.g., Chrome 120, Firefox
-                    122) — used to optimise compatibility
+                    Browser type and rendering engine (e.g., Chrome, Firefox, Safari) — used to optimize WebAssembly and canvas rendering compatibility
                   </li>
                   <li>
-                    Operating system type (e.g., Windows, Android) — used to
-                    test responsive layouts
+                    Operating system (Windows, macOS, Linux, Android, iOS) — used to verify cross-platform responsive styling
                   </li>
                   <li>
-                    Approximate geographic region derived from IP address
-                    (country/city level only) — used for traffic analysis
+                    Approximate regional location derived from IP (country/city level only) — used for aggregate performance and traffic insights
                   </li>
                   <li>
-                    Pages visited and time spent on each page — used to
-                    understand which tools are most useful
-                  </li>
-                  <li>
-                    Referral source (e.g., Google, a bookmark, direct URL) —
-                    used to measure marketing effectiveness
+                    Page visits, bounce rates, and referring URLs — used to measure which tools are most helpful
                   </li>
                 </ul>
 
-                <p><strong>Information we never collect:</strong></p>
+                <p><strong>2. Client-Side Browser Storage (On Your Device Only):</strong></p>
                 <ul>
                   <li>
-                    Your name, email address, phone number, or any personal
-                    identifier
+                    <strong>IndexedDB Session Recovery Stores</strong> — To prevent accidental loss of work from browser crashes, reloads, or closed tabs, tools such as PDF Editor, Split PDF, Photo to PDF, PDF to Photo, PDF Reorder, and PDF Metadata save draft configurations and file buffers locally to your browser's private IndexedDB storage. <em>This data never leaves your computer or phone, is inaccessible to third parties or PDFMaster servers, and can be cleared instantly at any time by clicking the reset/clear button or clearing your browser site data.</em>
                   </li>
                   <li>
-                    The contents, names, or metadata of any files you process
-                    with our tools
+                    <strong>localStorage Theme Preference</strong> — Stores your light or dark mode theme selection (<code>pdfmaster-theme</code>) across visits. Contains no personal or tracking data.
+                  </li>
+                </ul>
+
+                <p><strong>Information we NEVER collect or receive:</strong></p>
+                <ul>
+                  <li>
+                    The contents, file names, text, images, or metadata of any documents processed on the site
                   </li>
                   <li>
-                    Payment information of any kind (PDFMaster is completely
-                    free)
+                    Personal identifiers such as your real name, physical address, or phone number
                   </li>
-                  <li>Login credentials (no accounts exist on PDFMaster)</li>
-                  <li>Precise GPS or location data</li>
+                  <li>
+                    Payment information, credit card numbers, or billing accounts (PDFMaster is 100% free)
+                  </li>
+                  <li>User account passwords or login credentials (no accounts exist on PDFMaster)</li>
+                  <li>Precise GPS location data</li>
                 </ul>
               </div>
 
@@ -685,16 +683,13 @@
                     <line x1="8" y1="21" x2="16" y2="21"></line>
                     <line x1="12" y1="17" x2="12" y2="21"></line>
                   </svg>
-                  On-Device File Processing
+                  On-Device File Processing &amp; Session Recovery
                 </h2>
                 <p>
-                  This section is the most important part of our privacy policy.
-                  Every tool on PDFMaster — including PDF mergers, converters,
-                  compressors, and image tools — operates entirely within your
-                  web browser using
+                  Every tool on PDFMaster operates entirely within your
+                  web browser utilizing
                   <strong
-                    >client-side JavaScript, WebAssembly, and modern browser
-                    APIs</strong
+                    >client-side JavaScript, WebAssembly (Wasm), HTML5 Canvas, and modern Web APIs</strong
                   >.
                 </p>
                 <div class="highlight-box">
@@ -717,38 +712,31 @@
                   </svg>
                   <p>
                     <strong>Your files never leave your device.</strong> When
-                    you select a PDF or image, it is loaded into your browser's
-                    memory (RAM) and processed locally. The resulting output
-                    file is then downloaded directly to your device. At no point
-                    is any file data transmitted over the internet to our
-                    servers.
+                    you open a document, image, or PDF, it is loaded into your local browser's
+                    memory (RAM) and processed on your own CPU/GPU. The output file is synthesized directly in memory and saved to your device storage. No server transmission occurs.
                   </p>
                 </div>
-                <p>What this means in practice:</p>
+                <p><strong>How the Disaster Recovery / Session Recovery System Works:</strong></p>
+                <p>
+                  We understand how frustrating it is to lose in-progress edits or complex split configurations due to an accidental tab closure, power outage, or browser crash. To protect your work:
+                </p>
                 <ul>
                   <li>
-                    You can use PDFMaster tools entirely
-                    <strong>offline</strong> without any active internet
-                    connection (as all scripts, stylesheets, and fonts are
-                    hosted locally on your device).
+                    Our tools utilize client-side <strong>IndexedDB</strong> to save temporary snapshot buffers of your active session directly on your device.
                   </li>
                   <li>
-                    Processing speed is determined by your device's hardware,
-                    not network speed
+                    When you return to the tool, a recovery prompt or pulsing recovery icon lets you restore your document and configurations with a single click.
                   </li>
                   <li>
-                    Sensitive documents (financial records, medical files, legal
-                    documents) can be processed with complete confidence
+                    <strong>Zero Server Exposure:</strong> IndexedDB is a sandboxed, client-only database built into your browser. We have zero network endpoints capable of reading your IndexedDB records.
                   </li>
                   <li>
-                    We are <strong>technically unable</strong> to access your
-                    files — not just policy-restricted
+                    <strong>User Control:</strong> You can wipe recovery records at any moment by clicking the clear recovery button in the tool or by clearing site cookies/storage in your browser settings.
                   </li>
                 </ul>
+                <p><strong>Offline Availability:</strong></p>
                 <p>
-                  This architecture is a deliberate design decision, not an
-                  afterthought. We chose it precisely because we believe your
-                  documents are private by default.
+                  Because all processing scripts, stylesheets, fonts, and WebAssembly bundles are locally hosted and cached via our Service Worker, PDFMaster tools function seamlessly even without an active internet connection once loaded.
                 </p>
               </div>
 
@@ -777,36 +765,32 @@
                     <path d="M12 17v.01"></path>
                     <path d="M11 12v.01"></path>
                   </svg>
-                  Cookies &amp; Analytics
+                  Cookies, Storage &amp; Analytics
                 </h2>
                 <p>
-                  PDFMaster uses minimal, privacy-respecting cookies for
-                  functionality, analytics, and advertising. Third-party
-                  vendors, including Google, use cookies to serve ads based on a
-                  user's prior visits to your website or other websites.
+                  PDFMaster uses minimal, privacy-respecting storage for
+                  functionality, performance analytics, and advertising.
                 </p>
-                <p><strong>Cookies we use:</strong></p>
+                <p><strong>Storage mechanisms used:</strong></p>
                 <ul>
                   <li>
-                    <strong>Theme preference cookie</strong> — stores your
-                    light/dark mode preference so it persists between visits. No
-                    personal data. Expires after 365 days.
+                    <strong>localStorage (Theme &amp; Preferences)</strong> — Stores your
+                    light/dark mode toggle selection so it persists between sessions without tracking your identity.
                   </li>
                   <li>
-                    <strong>Analytics session cookie</strong> — anonymised
-                    session identifier used by our analytics provider to count
-                    unique visits without identifying individuals. Expires at
-                    end of session.
+                    <strong>IndexedDB (Session Recovery)</strong> — Sandboxed local browser storage used solely to retain active document drafts on your device.
+                  </li>
+                  <li>
+                    <strong>Analytics session identifiers</strong> — Anonymized
+                    session metrics used to evaluate website uptime and page performance without identifying individuals.
                   </li>
                   <li>
                     <strong
                       >Google AdSense &amp; Third-Party Advertising
                       Cookies</strong
                     >
-                    — Google's use of advertising cookies enables it and its
-                    partners to serve ads to users based on their visit to
-                    PDFMaster and/or other sites on the Internet. Users may opt
-                    out of personalized advertising by visiting
+                    — Third-party vendors, including Google, use cookies to serve ads based on prior visits to this or other websites. Users may opt
+                    out of personalized advertising at any time by visiting
                     <a
                       href="https://www.google.com/settings/ads"
                       target="_blank"
@@ -823,14 +807,8 @@
                   </li>
                 </ul>
                 <p>
-                  We use aggregated, anonymised analytics to understand traffic
-                  patterns, popular tools, and geographic reach. This data
-                  cannot be used to identify any individual visitor.
-                </p>
-                <p>
-                  You can disable cookies at any time via your browser settings.
-                  Disabling cookies will not prevent you from using any
-                  PDFMaster tool — all core functionality works without them.
+                  You can disable cookies and clear site storage at any time via your browser settings.
+                  Disabling cookies will not prevent you from using any core PDFMaster tool.
                 </p>
               </div>
 
@@ -858,33 +836,23 @@
                       d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"
                     ></path>
                   </svg>
-                  Third-Party Services
+                  Third-Party Services &amp; Self-Hosted Libraries
                 </h2>
                 <p>
-                  To deliver our service, we rely on a small number of carefully
-                  selected third-party providers. Each is used only to deliver
-                  the website's core infrastructure and content — not for
-                  advertising or user profiling.
+                  We prioritize self-hosting all critical code to eliminate external network calls and data sharing:
                 </p>
                 <ul>
                   <li>
-                    <strong>Local Font Hosting (Offline)</strong> — The Sora and
-                    DM Sans typefaces are hosted locally on our servers and run
-                    completely on-device, meaning Google Fonts APIs are not
-                    queried and no font request data is shared with Google.
+                    <strong>Self-Hosted Fonts</strong> — The Sora and
+                    DM Sans typefaces are hosted locally on our infrastructure, ensuring no font requests or IP addresses are shared with external font servers.
                   </li>
                   <li>
-                    <strong>Cloudflare CDN (optional)</strong> — Cloudflare may
-                    be used only for DNS routing and delivering the initial
-                    static web files faster globally. Cloudflare processes basic
-                    connection metadata only, with zero exposure to your
-                    processed files or page operations.
+                    <strong>Self-Hosted Client-Side Libraries</strong> — All
+                    open-source PDF manipulation engines (including pdf-lib, PDF.js, JSZip, Sortable, jsPDF, and DOMPurify) are packaged locally on our domain, removing dependencies on third-party CDNs.
                   </li>
                   <li>
-                    <strong>Local Assets &amp; Vendor Libraries</strong> — All
-                    code libraries (e.g., pdf-lib, pdf.js, JSZip, Sortable, and
-                    jsPDF) and canonical visual resources are hosted on-site,
-                    eliminating external requests to third-party vendor CDNs.
+                    <strong>Cloudflare Infrastructure</strong> — Cloudflare provides
+                    DNS routing, DDoS mitigation, and global edge caching for initial static assets. Cloudflare processes basic connection metadata only, with zero access to your in-browser document processing.
                   </li>
                 </ul>
                 <p>

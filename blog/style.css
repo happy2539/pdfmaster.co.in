@@ -1159,13 +1159,10 @@ button {
   stroke-linejoin: round;
 }
 
-/* ── REVEAL ── */
+/* ── REVEAL (DISABLED) ── */
 .rev {
-  opacity: 0;
-  transform: translateY(22px);
-  transition:
-    opacity 0.5s ease,
-    transform 0.5s ease;
+  opacity: 1;
+  transform: none;
 }
 .rev.in {
   opacity: 1;

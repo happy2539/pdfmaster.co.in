@@ -62,21 +62,6 @@ b2t.addEventListener("click", () =>
   window.scrollTo({ top: 0, behavior: "smooth" }),
 );
 
-/* ═══════════ Reveal on Scroll ═══════════ */
-const rvEls = document.querySelectorAll(".rv");
-const observer = new IntersectionObserver(
-  (entries) => {
-    entries.forEach((e) => {
-      if (e.isIntersecting) {
-        e.target.classList.add("in");
-        observer.unobserve(e.target);
-      }
-    });
-  },
-  { threshold: 0.07 },
-);
-rvEls.forEach((el) => observer.observe(el));
-
 /* ═══════════ TOC Active State ═══════════ */
 const sections = document.querySelectorAll(".policy-section[id]");
 const tocLinks = document.querySelectorAll(".toc-list a");

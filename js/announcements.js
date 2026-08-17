@@ -116,25 +116,6 @@
   );
 
   /* ══════════════════════════════════════════════════
-       SCROLL REVEAL
-    ══════════════════════════════════════════════════ */
-  const revealObserver = new IntersectionObserver(
-    (entries) => {
-      entries.forEach((e) => {
-        if (e.isIntersecting) {
-          e.target.classList.add("in-view");
-          revealObserver.unobserve(e.target);
-        }
-      });
-    },
-    { threshold: 0.12 },
-  );
-
-  document
-    .querySelectorAll(".reveal")
-    .forEach((el) => revealObserver.observe(el));
-
-  /* ══════════════════════════════════════════════════
        FOOTER YEAR
     ══════════════════════════════════════════════════ */
   $("footerYear").textContent = new Date().getFullYear();
@@ -584,13 +565,10 @@
     cardsContainer.appendChild(frag);
     renderedCount += batch.length;
 
-    // Animate newly added cards
+    // Make newly added cards visible
     const cards = cardsContainer.querySelectorAll(".card:not(.revealed)");
-    cards.forEach((card, i) => {
-      setTimeout(() => {
-        card.classList.add("revealed");
-        revealObserver.observe(card); // also hook scroll reveal
-      }, i * 55);
+    cards.forEach((card) => {
+      card.classList.add("revealed");
     });
   }
 

@@ -94,23 +94,6 @@ function showModal(type, title, message) {
   );
 }
 
-/* ── SCROLL REVEAL ───────────────────────────────────────────────────────── */
-const io = new IntersectionObserver(
-  (entries) => {
-    entries.forEach((e) => {
-      if (e.isIntersecting) {
-        e.target.classList.add("in");
-        io.unobserve(e.target);
-      }
-    });
-  },
-  { threshold: 0.07 },
-);
-document.querySelectorAll(".rev").forEach((el, i) => {
-  el.style.transitionDelay = (i % 6) * 0.07 + "s";
-  io.observe(el);
-});
-
 /* ── BACK TO TOP ─────────────────────────────────────────────────────────── */
 const btt = document.getElementById("btt");
 window.addEventListener(
