@@ -2,7 +2,7 @@
 
 // ── pdf.js worker setup ──────────────────────────────
 pdfjsLib.GlobalWorkerOptions.workerSrc =
-  "assets/vendor/pdf.worker.min.js";
+  "/assets/vendor/pdf.worker.min.js";
 
 // ── State ─────────────────────────────────────────────
 let currentFile = null;
@@ -110,11 +110,36 @@ b2t.addEventListener("click", () =>
 );
 
 // ── Toast ─────────────────────────────────────────────
-function showToast(msg, type = "info", dur = 3500) {
+function showToast(msg, type = "info", dur = 3500, onClick = null, actionText = null) {
   const tc = document.getElementById("toastContainer");
+  if (!tc) return;
   const toast = document.createElement("div");
   toast.className = `toast ${type}`;
-  toast.textContent = msg;
+
+  const span = document.createElement("span");
+  span.textContent = msg;
+  toast.appendChild(span);
+
+  if (actionText && typeof onClick === "function") {
+    const actBtn = document.createElement("button");
+    actBtn.type = "button";
+    actBtn.className = "toast-btn";
+    actBtn.textContent = actionText;
+    actBtn.onclick = (e) => {
+      e.stopPropagation();
+      toast.remove();
+      onClick();
+    };
+    toast.appendChild(actBtn);
+    toast.classList.add("toast-clickable");
+  } else if (typeof onClick === "function") {
+    toast.classList.add("toast-clickable");
+    toast.onclick = () => {
+      toast.remove();
+      onClick();
+    };
+  }
+
   tc.appendChild(toast);
   setTimeout(() => {
     toast.style.opacity = "0";
@@ -157,6 +182,7 @@ function resetTool() {
   document.getElementById("removeBtn").disabled = false;
   document.getElementById("progressWrap").classList.remove("visible");
   document.getElementById("progressFill").style.width = "0%";
+  clearSessionFromDB();
   window.scrollTo({ top: 0, behavior: "smooth" });
   showToast("Ready for a new file.", "info");
 }
@@ -182,6 +208,7 @@ async function loadFile(file) {
   document.getElementById("progressFill").style.width = "0%";
 
   await extractAndRender(currentPdfBytes, file);
+  scheduleDBSave();
   document
     .getElementById("toolArea")
     .scrollIntoView({ behavior: "smooth", block: "start" });
@@ -718,3 +745,218 @@ async function removeMetadata() {
     }, 1200);
   }
 }
+
+// ── IndexedDB Recovery Mode ──────────────────────────
+let dbPromise = null;
+let saveTimer = null;
+
+function openDB() {
+  if (dbPromise) return dbPromise;
+  dbPromise = new Promise((resolve, reject) => {
+    const DB_NAME = "pdfmaster_metadata_db";
+    const DB_VERSION = 1;
+    const req = indexedDB.open(DB_NAME, DB_VERSION);
+    req.onupgradeneeded = (e) => {
+      const db = e.target.result;
+      if (!db.objectStoreNames.contains("settings")) {
+        db.createObjectStore("settings");
+      }
+      if (!db.objectStoreNames.contains("metadata_data")) {
+        db.createObjectStore("metadata_data");
+      }
+    };
+    req.onsuccess = (e) => resolve(e.target.result);
+    req.onerror = (e) => reject(e.target.error);
+  });
+  return dbPromise;
+}
+
+function scheduleDBSave() {
+  if (saveTimer) clearTimeout(saveTimer);
+  saveTimer = setTimeout(() => {
+    saveSessionToDB();
+  }, 400);
+}
+
+async function saveSessionToDB() {
+  if (!currentPdfBytes || !currentFile) return false;
+  try {
+    const db = await openDB();
+    const tx = db.transaction(["settings", "metadata_data"], "readwrite");
+    const settingsStore = tx.objectStore("settings");
+    const dataStore = tx.objectStore("metadata_data");
+
+    const sessionData = {
+      timestamp: Date.now(),
+      fileName: currentFile.name,
+      fileSize: currentFile.size,
+      rmAuthor: document.getElementById("rmAuthor")?.checked ?? true,
+      rmDates: document.getElementById("rmDates")?.checked ?? true,
+      rmTitle: document.getElementById("rmTitle")?.checked ?? true,
+      rmApp: document.getElementById("rmApp")?.checked ?? true,
+      rmXmp: document.getElementById("rmXmp")?.checked ?? true,
+      rmCustom: document.getElementById("rmCustom")?.checked ?? true,
+    };
+    settingsStore.put(sessionData, "session");
+
+    const fileData = {
+      fileName: currentFile.name,
+      fileSize: currentFile.size,
+      bytes: currentPdfBytes.buffer || currentPdfBytes,
+      timestamp: Date.now(),
+    };
+    dataStore.put(fileData, "file");
+
+    updateRecoveryBadge(true);
+    return true;
+  } catch (err) {
+    console.warn("IndexedDB save failed:", err);
+    return false;
+  }
+}
+
+async function loadSessionFromDB(isManual = false) {
+  try {
+    const db = await openDB();
+    const tx = db.transaction(["settings", "metadata_data"], "readonly");
+    const settingsReq = tx.objectStore("settings").get("session");
+    const dataReq = tx.objectStore("metadata_data").get("file");
+
+    const [session, data] = await Promise.all([
+      new Promise((res) => {
+        settingsReq.onsuccess = () => res(settingsReq.result);
+        settingsReq.onerror = () => res(null);
+      }),
+      new Promise((res) => {
+        dataReq.onsuccess = () => res(dataReq.result);
+        dataReq.onerror = () => res(null);
+      }),
+    ]);
+
+    if (!data || !data.bytes) {
+      updateRecoveryBadge(false);
+      if (isManual) {
+        showToast("No stored session found in recovery storage.", "error");
+      }
+      return false;
+    }
+
+    currentFile = {
+      name: data.fileName || "document.pdf",
+      size: data.fileSize || data.bytes.byteLength,
+    };
+    currentPdfBytes = new Uint8Array(data.bytes);
+    cleanPdfBytes = null;
+
+    document.getElementById("fileName").textContent = currentFile.name;
+    document.getElementById("fileSize").textContent = formatBytes(currentFile.size);
+    document.getElementById("statSize").textContent = formatBytes(currentFile.size);
+
+    document.getElementById("toolArea").classList.remove("hidden");
+    document.getElementById("resultCard").classList.remove("visible");
+    document.getElementById("removeBtn").disabled = false;
+    document.getElementById("progressWrap").classList.remove("visible");
+    document.getElementById("progressFill").style.width = "0%";
+
+    if (session) {
+      if (document.getElementById("rmAuthor"))
+        document.getElementById("rmAuthor").checked = session.rmAuthor !== false;
+      if (document.getElementById("rmDates"))
+        document.getElementById("rmDates").checked = session.rmDates !== false;
+      if (document.getElementById("rmTitle"))
+        document.getElementById("rmTitle").checked = session.rmTitle !== false;
+      if (document.getElementById("rmApp"))
+        document.getElementById("rmApp").checked = session.rmApp !== false;
+      if (document.getElementById("rmXmp"))
+        document.getElementById("rmXmp").checked = session.rmXmp !== false;
+      if (document.getElementById("rmCustom"))
+        document.getElementById("rmCustom").checked = session.rmCustom !== false;
+    }
+
+    await extractAndRender(currentPdfBytes, currentFile);
+    updateRecoveryBadge(true);
+
+    document
+      .getElementById("toolArea")
+      .scrollIntoView({ behavior: "smooth", block: "start" });
+
+    if (isManual) {
+      showToast(`Restored '${currentFile.name}' and metadata inspection!`, "success", 4000);
+    }
+    return true;
+  } catch (err) {
+    console.warn("IndexedDB load failed:", err);
+    if (isManual) {
+      showToast("Could not access recovery storage.", "error");
+    }
+    return false;
+  }
+}
+
+async function clearSessionFromDB() {
+  try {
+    const db = await openDB();
+    const tx = db.transaction(["settings", "metadata_data"], "readwrite");
+    tx.objectStore("settings").clear();
+    tx.objectStore("metadata_data").clear();
+    updateRecoveryBadge(false);
+  } catch (err) {
+    console.warn("IndexedDB clear failed:", err);
+  }
+}
+
+async function checkStoredSessionAvailable(notifyOnFound = false) {
+  try {
+    const db = await openDB();
+    const tx = db.transaction(["metadata_data"], "readonly");
+    const dataReq = tx.objectStore("metadata_data").get("file");
+    const data = await new Promise((res) => {
+      dataReq.onsuccess = () => res(dataReq.result);
+      dataReq.onerror = () => res(null);
+    });
+
+    const hasData = !!(data && data.bytes);
+    updateRecoveryBadge(hasData);
+
+    if (hasData && notifyOnFound && !currentPdfBytes) {
+      const name = data.fileName ? `'${data.fileName}'` : "Previous document";
+      showToast(
+        `Last session (${name}) is available. Click to restore.`,
+        "info",
+        8000,
+        () => loadSessionFromDB(true),
+        "Restore"
+      );
+    }
+    return hasData;
+  } catch {
+    updateRecoveryBadge(false);
+    return false;
+  }
+}
+
+function updateRecoveryBadge(hasData) {
+  const badge = document.getElementById("recoveryBadge");
+  if (badge) {
+    badge.style.display = hasData ? "block" : "none";
+  }
+}
+
+// Wire remove option checkboxes to schedule auto-save
+["rmAuthor", "rmDates", "rmTitle", "rmApp", "rmXmp", "rmCustom"].forEach((id) => {
+  const el = document.getElementById(id);
+  if (el) {
+    el.addEventListener("change", scheduleDBSave);
+  }
+});
+
+// Wire recovery button
+const recoveryBtn = document.getElementById("recoveryBtn");
+if (recoveryBtn) {
+  recoveryBtn.addEventListener("click", () => {
+    loadSessionFromDB(true);
+  });
+}
+
+// Check stored session on startup
+checkStoredSessionAvailable(true);

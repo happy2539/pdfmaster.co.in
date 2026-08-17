@@ -14,13 +14,13 @@
     <!-- SEO Description -->
     <meta
       name="description"
-      content="View and remove PDF metadata online for free with no upload. Delete author, title, creation date, and hidden XMP info. 100% private and secure browser-based tool."
+      content="View and remove PDF metadata online for free with no upload. Delete author, title, creation date, and hidden XMP info. Includes local IndexedDB file recovery."
     />
 
     <!-- Keywords -->
     <meta
       name="keywords"
-      content="PDF metadata remover, view PDF metadata, remove PDF author, delete PDF metadata online, PDF metadata viewer free, secure PDF tool, hide PDF creation date, XMP metadata remover"
+      content="PDF metadata remover, view PDF metadata, remove PDF author, delete PDF metadata online, PDF metadata viewer free, secure PDF tool, hide PDF creation date, XMP metadata remover, PDF restore session, indexeddb recovery"
     />
 
     <!-- Robots -->
@@ -41,7 +41,7 @@
     />
     <meta
       property="og:description"
-      content="Delete hidden metadata from PDFs instantly in your browser. No upload, 100% private and secure."
+      content="Delete hidden metadata from PDFs instantly in your browser. No upload, local IndexedDB session recovery, 100% private and secure."
     />
     <meta property="og:url" content="https://pdfmaster.co.in/pdf-metadata" />
     <meta
@@ -58,7 +58,7 @@
     />
     <meta
       name="twitter:description"
-      content="Erase PDF metadata instantly. No uploads. 100% private."
+      content="Erase PDF metadata instantly. No uploads. Local IndexedDB recovery."
     />
     <meta
       name="twitter:image"
@@ -81,8 +81,8 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="default" />
     <script src="/js/sw-register.js" defer></script>
 
-    <script src="assets/vendor/pdf.min.js" defer></script>
-    <script src="assets/vendor/pdf-lib.min.js" defer></script>
+    <script src="/assets/vendor/pdf.min.js" defer></script>
+    <script src="/assets/vendor/pdf-lib.min.js" defer></script>
 
     <!-- ── JSON-LD Structured Data ────────────────────── -->
     <script type="application/ld+json">
@@ -92,7 +92,7 @@
           "@type": "WebApplication",
           "name": "PDF Metadata Viewer & Remover - PDFMaster",
           "url": "https://pdfmaster.co.in/pdf-metadata",
-          "description": "Free browser-based tool to view and remove all metadata from PDF files including author, title, creation date, modification date, and XMP metadata streams. 100% private and secure.",
+          "description": "Free browser-based tool to view and remove all metadata from PDF files including author, title, creation date, modification date, and XMP metadata streams. Includes local session recovery. 100% private and secure.",
           "applicationCategory": "UtilitiesApplication",
           "operatingSystem": "Any",
           "offers": {
@@ -114,6 +114,7 @@
             "Privacy risk scoring",
             "Selective metadata removal",
             "Strips XMP metadata",
+            "Smart session recovery (IndexedDB)",
             "100% Private (No upload)",
             "On-device processing"
           ]
@@ -140,6 +141,14 @@
           "@context": "https://schema.org",
           "@type": "FAQPage",
           "mainEntity": [
+            {
+              "@type": "Question",
+              "name": "Can I recover my PDF metadata inspection if my tab or browser closes?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Yes. PDFMaster includes a built-in session recovery feature powered by your browser's private IndexedDB storage. Your last opened PDF document and removal settings are saved 100% locally on your device. Click the Recovery button in the header to restore your file and inspection session instantly without re-uploading."
+              }
+            },
             {
               "@type": "Question",
               "name": "What metadata does this tool remove from PDFs?",
@@ -261,6 +270,31 @@
         </ul>
 
         <div class="nav-right">
+          <button
+            type="button"
+            class="recovery-btn"
+            id="recoveryBtn"
+            aria-label="Recovery mode - restore saved session"
+            title="Recovery Mode — Restore last PDF & metadata inspection"
+          >
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
+              <path d="M3 3v5h5" />
+              <path d="M12 7v5l4 2" />
+            </svg>
+            <span
+              class="recovery-badge"
+              id="recoveryBadge"
+              style="display: none"
+            ></span>
+          </button>
           <button
             class="theme-toggle"
             id="themeBtn"
@@ -574,6 +608,9 @@
           </div>
           <div class="trust-badge">
             <span class="trust-dot"></span> Works on any device
+          </div>
+          <div class="trust-badge">
+            <span class="trust-dot"></span> Session recovery (IndexedDB)
           </div>
         </div>
 
@@ -1581,6 +1618,29 @@ Loading…</pre
               collection.
             </p>
           </article>
+          <article class="fcard">
+            <span class="fcard-icon"
+              ><svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="1em"
+                height="1em"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
+                <path d="M3 3v5h5" />
+                <path d="M12 7v5l4 2" />
+              </svg>
+            </span>
+            <h3>Last File &amp; Session Recovery</h3>
+            <p>
+              Auto-saves your active document and inspection settings in local browser IndexedDB storage. Restore your entire session with a single click if your browser closes.
+            </p>
+          </article>
         </div>
       </div>
     </section>
@@ -1852,6 +1912,31 @@ Loading…</pre
               </p>
             </div>
           </div>
+          <div class="benefit">
+            <span class="benefit-icon"
+              ><svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="1em"
+                height="1em"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
+                <path d="M3 3v5h5" />
+                <path d="M12 7v5l4 2" />
+              </svg>
+            </span>
+            <div>
+              <h4>Smart Session Recovery</h4>
+              <p>
+                Saves your precious time by preserving your last opened PDF and removal configuration locally on your device without paying any hard-earned money.
+              </p>
+            </div>
+          </div>
         </div>
       </div>
     </section>
@@ -1869,6 +1954,44 @@ Loading…</pre
           </p>
         </div>
         <div class="faq-list" role="list">
+          <div
+            class="faq-item"
+            role="listitem"
+            itemscope
+            itemtype="https://schema.org/Question"
+          >
+            <div
+              class="faq-q"
+              onclick="toggleFaq(this)"
+              role="button"
+              tabindex="0"
+              aria-expanded="false"
+            >
+              <span itemprop="name">Can I recover my PDF and metadata inspection if my browser or tab closes?</span>
+              <span class="faq-chevron"
+                ><!-- @license lucide-static v0.330.0 - ISC -->
+                <svg
+                  class="lucide lucide-chevron-down"
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="1em"
+                  height="1em"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path d="m6 9 6 6 6-6" />
+                </svg>
+              </span>
+            </div>
+            <div class="faq-a" itemscope itemtype="https://schema.org/Answer">
+              <span itemprop="text"
+                >Yes. PDFMaster has a built-in session recovery feature powered by your browser's private IndexedDB storage. Your last opened PDF file and removal options are stored 100% locally on your machine. If your browser or tab closes unexpectedly, click the <strong>Recovery icon</strong> in the header or the Restore prompt to immediately continue your work without re-uploading.</span
+              >
+            </div>
+          </div>
           <div
             class="faq-item"
             role="listitem"
