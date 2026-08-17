@@ -10,12 +10,12 @@
 
     <meta
       name="description"
-      content="Merge PDF files online for free with no upload. Combine multiple PDFs instantly in your browser. 100% private, secure, and fast client-side PDF merger tool."
+      content="Merge PDF files online for free with no upload. Combine multiple PDFs instantly in your browser with local IndexedDB file recovery. 100% private, secure, and fast client-side PDF merger."
     />
 
     <meta
       name="keywords"
-      content="merge PDF online, combine PDF files, join PDF online, PDF combiner free, merge PDF without upload, secure PDF merger, client side PDF tool, PDF compiler, merge PDF offline"
+      content="merge PDF online, combine PDF files, join PDF online, PDF combiner free, merge PDF without upload, secure PDF merger, client side PDF tool, PDF compiler, merge PDF offline, last file recovery, IndexedDB PDF recovery"
     />
 
     <meta name="robots" content="index, follow" />
@@ -141,7 +141,8 @@
             "Reorder files",
             "Edit PDF metadata",
             "100% Private (No upload)",
-            "On-device processing"
+            "On-device processing",
+            "Last file recovery (IndexedDB)"
           ]
         },
         {
@@ -205,6 +206,14 @@
                 "@type": "Answer",
                 "text": "Yes. PDFMaster is fully responsive and works on all modern mobile browsers including Chrome on Android and Safari on iOS."
               }
+            },
+            {
+              "@type": "Question",
+              "name": "Can I restore my last merged files if I accidentally close the tab?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Yes. PDFMaster includes a built-in session recovery feature powered by your browser's local IndexedDB. Your uploaded files, sequence order, and page ranges are stored 100% locally on your machine. Simply click the Recovery icon in the top navigation bar to restore your files and settings instantly for free."
+              }
             }
           ]
         }
@@ -247,6 +256,31 @@
         </ul>
 
         <div class="nav-right">
+          <button
+            type="button"
+            class="theme-toggle recovery-btn"
+            id="recoveryBtn"
+            aria-label="Recovery mode - restore saved session"
+            title="Recovery Mode — Restore saved documents & settings"
+          >
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
+              <path d="M3 3v5h5" />
+              <path d="M12 7v5l4 2" />
+            </svg>
+            <span
+              class="recovery-badge"
+              id="recoveryBadge"
+              style="display: none"
+            ></span>
+          </button>
           <a
             href="/subscribe"
             class="theme-toggle"
@@ -379,6 +413,10 @@
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" /><polyline points="22 4 12 14.01 9 11.01" /></svg>
             Always Free
           </span>
+          <span class="tool-pill">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" /><path d="M3 3v5h5" /><path d="M12 7v5l4 2" /></svg>
+            Last File Recovery (IndexedDB)
+          </span>
         </div>
       </div>
     </section>
@@ -416,7 +454,7 @@
               </svg>
             </div>
             <div class="upload-title">Drop PDF files here or click to browse</div>
-            <div class="upload-sub">Select multiple PDFs · Drag to reorder · 100% Client-side</div>
+            <div class="upload-sub">Select multiple PDFs · Drag to reorder · 100% Client-side with IndexedDB Session Recovery</div>
             <button class="upload-browse-btn" type="button" id="browseBtn">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
                 <path d="M12 5v14M5 12h14"/>
@@ -633,6 +671,17 @@
             <h3>Metadata Editing</h3>
             <p>Set the title, author, and subject of your merged PDF for professional document management.</p>
           </div>
+          <div class="feat-card">
+            <div class="feat-icon">
+              <svg width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
+                <path d="M3 3v5h5" />
+                <path d="M12 7v5l4 2" />
+              </svg>
+            </div>
+            <h3>Last File Recovery</h3>
+            <p>Automatically saves your uploaded files and sequence to browser IndexedDB for instant 1-click restore.</p>
+          </div>
         </div>
       </section>
 
@@ -691,6 +740,17 @@
             </div>
             <h3>Drag to Reorder</h3>
             <p>Intuitive drag-and-drop reordering so the final document follows your exact sequence.</p>
+          </div>
+          <div class="feat-card">
+            <div class="feat-icon">
+              <svg width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
+                <path d="M3 3v5h5" />
+                <path d="M12 7v5l4 2" />
+              </svg>
+            </div>
+            <h3>Session Recovery (IndexedDB)</h3>
+            <p>Never lose your work. Your merge queue and configuration are saved locally for 1-click restore.</p>
           </div>
         </div>
       </section>
@@ -798,6 +858,19 @@
               <p>Fully responsive design — works on mobile, tablet, laptop, and desktop.</p>
             </div>
           </div>
+          <div class="benefit-card">
+            <div class="benefit-icon">
+              <svg width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
+                <path d="M3 3v5h5" />
+                <path d="M12 7v5l4 2" />
+              </svg>
+            </div>
+            <div>
+              <h4>Smart Session Recovery</h4>
+              <p>Restore your files and merge settings instantly from local IndexedDB—saving your precious time for free.</p>
+            </div>
+          </div>
         </div>
       </section>
 
@@ -853,6 +926,15 @@
             </div>
             <div class="faq-answer">
               Yes. PDFMaster is fully responsive and works on all modern mobile browsers including Chrome on Android and Safari on iOS.
+            </div>
+          </div>
+          <div class="faq-item">
+            <div class="faq-question">
+              Can I restore my last merged files if I accidentally close the tab?
+              <span class="faq-arrow">▾</span>
+            </div>
+            <div class="faq-answer">
+              Yes. PDFMaster includes a built-in recovery mode powered by your browser's local IndexedDB storage. Your uploaded files, sequence order, and page ranges are saved 100% locally on your device. If your browser unexpectedly closes, simply click the <strong>Recovery icon</strong> in the header to resume right where you left off. This saves your precious time, requires no re-uploading, and is completely free without paying any hard-earned money.
             </div>
           </div>
         </div>

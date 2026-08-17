@@ -189,6 +189,35 @@ nav {
   pointer-events: none;
 }
 
+.recovery-btn {
+  position: relative;
+}
+
+.recovery-badge {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--primary);
+  border: 2px solid var(--surface);
+  box-shadow: 0 0 0 1px var(--primary);
+  animation: recoveryPulse 2s infinite ease-in-out;
+}
+
+@keyframes recoveryPulse {
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 0.9;
+  }
+  50% {
+    transform: scale(1.25);
+    opacity: 1;
+  }
+}
+
 /* Mobile Hamburger Button */
 .hamburger-btn {
   display: none;
@@ -847,6 +876,8 @@ nav {
 
 .file-order-btn,
 .file-remove-btn {
+  position: relative;
+  z-index: 2;
   border: 1px solid var(--border);
   border-radius: 8px;
   cursor: pointer;
@@ -857,12 +888,24 @@ nav {
   align-items: center;
   justify-content: center;
   transition: all 0.2s;
+  user-select: none;
+  touch-action: manipulation;
+}
+
+.file-order-btn *,
+.file-remove-btn * {
+  pointer-events: none;
 }
 
 .file-order-btn:hover:not(:disabled) {
   background: rgba(230, 57, 70, 0.08);
   color: var(--primary);
   border-color: rgba(230, 57, 70, 0.2);
+}
+
+.file-order-btn:active:not(:disabled),
+.file-remove-btn:active {
+  transform: scale(0.92);
 }
 
 .file-order-btn:disabled {
@@ -1683,6 +1726,29 @@ footer {
 
 .toast.info {
   background: #2563eb;
+}
+
+.toast.toast-clickable {
+  cursor: pointer;
+}
+
+.toast-btn {
+  background: rgba(255, 255, 255, 0.25);
+  border: 1px solid rgba(255, 255, 255, 0.45);
+  color: #fff;
+  border-radius: 6px;
+  padding: 4px 10px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  cursor: pointer;
+  margin-left: auto;
+  transition: background 0.2s, transform 0.15s;
+  white-space: nowrap;
+}
+
+.toast-btn:hover {
+  background: rgba(255, 255, 255, 0.4);
+  transform: translateY(-1px);
 }
 
 @keyframes toastIn {

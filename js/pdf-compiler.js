@@ -78,10 +78,11 @@ document.querySelectorAll(".mini-toggle").forEach((btn) => {
 /* ═══════════════════════════════════════════════════
    TOAST NOTIFICATIONS
 ═══════════════════════════════════════════════════ */
-function showToast(msg, type = "info", duration = 3500) {
+function showToast(msg, type = "info", duration = 3500, onClick = null, actionText = null) {
   const container = document.getElementById("toastContainer");
+  if (!container) return;
   const toast = document.createElement("div");
-  toast.className = `toast ${type}`;
+  toast.className = `toast ${type}${onClick ? " toast-clickable" : ""}`;
   
   const iconHtml = type === "success" 
     ? '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>'
@@ -89,12 +90,30 @@ function showToast(msg, type = "info", duration = 3500) {
       ? '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>'
       : '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>';
 
-  toast.innerHTML = `<span style="display:flex;align-items:center;justify-content:center;">${iconHtml}</span> <span>${msg}</span>`;
+  const actionHtml = actionText
+    ? `<button type="button" class="toast-btn">${actionText}</button>`
+    : "";
+
+  toast.innerHTML = `<span style="display:flex;align-items:center;justify-content:center;flex-shrink:0;">${iconHtml}</span> <span style="flex:1;">${msg}</span> ${actionHtml}`;
   container.appendChild(toast);
-  setTimeout(() => {
+
+  let isRemoved = false;
+  const removeToast = () => {
+    if (isRemoved) return;
+    isRemoved = true;
     toast.style.animation = "toastOut 0.3s ease forwards";
     setTimeout(() => toast.remove(), 300);
-  }, duration);
+  };
+
+  const timer = setTimeout(removeToast, duration);
+
+  if (typeof onClick === "function") {
+    toast.addEventListener("click", (e) => {
+      clearTimeout(timer);
+      removeToast();
+      onClick(e);
+    });
+  }
 }
 
 /* ═══════════════════════════════════════════════════
@@ -128,6 +147,8 @@ class PDFCompiler {
   constructor() {
     this.files = [];
     this.sortable = null;
+    this.dbPromise = null;
+    this.saveTimer = null;
     this.init();
   }
 
@@ -143,6 +164,7 @@ class PDFCompiler {
     const sortName = document.getElementById("sortByName");
     const sortSize = document.getElementById("sortBySize");
     const sortPages = document.getElementById("sortByPages");
+    const recoveryBtn = document.getElementById("recoveryBtn");
 
     uploadArea.addEventListener("click", (e) => {
       if (e.target !== browseBtn) fileInput.click();
@@ -164,6 +186,27 @@ class PDFCompiler {
     sortSize.addEventListener("click", () => this.sort("size"));
     sortPages.addEventListener("click", () => this.sort("pages"));
 
+    if (recoveryBtn) {
+      recoveryBtn.addEventListener("click", () => {
+        this.loadSessionFromDB(true).then((success) => {
+          if (!success) {
+            showToast("No stored session found in recovery storage.", "error");
+          }
+        });
+      });
+    }
+
+    /* Option inputs change auto-save */
+    ["pdfName", "metaTitle", "metaAuthor", "metaSubject", "compressionLevel"].forEach((id) => {
+      const el = document.getElementById(id);
+      if (el) el.addEventListener("input", () => this.scheduleDBSave());
+    });
+
+    const toggleBlank = document.getElementById("toggleBlankPage");
+    if (toggleBlank) {
+      toggleBlank.addEventListener("click", () => this.scheduleDBSave());
+    }
+
     uploadArea.addEventListener("dragover", (e) => {
       e.preventDefault();
       uploadArea.classList.add("dragover");
@@ -178,41 +221,32 @@ class PDFCompiler {
       this.handleFiles(e.dataTransfer.files);
     });
 
-    /* Sortable */
-    this.sortable = Sortable.create(
-      document.getElementById("fileListContainer"),
-      {
-        handle: ".drag-handle",
-        animation: 180,
-        ghostClass: "sortable-ghost",
-        chosenClass: "sortable-chosen",
-        filter: ".empty-state",
-        onEnd: (evt) => {
-          const moved = this.files.splice(evt.oldDraggableIndex, 1)[0];
-          this.files.splice(evt.newDraggableIndex, 0, moved);
-          this.updateStats();
-        },
-      },
-    );
-
     /* Event Delegation for File Actions */
-    document.addEventListener("click", (e) => {
-      const btn = e.target.closest(".file-order-btn, .file-remove-btn");
-      if (!btn) return;
+    const fileListContainer = document.getElementById("fileListContainer");
+    if (fileListContainer) {
+      fileListContainer.addEventListener("click", (e) => {
+        const btn = e.target.closest(".file-order-btn, .file-remove-btn");
+        if (!btn || btn.disabled) return;
 
-      const fileItem = btn.closest(".file-item");
-      if (!fileItem) return;
+        const fileItem = btn.closest(".file-item");
+        const id = btn.dataset.id || fileItem?.dataset?.id;
+        if (!id) return;
 
-      const id = fileItem.dataset.id;
+        e.preventDefault();
+        e.stopPropagation();
 
-      if (btn.classList.contains("file-remove-btn")) {
-        this.removeFile(id);
-      } else if (btn.classList.contains("move-up")) {
-        this.moveUp(id);
-      } else if (btn.classList.contains("move-down")) {
-        this.moveDown(id);
-      }
-    });
+        if (btn.classList.contains("file-remove-btn") || btn.dataset.action === "remove") {
+          this.removeFile(id);
+        } else if (btn.classList.contains("move-up") || btn.dataset.action === "move-up") {
+          this.moveUp(id);
+        } else if (btn.classList.contains("move-down") || btn.dataset.action === "move-down") {
+          this.moveDown(id);
+        }
+      });
+    }
+
+    // Check stored session on startup
+    this.checkStoredSessionAvailable(true);
   }
 
   async handleFiles(fileList) {
@@ -237,10 +271,9 @@ class PDFCompiler {
         const doc = await PDFLib.PDFDocument.load(buf, {
           ignoreEncryption: false,
         });
+        const fileId = "pdf_" + Date.now().toString(36) + "_" + Math.random().toString(36).substring(2, 9);
         this.files.push({
-          id: crypto.randomUUID
-            ? crypto.randomUUID()
-            : (Date.now() + Math.random()).toString(36),
+          id: fileId,
           name: file.name,
           size: file.size,
           pages: doc.getPageCount(),
@@ -263,6 +296,7 @@ class PDFCompiler {
     this.updateButtons();
     this.updateStats();
     this.checkDuplicates();
+    this.scheduleDBSave();
     // Reset inputs so same file can be re-added
     document.getElementById("fileInput").value = "";
     document.getElementById("addMoreInput").value = "";
@@ -281,35 +315,54 @@ class PDFCompiler {
     }
   }
 
+  getEmptyStateHtml() {
+    return `
+      <div class="empty-state show" id="emptyState">
+        <div class="es-icon" aria-hidden="true">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/>
+            <polyline points="14 2 14 8 20 8"/>
+          </svg>
+        </div>
+        <p>No PDF files added yet.<br />Upload two or more PDFs above to combine them.</p>
+      </div>
+    `;
+  }
+
   render() {
     const container = document.getElementById("fileListContainer");
-    const empty = document.getElementById("emptyState");
-    const title = document.getElementById("fileCountBadge");
+    if (!container) return;
 
-    title.textContent = this.files.length
-      ? `(${this.files.length} file${this.files.length > 1 ? "s" : ""})`
-      : "";
+    const title = document.getElementById("fileCountBadge");
+    if (title) {
+      title.textContent = this.files.length
+        ? `(${this.files.length} file${this.files.length > 1 ? "s" : ""})`
+        : "";
+    }
 
     if (!this.files.length) {
-      container.innerHTML = "";
-      empty.classList.add("show");
-      container.appendChild(empty);
+      container.innerHTML = this.getEmptyStateHtml();
+      if (this.sortable) {
+        try {
+          this.sortable.destroy();
+        } catch (e) {}
+        this.sortable = null;
+      }
       return;
     }
-    empty.classList.remove("show");
 
     const html = this.files
       .map(
         (f, idx) => `
       <div class="file-item" data-id="${f.id}">
         <div class="drag-handle" title="Drag to reorder">
-          <svg style="pointer-events:none" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
             <circle cx="9" cy="5" r="1"/><circle cx="9" cy="12" r="1"/><circle cx="9" cy="19" r="1"/>
             <circle cx="15" cy="5" r="1"/><circle cx="15" cy="12" r="1"/><circle cx="15" cy="19" r="1"/>
           </svg>
         </div>
         <div class="file-thumb">
-          <svg style="pointer-events:none" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
             <path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/>
           </svg>
         </div>
@@ -320,23 +373,23 @@ class PDFCompiler {
           <div class="file-meta">${f.pages} page${f.pages !== 1 ? "s" : ""} · ${this.fmtSize(f.size)}</div>
           <div class="page-range-row">
             <label>Pages:</label>
-            <input type="number" class="page-from" data-id="${f.id}" min="1" max="${f.pages}" placeholder="1" value="${f.fromPage}" title="From page" />
+            <input type="number" class="page-from" data-id="${f.id}" min="1" max="${f.pages}" placeholder="1" value="${f.fromPage || ""}" title="From page" />
             <span class="page-range-sep">–</span>
-            <input type="number" class="page-to" data-id="${f.id}" min="1" max="${f.pages}" placeholder="${f.pages}" value="${f.toPage}" title="To page" />
+            <input type="number" class="page-to" data-id="${f.id}" min="1" max="${f.pages}" placeholder="${f.pages}" value="${f.toPage || ""}" title="To page" />
             <span class="page-range-sep" style="color:var(--text3);font-size:0.75rem">of ${f.pages}</span>
           </div>
         </div>
         <div class="file-right">
           <div class="file-order-btns">
-            <button type="button" class="file-order-btn move-up" title="Move up" ${idx === 0 ? "disabled" : ""}>
-              <svg style="pointer-events:none" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="18 15 12 9 6 15"/></svg>
+            <button type="button" class="file-order-btn move-up" data-action="move-up" data-id="${f.id}" title="Move up">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="18 15 12 9 6 15"/></svg>
             </button>
-            <button type="button" class="file-order-btn move-down" title="Move down" ${idx === this.files.length - 1 ? "disabled" : ""}>
-              <svg style="pointer-events:none" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+            <button type="button" class="file-order-btn move-down" data-action="move-down" data-id="${f.id}" title="Move down">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
             </button>
           </div>
-          <button type="button" class="file-remove-btn" title="Remove file">
-            <svg style="pointer-events:none" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+          <button type="button" class="file-remove-btn" data-action="remove" data-id="${f.id}" title="Remove file">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
           </button>
         </div>
       </div>
@@ -346,59 +399,146 @@ class PDFCompiler {
 
     container.innerHTML = html;
 
-    /* Re-attach sortable to new DOM nodes */
+    /* Attach direct onclick handlers to buttons on every render */
+    container.querySelectorAll(".file-order-btn.move-up").forEach((btn) => {
+      btn.onclick = (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        const id = btn.getAttribute("data-id");
+        if (id) this.moveUp(id);
+      };
+    });
+
+    container.querySelectorAll(".file-order-btn.move-down").forEach((btn) => {
+      btn.onclick = (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        const id = btn.getAttribute("data-id");
+        if (id) this.moveDown(id);
+      };
+    });
+
+    container.querySelectorAll(".file-remove-btn").forEach((btn) => {
+      btn.onclick = (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        const id = btn.getAttribute("data-id");
+        if (id) this.removeFile(id);
+      };
+    });
+
+    /* Initialize Sortable */
+    this.initSortable();
+
+    /* Page range inputs live-update */
+    container.querySelectorAll(".page-from").forEach((inp) => {
+      inp.addEventListener("input", () => {
+        const f = this.files.find((x) => String(x.id) === String(inp.dataset.id));
+        if (f) {
+          f.fromPage = inp.value;
+          this.scheduleDBSave();
+        }
+      });
+    });
+    container.querySelectorAll(".page-to").forEach((inp) => {
+      inp.addEventListener("input", () => {
+        const f = this.files.find((x) => String(x.id) === String(inp.dataset.id));
+        if (f) {
+          f.toPage = inp.value;
+          this.scheduleDBSave();
+        }
+      });
+    });
+  }
+
+  initSortable() {
+    const container = document.getElementById("fileListContainer");
+    if (!container || !window.Sortable) return;
     if (this.sortable) {
-      Sortable.get(container) && Sortable.get(container).destroy();
+      try {
+        this.sortable.destroy();
+      } catch (e) {}
+      this.sortable = null;
     }
     this.sortable = Sortable.create(container, {
       handle: ".drag-handle",
       animation: 180,
       ghostClass: "sortable-ghost",
       chosenClass: "sortable-chosen",
+      filter: ".empty-state, .file-order-btns, .file-order-btn, .file-remove-btn, input, button",
+      preventOnFilter: false,
       onEnd: (evt) => {
-        const moved = this.files.splice(evt.oldDraggableIndex, 1)[0];
-        this.files.splice(evt.newDraggableIndex, 0, moved);
-        this.updateStats();
+        const oldIdx =
+          evt.oldDraggableIndex !== undefined
+            ? evt.oldDraggableIndex
+            : evt.oldIndex;
+        const newIdx =
+          evt.newDraggableIndex !== undefined
+            ? evt.newDraggableIndex
+            : evt.newIndex;
+        if (
+          oldIdx !== undefined &&
+          newIdx !== undefined &&
+          oldIdx !== newIdx
+        ) {
+          const moved = this.files.splice(oldIdx, 1)[0];
+          this.files.splice(newIdx, 0, moved);
+          this.render();
+          this.updateButtons();
+          this.updateStats();
+          this.scheduleDBSave();
+        }
       },
-    });
-
-    /* Page range inputs live-update */
-    container.querySelectorAll(".page-from").forEach((inp) => {
-      inp.addEventListener("change", () => {
-        const f = this.files.find((x) => x.id === inp.dataset.id);
-        if (f) f.fromPage = inp.value;
-      });
-    });
-    container.querySelectorAll(".page-to").forEach((inp) => {
-      inp.addEventListener("change", () => {
-        const f = this.files.find((x) => x.id === inp.dataset.id);
-        if (f) f.toPage = inp.value;
-      });
     });
   }
 
   removeFile(id) {
-    this.files = this.files.filter((f) => f.id !== id);
+    this.files = this.files.filter((f) => String(f.id) !== String(id));
     this.render();
     this.updateButtons();
     this.updateStats();
     this.checkDuplicates();
+    this.scheduleDBSave();
   }
+
   moveUp(id) {
-    const i = this.files.findIndex((f) => f.id === id);
+    if (this.files.length <= 1) {
+      showToast("Add 2 or more PDF files to reorder.", "info", 2500);
+      return;
+    }
+    const i = this.files.findIndex((f) => String(f.id) === String(id));
     if (i > 0) {
-      [this.files[i - 1], this.files[i]] = [this.files[i], this.files[i - 1]];
-      this.render();
-      this.updateStats();
+      const temp = this.files[i];
+      this.files[i] = this.files[i - 1];
+      this.files[i - 1] = temp;
+    } else if (i === 0) {
+      const item = this.files.shift();
+      this.files.push(item);
     }
+    this.render();
+    this.updateButtons();
+    this.updateStats();
+    this.scheduleDBSave();
   }
+
   moveDown(id) {
-    const i = this.files.findIndex((f) => f.id === id);
-    if (i < this.files.length - 1) {
-      [this.files[i], this.files[i + 1]] = [this.files[i + 1], this.files[i]];
-      this.render();
-      this.updateStats();
+    if (this.files.length <= 1) {
+      showToast("Add 2 or more PDF files to reorder.", "info", 2500);
+      return;
     }
+    const i = this.files.findIndex((f) => String(f.id) === String(id));
+    if (i >= 0 && i < this.files.length - 1) {
+      const temp = this.files[i];
+      this.files[i] = this.files[i + 1];
+      this.files[i + 1] = temp;
+    } else if (i === this.files.length - 1) {
+      const item = this.files.pop();
+      this.files.unshift(item);
+    }
+    this.render();
+    this.updateButtons();
+    this.updateStats();
+    this.scheduleDBSave();
   }
   clearAll() {
     this.files = [];
@@ -406,13 +546,16 @@ class PDFCompiler {
     this.updateButtons();
     this.updateStats();
     this.checkDuplicates();
+    this.clearSessionFromDB();
   }
   sort(by) {
     if (by === "name") this.files.sort((a, b) => a.name.localeCompare(b.name));
     if (by === "size") this.files.sort((a, b) => b.size - a.size);
     if (by === "pages") this.files.sort((a, b) => b.pages - a.pages);
     this.render();
+    this.updateButtons();
     this.updateStats();
+    this.scheduleDBSave();
   }
   updateButtons() {
     const mergeBtn = document.getElementById("mergePdfBtn");
@@ -554,6 +697,227 @@ class PDFCompiler {
       sizes = ["B", "KB", "MB", "GB"];
     const i = Math.floor(Math.log(bytes) / Math.log(k));
     return (bytes / Math.pow(k, i)).toFixed(1) + " " + sizes[i];
+  }
+
+  /* ═══════════════════════════════════════════════════
+     INDEXEDDB RECOVERY MODE LOGIC
+  ═══════════════════════════════════════════════════ */
+  openDB() {
+    if (this.dbPromise) return this.dbPromise;
+    this.dbPromise = new Promise((resolve, reject) => {
+      const DB_NAME = "pdfmaster_merge_db";
+      const DB_VERSION = 1;
+      const req = indexedDB.open(DB_NAME, DB_VERSION);
+      req.onupgradeneeded = (e) => {
+        const db = e.target.result;
+        if (!db.objectStoreNames.contains("settings")) {
+          db.createObjectStore("settings");
+        }
+        if (!db.objectStoreNames.contains("files")) {
+          db.createObjectStore("files", { keyPath: "id" });
+        }
+      };
+      req.onsuccess = (e) => resolve(e.target.result);
+      req.onerror = (e) => reject(e.target.error);
+    });
+    return this.dbPromise;
+  }
+
+  scheduleDBSave() {
+    if (this.saveTimer) clearTimeout(this.saveTimer);
+    this.saveTimer = setTimeout(() => this.saveSessionToDB(), 400);
+  }
+
+  async saveSessionToDB() {
+    try {
+      const db = await this.openDB();
+      const tx = db.transaction(["settings", "files"], "readwrite");
+      const settingsStore = tx.objectStore("settings");
+      const filesStore = tx.objectStore("files");
+
+      const sessionData = {
+        timestamp: Date.now(),
+        pdfName: document.getElementById("pdfName")?.value || "",
+        addBlank:
+          document
+            .getElementById("toggleBlankPage")
+            ?.classList.contains("on") || false,
+        compressionLevel:
+          document.getElementById("compressionLevel")?.value || "medium",
+        metaTitle: document.getElementById("metaTitle")?.value || "",
+        metaAuthor: document.getElementById("metaAuthor")?.value || "",
+        metaSubject: document.getElementById("metaSubject")?.value || "",
+      };
+      settingsStore.put(sessionData, "session");
+
+      filesStore.clear();
+      this.files.forEach((f, idx) => {
+        filesStore.put({
+          id: f.id,
+          name: f.name,
+          size: f.size,
+          pages: f.pages,
+          buf: f.buf,
+          fromPage: f.fromPage || "",
+          toPage: f.toPage || "",
+          order: idx,
+        });
+      });
+
+      this.updateRecoveryBadge(this.files.length > 0);
+    } catch (err) {
+      console.warn("IndexedDB save failed:", err);
+    }
+  }
+
+  async loadSessionFromDB(isManual = false) {
+    try {
+      const db = await this.openDB();
+      const tx = db.transaction(["settings", "files"], "readonly");
+      const sessionReq = tx.objectStore("settings").get("session");
+      const filesReq = tx.objectStore("files").getAll();
+
+      const [session, storedFiles] = await Promise.all([
+        new Promise((res) => {
+          sessionReq.onsuccess = () => res(sessionReq.result);
+          sessionReq.onerror = () => res(null);
+        }),
+        new Promise((res) => {
+          filesReq.onsuccess = () => res(filesReq.result);
+          filesReq.onerror = () => res([]);
+        }),
+      ]);
+
+      if (!storedFiles || !storedFiles.length) {
+        this.updateRecoveryBadge(false);
+        if (isManual) {
+          showToast("No stored session found in recovery storage.", "error");
+        }
+        return false;
+      }
+
+      if (session) {
+        if (
+          document.getElementById("pdfName") &&
+          session.pdfName !== undefined
+        ) {
+          document.getElementById("pdfName").value = session.pdfName;
+        }
+        if (document.getElementById("toggleBlankPage")) {
+          document
+            .getElementById("toggleBlankPage")
+            .classList.toggle("on", !!session.addBlank);
+        }
+        if (
+          document.getElementById("compressionLevel") &&
+          session.compressionLevel
+        ) {
+          document.getElementById("compressionLevel").value =
+            session.compressionLevel;
+        }
+        if (
+          document.getElementById("metaTitle") &&
+          session.metaTitle !== undefined
+        ) {
+          document.getElementById("metaTitle").value = session.metaTitle;
+        }
+        if (
+          document.getElementById("metaAuthor") &&
+          session.metaAuthor !== undefined
+        ) {
+          document.getElementById("metaAuthor").value = session.metaAuthor;
+        }
+        if (
+          document.getElementById("metaSubject") &&
+          session.metaSubject !== undefined
+        ) {
+          document.getElementById("metaSubject").value = session.metaSubject;
+        }
+      }
+
+      storedFiles.sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
+
+      this.files = storedFiles.map((sf, idx) => ({
+        id: String(sf.id || ("pdf_" + Date.now().toString(36) + "_" + idx + "_" + Math.random().toString(36).substring(2, 7))),
+        name: sf.name,
+        size: sf.size,
+        pages: sf.pages,
+        buf: sf.buf,
+        fromPage: sf.fromPage || "",
+        toPage: sf.toPage || "",
+      }));
+
+      this.render();
+      this.updateButtons();
+      this.updateStats();
+      this.checkDuplicates();
+      this.updateRecoveryBadge(true);
+
+      if (isManual) {
+        showToast(
+          `Recovered ${this.files.length} PDF file(s) and settings successfully!`,
+          "success",
+          4500,
+        );
+      }
+      return true;
+    } catch (err) {
+      console.warn("IndexedDB load failed:", err);
+      if (isManual) {
+        showToast("Could not access recovery storage.", "error");
+      }
+      return false;
+    }
+  }
+
+  async clearSessionFromDB() {
+    try {
+      const db = await this.openDB();
+      const tx = db.transaction(["settings", "files"], "readwrite");
+      tx.objectStore("settings").clear();
+      tx.objectStore("files").clear();
+      this.updateRecoveryBadge(false);
+    } catch (err) {
+      console.warn("IndexedDB clear failed:", err);
+    }
+  }
+
+  async checkStoredSessionAvailable(notifyOnFound = false) {
+    try {
+      const db = await this.openDB();
+      const tx = db.transaction(["files"], "readonly");
+      const filesReq = tx.objectStore("files").getAll();
+      const files = await new Promise((res) => {
+        filesReq.onsuccess = () => res(filesReq.result);
+        filesReq.onerror = () => res([]);
+      });
+
+      const hasFiles = files && files.length > 0;
+      this.updateRecoveryBadge(hasFiles);
+
+      if (hasFiles && notifyOnFound && this.files.length === 0) {
+        showToast(
+          `Last session (${files.length} file${files.length > 1 ? "s" : ""}) is available. Click to restore.`,
+          "info",
+          8000,
+          () => {
+            this.loadSessionFromDB(true);
+          },
+          "Restore",
+        );
+      }
+      return hasFiles;
+    } catch (err) {
+      this.updateRecoveryBadge(false);
+      return false;
+    }
+  }
+
+  updateRecoveryBadge(hasData) {
+    const badge = document.getElementById("recoveryBadge");
+    if (badge) {
+      badge.style.display = hasData ? "block" : "none";
+    }
   }
 }
 
