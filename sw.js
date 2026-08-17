@@ -105,7 +105,6 @@ const PRECACHE_URLS = [
   "/css/subscribe.css",
   "/css/terms.css",
   "/css/thank-you.css",
-  "/css/website-to-pdf.css",
   "/js/404.js",
   "/js/about.js",
   "/js/announcements.js",
@@ -125,7 +124,6 @@ const PRECACHE_URLS = [
   "/js/sw-register.js",
   "/js/terms.js",
   "/js/thank-you.js",
-  "/js/website-to-pdf.js",
 ];
 
 const BYPASS_HOSTS = [
