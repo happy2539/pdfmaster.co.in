@@ -443,7 +443,7 @@ pdfmaster.co.in/
 ├── pdf-editor.html             # Advanced PDF Editor Page
 ├── about.html                  # About Page
 ├── announcements.html          # Announcement Page
-├── happy-gupta-founder-of-pdfmaster.html       #Founder Page of PDF Master
+├── happy-gupta-founder-of-pdfmaster.html       #Founder Page of PDFMaster
 ├── offline.html                #sw utility
 ├── sw.js                       #sw file
 │
@@ -484,7 +484,7 @@ pdfmaster.co.in/
 │   ├── pdf-editor.js             # Js Advanced PDF Editor Page
 │   ├── about.js                  # Js About Page
 │   ├── announcements.js          # Js Announcement Page
-|   ├── happy-gupta-founder-of-pdf master         #JS file for the founder page
+|   ├── happy-gupta-founder-of-pdfmaster.js         #JS file for the founder page
 |   ├── sw-register.js            # Js for the service worker
 │   └── 404.js                    # Js 404 Page
 │
