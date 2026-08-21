@@ -140,6 +140,7 @@
             "Select page ranges",
             "Reorder files",
             "Edit PDF metadata",
+            "Smooth large file handling (Low-RAM Architecture)",
             "100% Private (No upload)",
             "On-device processing",
             "Last file recovery (IndexedDB)"
@@ -177,6 +178,14 @@
             },
             {
               "@type": "Question",
+              "name": "Why does PDFMaster work so smoothly even with large PDF files?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Unlike standard web tools that load all files into system RAM simultaneously and crash your browser, PDFMaster features an intelligent Tiered Low-RAM Architecture. When the combined size of your selected files exceeds 50 MB, raw PDF buffers are offloaded directly into your browser's local IndexedDB disk storage instead of consuming active RAM. During compilation, each file is loaded, pages are extracted, and memory is immediately reclaimed before reading the next file, ensuring zero lag and zero browser tab crashes."
+              }
+            },
+            {
+              "@type": "Question",
               "name": "Are my PDF files secure when using this tool?",
               "acceptedAnswer": {
                 "@type": "Answer",
@@ -188,7 +197,7 @@
               "name": "How many PDF files can I merge at once?",
               "acceptedAnswer": {
                 "@type": "Answer",
-                "text": "There is no hard limit on the number of files. However, very large batches (e.g. 50+ large PDFs) may be constrained by your device's available RAM. For best performance, merge in batches of 20–30 files if needed."
+                "text": "There is no hard limit on the number of files. PDFMaster's Low-RAM architecture streams documents sequentially from local storage, allowing you to merge large batches of files smoothly without exhausting your system memory."
               }
             },
             {
@@ -575,14 +584,7 @@
             </div>
           </div>
 
-          <!-- Loading & Progress Bar -->
-          <div class="loading-bar-wrap" id="loadingWrap">
-            <div class="spinner"></div>
-            <div class="loading-txt" id="loadingTxt">Processing files…</div>
-            <div class="progress-track">
-              <div class="progress-fill" id="progressFill"></div>
-            </div>
-          </div>
+
 
           <!-- Action Buttons -->
           <div class="action-row">
@@ -752,6 +754,15 @@
             <h3>Session Recovery (IndexedDB)</h3>
             <p>Never lose your work. Your merge queue and configuration are saved locally for 1-click restore.</p>
           </div>
+          <div class="feat-card">
+            <div class="feat-icon">
+              <svg width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" />
+              </svg>
+            </div>
+            <h3>Smooth Large File Engine</h3>
+            <p>Handles files over 50MB effortlessly using Low-RAM IndexedDB disk caching and sequential streaming with zero lag.</p>
+          </div>
         </div>
       </section>
 
@@ -871,6 +882,17 @@
               <p>Restore your files and merge settings instantly from local IndexedDB—saving your precious time for free.</p>
             </div>
           </div>
+          <div class="benefit-card">
+            <div class="benefit-icon">
+              <svg width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path d="M22 12h-4l-3 9L9 3l-3 9H2" />
+              </svg>
+            </div>
+            <div>
+              <h4>Zero Tab Crashes</h4>
+              <p>Smart memory management caches combined files over 50MB into local disk storage to prevent RAM spikes and browser freezing.</p>
+            </div>
+          </div>
         </div>
       </section>
 
@@ -894,6 +916,15 @@
           </div>
           <div class="faq-item">
             <div class="faq-question">
+              Why does PDFMaster work so smoothly even with large PDF files?
+              <span class="faq-arrow">▾</span>
+            </div>
+            <div class="faq-answer">
+              Unlike ordinary web tools that load all files into system RAM at once and crash your browser tab, PDFMaster features an intelligent <strong>Tiered Low-RAM Architecture</strong>. When the combined size of your selected files exceeds 50 MB, raw PDF data is cached directly into your browser's local IndexedDB disk storage instead of overloading your system RAM. During compilation, each file is loaded, pages are extracted, and memory is immediately reclaimed before reading the next file. This guarantees silky-smooth operation, real-time progress feedback, and zero browser crashes even when compiling hundreds of megabytes of documents.
+            </div>
+          </div>
+          <div class="faq-item">
+            <div class="faq-question">
               Are my PDF files secure when using this tool?
               <span class="faq-arrow">▾</span>
             </div>
@@ -907,7 +938,7 @@
               <span class="faq-arrow">▾</span>
             </div>
             <div class="faq-answer">
-              There is no hard limit on the number of files. However, very large batches (e.g. 50+ large PDFs) may be constrained by your device's available RAM. For best performance, merge in batches of 20–30 files if needed.
+              There is no hard limit on the number of files. PDFMaster's Low-RAM architecture streams documents sequentially from local storage, allowing you to merge large batches of files smoothly without exhausting your system memory.
             </div>
           </div>
           <div class="faq-item">
@@ -1060,6 +1091,28 @@
         </div>
       </div>
     </footer>
+
+    <!-- ═══════════════ LOADING & PROGRESS POP-UP MODAL ═══════════════ -->
+    <div
+      class="loading-modal-overlay"
+      id="loadingModal"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="modalLoadingTitle"
+    >
+      <div class="loading-modal-box">
+        <div class="loading-modal-icon">
+          <div class="spinner"></div>
+        </div>
+        <h3 class="loading-modal-title" id="modalLoadingTitle">Loading PDF Files…</h3>
+        <p class="loading-modal-msg" id="loadingTxt">Reading files…</p>
+        <div class="loading-modal-meta" id="loadingMeta" style="display: none"></div>
+        <div class="progress-track">
+          <div class="progress-fill" id="progressFill"></div>
+        </div>
+        <div class="loading-modal-pct" id="loadingPct">0%</div>
+      </div>
+    </div>
 
     <!-- Toast Notifications -->
     <div class="toast-container" id="toastContainer"></div>

@@ -262,27 +262,110 @@ class PDFCompiler {
     });
     if (!pdfs.length) return;
 
-    this.showLoading(true, "Reading PDF files…");
+    const COMBINED_LOW_RAM_THRESHOLD = 50 * 1024 * 1024; // 50 MB combined threshold
+    const currentTotalSize = this.files.reduce((sum, f) => sum + f.size, 0);
+    const newBatchSize = pdfs.reduce((sum, f) => sum + f.size, 0);
+    const combinedTotalSize = currentTotalSize + newBatchSize;
+    const useLowRam = combinedTotalSize > COMBINED_LOW_RAM_THRESHOLD;
+
+    // Show centered loading pop-up modal immediately
+    this.showLoadingModal(
+      true,
+      "Loading PDF Files…",
+      `Preparing ${pdfs.length} file${pdfs.length > 1 ? "s" : ""}…`,
+      0,
+      useLowRam
+        ? `⚡ Low-RAM Mode (Combined: ${this.fmtSize(combinedTotalSize)} > 50MB)`
+        : `🚀 In-Memory RAM Mode (Combined: ${this.fmtSize(combinedTotalSize)})`,
+    );
+
+    // If transitioning existing files to Low-RAM mode because combined total now exceeds 50MB:
+    if (useLowRam && currentTotalSize > 0) {
+      for (let j = 0; j < this.files.length; j++) {
+        const existingFile = this.files[j];
+        if (!existingFile.isOffloaded && existingFile.buf) {
+          await this.saveSingleFileToDB({
+            id: existingFile.id,
+            name: existingFile.name,
+            size: existingFile.size,
+            pages: existingFile.pages,
+            isOffloaded: true,
+            buf: existingFile.buf,
+            fromPage: existingFile.fromPage || "",
+            toPage: existingFile.toPage || "",
+            order: j,
+          });
+          existingFile.isOffloaded = true;
+          existingFile.buf = null; // Free RAM immediately
+        }
+      }
+    }
 
     for (let i = 0; i < pdfs.length; i++) {
       const file = pdfs[i];
+      const currentPct = Math.round((i / pdfs.length) * 92);
+      this.setLoadingProgress(currentPct);
+      this.setLoadingText(
+        `Reading file ${i + 1} of ${pdfs.length}: ${this.truncate(file.name, 26)} (${this.fmtSize(file.size)})…`,
+      );
+
+      // Yield execution to allow UI thread to paint the progress bar and update smooth animations
+      await new Promise((resolve) => setTimeout(resolve, 20));
+
       try {
-        const buf = await file.arrayBuffer();
+        let buf = await file.arrayBuffer();
         const doc = await PDFLib.PDFDocument.load(buf, {
           ignoreEncryption: false,
         });
-        const fileId = "pdf_" + Date.now().toString(36) + "_" + Math.random().toString(36).substring(2, 9);
-        this.files.push({
-          id: fileId,
-          name: file.name,
-          size: file.size,
-          pages: doc.getPageCount(),
-          buf: buf,
-          fromPage: "",
-          toPage: "",
-        });
-        this.updateProgress(((i + 1) / pdfs.length) * 100);
+        const pageCount = doc.getPageCount();
+        const fileId =
+          "pdf_" +
+          Date.now().toString(36) +
+          "_" +
+          Math.random().toString(36).substring(2, 9);
+
+        if (useLowRam) {
+          // Combined total > 50MB: save buffer directly to IndexedDB to keep RAM footprint minimal
+          await this.saveSingleFileToDB({
+            id: fileId,
+            name: file.name,
+            size: file.size,
+            pages: pageCount,
+            isOffloaded: true,
+            buf: buf,
+            fromPage: "",
+            toPage: "",
+            order: this.files.length,
+          });
+
+          // Dereference buffer so V8 GC immediately reclaims memory
+          buf = null;
+
+          this.files.push({
+            id: fileId,
+            name: file.name,
+            size: file.size,
+            pages: pageCount,
+            isOffloaded: true,
+            buf: null, // Zero RAM retention
+            fromPage: "",
+            toPage: "",
+          });
+        } else {
+          // Combined total <= 50MB: hold in RAM for maximum speed
+          this.files.push({
+            id: fileId,
+            name: file.name,
+            size: file.size,
+            pages: pageCount,
+            isOffloaded: false,
+            buf: buf, // Retained in RAM
+            fromPage: "",
+            toPage: "",
+          });
+        }
       } catch (err) {
+        console.error(err);
         showToast(
           `Could not read "${file.name}". It may be encrypted or damaged.`,
           "error",
@@ -291,7 +374,11 @@ class PDFCompiler {
       }
     }
 
-    this.showLoading(false);
+    this.setLoadingProgress(100);
+    this.setLoadingText("All files loaded successfully!");
+    await new Promise((resolve) => setTimeout(resolve, 300));
+
+    this.showLoadingModal(false);
     this.render();
     this.updateButtons();
     this.updateStats();
@@ -370,7 +457,9 @@ class PDFCompiler {
           <div class="file-name-row">
             <div class="file-name" title="${f.name}">${this.truncate(f.name, 42)}</div>
           </div>
-          <div class="file-meta">${f.pages} page${f.pages !== 1 ? "s" : ""} · ${this.fmtSize(f.size)}</div>
+          <div class="file-meta">
+            ${f.pages} page${f.pages !== 1 ? "s" : ""} · ${this.fmtSize(f.size)}${f.isOffloaded ? ` · <span class="badge-low-ram" style="display:inline-flex;align-items:center;gap:3px;padding:1px 5px;border-radius:4px;font-size:0.7rem;font-weight:600;background:rgba(16,185,129,0.12);color:#059669;border:1px solid rgba(16,185,129,0.25);" title="Low-RAM Mode: Stored in IndexedDB to preserve system RAM">⚡ Low-RAM Mode</span>` : ""}
+          </div>
           <div class="page-range-row">
             <label>Pages:</label>
             <input type="number" class="page-from" data-id="${f.id}" min="1" max="${f.pages}" placeholder="1" value="${f.fromPage || ""}" title="From page" />
@@ -494,6 +583,7 @@ class PDFCompiler {
 
   removeFile(id) {
     this.files = this.files.filter((f) => String(f.id) !== String(id));
+    this.deleteFileFromDB(id);
     this.render();
     this.updateButtons();
     this.updateStats();
@@ -584,12 +674,80 @@ class PDFCompiler {
     );
   }
 
+  /* ═══════════════════════════════════════════════════
+     INDEXEDDB SINGLE FILE & BUFFER HELPERS
+  ═══════════════════════════════════════════════════ */
+  async saveSingleFileToDB(record) {
+    try {
+      const db = await this.openDB();
+      return new Promise((resolve, reject) => {
+        const tx = db.transaction("files", "readwrite");
+        const store = tx.objectStore("files");
+        const req = store.put(record);
+        req.onsuccess = () => resolve();
+        req.onerror = () => reject(req.error);
+      });
+    } catch (err) {
+      console.warn("Failed to save single file to IndexedDB:", err);
+    }
+  }
+
+  async deleteFileFromDB(id) {
+    try {
+      const db = await this.openDB();
+      const tx = db.transaction("files", "readwrite");
+      tx.objectStore("files").delete(id);
+    } catch (err) {
+      console.warn("IndexedDB delete failed:", err);
+    }
+  }
+
+  async getFileBuffer(fd) {
+    // If small file loaded in RAM (< 50MB), return buffer directly
+    if (!fd.isOffloaded && fd.buf) {
+      return fd.buf;
+    }
+
+    // Offloaded file (>= 50MB): stream buffer on demand from IndexedDB
+    const db = await this.openDB();
+    return new Promise((resolve, reject) => {
+      const tx = db.transaction("files", "readonly");
+      const req = tx.objectStore("files").get(fd.id);
+      req.onsuccess = () => {
+        if (req.result && req.result.buf) {
+          resolve(req.result.buf);
+        } else {
+          reject(
+            new Error(
+              `Buffer for file "${fd.name}" could not be retrieved from IndexedDB.`,
+            ),
+          );
+        }
+      };
+      req.onerror = () => reject(req.error);
+    });
+  }
+
   async merge() {
     if (this.files.length < 2) {
       showToast("Please add at least 2 PDF files to merge.", "error");
       return;
     }
-    this.showLoading(true, "Merging PDF files…");
+
+    const totalCombinedSize = this.files.reduce((s, f) => s + f.size, 0);
+    const useLowRam =
+      totalCombinedSize > 50 * 1024 * 1024 ||
+      this.files.some((f) => f.isOffloaded);
+
+    this.showLoadingModal(
+      true,
+      "Merging & Compiling PDFs…",
+      "Initializing merge engine…",
+      0,
+      useLowRam
+        ? `⚡ Low-RAM Streaming Mode (Total: ${this.fmtSize(totalCombinedSize)})`
+        : `🚀 In-Memory Mode (Total: ${this.fmtSize(totalCombinedSize)})`,
+    );
 
     try {
       const merged = await PDFLib.PDFDocument.create();
@@ -602,12 +760,17 @@ class PDFCompiler {
 
       for (let i = 0; i < this.files.length; i++) {
         const fd = this.files[i];
-        this.updateProgress((i / this.files.length) * 90);
+        this.setLoadingProgress(Math.round((i / this.files.length) * 88));
         this.setLoadingText(
-          `Merging file ${i + 1} of ${this.files.length}: ${this.truncate(fd.name, 30)}…`,
+          `Merging file ${i + 1} of ${this.files.length}: ${this.truncate(fd.name, 28)}${fd.isOffloaded ? " [Streaming from IndexedDB]" : ""}…`,
         );
 
-        const srcDoc = await PDFLib.PDFDocument.load(fd.buf);
+        // Yield to allow UI thread to paint the progress bar smoothly
+        await new Promise((r) => setTimeout(r, 20));
+
+        // Fetch buffer on demand (RAM if <50MB, IndexedDB if >=50MB)
+        let fileBuffer = await this.getFileBuffer(fd);
+        let srcDoc = await PDFLib.PDFDocument.load(fileBuffer);
         const total = srcDoc.getPageCount();
         const from = fd.fromPage ? Math.max(1, parseInt(fd.fromPage)) : 1;
         const to = fd.toPage ? Math.min(total, parseInt(fd.toPage)) : total;
@@ -622,6 +785,12 @@ class PDFCompiler {
           const [w, h] = [pages[0].getWidth(), pages[0].getHeight()];
           merged.addPage([w, h]);
         }
+
+        // If file was offloaded, dereference immediately so GC reclaims memory before next file
+        if (fd.isOffloaded) {
+          fileBuffer = null;
+          srcDoc = null;
+        }
       }
 
       /* Metadata */
@@ -632,8 +801,9 @@ class PDFCompiler {
       merged.setCreator("PDFMaster");
       merged.setCreationDate(new Date());
 
-      this.updateProgress(95);
-      this.setLoadingText("Finalising output…");
+      this.setLoadingProgress(92);
+      this.setLoadingText("Finalising output & compression…");
+      await new Promise((r) => setTimeout(r, 20));
 
       const useObjectCompression =
         document.getElementById("compressionLevel").value !== "none";
@@ -642,8 +812,10 @@ class PDFCompiler {
         addDefaultPage: false,
       });
 
-      this.updateProgress(100);
-      this.showLoading(false);
+      this.setLoadingProgress(100);
+      this.setLoadingText("Merge complete! Preparing download…");
+      await new Promise((r) => setTimeout(r, 300));
+      this.showLoadingModal(false);
 
       const name =
         (
@@ -662,7 +834,7 @@ class PDFCompiler {
       showToast(`"${name}" downloaded successfully!`, "success", 5000);
     } catch (err) {
       console.error(err);
-      this.showLoading(false);
+      this.showLoadingModal(false);
       showToast(
         "Merge failed. One or more files may be encrypted or corrupted.",
         "error",
@@ -671,21 +843,56 @@ class PDFCompiler {
     }
   }
 
-  showLoading(show, txt = "Processing…") {
+  showLoadingModal(show, title = "Processing…", msg = "Please wait…", pct = 0, meta = null) {
+    const modal = document.getElementById("loadingModal");
     const wrap = document.getElementById("loadingWrap");
-    wrap.classList.toggle("show", show);
-    if (show) {
-      this.setLoadingText(txt);
-      this.updateProgress(0);
+    const titleEl = document.getElementById("modalLoadingTitle");
+    const metaEl = document.getElementById("loadingMeta");
+
+    if (modal) {
+      modal.classList.toggle("show", show);
+      if (titleEl) titleEl.textContent = title;
+      if (metaEl) {
+        if (meta) {
+          metaEl.textContent = meta;
+          metaEl.style.display = "inline-flex";
+        } else {
+          metaEl.style.display = "none";
+        }
+      }
     }
-    document.getElementById("mergePdfBtn").disabled =
-      show || this.files.length < 2;
+    if (wrap) {
+      wrap.classList.toggle("show", show);
+    }
+    if (show) {
+      this.setLoadingText(msg);
+      this.setLoadingProgress(pct);
+    }
+    const mergeBtn = document.getElementById("mergePdfBtn");
+    if (mergeBtn) {
+      mergeBtn.disabled = show || this.files.length < 2;
+    }
   }
+
+  showLoading(show, txt = "Processing…") {
+    this.showLoadingModal(show, "Processing PDFs…", txt, 0);
+  }
+
   setLoadingText(txt) {
-    document.getElementById("loadingTxt").textContent = txt;
+    const el = document.getElementById("loadingTxt");
+    if (el) el.textContent = txt;
   }
+
+  setLoadingProgress(pct) {
+    const cleanPct = Math.min(100, Math.max(0, Math.round(pct)));
+    const fill = document.getElementById("progressFill");
+    const pctEl = document.getElementById("loadingPct");
+    if (fill) fill.style.width = cleanPct + "%";
+    if (pctEl) pctEl.textContent = cleanPct + "%";
+  }
+
   updateProgress(pct) {
-    document.getElementById("progressFill").style.width = pct + "%";
+    this.setLoadingProgress(pct);
   }
 
   truncate(str, max) {
@@ -750,19 +957,51 @@ class PDFCompiler {
       };
       settingsStore.put(sessionData, "session");
 
-      filesStore.clear();
-      this.files.forEach((f, idx) => {
-        filesStore.put({
-          id: f.id,
-          name: f.name,
-          size: f.size,
-          pages: f.pages,
-          buf: f.buf,
-          fromPage: f.fromPage || "",
-          toPage: f.toPage || "",
-          order: idx,
+      // Synchronize files store without destroying offloaded buffers:
+      const currentIds = new Set(this.files.map((f) => f.id));
+      const allKeysReq = filesStore.getAllKeys();
+      allKeysReq.onsuccess = () => {
+        const storedKeys = allKeysReq.result || [];
+        storedKeys.forEach((key) => {
+          if (!currentIds.has(key)) {
+            filesStore.delete(key);
+          }
         });
-      });
+      };
+
+      for (let idx = 0; idx < this.files.length; idx++) {
+        const f = this.files[idx];
+        if (!f.isOffloaded && f.buf) {
+          // Small file in RAM (< 50MB): save to IndexedDB as backup
+          filesStore.put({
+            id: f.id,
+            name: f.name,
+            size: f.size,
+            pages: f.pages,
+            isOffloaded: false,
+            buf: f.buf,
+            fromPage: f.fromPage || "",
+            toPage: f.toPage || "",
+            order: idx,
+          });
+        } else {
+          // Offloaded file (>= 50MB): update metadata while preserving existing buffer in IndexedDB
+          const getReq = filesStore.get(f.id);
+          getReq.onsuccess = () => {
+            const existing = getReq.result;
+            if (existing) {
+              existing.name = f.name;
+              existing.pages = f.pages;
+              existing.size = f.size;
+              existing.fromPage = f.fromPage || "";
+              existing.toPage = f.toPage || "";
+              existing.order = idx;
+              existing.isOffloaded = true;
+              filesStore.put(existing);
+            }
+          };
+        }
+      }
 
       this.updateRecoveryBadge(this.files.length > 0);
     } catch (err) {
@@ -837,15 +1076,32 @@ class PDFCompiler {
 
       storedFiles.sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
 
-      this.files = storedFiles.map((sf, idx) => ({
-        id: String(sf.id || ("pdf_" + Date.now().toString(36) + "_" + idx + "_" + Math.random().toString(36).substring(2, 7))),
-        name: sf.name,
-        size: sf.size,
-        pages: sf.pages,
-        buf: sf.buf,
-        fromPage: sf.fromPage || "",
-        toPage: sf.toPage || "",
-      }));
+      const COMBINED_LOW_RAM_THRESHOLD = 50 * 1024 * 1024;
+      const totalStoredSize = storedFiles.reduce((s, f) => s + (f.size || 0), 0);
+      const isSessionLowRam = totalStoredSize > COMBINED_LOW_RAM_THRESHOLD;
+
+      this.files = storedFiles.map((sf, idx) => {
+        const isOffloaded =
+          isSessionLowRam || sf.isOffloaded || sf.size >= COMBINED_LOW_RAM_THRESHOLD;
+        return {
+          id: String(
+            sf.id ||
+              "pdf_" +
+                Date.now().toString(36) +
+                "_" +
+                idx +
+                "_" +
+                Math.random().toString(36).substring(2, 7),
+          ),
+          name: sf.name,
+          size: sf.size,
+          pages: sf.pages,
+          isOffloaded: isOffloaded,
+          buf: isOffloaded ? null : sf.buf, // Loaded in RAM if combined <= 50MB; otherwise streamed from IndexedDB
+          fromPage: sf.fromPage || "",
+          toPage: sf.toPage || "",
+        };
+      });
 
       this.render();
       this.updateButtons();
