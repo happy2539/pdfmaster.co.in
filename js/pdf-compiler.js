@@ -442,44 +442,52 @@ class PDFCompiler {
       .map(
         (f, idx) => `
       <div class="file-item" data-id="${f.id}">
-        <div class="drag-handle" title="Drag to reorder">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-            <circle cx="9" cy="5" r="1"/><circle cx="9" cy="12" r="1"/><circle cx="9" cy="19" r="1"/>
-            <circle cx="15" cy="5" r="1"/><circle cx="15" cy="12" r="1"/><circle cx="15" cy="19" r="1"/>
-          </svg>
-        </div>
-        <div class="file-thumb">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-            <path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/>
-          </svg>
-        </div>
-        <div class="file-main">
-          <div class="file-name-row">
-            <div class="file-name" title="${f.name}">${this.truncate(f.name, 42)}</div>
+        <div class="file-item-top">
+          <div class="drag-handle" title="Drag to reorder" aria-label="Drag to reorder">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <circle cx="9" cy="5" r="1"/><circle cx="9" cy="12" r="1"/><circle cx="9" cy="19" r="1"/>
+              <circle cx="15" cy="5" r="1"/><circle cx="15" cy="12" r="1"/><circle cx="15" cy="19" r="1"/>
+            </svg>
           </div>
-          <div class="file-meta">
-            ${f.pages} page${f.pages !== 1 ? "s" : ""} · ${this.fmtSize(f.size)}${f.isOffloaded ? ` · <span class="badge-low-ram" style="display:inline-flex;align-items:center;gap:3px;padding:1px 5px;border-radius:4px;font-size:0.7rem;font-weight:600;background:rgba(16,185,129,0.12);color:#059669;border:1px solid rgba(16,185,129,0.25);" title="Low-RAM Mode: Stored in IndexedDB to preserve system RAM">⚡ Low-RAM Mode</span>` : ""}
+          <div class="file-thumb">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/>
+            </svg>
           </div>
+          <div class="file-main">
+            <div class="file-name-row">
+              <span class="file-num-badge">#${idx + 1}</span>
+              <div class="file-name" title="${this.escapeHtml(f.name)}">${this.escapeHtml(f.name)}</div>
+            </div>
+            <div class="file-meta">
+              ${f.pages} page${f.pages !== 1 ? "s" : ""} · ${this.fmtSize(f.size)}${f.isOffloaded ? ` · <span class="badge-low-ram" title="Low-RAM Mode: Stored in IndexedDB to preserve system RAM">⚡ Low-RAM</span>` : ""}
+            </div>
+          </div>
+          <button type="button" class="file-remove-btn mobile-remove-btn" data-action="remove" data-id="${f.id}" title="Remove file">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+          </button>
+        </div>
+        <div class="file-item-bottom">
           <div class="page-range-row">
             <label>Pages:</label>
             <input type="number" class="page-from" data-id="${f.id}" min="1" max="${f.pages}" placeholder="1" value="${f.fromPage || ""}" title="From page" />
             <span class="page-range-sep">–</span>
             <input type="number" class="page-to" data-id="${f.id}" min="1" max="${f.pages}" placeholder="${f.pages}" value="${f.toPage || ""}" title="To page" />
-            <span class="page-range-sep" style="color:var(--text3);font-size:0.75rem">of ${f.pages}</span>
+            <span class="page-range-sep page-total-text">of ${f.pages}</span>
           </div>
-        </div>
-        <div class="file-right">
-          <div class="file-order-btns">
-            <button type="button" class="file-order-btn move-up" data-action="move-up" data-id="${f.id}" title="Move up">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="18 15 12 9 6 15"/></svg>
-            </button>
-            <button type="button" class="file-order-btn move-down" data-action="move-down" data-id="${f.id}" title="Move down">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+          <div class="file-right">
+            <div class="file-order-btns">
+              <button type="button" class="file-order-btn move-up" data-action="move-up" data-id="${f.id}" title="Move up" ${idx === 0 ? "disabled" : ""}>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="18 15 12 9 6 15"/></svg>
+              </button>
+              <button type="button" class="file-order-btn move-down" data-action="move-down" data-id="${f.id}" title="Move down" ${idx === this.files.length - 1 ? "disabled" : ""}>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+              </button>
+            </div>
+            <button type="button" class="file-remove-btn desktop-remove-btn" data-action="remove" data-id="${f.id}" title="Remove file">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
             </button>
           </div>
-          <button type="button" class="file-remove-btn" data-action="remove" data-id="${f.id}" title="Remove file">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-          </button>
         </div>
       </div>
     `,
@@ -904,6 +912,16 @@ class PDFCompiler {
       sizes = ["B", "KB", "MB", "GB"];
     const i = Math.floor(Math.log(bytes) / Math.log(k));
     return (bytes / Math.pow(k, i)).toFixed(1) + " " + sizes[i];
+  }
+
+  escapeHtml(str) {
+    if (!str) return "";
+    return String(str)
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#039;");
   }
 
   /* ═══════════════════════════════════════════════════
