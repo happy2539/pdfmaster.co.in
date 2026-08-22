@@ -1,0 +1,1880 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <meta charset="UTF-8" />
+    <script>
+      (function () {
+        try {
+          var t = localStorage.getItem("pdfmaster-theme");
+          if (!t) {
+            t = window.matchMedia("(prefers-color-scheme: dark)").matches
+              ? "dark"
+              : "light";
+          }
+          document.documentElement.setAttribute("data-theme", t);
+        } catch (e) {
+          document.documentElement.setAttribute("data-theme", "light");
+        }
+      })();
+    </script>
+    <!-- Google Tag Manager -->
+    <script>
+      (function (w, d, s, l, i) {
+        w[l] = w[l] || [];
+        w[l].push({ "gtm.start": new Date().getTime(), event: "gtm.js" });
+        var f = d.getElementsByTagName(s)[0],
+          j = d.createElement(s),
+          dl = l != "dataLayer" ? "&l=" + l : "";
+        j.async = true;
+        j.src = "https://www.googletagmanager.com/gtm.js?id=" + i + dl;
+        f.parentNode.insertBefore(j, f);
+      })(window, document, "script", "dataLayer", "GTM-PCSVMC65");
+    </script>
+    <!-- End Google Tag Manager -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>
+      Free PDF Viewer Online &ndash; View PDF In Browser | PDFMaster
+    </title>
+    <meta
+      name="description"
+      content="View PDF files free online, right in your browser. Zoom, search, rotate, and navigate pages instantly — no upload, no sign-up, no watermark, 100% private."
+    />
+    <link rel="canonical" href="https://pdfmaster.co.in/pdf-viewer" />
+    <meta name="robots" content="index, follow" />
+    <link rel="icon" href="/assets/favicon.ico" />
+    <link rel="apple-touch-icon" href="/assets/apple-touch-icon.png" />
+    <meta name="theme-color" content="#e8372a" />
+
+    <meta property="og:type" content="website" />
+    <meta
+      property="og:title"
+      content="Free PDF Viewer Online – View PDF In Browser | PDFMaster"
+    />
+    <meta
+      property="og:description"
+      content="Open, read, search, and print any PDF entirely inside your browser. Nothing is ever uploaded — your file stays on your device."
+    />
+    <meta property="og:url" content="https://pdfmaster.co.in/pdf-viewer" />
+    <meta
+      property="og:image"
+      content="https://pdfmaster.co.in/assets/apple-touch-icon.png"
+    />
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content="Free PDF Viewer Online – PDFMaster" />
+    <meta
+      name="twitter:description"
+      content="View, search, and print PDFs privately in your browser. No uploads, no sign-up, no watermark."
+    />
+
+    <link href="assets/fonts/fonts.css" rel="stylesheet" />
+
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebPage",
+        "name": "PDF Viewer",
+        "url": "https://pdfmaster.co.in/pdf-viewer",
+        "description": "View PDF files free online, right inside your browser. Zoom, search, rotate, and navigate pages instantly, with nothing ever uploaded to a server.",
+        "isPartOf": {
+          "@type": "WebSite",
+          "name": "PDFMaster",
+          "url": "https://pdfmaster.co.in/"
+        }
+      }
+    </script>
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "SoftwareApplication",
+        "name": "PDF Viewer – PDFMaster",
+        "operatingSystem": "Web",
+        "applicationCategory": "Utility",
+        "description": "Open and read any PDF instantly in your browser with smooth zoom, page navigation, rotation, and full-text search. No file upload, no sign-up, no watermark.",
+        "url": "https://pdfmaster.co.in/pdf-viewer",
+        "featureList": [
+          "Client-side PDF viewing",
+          "3-Page Low-RAM sliding window cache for buttery-smooth page turns",
+          "Smart IndexedDB session recovery",
+          "Instant page navigation",
+          "Zoom and fit-to-width",
+          "Page rotation",
+          "Full-text search with highlighting",
+          "Selectable, copyable text",
+          "Password-protected PDF support",
+          "Works offline after first load"
+        ],
+        "offers": {
+          "@type": "Offer",
+          "price": "0",
+          "priceCurrency": "USD"
+        }
+      }
+    </script>
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        "mainEntity": [
+          {
+            "@type": "Question",
+            "name": "Is this PDF viewer really free to use?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Yes. Opening, navigating, searching, and printing a PDF here is completely free, with no sign-up, no watermark, and no daily limits."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Do you upload my PDF to a server?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "No. Your file is decoded and rendered entirely inside your browser's own memory using PDF.js. It is never sent anywhere, which also means it keeps working without an internet connection once the page has loaded."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Can I open a password-protected PDF?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Yes. If your file is encrypted, the viewer asks for the password right there on the page. That password is used locally to unlock the file in your browser and is never transmitted anywhere."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Is there a limit on file size or number of pages?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "We don't set an artificial limit. The only real ceiling is how much memory your device and browser have available — very large scanned PDFs may take a moment longer to render."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Can I search for text inside my PDF?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Yes. Open the search bar from the toolbar, type a word or phrase, and every match in the document is highlighted with buttons to jump straight between results."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Can I select and copy text out of the PDF?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Yes, on PDFs that contain real text rather than just a scanned image. Click and drag over the text the same way you would in any reader, then copy it as usual."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Does the viewer work on my phone or tablet?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Yes. The layout adapts to any screen size, and touch works for scrolling, tapping the toolbar, and every zoom or navigation control."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Can I print or download the PDF from here?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Yes. The Print button opens your browser's native print dialog, and Download saves the exact original file straight to your device."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Will this work without an internet connection?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Once you've visited the page and your browser has cached it, you can keep opening and viewing PDFs offline. You'll just need a connection the very first time you load the page."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Can I restore my reading session if I close or refresh the tab?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Yes. PDFMaster includes a built-in session recovery feature powered by your browser's private IndexedDB storage. Your last opened PDF, reading position, zoom level, and rotation are saved locally. Click the Recovery button in the top navigation bar or toast prompt to restore your session instantly."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "How does the 3-page Low-RAM Cache work?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Instead of bloating your browser's RAM with every page of a large PDF, PDFMaster stores the complete file in your browser's private IndexedDB storage and keeps an intelligent 3-page sliding window (previous page, current page, and next page) in active memory. Adjacent pages are pre-rendered in the background for zero-lag page navigation, while older pages outside the 3-page window are automatically purged from RAM."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "My PDF won't open or looks broken — what should I do?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "This usually means the file is corrupted or isn't a standard PDF. Try re-exporting or re-downloading the original file, then open it again here."
+            }
+          }
+        ]
+      }
+    </script>
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+          {
+            "@type": "ListItem",
+            "position": 1,
+            "name": "Home",
+            "item": "https://pdfmaster.co.in/"
+          },
+          {
+            "@type": "ListItem",
+            "position": 2,
+            "name": "PDF Viewer",
+            "item": "https://pdfmaster.co.in/pdf-viewer"
+          }
+        ]
+      }
+    </script>
+
+    <link rel="stylesheet" href="css/pdf-viewer.css" />
+    <script src="/js/sw-register.js" defer></script>
+  </head>
+  <body>
+    <!-- Google Tag Manager (noscript) -->
+    <noscript
+      ><iframe
+        src="https://www.googletagmanager.com/ns.html?id=GTM-PCSVMC65"
+        height="0"
+        width="0"
+        style="display: none; visibility: hidden"
+      ></iframe
+    ></noscript>
+    <!-- End Google Tag Manager (noscript) -->
+
+    <header class="navbar">
+      <div class="container">
+        <div
+          style="
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            overflow: hidden;
+            flex: 1;
+            margin-right: 16px;
+          "
+        >
+          <a href="/" class="brand" style="flex-shrink: 0">
+            <img
+              src="/assets/apple-touch-icon.png"
+              alt="PDFMaster logo"
+              width="32"
+              height="32"
+            />
+            <span>PDF<span>Master</span></span>
+          </a>
+          <div
+            class="nav-filename-wrap"
+            id="nav-filename-wrap"
+            style="
+              display: none;
+              align-items: center;
+              gap: 8px;
+              color: var(--text-muted);
+              font-size: 0.85rem;
+              border-left: 1.5px solid var(--border);
+              padding-left: 12px;
+              overflow: hidden;
+              text-overflow: ellipsis;
+              white-space: nowrap;
+            "
+          >
+            <span id="viewer-filename">document.pdf</span>
+            <span class="badge-low-ram" title="Low-RAM Mode: File loaded in IndexedDB with an intelligent 3-page active window for smooth navigation">⚡ 3-Page Low-RAM</span>
+          </div>
+        </div>
+        <div class="nav-right">
+          <button
+            type="button"
+            class="icon-btn recovery-btn"
+            id="recoveryBtn"
+            aria-label="Recovery mode - restore saved session"
+            title="Recovery Mode — Restore saved document & reading state"
+          >
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
+              <path d="M3 3v5h5" />
+              <path d="M12 7v5l4 2" />
+            </svg>
+            <span
+              class="recovery-badge"
+              id="recoveryBadge"
+              style="display: none"
+            ></span>
+          </button>
+          <button
+            class="icon-btn theme-toggle"
+            id="theme-toggle"
+            aria-label="Toggle dark mode"
+          >
+            <svg
+              class="icon-sun"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <circle cx="12" cy="12" r="4" />
+              <path
+                d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"
+              />
+            </svg>
+            <svg
+              class="icon-moon"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path d="M21 12.8A9 9 0 1 1 11.2 3 7 7 0 0 0 21 12.8Z" />
+            </svg>
+          </button>
+          <button
+            class="icon-btn hamburger-btn"
+            id="hamburger-btn"
+            aria-label="Open menu"
+            aria-expanded="false"
+            aria-controls="drawer"
+          >
+            <span></span><span></span><span></span>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <div class="drawer-overlay" id="drawer-overlay"></div>
+    <aside class="drawer" id="drawer" aria-hidden="true">
+      <div class="drawer-top">
+        <span class="font-head" style="font-weight: 700">Menu</span>
+        <button class="drawer-close" id="drawer-close" aria-label="Close menu">
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+          >
+            <path d="M18 6 6 18M6 6l12 12" />
+          </svg>
+        </button>
+      </div>
+      <nav>
+        <a href="#what-is-it">What Is It</a>
+        <a href="#features">Features</a>
+        <a href="#how-to-use">How to Use</a>
+        <a href="#benefits">Benefits</a>
+        <a href="#faqs">FAQs</a>
+        <a href="#related-tools">Related Tools</a>
+        <a href="#contact">Contact</a>
+      </nav>
+      <div class="drawer-home">
+        <a href="/">&larr; Back to PDFMaster Home</a>
+      </div>
+    </aside>
+
+    <main>
+      <section class="hero" id="top">
+        <div class="container">
+          <div class="eyebrow">Free &middot; Private &middot; On-Device</div>
+          <h1>View PDF Files Online — Free, Private &amp; Instant</h1>
+          <p class="lede">
+            Open any PDF straight in your browser to read, search, and page
+            through it. <strong>Nothing is ever uploaded</strong> — every page
+            renders locally, right on your own device.
+          </p>
+
+          <div class="upload-card" id="drop-zone">
+            <input
+              type="file"
+              id="file-input"
+              accept="application/pdf,.pdf"
+              hidden
+            />
+            <div class="upload-icon">
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.7"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                <polyline points="17 8 12 3 7 8" />
+                <line x1="12" y1="3" x2="12" y2="15" />
+              </svg>
+            </div>
+            <h2>Select a PDF file</h2>
+            <p>or drag and drop it anywhere in this box</p>
+            <button class="btn btn-primary" id="choose-file-btn" type="button">
+              Choose PDF File
+            </button>
+            <div class="privacy-note">
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path
+                  d="M12 2 4 5v6c0 5 3.4 8.7 8 10 4.6-1.3 8-5 8-10V5l-8-3Z"
+                />
+              </svg>
+              <span
+                >Processed 100% on your device &middot; ⚡ 3-Page Low-RAM Cache &middot; Local IndexedDB session recovery &middot; works offline once
+                loaded &middot; no upload, no sign-up</span
+              >
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="viewer-wrap hidden" id="viewer-wrap">
+        <div class="container">
+          <div class="viewer-shell" id="viewer-shell">
+            <div class="viewer-body">
+              <div class="toolbar" id="toolbar">
+                <button
+                  class="tool-btn"
+                  id="start-over-btn"
+                  type="button"
+                  title="Open a different PDF"
+                >
+                  <svg
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <path
+                      d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"
+                    />
+                    <path d="M3 3v5h5" />
+                  </svg>
+                  <span>New File</span>
+                </button>
+
+                <div class="toolbar-divider"></div>
+
+                <div class="toolbar-widget-group">
+                  <button
+                    class="widget-btn"
+                    id="prev-page"
+                    type="button"
+                    aria-label="Previous page"
+                    disabled
+                  >
+                    <svg
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    >
+                      <path d="m15 18-6-6 6-6" />
+                    </svg>
+                  </button>
+                  <span class="widget-indicator">
+                    <input
+                      type="number"
+                      id="page-input"
+                      class="page-input"
+                      value="1"
+                      min="1"
+                      aria-label="Current page"
+                    />
+                    <span id="page-count-label">/ 1</span>
+                  </span>
+                  <button
+                    class="widget-btn"
+                    id="next-page"
+                    type="button"
+                    aria-label="Next page"
+                    disabled
+                  >
+                    <svg
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    >
+                      <path d="m9 18 6-6-6-6" />
+                    </svg>
+                  </button>
+                </div>
+
+                <div class="toolbar-divider"></div>
+
+                <div class="toolbar-widget-group">
+                  <button
+                    class="widget-btn"
+                    id="zoom-out"
+                    type="button"
+                    aria-label="Zoom out"
+                  >
+                    &minus;
+                  </button>
+                  <span class="widget-indicator" id="zoom-level">100%</span>
+                  <button
+                    class="widget-btn"
+                    id="zoom-in"
+                    type="button"
+                    aria-label="Zoom in"
+                  >
+                    +
+                  </button>
+                </div>
+
+                <button
+                  class="tool-btn"
+                  id="fit-width-btn"
+                  type="button"
+                  title="Fit to width"
+                >
+                  <svg
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <path
+                      d="M3 12h18M3 12l4-4M3 12l4 4M21 12l-4-4M21 12l-4 4"
+                    />
+                  </svg>
+                  <span>Fit Width</span>
+                </button>
+
+                <button
+                  class="tool-btn"
+                  id="rotate-btn"
+                  type="button"
+                  title="Rotate page 90°"
+                >
+                  <svg
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <path d="M21 12a9 9 0 1 1-3-6.7" />
+                    <path d="M21 3v6h-6" />
+                  </svg>
+                  <span>Rotate</span>
+                </button>
+
+                <div class="toolbar-divider"></div>
+
+                <button
+                  class="tool-btn"
+                  id="search-toggle-btn"
+                  type="button"
+                  title="Search in document"
+                  aria-expanded="false"
+                  aria-controls="search-bar"
+                >
+                  <svg
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <circle cx="11" cy="11" r="7" />
+                    <path d="m21 21-4.3-4.3" />
+                  </svg>
+                  <span>Search</span>
+                </button>
+
+                <div class="toolbar-spacer"></div>
+
+                <button
+                  class="tool-btn"
+                  id="fullscreen-btn"
+                  type="button"
+                  title="Fullscreen"
+                >
+                  <svg
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <path
+                      d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"
+                    />
+                  </svg>
+                </button>
+
+                <button
+                  class="tool-btn"
+                  id="print-btn"
+                  type="button"
+                  title="Print"
+                >
+                  <svg
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <polyline points="6 9 6 2 18 2 18 9" />
+                    <path
+                      d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"
+                    />
+                    <rect x="6" y="14" width="12" height="8" />
+                  </svg>
+                  <span>Print</span>
+                </button>
+
+                <button
+                  class="tool-btn download-btn"
+                  id="download-btn"
+                  type="button"
+                  title="Download PDF"
+                >
+                  <svg
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                    <polyline points="7 10 12 15 17 10" />
+                    <line x1="12" y1="15" x2="12" y2="3" />
+                  </svg>
+                  <span>Download</span>
+                </button>
+              </div>
+
+              <div class="search-bar" id="search-bar">
+                <div class="search-field">
+                  <svg
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <circle cx="11" cy="11" r="7" />
+                    <path d="m21 21-4.3-4.3" />
+                  </svg>
+                  <input
+                    type="text"
+                    id="search-input"
+                    placeholder="Search in document…"
+                    autocomplete="off"
+                  />
+                </div>
+                <span class="search-count" id="search-count"></span>
+                <button
+                  class="widget-btn"
+                  id="search-prev"
+                  type="button"
+                  aria-label="Previous match"
+                  disabled
+                >
+                  <svg
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <path d="m18 15-6-6-6 6" />
+                  </svg>
+                </button>
+                <button
+                  class="widget-btn"
+                  id="search-next"
+                  type="button"
+                  aria-label="Next match"
+                  disabled
+                >
+                  <svg
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <path d="m6 9 6 6 6-6" />
+                  </svg>
+                </button>
+                <button
+                  class="search-close"
+                  id="search-close"
+                  type="button"
+                  aria-label="Close search"
+                >
+                  <svg
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                  >
+                    <path d="M18 6 6 18M6 6l12 12" />
+                  </svg>
+                </button>
+              </div>
+
+              <div class="canvas-stage" id="canvas-stage">
+                <div class="loading-panel" id="loading-panel">
+                  <div class="spinner"></div>
+                  <p id="loading-text">Loading PDF&hellip;</p>
+                </div>
+                <div class="canvas-frame hidden" id="canvas-frame">
+                  <canvas id="pdf-canvas"></canvas>
+                  <div class="text-layer" id="text-layer"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="what-is-it">
+        <div class="container">
+          <div class="section-head">
+            <div class="eyebrow">What Is It</div>
+            <h2>A free PDF viewer that runs entirely on your device</h2>
+            <p>
+              PDFMaster's PDF Viewer lets you open and read any PDF file
+              instantly, right inside your browser. It's powered by Mozilla's
+              open-source PDF.js rendering engine, running locally on your own
+              device — not on our servers.
+            </p>
+          </div>
+          <p style="max-width: 760px; color: var(--text-muted)">
+            There's no upload step, so there's nothing to wait on and nothing
+            sitting on a server in the meantime. Open a report, ebook, scanned
+            document, contract, or form, and it renders in the same tab &mdash;
+            on a laptop at your desk or a phone on the train, exactly the same
+            way.
+          </p>
+          <p
+            style="max-width: 760px; color: var(--text-muted); margin-top: 14px"
+          >
+            Because everything happens on-device, this PDF viewer online tool
+            also works without an internet connection once the page has loaded,
+            and it can safely open password-protected files without ever sending
+            your password anywhere.
+          </p>
+        </div>
+      </section>
+
+      <section id="features" class="section-alt">
+        <div class="container">
+          <div class="section-head">
+            <div class="eyebrow">Features</div>
+            <h2>Everything you need to read a PDF properly</h2>
+          </div>
+          <div class="feature-grid">
+            <div class="feature-card">
+              <div class="ic">
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path d="M4 6a2 2 0 0 1 2-2h5v16H6a2 2 0 0 1-2-2V6Z" />
+                  <path d="M20 6a2 2 0 0 0-2-2h-5v16h5a2 2 0 0 0 2-2V6Z" />
+                </svg>
+              </div>
+              <h3>Instant page navigation</h3>
+              <p>
+                Jump between pages with Previous and Next controls, or type a
+                page number to go straight there.
+              </p>
+            </div>
+            <div class="feature-card">
+              <div class="ic">
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7" />
+                </svg>
+              </div>
+              <h3>Smooth zoom &amp; fit width</h3>
+              <p>
+                Zoom in for fine print, zoom out for a full-page view, or fit
+                the page to your screen with a single click.
+              </p>
+            </div>
+            <div class="feature-card">
+              <div class="ic">
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path d="M21 12a9 9 0 1 1-3-6.7" />
+                  <path d="M21 3v6h-6" />
+                </svg>
+              </div>
+              <h3>Rotate pages</h3>
+              <p>
+                Fix a sideways-scanned page instantly, right in the viewer — no
+                re-uploading or re-scanning required.
+              </p>
+            </div>
+            <div class="feature-card">
+              <div class="ic">
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <circle cx="11" cy="11" r="7" />
+                  <path d="m21 21-4.3-4.3" />
+                </svg>
+              </div>
+              <h3>Search inside the PDF</h3>
+              <p>
+                Find any word or phrase across the whole document, with matches
+                highlighted and one-click jumps between results.
+              </p>
+            </div>
+            <div class="feature-card">
+              <div class="ic">
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path d="M4 7V5a1 1 0 0 1 1-1h1M4 17v2a1 1 0 0 0 1 1h1" />
+                  <path d="M20 7V5a1 1 0 0 0-1-1h-1M20 17v2a1 1 0 0 1-1 1h-1" />
+                  <line x1="9" y1="12" x2="15" y2="12" />
+                </svg>
+              </div>
+              <h3>Select &amp; copy text</h3>
+              <p>
+                Select and copy text straight out of the PDF, exactly like a
+                native reader — no extra conversion step.
+              </p>
+            </div>
+            <div class="feature-card">
+              <div class="ic">
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path
+                    d="M12 2 4 5v6c0 5 3.4 8.7 8 10 4.6-1.3 8-5 8-10V5l-8-3Z"
+                  />
+                </svg>
+              </div>
+              <h3>100% private processing</h3>
+              <p>
+                Your file is decoded and rendered locally in your browser's
+                memory. It's never uploaded, stored, or seen by our servers.
+              </p>
+            </div>
+            <div class="feature-card">
+              <div class="ic">
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
+                  <path d="M3 3v5h5" />
+                  <path d="M12 7v5l4 2" />
+                </svg>
+              </div>
+              <h3>Smart session recovery</h3>
+              <p>
+                Pick up right where you left off. Your reading page, zoom level,
+                and document are saved locally for instant one-click recovery.
+              </p>
+            </div>
+            <div class="feature-card">
+              <div class="ic">
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
+                </svg>
+              </div>
+              <h3>3-Page Low-RAM Cache</h3>
+              <p>
+                Loads entire files in IndexedDB disk storage while maintaining only a 3-page sliding window (current - 1, current, current + 1) in RAM for instant, lag-free page navigation.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="how-to-use">
+        <div class="container">
+          <div class="section-head">
+            <div class="eyebrow">How to Use</div>
+            <h2>Three steps, no waiting around</h2>
+          </div>
+          <div class="steps">
+            <div class="step">
+              <span class="num">01</span>
+              <h3>Choose your PDF</h3>
+              <p>
+                Click "Choose PDF File" or drag and drop a file anywhere on the
+                page. It loads straight into your browser's own memory.
+              </p>
+            </div>
+            <div class="step">
+              <span class="num">02</span>
+              <h3>It opens instantly</h3>
+              <p>
+                Your PDF renders right there in the browser, page by page, with
+                no upload wait.
+              </p>
+            </div>
+            <div class="step">
+              <span class="num">03</span>
+              <h3>Navigate, zoom, or search</h3>
+              <p>
+                Use the toolbar to move through pages, zoom in, rotate, search
+                for text, print, or download whenever you're ready.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="benefits" class="section-alt">
+        <div class="container">
+          <div class="section-head">
+            <div class="eyebrow">Benefits</div>
+            <h2>Why view PDFs this way</h2>
+          </div>
+          <div class="benefit-grid">
+            <div class="benefit">
+              <div class="ic">
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path
+                    d="M12 2 4 5v6c0 5 3.4 8.7 8 10 4.6-1.3 8-5 8-10V5l-8-3Z"
+                  />
+                </svg>
+              </div>
+              <div>
+                <h3>Nothing ever uploaded</h3>
+                <p>
+                  Skip the privacy risk of sending sensitive PDFs to a
+                  stranger's server just to read them.
+                </p>
+              </div>
+            </div>
+            <div class="benefit">
+              <div class="ic">
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path
+                    d="M20 16.2A4.5 4.5 0 0 0 17.5 8h-1.8A7 7 0 1 0 4 14.9"
+                  />
+                  <path d="M9 18l2 2 4-4" />
+                </svg>
+              </div>
+              <div>
+                <h3>Works offline</h3>
+                <p>
+                  Once the page has loaded, keep opening and viewing PDFs
+                  without needing an internet connection.
+                </p>
+              </div>
+            </div>
+            <div class="benefit">
+              <div class="ic">
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path
+                    d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"
+                  />
+                </svg>
+              </div>
+              <div>
+                <h3>No file size limits from us</h3>
+                <p>
+                  Open documents as large as your device's memory allows — we
+                  don't cap anything artificially.
+                </p>
+              </div>
+            </div>
+            <div class="benefit">
+              <div class="ic">
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path
+                    d="M20.59 13.41 13.42 20.6a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82Z"
+                  />
+                  <line x1="7" y1="7" x2="7.01" y2="7" />
+                </svg>
+              </div>
+              <div>
+                <h3>Free, no sign-up</h3>
+                <p>
+                  No account, no email, no watermark, and no daily usage limits.
+                </p>
+              </div>
+            </div>
+            <div class="benefit">
+              <div class="ic">
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <rect x="2" y="4" width="20" height="14" rx="2" />
+                  <line x1="8" y1="21" x2="16" y2="21" />
+                  <line x1="12" y1="17" x2="12" y2="21" />
+                </svg>
+              </div>
+              <div>
+                <h3>Any device</h3>
+                <p>
+                  Windows, macOS, Linux, Chromebook, Android, or iOS — if it has
+                  a modern browser, it works.
+                </p>
+              </div>
+            </div>
+            <div class="benefit">
+              <div class="ic">
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <rect x="5" y="11" width="14" height="10" rx="2" />
+                  <path d="M8 11V7a4 4 0 0 1 8 0v4" />
+                </svg>
+              </div>
+              <div>
+                <h3>Handles password-protected PDFs</h3>
+                <p>
+                  Enter the password locally to view protected files — it's
+                  never sent anywhere.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="faqs">
+        <div class="container">
+          <div class="section-head">
+            <div class="eyebrow">FAQs</div>
+            <h2>Common questions</h2>
+          </div>
+          <div class="faq-list">
+            <div class="faq-item">
+              <button class="faq-q">
+                <span>Is this PDF viewer really free to use?</span
+                ><svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2.2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path d="m6 9 6 6 6-6" />
+                </svg>
+              </button>
+              <div class="faq-a">
+                <p>
+                  Yes. Opening, navigating, searching, and printing a PDF here
+                  is completely free, with no sign-up, no watermark, and no
+                  daily limits.
+                </p>
+              </div>
+            </div>
+            <div class="faq-item">
+              <button class="faq-q">
+                <span>Do you upload my PDF to a server?</span
+                ><svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2.2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path d="m6 9 6 6 6-6" />
+                </svg>
+              </button>
+              <div class="faq-a">
+                <p>
+                  No. Your file is decoded and rendered entirely inside your
+                  browser's own memory using PDF.js. It's never sent anywhere,
+                  which also means it keeps working without an internet
+                  connection once the page has loaded.
+                </p>
+              </div>
+            </div>
+            <div class="faq-item">
+              <button class="faq-q">
+                <span>Can I open a password-protected PDF?</span
+                ><svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2.2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path d="m6 9 6 6 6-6" />
+                </svg>
+              </button>
+              <div class="faq-a">
+                <p>
+                  Yes. If your file is encrypted, the viewer will ask for the
+                  password right there on the page. That password is used
+                  locally to unlock the file in your browser and is never
+                  transmitted anywhere.
+                </p>
+              </div>
+            </div>
+            <div class="faq-item">
+              <button class="faq-q">
+                <span>Is there a limit on file size or number of pages?</span
+                ><svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2.2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path d="m6 9 6 6 6-6" />
+                </svg>
+              </button>
+              <div class="faq-a">
+                <p>
+                  We don't set any artificial limit. The only real ceiling is
+                  how much memory your device and browser have available — very
+                  large scanned PDFs may take a moment longer to render.
+                </p>
+              </div>
+            </div>
+            <div class="faq-item">
+              <button class="faq-q">
+                <span>Can I search for text inside my PDF?</span
+                ><svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2.2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path d="m6 9 6 6 6-6" />
+                </svg>
+              </button>
+              <div class="faq-a">
+                <p>
+                  Yes. Open the search bar from the toolbar, type a word or
+                  phrase, and every match in the document is highlighted with
+                  quick buttons to jump between results.
+                </p>
+              </div>
+            </div>
+            <div class="faq-item">
+              <button class="faq-q">
+                <span>Can I select and copy text out of the PDF?</span
+                ><svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2.2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path d="m6 9 6 6 6-6" />
+                </svg>
+              </button>
+              <div class="faq-a">
+                <p>
+                  Yes, on PDFs that contain real text rather than just a scanned
+                  image. Click and drag over the text the same way you would in
+                  any reader, then copy it as usual.
+                </p>
+              </div>
+            </div>
+            <div class="faq-item">
+              <button class="faq-q">
+                <span>Does the viewer work on my phone or tablet?</span
+                ><svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2.2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path d="m6 9 6 6 6-6" />
+                </svg>
+              </button>
+              <div class="faq-a">
+                <p>
+                  Yes. The layout adapts to any screen size, and touch works for
+                  scrolling, tapping the toolbar, and every zoom or navigation
+                  control.
+                </p>
+              </div>
+            </div>
+            <div class="faq-item">
+              <button class="faq-q">
+                <span>Can I print or download the PDF from here?</span
+                ><svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2.2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path d="m6 9 6 6 6-6" />
+                </svg>
+              </button>
+              <div class="faq-a">
+                <p>
+                  Yes. The Print button opens your browser's native print
+                  dialog, and Download saves the exact original file straight to
+                  your device.
+                </p>
+              </div>
+            </div>
+            <div class="faq-item">
+              <button class="faq-q">
+                <span>Will this work without an internet connection?</span
+                ><svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2.2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path d="m6 9 6 6 6-6" />
+                </svg>
+              </button>
+              <div class="faq-a">
+                <p>
+                  Once you've visited the page and it's cached by your browser,
+                  you can keep opening and viewing PDFs offline. You'll just
+                  need a connection the very first time you load the page.
+                </p>
+              </div>
+            </div>
+            <div class="faq-item">
+              <button class="faq-q">
+                <span
+                  >Can I restore my reading session if I accidentally close the tab?</span
+                ><svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2.2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path d="m6 9 6 6 6-6" />
+                </svg>
+              </button>
+              <div class="faq-a">
+                <p>
+                  Yes. PDFMaster includes a built-in recovery mode powered by
+                  your browser's local IndexedDB storage. Your last opened document,
+                  current reading page, zoom scale, and rotation are saved 100%
+                  locally on your device. If your browser closes or reloads, simply
+                  click the <strong>Recovery icon</strong> in the header or the
+                  restore prompt to resume right where you left off.
+                </p>
+              </div>
+            </div>
+            <div class="faq-item">
+              <button class="faq-q">
+                <span>How does the 3-page Low-RAM Cache work?</span
+                ><svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2.2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path d="m6 9 6 6 6-6" />
+                </svg>
+              </button>
+              <div class="faq-a">
+                <p>
+                  Instead of bloating your browser's RAM with every page of a large PDF,
+                  PDFMaster stores the complete file in your browser's private IndexedDB storage
+                  and keeps an intelligent 3-page sliding window (previous page, current page,
+                  and next page) in active memory. Adjacent pages are pre-rendered in the
+                  background so page turns are instantaneous (0ms lag), while older pages outside
+                  the 3-page window are automatically purged from RAM.
+                </p>
+              </div>
+            </div>
+            <div class="faq-item">
+              <button class="faq-q">
+                <span
+                  >My PDF won't open or looks broken — what should I do?</span
+                ><svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2.2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path d="m6 9 6 6 6-6" />
+                </svg>
+              </button>
+              <div class="faq-a">
+                <p>
+                  This usually means the file is corrupted or isn't a standard
+                  PDF. Try re-exporting or re-downloading the original file,
+                  then open it again here.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="related-tools" class="section-alt">
+        <div class="container">
+          <div class="section-head">
+            <div class="eyebrow">Related Tools</div>
+            <h2>More free, on-device PDF tools</h2>
+          </div>
+          <div class="tools-grid">
+            <a href="/pdf-editor" class="tool-link">
+              <div class="ic">
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path
+                    d="M12 20h9M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"
+                  />
+                </svg>
+              </div>
+              <span>PDF Editor</span>
+            </a>
+            <a href="/merge-pdf" class="tool-link">
+              <div class="ic">
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <rect x="3" y="3" width="8" height="8" rx="1" />
+                  <rect x="13" y="13" width="8" height="8" rx="1" />
+                  <path d="M11 7h6a2 2 0 0 1 2 2v6M7 17v0" />
+                </svg>
+              </div>
+              <span>Merge PDF</span>
+            </a>
+            <a href="/split-pdf" class="tool-link">
+              <div class="ic">
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <rect x="3" y="4" width="7" height="16" rx="1" />
+                  <rect x="14" y="4" width="7" height="16" rx="1" />
+                </svg>
+              </div>
+              <span>PDF Split</span>
+            </a>
+            <a href="/pdf-reorder" class="tool-link">
+              <div class="ic">
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <rect x="6" y="3" width="12" height="7" rx="1" />
+                  <rect x="6" y="14" width="12" height="7" rx="1" />
+                  <path d="m9 12 3 2 3-2" />
+                </svg>
+              </div>
+              <span>PDF Reorder</span>
+            </a>
+            <a href="/photo-to-pdf" class="tool-link">
+              <div class="ic">
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <rect x="3" y="4" width="18" height="16" rx="2" />
+                  <circle cx="9" cy="10" r="1.6" />
+                  <path d="m4 18 5.5-5.5a2 2 0 0 1 2.8 0L18 18" />
+                </svg>
+              </div>
+              <span>Photo to PDF</span>
+            </a>
+            <a href="/pdf-to-photo" class="tool-link">
+              <div class="ic">
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path d="M7 7h10M7 12h10M7 17h6" />
+                  <rect x="3" y="3" width="18" height="18" rx="2" />
+                </svg>
+              </div>
+              <span>PDF to Photo</span>
+            </a>
+          </div>
+        </div>
+      </section>
+
+      <section id="contact">
+        <div class="container" style="display: flex; justify-content: center">
+          <div class="contact-card">
+            <div class="ic">
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <rect x="3" y="5" width="18" height="14" rx="2" />
+                <path d="m3 7 9 6 9-6" />
+              </svg>
+            </div>
+            <h2 style="font-size: 1.3rem; margin-bottom: 8px">Need a hand?</h2>
+            <p style="color: var(--text-muted); margin-bottom: 18px">
+              Questions, feedback, or something not working the way it should?
+              We read every message.
+            </p>
+            <a class="email" href="mailto:support@pdfmaster.co.in"
+              >support@pdfmaster.co.in</a
+            >
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <div class="container">
+        <div class="footer-grid">
+          <div class="footer-col footer-brand">
+            <a href="/" class="brand">
+              <img
+                src="/assets/apple-touch-icon.png"
+                alt="PDFMaster logo"
+                width="32"
+                height="32"
+              />
+              <span>PDF<span>Master</span></span>
+            </a>
+            <p>
+              Free, private PDF tools that run entirely in your browser. No
+              uploads, no sign-up. Made by
+              <a href="/about#teams">Happy Gupta</a>.
+            </p>
+          </div>
+          <div class="footer-col">
+            <h4>Tools</h4>
+            <ul>
+              <li><a href="/pdf-viewer">PDF Viewer</a></li>
+              <li><a href="/pdf-editor">PDF Editor</a></li>
+              <li><a href="/split-pdf">PDF Split</a></li>
+              <li><a href="/pdf-reorder">PDF Reorder</a></li>
+              <li><a href="/photo-to-pdf">Photo to PDF</a></li>
+            </ul>
+          </div>
+          <div class="footer-col">
+            <h4>Company</h4>
+            <ul>
+              <li><a href="/">Home</a></li>
+              <li><a href="/blog">Blog</a></li>
+              <li><a href="/about">About</a></li>
+              <li>
+                <a href="/happy-gupta-founder-of-pdfmaster"
+                  >About Happy Gupta</a
+                >
+              </li>
+              <li><a href="/privacy">Privacy Policy</a></li>
+              <li><a href="/terms">Terms of Service</a></li>
+            </ul>
+          </div>
+          <div class="footer-col">
+            <h4>Support</h4>
+            <ul>
+              <li><a href="#faqs">FAQs</a></li>
+              <li><a href="#contact">Contact</a></li>
+              <li>
+                <a href="mailto:support@pdfmaster.co.in"
+                  >support@pdfmaster.co.in</a
+                >
+              </li>
+            </ul>
+          </div>
+        </div>
+        <div class="footer-bottom">
+          <span
+            >&copy; <span id="footer-year">2026</span> PDFMaster. All rights
+            reserved.</span
+          >
+          <span>Built for privacy &mdash; every tool runs on your device.</span>
+        </div>
+      </div>
+    </footer>
+
+    <button class="to-top" id="to-top" aria-label="Back to top">
+      <svg
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2.2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      >
+        <path d="m18 15-6-6-6 6" />
+      </svg>
+    </button>
+
+    <div class="toast" id="toast"></div>
+
+    <div class="modal-overlay" id="password-modal">
+      <div class="modal-card">
+        <div class="ic-badge">
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <rect x="5" y="11" width="14" height="10" rx="2" />
+            <path d="M8 11V7a4 4 0 0 1 8 0v4" />
+          </svg>
+        </div>
+        <h3>Password protected</h3>
+        <p>
+          This PDF is locked. Enter its password to view it — it stays on your
+          device and is never sent anywhere.
+        </p>
+        <form id="password-form">
+          <div class="form-field">
+            <input
+              type="password"
+              id="password-input"
+              class="form-input"
+              placeholder="Enter password"
+              autocomplete="off"
+            />
+            <button
+              type="button"
+              id="password-toggle"
+              aria-label="Show password"
+            >
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8Z" />
+                <circle cx="12" cy="12" r="3" />
+              </svg>
+            </button>
+          </div>
+          <p class="form-error" id="password-error">
+            That password didn't work. Please try again.
+          </p>
+          <div class="modal-actions">
+            <button type="button" class="btn btn-ghost" id="password-cancel">
+              Cancel
+            </button>
+            <button type="submit" class="btn btn-primary" id="password-submit">
+              Unlock
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <script>
+      (function () {
+        "use strict";
+
+        /* Theme toggle */
+        var themeToggle = document.getElementById("theme-toggle");
+        if (themeToggle) {
+          themeToggle.addEventListener("click", function () {
+            var html = document.documentElement;
+            var current = html.getAttribute("data-theme");
+            var next = current === "dark" ? "light" : "dark";
+            html.setAttribute("data-theme", next);
+            try {
+              localStorage.setItem("pdfmaster-theme", next);
+            } catch (e) {}
+          });
+        }
+
+        /* Hamburger drawer */
+        var hamburgerBtn = document.getElementById("hamburger-btn");
+        var drawer = document.getElementById("drawer");
+        var drawerOverlay = document.getElementById("drawer-overlay");
+        var drawerClose = document.getElementById("drawer-close");
+
+        function openDrawer() {
+          drawer.classList.add("is-open");
+          drawerOverlay.classList.add("is-open");
+          drawer.setAttribute("aria-hidden", "false");
+          hamburgerBtn.setAttribute("aria-expanded", "true");
+        }
+        function closeDrawer() {
+          drawer.classList.remove("is-open");
+          drawerOverlay.classList.remove("is-open");
+          drawer.setAttribute("aria-hidden", "true");
+          hamburgerBtn.setAttribute("aria-expanded", "false");
+        }
+        if (hamburgerBtn) {
+          hamburgerBtn.addEventListener("click", function () {
+            if (drawer.classList.contains("is-open")) {
+              closeDrawer();
+            } else {
+              openDrawer();
+            }
+          });
+        }
+        if (drawerClose) drawerClose.addEventListener("click", closeDrawer);
+        if (drawerOverlay) drawerOverlay.addEventListener("click", closeDrawer);
+        document.addEventListener("keydown", function (e) {
+          if (e.key === "Escape" && drawer.classList.contains("is-open")) {
+            closeDrawer();
+          }
+        });
+        if (drawer) {
+          drawer.querySelectorAll("a").forEach(function (link) {
+            link.addEventListener("click", closeDrawer);
+          });
+        }
+
+        /* FAQ accordion */
+        document.querySelectorAll(".faq-q").forEach(function (btn) {
+          btn.addEventListener("click", function () {
+            var item = btn.closest(".faq-item");
+            var answer = item.querySelector(".faq-a");
+            var isOpen = item.classList.contains("is-open");
+            document
+              .querySelectorAll(".faq-item.is-open")
+              .forEach(function (open) {
+                if (open !== item) {
+                  open.classList.remove("is-open");
+                  open.querySelector(".faq-a").style.maxHeight = null;
+                }
+              });
+            if (isOpen) {
+              item.classList.remove("is-open");
+              answer.style.maxHeight = null;
+            } else {
+              item.classList.add("is-open");
+              answer.style.maxHeight = answer.scrollHeight + "px";
+            }
+          });
+        });
+
+        /* Back to top */
+        var toTopBtn = document.getElementById("to-top");
+        if (toTopBtn) {
+          window.addEventListener("scroll", function () {
+            if (window.scrollY > 480) {
+              toTopBtn.classList.add("is-visible");
+            } else {
+              toTopBtn.classList.remove("is-visible");
+            }
+          });
+          toTopBtn.addEventListener("click", function () {
+            window.scrollTo({ top: 0, behavior: "smooth" });
+          });
+        }
+
+        /* Toast */
+        var toastTimer = null;
+        window.showToast = function (message, actionLabelOrType, actionFnOrDur, maybeFn, maybeLabel) {
+          var toast = document.getElementById("toast");
+          if (!toast) return;
+          toast.innerHTML = "";
+          var span = document.createElement("span");
+          span.textContent = message;
+          toast.appendChild(span);
+
+          var actionLabel = null;
+          var actionFn = null;
+          var duration = 4000;
+
+          if (typeof actionLabelOrType === "string" && typeof actionFnOrDur === "function") {
+            actionLabel = actionLabelOrType;
+            actionFn = actionFnOrDur;
+          } else if (typeof maybeFn === "function" && typeof maybeLabel === "string") {
+            actionFn = maybeFn;
+            actionLabel = maybeLabel;
+            if (typeof actionFnOrDur === "number") duration = actionFnOrDur;
+          } else if (typeof actionFnOrDur === "number") {
+            duration = actionFnOrDur;
+          }
+
+          if (actionLabel && actionFn) {
+            var btn = document.createElement("button");
+            btn.type = "button";
+            btn.className = "toast-btn";
+            btn.textContent = actionLabel;
+            btn.addEventListener("click", function (e) {
+              e.stopPropagation();
+              toast.classList.remove("is-visible");
+              actionFn();
+            });
+            toast.appendChild(btn);
+          }
+
+          toast.classList.add("is-visible");
+          clearTimeout(toastTimer);
+          toastTimer = setTimeout(function () {
+            toast.classList.remove("is-visible");
+          }, duration);
+        };
+
+        /* Footer year */
+        var footerYear = document.getElementById("footer-year");
+        if (footerYear) footerYear.textContent = new Date().getFullYear();
+      })();
+    </script>
+
+    <script src="/js/pdf-viewer.js"></script>
+  </body>
+</html>
