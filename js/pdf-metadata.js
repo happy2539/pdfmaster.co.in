@@ -6,9 +6,14 @@ pdfjsLib.GlobalWorkerOptions.workerSrc =
 
 // ── State ─────────────────────────────────────────────
 let currentFile = null;
+let currentFileObj = null;
 let currentPdfBytes = null;
+let currentBlobUrl = null;
 let currentMeta = null;
 let cleanPdfBytes = null;
+let isOffloaded = false;
+
+const LOW_RAM_THRESHOLD = 50 * 1024 * 1024; // 50 MB threshold for Low-RAM mode
 
 // ── Theme ─────────────────────────────────────────────
 const btn = document.getElementById("themeBtn");
@@ -175,7 +180,18 @@ fileInput.addEventListener("change", () => {
 
 // ── Reset ─────────────────────────────────────────────
 function resetTool() {
-  currentFile = currentPdfBytes = currentMeta = cleanPdfBytes = null;
+  if (currentBlobUrl) {
+    try {
+      URL.revokeObjectURL(currentBlobUrl);
+    } catch (e) {}
+    currentBlobUrl = null;
+  }
+  currentFile = currentFileObj = currentPdfBytes = currentMeta = cleanPdfBytes = null;
+  isOffloaded = false;
+  const lowRamBadge = document.getElementById("lowRamBadge");
+  if (lowRamBadge) {
+    lowRamBadge.style.display = "none";
+  }
   fileInput.value = "";
   document.getElementById("toolArea").classList.add("hidden");
   document.getElementById("resultCard").classList.remove("visible");
@@ -190,11 +206,21 @@ function resetTool() {
 // ── Load file ─────────────────────────────────────────
 async function loadFile(file) {
   currentFile = file;
+  currentFileObj = file;
   cleanPdfBytes = null;
 
-  showToast("Reading PDF…", "info", 2000);
-  const arrBuf = await file.arrayBuffer();
-  currentPdfBytes = new Uint8Array(arrBuf);
+  if (currentBlobUrl) {
+    try {
+      URL.revokeObjectURL(currentBlobUrl);
+    } catch (e) {}
+    currentBlobUrl = null;
+  }
+
+  isOffloaded = file.size > LOW_RAM_THRESHOLD;
+  const lowRamBadge = document.getElementById("lowRamBadge");
+  if (lowRamBadge) {
+    lowRamBadge.style.display = isOffloaded ? "inline-flex" : "none";
+  }
 
   document.getElementById("fileName").textContent = file.name;
   document.getElementById("fileSize").textContent = formatBytes(file.size);
@@ -207,8 +233,24 @@ async function loadFile(file) {
   document.getElementById("progressWrap").classList.remove("visible");
   document.getElementById("progressFill").style.width = "0%";
 
-  await extractAndRender(currentPdfBytes, file);
-  scheduleDBSave();
+  if (isOffloaded) {
+    showToast(
+      `⚡ Low-RAM Mode: Large PDF (${formatBytes(file.size)} > 50MB) stored in IndexedDB disk cache to preserve system RAM.`,
+      "info",
+      4000,
+    );
+    currentPdfBytes = null; // Reclaim RAM immediately!
+    currentBlobUrl = URL.createObjectURL(file);
+    await extractAndRender(currentBlobUrl, file, true);
+    await saveSessionToDB();
+  } else {
+    showToast("Reading PDF…", "info", 2000);
+    const arrBuf = await file.arrayBuffer();
+    currentPdfBytes = new Uint8Array(arrBuf);
+    await extractAndRender(currentPdfBytes, file, false);
+    await saveSessionToDB();
+  }
+
   document
     .getElementById("toolArea")
     .scrollIntoView({ behavior: "smooth", block: "start" });
@@ -247,9 +289,24 @@ function calcRisk(info, xmp, custom) {
 }
 
 // ── Extract & render metadata ─────────────────────────
-async function extractAndRender(bytes, file) {
+async function extractAndRender(source, file, isUrl = false) {
+  let pdf = null;
   try {
-    const pdf = await pdfjsLib.getDocument({ data: bytes.slice() }).promise;
+    const loadingTask = isUrl
+      ? pdfjsLib.getDocument({
+          url: source,
+          cMapUrl: "/assets/vendor/cmaps/",
+          cMapPacked: true,
+          disableAutoFetch: true,
+        })
+      : pdfjsLib.getDocument({
+          data: source instanceof Uint8Array ? source.slice(0) : source,
+          cMapUrl: "/assets/vendor/cmaps/",
+          cMapPacked: true,
+          disableAutoFetch: true,
+        });
+
+    pdf = await loadingTask.promise;
     const meta = await pdf.getMetadata();
     const info = meta.info || {};
     const pages = pdf.numPages;
@@ -330,6 +387,13 @@ async function extractAndRender(bytes, file) {
       "Failed to read PDF. The file may be encrypted or corrupted.",
       "error",
     );
+  } finally {
+    if (pdf) {
+      try {
+        if (pdf.destroy) pdf.destroy();
+        else if (pdf.cleanup) pdf.cleanup();
+      } catch (e) {}
+    }
   }
 }
 
@@ -583,7 +647,34 @@ function dl(blob, name) {
 // ── Remove Metadata ───────────────────────────────────
 // Uses the deep deletion approach: directly removes keys from the raw PDF
 // Info Dictionary via pdf-lib's context API, rather than setting empty strings.
-// This ensures metadata is truly absent — not merely blanked.
+// In Low-RAM mode, reads from IndexedDB/Blob sequentially and frees memory immediately.
+
+async function getFileBytesForProcessing() {
+  if (currentPdfBytes) {
+    return currentPdfBytes;
+  }
+  if (currentFileObj instanceof Blob) {
+    const ab = await currentFileObj.arrayBuffer();
+    return new Uint8Array(ab);
+  }
+  const db = await openDB();
+  const tx = db.transaction(["metadata_data"], "readonly");
+  const dataReq = tx.objectStore("metadata_data").get("file");
+  const data = await new Promise((res) => {
+    dataReq.onsuccess = () => res(dataReq.result);
+    dataReq.onerror = () => res(null);
+  });
+  if (data) {
+    if (data.file instanceof Blob) {
+      const ab = await data.file.arrayBuffer();
+      return new Uint8Array(ab);
+    }
+    if (data.bytes) {
+      return new Uint8Array(data.bytes);
+    }
+  }
+  throw new Error("PDF file buffer unavailable in local storage");
+}
 
 async function removeAll() {
   ["rmAuthor", "rmDates", "rmTitle", "rmApp", "rmXmp", "rmCustom"].forEach(
@@ -595,7 +686,7 @@ async function removeAll() {
 }
 
 async function removeMetadata() {
-  if (!currentPdfBytes) {
+  if (!currentFile) {
     showToast("Please upload a PDF first.", "error");
     return;
   }
@@ -623,20 +714,28 @@ async function removeMetadata() {
   };
 
   try {
-    setProgress(10, "Loading PDF…");
+    if (isOffloaded) {
+      setProgress(10, "⚡ Low-RAM Streaming: Reading from disk cache…");
+    } else {
+      setProgress(10, "Loading PDF…");
+    }
     await new Promise((r) => setTimeout(r, 30));
 
+    let bytes = await getFileBytesForProcessing();
+
     const { PDFDocument, PDFName } = PDFLib;
-    const pdfDoc = await PDFDocument.load(currentPdfBytes, {
+    const pdfDoc = await PDFDocument.load(bytes, {
       ignoreEncryption: true,
     });
+
+    if (isOffloaded) {
+      bytes = null; // Reclaim intermediate raw buffer immediately
+    }
 
     setProgress(35, "Stripping info dictionary fields…");
     await new Promise((r) => setTimeout(r, 20));
 
     // ── Step 1: Delete keys directly from the Info Dictionary ──
-    // This is the robust approach — we look up the actual PDFDict object
-    // and call .delete() on it, so keys are completely removed (not just blanked).
     const infoRef = pdfDoc.context.trailerInfo?.Info;
     if (infoRef) {
       const infoDict = pdfDoc.context.lookup(infoRef);
@@ -701,7 +800,11 @@ async function removeMetadata() {
       } catch {}
     }
 
-    setProgress(80, "Rebuilding clean PDF…");
+    if (isOffloaded) {
+      setProgress(80, "⚡ Low-RAM: Rebuilding clean PDF…");
+    } else {
+      setProgress(80, "Rebuilding clean PDF…");
+    }
     await new Promise((r) => setTimeout(r, 20));
 
     // ── Step 3: Save — no metadata update, no extra pages ──
@@ -779,7 +882,7 @@ function scheduleDBSave() {
 }
 
 async function saveSessionToDB() {
-  if (!currentPdfBytes || !currentFile) return false;
+  if (!currentFile) return false;
   try {
     const db = await openDB();
     const tx = db.transaction(["settings", "metadata_data"], "readwrite");
@@ -790,6 +893,7 @@ async function saveSessionToDB() {
       timestamp: Date.now(),
       fileName: currentFile.name,
       fileSize: currentFile.size,
+      isOffloaded: isOffloaded,
       rmAuthor: document.getElementById("rmAuthor")?.checked ?? true,
       rmDates: document.getElementById("rmDates")?.checked ?? true,
       rmTitle: document.getElementById("rmTitle")?.checked ?? true,
@@ -802,7 +906,9 @@ async function saveSessionToDB() {
     const fileData = {
       fileName: currentFile.name,
       fileSize: currentFile.size,
-      bytes: currentPdfBytes.buffer || currentPdfBytes,
+      isOffloaded: isOffloaded,
+      file: currentFileObj || currentFile, // Stored natively on disk in IndexedDB without JS ArrayBuffers
+      bytes: !isOffloaded && currentPdfBytes ? (currentPdfBytes.buffer || currentPdfBytes) : null,
       timestamp: Date.now(),
     };
     dataStore.put(fileData, "file");
@@ -833,7 +939,7 @@ async function loadSessionFromDB(isManual = false) {
       }),
     ]);
 
-    if (!data || !data.bytes) {
+    if (!data || (!data.file && !data.bytes)) {
       updateRecoveryBadge(false);
       if (isManual) {
         showToast("No stored session found in recovery storage.", "error");
@@ -841,12 +947,26 @@ async function loadSessionFromDB(isManual = false) {
       return false;
     }
 
-    currentFile = {
-      name: data.fileName || "document.pdf",
-      size: data.fileSize || data.bytes.byteLength,
-    };
-    currentPdfBytes = new Uint8Array(data.bytes);
+    const fileName = data.fileName || "document.pdf";
+    const fileSize = data.fileSize || (data.bytes ? data.bytes.byteLength : 0);
+    const storedBlob = data.file || (data.bytes ? new Blob([data.bytes], { type: "application/pdf" }) : null);
+
+    currentFile = storedBlob instanceof File ? storedBlob : new File([storedBlob], fileName, { type: "application/pdf" });
+    currentFileObj = currentFile;
     cleanPdfBytes = null;
+
+    if (currentBlobUrl) {
+      try {
+        URL.revokeObjectURL(currentBlobUrl);
+      } catch (e) {}
+      currentBlobUrl = null;
+    }
+
+    isOffloaded = fileSize > LOW_RAM_THRESHOLD || !!(session && session.isOffloaded);
+    const lowRamBadge = document.getElementById("lowRamBadge");
+    if (lowRamBadge) {
+      lowRamBadge.style.display = isOffloaded ? "inline-flex" : "none";
+    }
 
     document.getElementById("fileName").textContent = currentFile.name;
     document.getElementById("fileSize").textContent = formatBytes(currentFile.size);
@@ -873,7 +993,20 @@ async function loadSessionFromDB(isManual = false) {
         document.getElementById("rmCustom").checked = session.rmCustom !== false;
     }
 
-    await extractAndRender(currentPdfBytes, currentFile);
+    if (isOffloaded) {
+      currentPdfBytes = null;
+      currentBlobUrl = URL.createObjectURL(currentFile);
+      await extractAndRender(currentBlobUrl, currentFile, true);
+    } else {
+      if (data.bytes) {
+        currentPdfBytes = new Uint8Array(data.bytes);
+      } else {
+        const ab = await currentFile.arrayBuffer();
+        currentPdfBytes = new Uint8Array(ab);
+      }
+      await extractAndRender(currentPdfBytes, currentFile, false);
+    }
+
     updateRecoveryBadge(true);
 
     document
@@ -915,10 +1048,10 @@ async function checkStoredSessionAvailable(notifyOnFound = false) {
       dataReq.onerror = () => res(null);
     });
 
-    const hasData = !!(data && data.bytes);
+    const hasData = !!(data && (data.file || data.bytes));
     updateRecoveryBadge(hasData);
 
-    if (hasData && notifyOnFound && !currentPdfBytes) {
+    if (hasData && notifyOnFound && !currentFile) {
       const name = data.fileName ? `'${data.fileName}'` : "Previous document";
       showToast(
         `Last session (${name}) is available. Click to restore.`,

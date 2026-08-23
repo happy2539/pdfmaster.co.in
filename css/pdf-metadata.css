@@ -268,6 +268,21 @@ button {
     opacity: 1;
   }
 }
+.badge-low-ram {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: rgba(232, 55, 42, 0.08);
+  color: var(--accent);
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 999px;
+  border: 1px solid rgba(232, 55, 42, 0.2);
+  white-space: nowrap;
+  letter-spacing: 0.02em;
+  flex-shrink: 0;
+}
 
 /* Hamburger */
 .hamburger-btn {

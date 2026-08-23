@@ -3,7 +3,12 @@
 
   /* ---------- state ---------- */
   var pdfDoc = null,
-    originalBytes = null,
+    currentFileBlob = null,
+    currentPdfObjectUrl = null,
+    currentPageProxy = null,
+    fileBlobPersisted = false,
+    renderToken = 0,
+    redrawScheduled = false,
     fileName = "",
     numPages = 1,
     currentPage = 1;
@@ -54,7 +59,7 @@
     activeHandle: null,
     dragStart: { x: 0, y: 0 },
     startCropRect: null,
-    drawCrop: null
+    drawCrop: null,
   };
 
   var PALETTE = [
@@ -109,6 +114,35 @@
   function nextId() {
     idCounter += 1;
     return "a" + idCounter + "_" + Date.now().toString(36);
+  }
+
+  /* ---------- fast structural clone (replaces JSON.parse(JSON.stringify)) ----------
+     Semantically equivalent to a JSON round-trip (undefined/function props dropped from
+     objects, undefined array entries become null) but skips text serialization, and
+     primitives (including large base64 dataUrl strings) are copied by value/reference
+     instead of being re-parsed into brand-new string instances every time. This keeps
+     the undo/redo stack cheap even when annotations embed large images. */
+  function deepClone(value) {
+    if (value === null || typeof value !== "object") {
+      return value;
+    }
+    if (Array.isArray(value)) {
+      var arr = new Array(value.length);
+      for (var i = 0; i < value.length; i++) {
+        var item = value[i];
+        arr[i] = item === undefined ? null : deepClone(item);
+      }
+      return arr;
+    }
+    var out = {};
+    for (var key in value) {
+      if (Object.prototype.hasOwnProperty.call(value, key)) {
+        var v = value[key];
+        if (v === undefined || typeof v === "function") continue;
+        out[key] = deepClone(v);
+      }
+    }
+    return out;
   }
 
   /* ---------- library loading ---------- */
@@ -215,6 +249,46 @@
     return librariesLoading;
   }
 
+  /* ---------- low-RAM streaming document loader ----------
+     Instead of reading the whole file into an ArrayBuffer and handing pdf.js the full
+     buffer (which forces it to hold the entire document in memory even though only one
+     page is ever on screen), we hand it a blob: URL and let it issue byte-range fetches
+     for exactly the pages it's asked to render. Blob URLs support the Range header
+     natively in modern browsers, so this costs nothing extra locally — it just avoids
+     ever materializing bytes the user hasn't actually looked at. */
+  function destroyCurrentDocument() {
+    if (currentPageProxy) {
+      try {
+        currentPageProxy.cleanup();
+      } catch (e) {}
+      currentPageProxy = null;
+    }
+    if (pdfDoc) {
+      try {
+        pdfDoc.destroy();
+      } catch (e) {}
+    }
+    pdfDoc = null;
+    if (currentPdfObjectUrl) {
+      URL.revokeObjectURL(currentPdfObjectUrl);
+      currentPdfObjectUrl = null;
+    }
+  }
+  function openPdfFromBlob(blob) {
+    destroyCurrentDocument();
+    var pdfjs = window.pdfjsLib || window["pdfjs-dist/build/pdf"];
+    currentPdfObjectUrl = URL.createObjectURL(blob);
+    var task = pdfjs.getDocument({
+      url: currentPdfObjectUrl,
+      disableAutoFetch: true,
+      disableStream: false,
+      rangeChunkSize: 1048576,
+      cMapUrl: "https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/cmaps/",
+      cMapPacked: true,
+    });
+    return task.promise;
+  }
+
   /* ---------- view helpers ---------- */
   function showEditor() {
     document.getElementById("top").classList.add("hidden");
@@ -257,17 +331,9 @@
     showEditor();
     ensureLibraries()
       .then(function () {
-        return file.arrayBuffer();
-      })
-      .then(function (buf) {
-        originalBytes = buf;
-        var pdfjs = window.pdfjsLib || window["pdfjs-dist/build/pdf"];
-        var task = pdfjs.getDocument({
-          data: buf.slice(0),
-          cMapUrl: "https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/cmaps/",
-          cMapPacked: true,
-        });
-        return task.promise;
+        currentFileBlob = file;
+        fileBlobPersisted = false;
+        return openPdfFromBlob(file);
       })
       .then(function (doc) {
         pdfDoc = doc;
@@ -284,7 +350,9 @@
         document.getElementById("editor-filename").textContent = fileName;
         updateUndoRedoButtons();
         setActiveTool("select");
-        scheduleDBSave();
+        // Best-effort background write for crash recovery — doesn't block the
+        // first render, and doesn't need to hold the file in JS memory to do it.
+        persistFileBlobToDB(file, fileName);
         return renderPage(1);
       })
       .catch(function (err) {
@@ -302,7 +370,15 @@
   /* ---------- rendering ---------- */
   function renderPage(pageNum) {
     currentPage = pageNum;
+    var myToken = ++renderToken;
     return pdfDoc.getPage(pageNum).then(function (page) {
+      if (myToken !== renderToken) return; // superseded by a newer page request
+      if (currentPageProxy && currentPageProxy !== page) {
+        try {
+          currentPageProxy.cleanup();
+        } catch (e) {}
+      }
+      currentPageProxy = page;
       if (!pageDimsCache[pageNum]) {
         var vp1 = page.getViewport({ scale: 1 });
         pageDimsCache[pageNum] = { width: vp1.width, height: vp1.height };
@@ -326,6 +402,7 @@
       return page
         .render({ canvasContext: ctx, viewport: viewport })
         .promise.then(function () {
+          if (myToken !== renderToken) return; // a newer page render won the race
           redrawAnnotations();
           document.getElementById("page-indicator").textContent =
             "Page " + currentPage + " of " + numPages;
@@ -337,8 +414,18 @@
           document.getElementById("loading-panel").classList.add("hidden");
           document.getElementById("canvas-frame").classList.remove("hidden");
           scheduleDBSave();
+          prefetchAdjacentPage(pageNum);
         });
     });
+  }
+  function prefetchAdjacentPage(pageNum) {
+    if (!pdfDoc) return;
+    var next = pageNum + 1;
+    if (next > numPages) return;
+    // Warms pdf.js's internal page cache for the likely-next page so forward
+    // navigation feels instant. Doesn't render anything, so it stays cheap even
+    // on huge documents — just fetches that one page's byte range in the background.
+    pdfDoc.getPage(next).catch(function () {});
   }
   function zoomIn() {
     var i = ZOOM_STEPS.findIndex(function (z) {
@@ -444,14 +531,16 @@
 
     var dcx = pt.cx - center.x * currentScale;
     var dcy = pt.cy - center.y * currentScale;
-    var unrotCx = center.x * currentScale + (dcx * Math.cos(rad) - dcy * Math.sin(rad));
-    var unrotCy = center.y * currentScale + (dcx * Math.sin(rad) + dcy * Math.cos(rad));
+    var unrotCx =
+      center.x * currentScale + (dcx * Math.cos(rad) - dcy * Math.sin(rad));
+    var unrotCy =
+      center.y * currentScale + (dcx * Math.sin(rad) + dcy * Math.cos(rad));
 
     return {
       x: unrotX,
       y: unrotY,
       cx: unrotCx,
-      cy: unrotCy
+      cy: unrotCy,
     };
   }
   function distToSegment(p, a, b) {
@@ -525,7 +614,7 @@
       w = b.w * scale,
       h = b.h * scale;
     var deleteBtn = { x: x + w + 8, y: y - 8, r: 11 };
-    var cropBtn = (ann.type === "image") ? { x: x - 8, y: y - 8, r: 11 } : null;
+    var cropBtn = ann.type === "image" ? { x: x - 8, y: y - 8, r: 11 } : null;
     var rotateBtn = { x: x + w / 2, y: y - 26, r: 10 };
 
     return {
@@ -542,7 +631,7 @@
       t: { x: x + w / 2, y: y, size: 8 },
       b: { x: x + w / 2, y: y + h, size: 8 },
       l: { x: x, y: y + h / 2, size: 8 },
-      r: { x: x + w, y: y + h / 2, size: 8 }
+      r: { x: x + w, y: y + h / 2, size: 8 },
     };
   }
 
@@ -587,11 +676,11 @@
         var style = "";
         if (ann.isItalic) style += "italic ";
         if (ann.isBold) style += "bold ";
-        ctx.font = style + (ann.fontSize * scale) + "px 'DM Sans', sans-serif";
+        ctx.font = style + ann.fontSize * scale + "px 'DM Sans', sans-serif";
         ctx.fillStyle = ann.color;
         ctx.textBaseline = "top";
         ctx.fillText(ann.text, ann.x * scale, ann.y * scale);
-        
+
         if (ann.isUnderline) {
           ctx.strokeStyle = ann.color;
           ctx.lineWidth = Math.max(1, ann.fontSize * scale * 0.08);
@@ -724,7 +813,7 @@
       handles.rotateBtn.y,
       handles.rotateBtn.r,
       0,
-      Math.PI * 2
+      Math.PI * 2,
     );
     ctx.fillStyle = "#10b981";
     ctx.fill();
@@ -734,7 +823,13 @@
 
     // Rotate icon inside circle
     ctx.beginPath();
-    ctx.arc(handles.rotateBtn.x, handles.rotateBtn.y, 4.5, 0.2 * Math.PI, 1.5 * Math.PI);
+    ctx.arc(
+      handles.rotateBtn.x,
+      handles.rotateBtn.y,
+      4.5,
+      0.2 * Math.PI,
+      1.5 * Math.PI,
+    );
     ctx.strokeStyle = "#fff";
     ctx.lineWidth = 1.5;
     ctx.stroke();
@@ -793,8 +888,14 @@
     }
 
     var list = [
-      handles.tl, handles.tr, handles.br, handles.bl,
-      handles.t, handles.b, handles.l, handles.r
+      handles.tl,
+      handles.tr,
+      handles.br,
+      handles.bl,
+      handles.t,
+      handles.b,
+      handles.l,
+      handles.r,
     ];
 
     ctx.fillStyle = "#fff";
@@ -807,6 +908,14 @@
       ctx.stroke();
     });
     ctx.restore();
+  }
+  function requestRedraw() {
+    if (redrawScheduled) return;
+    redrawScheduled = true;
+    requestAnimationFrame(function () {
+      redrawScheduled = false;
+      redrawAnnotations();
+    });
   }
   function redrawAnnotations() {
     var canvas = document.getElementById("annotation-canvas");
@@ -948,7 +1057,7 @@
   }
 
   function pushHistory() {
-    history.push(JSON.parse(JSON.stringify(annotationsByPage)));
+    history.push(deepClone(annotationsByPage));
     if (history.length > 40) {
       history.shift();
     }
@@ -997,7 +1106,7 @@
     if (history.length === 0) {
       return;
     }
-    redoHistoryStack.push(JSON.parse(JSON.stringify(annotationsByPage)));
+    redoHistoryStack.push(deepClone(annotationsByPage));
     annotationsByPage = history.pop();
     selectedAnnotation = null;
     redrawAnnotations();
@@ -1007,7 +1116,7 @@
     if (redoHistoryStack.length === 0) {
       return;
     }
-    history.push(JSON.parse(JSON.stringify(annotationsByPage)));
+    history.push(deepClone(annotationsByPage));
     annotationsByPage = redoHistoryStack.pop();
     selectedAnnotation = null;
     redrawAnnotations();
@@ -1136,7 +1245,7 @@
           color: currentColor,
           isBold: currentIsBold,
           isItalic: currentIsItalic,
-          isUnderline: currentIsUnderline
+          isUnderline: currentIsUnderline,
         };
         addAnnotation(currentPage, ann);
         selectedAnnotation = { page: currentPage, id: ann.id };
@@ -1151,10 +1260,10 @@
     var frame = document.getElementById("canvas-frame");
     var box = document.createElement("textarea");
     box.className = "text-edit-box";
-    
-    box.style.left = (ann.x * currentScale) + "px";
-    box.style.top = (ann.y * currentScale) + "px";
-    box.style.fontSize = (ann.fontSize * currentScale) + "px";
+
+    box.style.left = ann.x * currentScale + "px";
+    box.style.top = ann.y * currentScale + "px";
+    box.style.fontSize = ann.fontSize * currentScale + "px";
     box.style.color = ann.color;
     box.style.fontWeight = ann.isBold ? "bold" : "normal";
     box.style.fontStyle = ann.isItalic ? "italic" : "normal";
@@ -1162,18 +1271,18 @@
     box.value = ann.text;
     box.rows = 1;
     box.spellcheck = false;
-    
+
     frame.appendChild(box);
     box.focus();
-    
+
     box.style.width = Math.max(60, box.scrollWidth + 6) + "px";
     box.style.height = Math.max(24, box.scrollHeight) + "px";
     box.setSelectionRange(ann.text.length, ann.text.length);
-    
+
     ann.isEditing = true;
     selectedAnnotation = null;
     redrawAnnotations();
-    
+
     window._activeTextBox = box;
     box._editingAnnotation = ann;
 
@@ -1209,52 +1318,93 @@
         var center = getCenter(ann);
         var upt = unrotatePoint(pt, center, ann.rotation || 0);
         var handles = getSelectionHandles(ann, currentScale);
-        
-        if (Math.hypot(upt.cx - handles.deleteBtn.x, upt.cy - handles.deleteBtn.y) <= handles.deleteBtn.r + 4) {
-          canvas.style.cursor = "pointer";
-          return;
-        }
-        
-        if (handles.cropBtn && Math.hypot(upt.cx - handles.cropBtn.x, upt.cy - handles.cropBtn.y) <= handles.cropBtn.r + 4) {
+
+        if (
+          Math.hypot(
+            upt.cx - handles.deleteBtn.x,
+            upt.cy - handles.deleteBtn.y,
+          ) <=
+          handles.deleteBtn.r + 4
+        ) {
           canvas.style.cursor = "pointer";
           return;
         }
 
-        if (handles.rotateBtn && Math.hypot(upt.cx - handles.rotateBtn.x, upt.cy - handles.rotateBtn.y) <= handles.rotateBtn.r + 4) {
+        if (
+          handles.cropBtn &&
+          Math.hypot(upt.cx - handles.cropBtn.x, upt.cy - handles.cropBtn.y) <=
+            handles.cropBtn.r + 4
+        ) {
+          canvas.style.cursor = "pointer";
+          return;
+        }
+
+        if (
+          handles.rotateBtn &&
+          Math.hypot(
+            upt.cx - handles.rotateBtn.x,
+            upt.cy - handles.rotateBtn.y,
+          ) <=
+            handles.rotateBtn.r + 4
+        ) {
           canvas.style.cursor = "grab";
           return;
         }
 
-        if (Math.hypot(upt.cx - handles.tl.x, upt.cy - handles.tl.y) <= handles.tl.size + 4) {
+        if (
+          Math.hypot(upt.cx - handles.tl.x, upt.cy - handles.tl.y) <=
+          handles.tl.size + 4
+        ) {
           canvas.style.cursor = "nwse-resize";
           return;
         }
-        if (Math.hypot(upt.cx - handles.br.x, upt.cy - handles.br.y) <= handles.br.size + 4) {
+        if (
+          Math.hypot(upt.cx - handles.br.x, upt.cy - handles.br.y) <=
+          handles.br.size + 4
+        ) {
           canvas.style.cursor = "nwse-resize";
           return;
         }
-        if (Math.hypot(upt.cx - handles.tr.x, upt.cy - handles.tr.y) <= handles.tr.size + 4) {
+        if (
+          Math.hypot(upt.cx - handles.tr.x, upt.cy - handles.tr.y) <=
+          handles.tr.size + 4
+        ) {
           canvas.style.cursor = "nesw-resize";
           return;
         }
-        if (Math.hypot(upt.cx - handles.bl.x, upt.cy - handles.bl.y) <= handles.bl.size + 4) {
+        if (
+          Math.hypot(upt.cx - handles.bl.x, upt.cy - handles.bl.y) <=
+          handles.bl.size + 4
+        ) {
           canvas.style.cursor = "nesw-resize";
           return;
         }
 
-        if (Math.hypot(upt.cx - handles.t.x, upt.cy - handles.t.y) <= handles.t.size + 4) {
+        if (
+          Math.hypot(upt.cx - handles.t.x, upt.cy - handles.t.y) <=
+          handles.t.size + 4
+        ) {
           canvas.style.cursor = "ns-resize";
           return;
         }
-        if (Math.hypot(upt.cx - handles.b.x, upt.cy - handles.b.y) <= handles.b.size + 4) {
+        if (
+          Math.hypot(upt.cx - handles.b.x, upt.cy - handles.b.y) <=
+          handles.b.size + 4
+        ) {
           canvas.style.cursor = "ns-resize";
           return;
         }
-        if (Math.hypot(upt.cx - handles.l.x, upt.cy - handles.l.y) <= handles.l.size + 4) {
+        if (
+          Math.hypot(upt.cx - handles.l.x, upt.cy - handles.l.y) <=
+          handles.l.size + 4
+        ) {
           canvas.style.cursor = "ew-resize";
           return;
         }
-        if (Math.hypot(upt.cx - handles.r.x, upt.cy - handles.r.y) <= handles.r.size + 4) {
+        if (
+          Math.hypot(upt.cx - handles.r.x, upt.cy - handles.r.y) <=
+          handles.r.size + 4
+        ) {
           canvas.style.cursor = "ew-resize";
           return;
         }
@@ -1272,7 +1422,7 @@
         }
       }
     }
-    
+
     var hit = hitTest(pt);
     if (hit) {
       canvas.style.cursor = "pointer";
@@ -1322,7 +1472,11 @@
 
   /* ---------- shape helpers ---------- */
   function shapeFromDrag(tool, start, end) {
-    var base = { color: currentColor, strokeWidth: currentStrokeWidth, rotation: 0 };
+    var base = {
+      color: currentColor,
+      strokeWidth: currentStrokeWidth,
+      rotation: 0,
+    };
     if (tool === "rect") {
       return Object.assign(base, {
         type: "rect",
@@ -1349,7 +1503,6 @@
       y2: end.y,
     });
   }
-
 
   function setActiveTool(tool, isManual) {
     finalizeAnyOpenTextBox();
@@ -1468,7 +1621,7 @@
             }
             var resizedFile = new File([blob], file.name, {
               type: file.type || "image/png",
-              lastModified: Date.now()
+              lastModified: Date.now(),
             });
             var dataUrl = canvas.toDataURL(file.type || "image/png");
             resolve({ file: resizedFile, dataUrl: dataUrl });
@@ -1646,7 +1799,7 @@
         x: 0,
         y: 0,
         w: img.naturalWidth,
-        h: img.naturalHeight
+        h: img.naturalHeight,
       };
 
       document.getElementById("crop-overlay").classList.add("is-open");
@@ -1684,7 +1837,9 @@
     var ctx = canvas.getContext("2d");
     var img = cropState.img;
 
-    var maxW = Math.min(500, document.getElementById("crop-modal").clientWidth - 64) - 40; // 20px padding on left & right
+    var maxW =
+      Math.min(500, document.getElementById("crop-modal").clientWidth - 64) -
+      40; // 20px padding on left & right
     var maxH = 380 - 40; // 20px padding on top & bottom
     var scale = Math.min(maxW / img.naturalWidth, maxH / img.naturalHeight);
     cropState.scale = scale;
@@ -1707,12 +1862,23 @@
         }
       }
 
-      ctx.drawImage(img, 20, 20, img.naturalWidth * scale, img.naturalHeight * scale);
+      ctx.drawImage(
+        img,
+        20,
+        20,
+        img.naturalWidth * scale,
+        img.naturalHeight * scale,
+      );
 
       // Draw image boundary outline
       ctx.strokeStyle = "rgba(0, 0, 0, 0.15)";
       ctx.lineWidth = 1;
-      ctx.strokeRect(20, 20, img.naturalWidth * scale, img.naturalHeight * scale);
+      ctx.strokeRect(
+        20,
+        20,
+        img.naturalWidth * scale,
+        img.naturalHeight * scale,
+      );
 
       var rect = cropState.cropRect;
       var cx = 20 + rect.x * scale;
@@ -1725,11 +1891,16 @@
       // Top overlay
       ctx.fillRect(20, 20, img.naturalWidth * scale, cy - 20);
       // Bottom overlay
-      ctx.fillRect(20, cy + ch, img.naturalWidth * scale, (20 + img.naturalHeight * scale) - (cy + ch));
+      ctx.fillRect(
+        20,
+        cy + ch,
+        img.naturalWidth * scale,
+        20 + img.naturalHeight * scale - (cy + ch),
+      );
       // Left overlay
       ctx.fillRect(20, cy, cx - 20, ch);
       // Right overlay
-      ctx.fillRect(cx + cw, cy, (20 + img.naturalWidth * scale) - (cx + cw), ch);
+      ctx.fillRect(cx + cw, cy, 20 + img.naturalWidth * scale - (cx + cw), ch);
 
       // Draw crop rect border
       ctx.strokeStyle = "#e8372a";
@@ -1747,7 +1918,7 @@
         { x: cx, y: cy },
         { x: cx + cw, y: cy },
         { x: cx, y: cy + ch },
-        { x: cx + cw, y: cy + ch }
+        { x: cx + cw, y: cy + ch },
       ];
       corners.forEach(function (c) {
         ctx.beginPath();
@@ -1784,7 +1955,7 @@
       0,
       0,
       rect.w,
-      rect.h
+      rect.h,
     );
 
     var croppedDataUrl = tempCanvas.toDataURL("image/png");
@@ -1859,7 +2030,15 @@
       showFont = tool === "text";
     }
 
-    panel.classList.toggle("is-open", showColor || showWidth || showFont || showCrop || showRotation || showLayer);
+    panel.classList.toggle(
+      "is-open",
+      showColor ||
+        showWidth ||
+        showFont ||
+        showCrop ||
+        showRotation ||
+        showLayer,
+    );
     document.getElementById("opt-color").classList.toggle("hidden", !showColor);
     document.getElementById("opt-width").classList.toggle("hidden", !showWidth);
     document
@@ -1941,21 +2120,33 @@
 
     var boldBtn = document.getElementById("format-bold");
     if (boldBtn) {
-      boldBtn.style.background = currentIsBold ? "var(--accent)" : "var(--surface)";
+      boldBtn.style.background = currentIsBold
+        ? "var(--accent)"
+        : "var(--surface)";
       boldBtn.style.color = currentIsBold ? "#fff" : "var(--text)";
-      boldBtn.style.borderColor = currentIsBold ? "var(--accent)" : "var(--border)";
+      boldBtn.style.borderColor = currentIsBold
+        ? "var(--accent)"
+        : "var(--border)";
     }
     var italicBtn = document.getElementById("format-italic");
     if (italicBtn) {
-      italicBtn.style.background = currentIsItalic ? "var(--accent)" : "var(--surface)";
+      italicBtn.style.background = currentIsItalic
+        ? "var(--accent)"
+        : "var(--surface)";
       italicBtn.style.color = currentIsItalic ? "#fff" : "var(--text)";
-      italicBtn.style.borderColor = currentIsItalic ? "var(--accent)" : "var(--border)";
+      italicBtn.style.borderColor = currentIsItalic
+        ? "var(--accent)"
+        : "var(--border)";
     }
     var underlineBtn = document.getElementById("format-underline");
     if (underlineBtn) {
-      underlineBtn.style.background = currentIsUnderline ? "var(--accent)" : "var(--surface)";
+      underlineBtn.style.background = currentIsUnderline
+        ? "var(--accent)"
+        : "var(--surface)";
       underlineBtn.style.color = currentIsUnderline ? "#fff" : "var(--text)";
-      underlineBtn.style.borderColor = currentIsUnderline ? "var(--accent)" : "var(--border)";
+      underlineBtn.style.borderColor = currentIsUnderline
+        ? "var(--accent)"
+        : "var(--border)";
     }
 
     if (selectedAnnotation && selectedAnnotation.page === currentPage) {
@@ -2060,7 +2251,7 @@
             );
             if (rDist <= handles.rotateBtn.r + (isTouch ? 12 : 4)) {
               dragMode = "rotate";
-              dragOrigin = JSON.parse(JSON.stringify(ann));
+              dragOrigin = deepClone(ann);
               dragCenter = getCenter(ann);
               var cScreenX = dragCenter.x * currentScale;
               var cScreenY = dragCenter.y * currentScale;
@@ -2078,7 +2269,7 @@
             var dist = Math.hypot(upt.cx - h.x, upt.cy - h.y);
             if (dist <= h.size + tolerance) {
               dragMode = "resize-" + name;
-              dragOrigin = JSON.parse(JSON.stringify(ann));
+              dragOrigin = deepClone(ann);
               dragStartPoint = pt;
               return;
             }
@@ -2091,7 +2282,7 @@
             var dist = Math.hypot(upt.cx - h.x, upt.cy - h.y);
             if (dist <= h.size + tolerance) {
               dragMode = "resize-" + name;
-              dragOrigin = JSON.parse(JSON.stringify(ann));
+              dragOrigin = deepClone(ann);
               dragStartPoint = pt;
               return;
             }
@@ -2106,7 +2297,7 @@
             upt.y <= b.y + b.h + tol
           ) {
             dragMode = "move";
-            dragOrigin = JSON.parse(JSON.stringify(ann));
+            dragOrigin = deepClone(ann);
             dragStartPoint = pt;
             if (ann.fontSize !== undefined) {
               currentFontSize = ann.fontSize;
@@ -2127,7 +2318,7 @@
       if (hit) {
         selectedAnnotation = { page: currentPage, id: hit.id };
         dragMode = "move";
-        dragOrigin = JSON.parse(JSON.stringify(hit));
+        dragOrigin = deepClone(hit);
         dragStartPoint = pt;
         if (hit.color !== undefined) {
           currentColor = hit.color;
@@ -2225,7 +2416,7 @@
         ann.rotation = norm;
         var rotInput = document.getElementById("rotation-val");
         if (rotInput) rotInput.value = norm;
-        redrawAnnotations();
+        requestRedraw();
         return;
       }
 
@@ -2242,7 +2433,10 @@
           ow = origBounds.w,
           oh = origBounds.h;
 
-        var newX = ox, newY = oy, newW = ow, newH = oh;
+        var newX = ox,
+          newY = oy,
+          newW = ow,
+          newH = oh;
 
         if (direction.indexOf("l") !== -1) {
           newX = ox + dx;
@@ -2271,9 +2465,13 @@
           newH = minH;
         }
 
-        if (ann.type === "image" || ann.type === "path" || ann.type === "text") {
+        if (
+          ann.type === "image" ||
+          ann.type === "path" ||
+          ann.type === "text"
+        ) {
           var ratio = oh / ow;
-          
+
           if (direction === "t" || direction === "b") {
             var s = newH / oh;
             newW = ow * s;
@@ -2315,7 +2513,12 @@
           }
         }
 
-        applyBoundsResize(ann, dragOrigin, { x: newX, y: newY, w: newW, h: newH });
+        applyBoundsResize(ann, dragOrigin, {
+          x: newX,
+          y: newY,
+          w: newW,
+          h: newH,
+        });
 
         if (ann.type === "text" && ann.fontSize !== undefined) {
           currentFontSize = ann.fontSize;
@@ -2323,17 +2526,17 @@
           if (fsInput) fsInput.value = currentFontSize;
         }
       }
-      redrawAnnotations();
+      requestRedraw();
       return;
     }
     if (livePath) {
       livePath.points.push({ x: pt.x, y: pt.y });
-      redrawAnnotations();
+      requestRedraw();
       return;
     }
     if (liveShape && dragStartPoint) {
       liveShape = shapeFromDrag(currentTool, dragStartPoint, pt);
-      redrawAnnotations();
+      requestRedraw();
       return;
     }
   }
@@ -2434,11 +2637,22 @@
       color: color,
     });
   }
-  function drawAnnotationOnPdf(pdfLibDoc, page, ann, pageHeight, fonts, rgb) {
+  function drawAnnotationOnPdf(
+    pdfLibDoc,
+    page,
+    ann,
+    pageHeight,
+    fonts,
+    rgb,
+    imageCache,
+  ) {
     var rgbArr = hexToRgb01(ann.color);
     var color = rgb(rgbArr[0], rgbArr[1], rgbArr[2]);
     var rotDeg = ann.rotation || 0;
-    var pdfRot = window.PDFLib && window.PDFLib.degrees ? window.PDFLib.degrees(-rotDeg) : null;
+    var pdfRot =
+      window.PDFLib && window.PDFLib.degrees
+        ? window.PDFLib.degrees(-rotDeg)
+        : null;
     var pdfRad = (-rotDeg * Math.PI) / 180;
     var p;
 
@@ -2458,8 +2672,14 @@
         var cx_pdf = ann.x + textWidth / 2;
         var cy_pdf = pageHeight - (ann.y + textHeight / 2);
 
-        var rx = cx_pdf - ((textWidth / 2) * Math.cos(pdfRad) - (textHeight / 2) * Math.sin(pdfRad));
-        var ry = cy_pdf - ((textWidth / 2) * Math.sin(pdfRad) + (textHeight / 2) * Math.cos(pdfRad));
+        var rx =
+          cx_pdf -
+          ((textWidth / 2) * Math.cos(pdfRad) -
+            (textHeight / 2) * Math.sin(pdfRad));
+        var ry =
+          cy_pdf -
+          ((textWidth / 2) * Math.sin(pdfRad) +
+            (textHeight / 2) * Math.cos(pdfRad));
 
         var drawOpts = {
           x: rx,
@@ -2475,27 +2695,42 @@
         // Underline support on PDF
         if (ann.isUnderline) {
           var underlineY_rel = -(ann.fontSize * 0.1);
-          var u_start_x = cx_pdf - ((textWidth / 2) * Math.cos(pdfRad) - underlineY_rel * Math.sin(pdfRad));
-          var u_start_y = cy_pdf - ((textWidth / 2) * Math.sin(pdfRad) + underlineY_rel * Math.cos(pdfRad));
-          var u_end_x = cx_pdf - ((-textWidth / 2) * Math.cos(pdfRad) - underlineY_rel * Math.sin(pdfRad));
-          var u_end_y = cy_pdf - ((-textWidth / 2) * Math.sin(pdfRad) + underlineY_rel * Math.cos(pdfRad));
+          var u_start_x =
+            cx_pdf -
+            ((textWidth / 2) * Math.cos(pdfRad) -
+              underlineY_rel * Math.sin(pdfRad));
+          var u_start_y =
+            cy_pdf -
+            ((textWidth / 2) * Math.sin(pdfRad) +
+              underlineY_rel * Math.cos(pdfRad));
+          var u_end_x =
+            cx_pdf -
+            ((-textWidth / 2) * Math.cos(pdfRad) -
+              underlineY_rel * Math.sin(pdfRad));
+          var u_end_y =
+            cy_pdf -
+            ((-textWidth / 2) * Math.sin(pdfRad) +
+              underlineY_rel * Math.cos(pdfRad));
 
           page.drawLine({
             start: { x: u_start_x, y: u_start_y },
             end: { x: u_end_x, y: u_end_y },
             thickness: Math.max(1, ann.fontSize * 0.08),
-            color: color
+            color: color,
           });
         }
         return Promise.resolve();
       }
       case "rect": {
-        var w = ann.width, h = ann.height;
+        var w = ann.width,
+          h = ann.height;
         var cx_pdf = ann.x + w / 2;
         var cy_pdf = pageHeight - (ann.y + h / 2);
 
-        var rx = cx_pdf - ((w / 2) * Math.cos(pdfRad) - (h / 2) * Math.sin(pdfRad));
-        var ry = cy_pdf - ((w / 2) * Math.sin(pdfRad) + (h / 2) * Math.cos(pdfRad));
+        var rx =
+          cx_pdf - ((w / 2) * Math.cos(pdfRad) - (h / 2) * Math.sin(pdfRad));
+        var ry =
+          cy_pdf - ((w / 2) * Math.sin(pdfRad) + (h / 2) * Math.cos(pdfRad));
 
         var drawOpts = {
           x: rx,
@@ -2525,15 +2760,28 @@
       }
       case "line": {
         if (rotDeg !== 0) {
-          var cx = (ann.x1 + ann.x2) / 2, cy = (ann.y1 + ann.y2) / 2;
+          var cx = (ann.x1 + ann.x2) / 2,
+            cy = (ann.y1 + ann.y2) / 2;
           var rad = (rotDeg * Math.PI) / 180;
           var p1 = {
-            x: cx + (ann.x1 - cx) * Math.cos(rad) - (ann.y1 - cy) * Math.sin(rad),
-            y: cy + (ann.x1 - cx) * Math.sin(rad) + (ann.y1 - cy) * Math.cos(rad)
+            x:
+              cx +
+              (ann.x1 - cx) * Math.cos(rad) -
+              (ann.y1 - cy) * Math.sin(rad),
+            y:
+              cy +
+              (ann.x1 - cx) * Math.sin(rad) +
+              (ann.y1 - cy) * Math.cos(rad),
           };
           var p2 = {
-            x: cx + (ann.x2 - cx) * Math.cos(rad) - (ann.y2 - cy) * Math.sin(rad),
-            y: cy + (ann.x2 - cx) * Math.sin(rad) + (ann.y2 - cy) * Math.cos(rad)
+            x:
+              cx +
+              (ann.x2 - cx) * Math.cos(rad) -
+              (ann.y2 - cy) * Math.sin(rad),
+            y:
+              cy +
+              (ann.x2 - cx) * Math.sin(rad) +
+              (ann.y2 - cy) * Math.cos(rad),
           };
           page.drawLine({
             start: { x: p1.x, y: pageHeight - p1.y },
@@ -2553,13 +2801,26 @@
       }
       case "arrow": {
         if (rotDeg !== 0) {
-          var cx = (ann.x1 + ann.x2) / 2, cy = (ann.y1 + ann.y2) / 2;
+          var cx = (ann.x1 + ann.x2) / 2,
+            cy = (ann.y1 + ann.y2) / 2;
           var rad = (rotDeg * Math.PI) / 180;
           var rotAnn = Object.assign({}, ann, {
-            x1: cx + (ann.x1 - cx) * Math.cos(rad) - (ann.y1 - cy) * Math.sin(rad),
-            y1: cy + (ann.x1 - cx) * Math.sin(rad) + (ann.y1 - cy) * Math.cos(rad),
-            x2: cx + (ann.x2 - cx) * Math.cos(rad) - (ann.y2 - cy) * Math.sin(rad),
-            y2: cy + (ann.x2 - cx) * Math.sin(rad) + (ann.y2 - cy) * Math.cos(rad)
+            x1:
+              cx +
+              (ann.x1 - cx) * Math.cos(rad) -
+              (ann.y1 - cy) * Math.sin(rad),
+            y1:
+              cy +
+              (ann.x1 - cx) * Math.sin(rad) +
+              (ann.y1 - cy) * Math.cos(rad),
+            x2:
+              cx +
+              (ann.x2 - cx) * Math.cos(rad) -
+              (ann.y2 - cy) * Math.sin(rad),
+            y2:
+              cy +
+              (ann.x2 - cx) * Math.sin(rad) +
+              (ann.y2 - cy) * Math.cos(rad),
           });
           drawArrowOnPdf(page, rotAnn, pageHeight, color);
         } else {
@@ -2572,12 +2833,13 @@
           var pts = ann.points;
           if (rotDeg !== 0) {
             var b = getBounds(ann);
-            var cx = b.x + b.w / 2, cy = b.y + b.h / 2;
+            var cx = b.x + b.w / 2,
+              cy = b.y + b.h / 2;
             var rad = (rotDeg * Math.PI) / 180;
-            pts = ann.points.map(function(p) {
+            pts = ann.points.map(function (p) {
               return {
                 x: cx + (p.x - cx) * Math.cos(rad) - (p.y - cy) * Math.sin(rad),
-                y: cy + (p.x - cx) * Math.sin(rad) + (p.y - cy) * Math.cos(rad)
+                y: cy + (p.x - cx) * Math.sin(rad) + (p.y - cy) * Math.cos(rad),
               };
             });
           }
@@ -2591,23 +2853,38 @@
             borderColor: color,
             borderWidth: ann.strokeWidth,
             borderOpacity: ann.opacity != null ? ann.opacity : 1,
-            borderLineCap: (window.PDFLib && window.PDFLib.LineCapStyle && window.PDFLib.LineCapStyle.Round !== undefined) ? window.PDFLib.LineCapStyle.Round : 1
+            borderLineCap:
+              window.PDFLib &&
+              window.PDFLib.LineCapStyle &&
+              window.PDFLib.LineCapStyle.Round !== undefined
+                ? window.PDFLib.LineCapStyle.Round
+                : 1,
           });
         }
         return Promise.resolve();
       }
       case "image": {
-        p =
-          ann.dataUrl.indexOf("image/png") !== -1
-            ? pdfLibDoc.embedPng(dataUrlToBytes(ann.dataUrl))
-            : pdfLibDoc.embedJpg(dataUrlToBytes(ann.dataUrl));
+        if (imageCache && imageCache[ann.dataUrl]) {
+          p = imageCache[ann.dataUrl];
+        } else {
+          p =
+            ann.dataUrl.indexOf("image/png") !== -1
+              ? pdfLibDoc.embedPng(dataUrlToBytes(ann.dataUrl))
+              : pdfLibDoc.embedJpg(dataUrlToBytes(ann.dataUrl));
+          if (imageCache) {
+            imageCache[ann.dataUrl] = p;
+          }
+        }
         return p.then(function (embedded) {
-          var w = ann.width, h = ann.height;
+          var w = ann.width,
+            h = ann.height;
           var cx_pdf = ann.x + w / 2;
           var cy_pdf = pageHeight - (ann.y + h / 2);
 
-          var rx = cx_pdf - ((w / 2) * Math.cos(pdfRad) - (h / 2) * Math.sin(pdfRad));
-          var ry = cy_pdf - ((w / 2) * Math.sin(pdfRad) + (h / 2) * Math.cos(pdfRad));
+          var rx =
+            cx_pdf - ((w / 2) * Math.cos(pdfRad) - (h / 2) * Math.sin(pdfRad));
+          var ry =
+            cy_pdf - ((w / 2) * Math.sin(pdfRad) + (h / 2) * Math.cos(pdfRad));
 
           var drawOpts = {
             x: rx,
@@ -2625,7 +2902,7 @@
     }
   }
   function exportPdf() {
-    if (!originalBytes) {
+    if (!currentFileBlob) {
       return;
     }
     var btn = document.getElementById("download-btn");
@@ -2634,19 +2911,30 @@
     btn.textContent = "Preparing your file…";
     ensureLibraries()
       .then(function () {
+        return currentFileBlob.arrayBuffer();
+      })
+      .then(function (sourceBytes) {
         var PDFLibNS = window.PDFLib;
-        return PDFLibNS.PDFDocument.load(originalBytes.slice(0)).then(
+        return PDFLibNS.PDFDocument.load(sourceBytes).then(
           function (pdfLibDoc) {
-            var embedHelvetica = pdfLibDoc.embedFont(PDFLibNS.StandardFonts.Helvetica);
-            var embedHelveticaBold = pdfLibDoc.embedFont(PDFLibNS.StandardFonts.HelveticaBold);
-            var embedHelveticaOblique = pdfLibDoc.embedFont(PDFLibNS.StandardFonts.HelveticaOblique);
-            var embedHelveticaBoldOblique = pdfLibDoc.embedFont(PDFLibNS.StandardFonts.HelveticaBoldOblique);
+            var embedHelvetica = pdfLibDoc.embedFont(
+              PDFLibNS.StandardFonts.Helvetica,
+            );
+            var embedHelveticaBold = pdfLibDoc.embedFont(
+              PDFLibNS.StandardFonts.HelveticaBold,
+            );
+            var embedHelveticaOblique = pdfLibDoc.embedFont(
+              PDFLibNS.StandardFonts.HelveticaOblique,
+            );
+            var embedHelveticaBoldOblique = pdfLibDoc.embedFont(
+              PDFLibNS.StandardFonts.HelveticaBoldOblique,
+            );
 
             return Promise.all([
               embedHelvetica,
               embedHelveticaBold,
               embedHelveticaOblique,
-              embedHelveticaBoldOblique
+              embedHelveticaBoldOblique,
             ]).then(function (fonts) {
               var helv = fonts[0];
               var helvBold = fonts[1];
@@ -2657,8 +2945,12 @@
                 regular: helv,
                 bold: helvBold,
                 italic: helvOblique,
-                boldItalic: helvBoldOblique
+                boldItalic: helvBoldOblique,
               };
+              // Shared for the whole export: a signature or logo stamped on many
+              // pages gets embedded as a PDF image object once and reused, instead
+              // of once per occurrence.
+              var embeddedImageCache = {};
 
               var pages = pdfLibDoc.getPages();
               var chain = Promise.resolve();
@@ -2675,6 +2967,7 @@
                       pageHeight,
                       fontMap,
                       PDFLibNS.rgb,
+                      embeddedImageCache,
                     );
                   });
                 });
@@ -2717,8 +3010,9 @@
   }
   function resetEditor() {
     finalizeAnyOpenTextBox();
-    pdfDoc = null;
-    originalBytes = null;
+    destroyCurrentDocument();
+    currentFileBlob = null;
+    fileBlobPersisted = false;
     fileName = "";
     annotationsByPage = {};
     history = [];
@@ -2921,7 +3215,6 @@
       }
     });
   }
-
 
   // Custom Color Trigger
   var customColorInput = document.getElementById("custom-color-input");
@@ -3267,10 +3560,16 @@
           loader.classList.remove("hidden");
 
           // Reset progress bar elements
-          var progressContainer = document.getElementById("sig-upload-progress-container");
+          var progressContainer = document.getElementById(
+            "sig-upload-progress-container",
+          );
           var progressBar = document.getElementById("sig-upload-progress-bar");
-          var progressText = document.getElementById("sig-upload-progress-text");
-          var loadingStatus = document.getElementById("sig-upload-loading-status");
+          var progressText = document.getElementById(
+            "sig-upload-progress-text",
+          );
+          var loadingStatus = document.getElementById(
+            "sig-upload-loading-status",
+          );
 
           if (progressBar) progressBar.style.width = "0%";
           if (progressText) progressText.textContent = "0%";
@@ -3290,20 +3589,24 @@
                   if (total && total > 0) {
                     var percentage = Math.round((current / total) * 100);
                     if (progressBar) progressBar.style.width = percentage + "%";
-                    if (progressText) progressText.textContent = percentage + "%";
+                    if (progressText)
+                      progressText.textContent = percentage + "%";
                     if (loadingStatus) {
                       var cleanKey = key;
                       if (key.indexOf("fetch:") === 0) {
-                        cleanKey = "Downloading " + key.substring(key.lastIndexOf("/") + 1);
+                        cleanKey =
+                          "Downloading " +
+                          key.substring(key.lastIndexOf("/") + 1);
                       } else if (key.indexOf("compute:") === 0) {
                         cleanKey = "Removing background...";
                       }
                       loadingStatus.textContent = cleanKey;
                     }
                   } else {
-                    if (loadingStatus) loadingStatus.textContent = "Removing background...";
+                    if (loadingStatus)
+                      loadingStatus.textContent = "Removing background...";
                   }
-                }
+                },
               });
             })
             .then(function (blob) {
@@ -3421,21 +3724,28 @@
       var cx2 = cx1 + cropRect.w * scale;
       var cy2 = cy1 + cropRect.h * scale;
 
-      if (Math.hypot(mx - cx1, my - cy1) < handleSize) cropState.activeHandle = "tl";
-      else if (Math.hypot(mx - cx2, my - cy1) < handleSize) cropState.activeHandle = "tr";
-      else if (Math.hypot(mx - cx1, my - cy2) < handleSize) cropState.activeHandle = "bl";
-      else if (Math.hypot(mx - cx2, my - cy2) < handleSize) cropState.activeHandle = "br";
+      if (Math.hypot(mx - cx1, my - cy1) < handleSize)
+        cropState.activeHandle = "tl";
+      else if (Math.hypot(mx - cx2, my - cy1) < handleSize)
+        cropState.activeHandle = "tr";
+      else if (Math.hypot(mx - cx1, my - cy2) < handleSize)
+        cropState.activeHandle = "bl";
+      else if (Math.hypot(mx - cx2, my - cy2) < handleSize)
+        cropState.activeHandle = "br";
       else if (mx >= cx1 && mx <= cx2 && my >= cy1 && my <= cy2) {
         cropState.activeHandle = "move";
       } else {
         cropState.activeHandle = "draw";
         var clickX = Math.max(0, Math.min(img.naturalWidth, (mx - 20) / scale));
-        var clickY = Math.max(0, Math.min(img.naturalHeight, (my - 20) / scale));
+        var clickY = Math.max(
+          0,
+          Math.min(img.naturalHeight, (my - 20) / scale),
+        );
         cropState.cropRect = { x: clickX, y: clickY, w: 0, h: 0 };
       }
 
       cropState.dragStart = { x: mx, y: my };
-      cropState.startCropRect = JSON.parse(JSON.stringify(cropState.cropRect));
+      cropState.startCropRect = deepClone(cropState.cropRect);
     });
 
     canvas.addEventListener("pointermove", function (e) {
@@ -3465,7 +3775,7 @@
           x: Math.min(start.x, curX),
           y: Math.min(start.y, curY),
           w: Math.abs(start.x - curX),
-          h: Math.abs(start.y - curY)
+          h: Math.abs(start.y - curY),
         };
       } else {
         var x1 = start.x;
@@ -3501,7 +3811,7 @@
           x: 0,
           y: 0,
           w: img.naturalWidth,
-          h: img.naturalHeight
+          h: img.naturalHeight,
         };
         if (cropState.drawCrop) cropState.drawCrop();
       }
@@ -3538,7 +3848,8 @@
 
   document.addEventListener("keydown", function (e) {
     var tag = document.activeElement && document.activeElement.tagName;
-    var isInput = tag === "INPUT" || tag === "TEXTAREA" || !!window._activeTextBox;
+    var isInput =
+      tag === "INPUT" || tag === "TEXTAREA" || !!window._activeTextBox;
 
     if (
       (e.key === "Delete" || e.key === "Backspace") &&
@@ -3550,7 +3861,8 @@
     }
     if (selectedAnnotation && !isInput) {
       if (
-        ["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"].indexOf(e.key) !== -1 &&
+        ["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"].indexOf(e.key) !==
+          -1 &&
         !e.ctrlKey &&
         !e.metaKey
       ) {
@@ -3559,12 +3871,13 @@
         if (ann) {
           pushHistory();
           var amount = e.shiftKey ? 10 : 1;
-          var dx = 0, dy = 0;
+          var dx = 0,
+            dy = 0;
           if (e.key === "ArrowUp") dy = -amount;
           else if (e.key === "ArrowDown") dy = amount;
           else if (e.key === "ArrowLeft") dx = -amount;
           else if (e.key === "ArrowRight") dx = amount;
-          
+
           applyMove(ann, ann, dx, dy);
           redrawAnnotations();
         }
@@ -3632,7 +3945,7 @@
     if (dbPromise) return dbPromise;
     dbPromise = new Promise(function (resolve, reject) {
       var DB_NAME = "pdfmaster_editor_db";
-      var DB_VERSION = 1;
+      var DB_VERSION = 2;
       var req = indexedDB.open(DB_NAME, DB_VERSION);
       req.onupgradeneeded = function (e) {
         var db = e.target.result;
@@ -3641,6 +3954,11 @@
         }
         if (!db.objectStoreNames.contains("editor_data")) {
           db.createObjectStore("editor_data");
+        }
+        // v2: raw file bytes now live here, as a Blob, separate from annotations.
+        // Written once per document instead of on every autosave.
+        if (!db.objectStoreNames.contains("files")) {
+          db.createObjectStore("files");
         }
       };
       req.onsuccess = function (e) {
@@ -3656,34 +3974,88 @@
   function scheduleDBSave() {
     if (saveTimer) clearTimeout(saveTimer);
     saveTimer = setTimeout(function () {
-      saveSessionToDB();
+      saveSessionMetaToDB();
+      // Retries the (larger, one-time) file write if it hasn't succeeded yet —
+      // e.g. it was still in flight or failed transiently on load.
+      if (currentFileBlob && !fileBlobPersisted) {
+        persistFileBlobToDB(currentFileBlob, fileName);
+      }
     }, 400);
   }
 
-  function saveSessionToDB() {
-    if (!originalBytes || !fileName) return Promise.resolve(false);
+  // Writes the raw PDF once as a Blob. IndexedDB stores Blobs without requiring
+  // the browser to hold the whole thing in JS heap, so this is cheap even for a
+  // huge file — and unlike the old approach, it never gets rewritten just because
+  // the user added an annotation.
+  function persistFileBlobToDB(blob, name) {
+    return openDB()
+      .then(function (db) {
+        return new Promise(function (resolve) {
+          var tx;
+          try {
+            tx = db.transaction(["files"], "readwrite");
+          } catch (e) {
+            resolve(false);
+            return;
+          }
+          tx.objectStore("files").put(
+            {
+              fileName: name,
+              blob: blob,
+              size: blob.size,
+              timestamp: Date.now(),
+            },
+            "current",
+          );
+          tx.oncomplete = function () {
+            fileBlobPersisted = true;
+            resolve(true);
+          };
+          tx.onerror = function () {
+            resolve(false);
+          };
+          tx.onabort = function () {
+            resolve(false);
+          };
+        });
+      })
+      .catch(function (err) {
+        // Most likely a storage-quota error on a very large file. Editing keeps
+        // working from the in-memory Blob reference either way — this only
+        // affects whether the session can be recovered after a reload/crash.
+        console.warn("Could not persist file to IndexedDB:", err);
+        return false;
+      });
+  }
+
+  // Cheap, frequent autosave: annotations + small session settings only.
+  function saveSessionMetaToDB() {
+    if (!currentFileBlob || !fileName) return Promise.resolve(false);
     return openDB()
       .then(function (db) {
         var tx = db.transaction(["settings", "editor_data"], "readwrite");
         var settingsStore = tx.objectStore("settings");
         var dataStore = tx.objectStore("editor_data");
 
-        var sessionData = {
-          timestamp: Date.now(),
-          fileName: fileName,
-          numPages: numPages,
-          currentPage: currentPage,
-          zoomFactor: zoomFactor,
-        };
-        settingsStore.put(sessionData, "session");
+        settingsStore.put(
+          {
+            timestamp: Date.now(),
+            fileName: fileName,
+            numPages: numPages,
+            currentPage: currentPage,
+            zoomFactor: zoomFactor,
+          },
+          "session",
+        );
 
-        var editorData = {
-          fileName: fileName,
-          bytes: originalBytes,
-          annotationsByPage: annotationsByPage,
-          timestamp: Date.now(),
-        };
-        dataStore.put(editorData, "document");
+        dataStore.put(
+          {
+            fileName: fileName,
+            annotationsByPage: annotationsByPage,
+            timestamp: Date.now(),
+          },
+          "document",
+        );
 
         updateRecoveryBadge(true);
         return true;
@@ -3697,9 +4069,13 @@
   function loadSessionFromDB(isManual) {
     return openDB()
       .then(function (db) {
-        var tx = db.transaction(["settings", "editor_data"], "readonly");
+        var tx = db.transaction(
+          ["settings", "editor_data", "files"],
+          "readonly",
+        );
         var sessionReq = tx.objectStore("settings").get("session");
         var dataReq = tx.objectStore("editor_data").get("document");
+        var filesReq = tx.objectStore("files").get("current");
 
         return Promise.all([
           new Promise(function (res) {
@@ -3718,16 +4094,43 @@
               res(null);
             };
           }),
+          new Promise(function (res) {
+            filesReq.onsuccess = function () {
+              res(filesReq.result);
+            };
+            filesReq.onerror = function () {
+              res(null);
+            };
+          }),
         ]);
       })
       .then(function (results) {
         var session = results[0];
         var data = results[1];
+        var filesRecord = results[2];
 
-        if (!data || !data.bytes) {
+        // New (v2) sessions keep the blob in "files". Older (v1) sessions kept
+        // the whole file as an ArrayBuffer inline in "editor_data" — read that
+        // as a one-time fallback and migrate it into the new store below.
+        var blob = null;
+        var name = null;
+        var alreadyInNewStore = false;
+        if (filesRecord && filesRecord.blob) {
+          blob = filesRecord.blob;
+          name = filesRecord.fileName;
+          alreadyInNewStore = true;
+        } else if (data && data.bytes) {
+          blob = new Blob([data.bytes], { type: "application/pdf" });
+          name = data.fileName;
+        }
+
+        if (!blob) {
           updateRecoveryBadge(false);
           if (isManual) {
-            window.showToast("No stored session found in recovery storage.", "error");
+            window.showToast(
+              "No stored session found in recovery storage.",
+              "error",
+            );
           }
           return false;
         }
@@ -3735,20 +4138,15 @@
         showEditor();
         return ensureLibraries()
           .then(function () {
-            originalBytes = data.bytes;
-            var pdfjs = window.pdfjsLib || window["pdfjs-dist/build/pdf"];
-            var task = pdfjs.getDocument({
-              data: originalBytes.slice(0),
-              cMapUrl: "https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/cmaps/",
-              cMapPacked: true,
-            });
-            return task.promise;
+            currentFileBlob = blob;
+            fileBlobPersisted = alreadyInNewStore;
+            return openPdfFromBlob(blob);
           })
           .then(function (doc) {
             pdfDoc = doc;
             numPages = doc.numPages;
-            fileName = data.fileName || "document.pdf";
-            annotationsByPage = data.annotationsByPage || {};
+            fileName = name || (data && data.fileName) || "document.pdf";
+            annotationsByPage = (data && data.annotationsByPage) || {};
             history = [];
             redoHistoryStack = [];
             imageElCache = {};
@@ -3760,12 +4158,17 @@
             updateUndoRedoButtons();
             setActiveTool("select");
             updateRecoveryBadge(true);
+            if (!alreadyInNewStore) {
+              persistFileBlobToDB(blob, fileName);
+            }
             return renderPage(currentPage);
           })
           .then(function () {
             if (isManual) {
               window.showToast(
-                "Restored '" + fileName + "' and your annotations successfully!",
+                "Restored '" +
+                  fileName +
+                  "' and your annotations successfully!",
                 "success",
                 4500,
               );
@@ -3785,9 +4188,13 @@
   function clearSessionFromDB() {
     return openDB()
       .then(function (db) {
-        var tx = db.transaction(["settings", "editor_data"], "readwrite");
+        var tx = db.transaction(
+          ["settings", "editor_data", "files"],
+          "readwrite",
+        );
         tx.objectStore("settings").clear();
         tx.objectStore("editor_data").clear();
+        tx.objectStore("files").clear();
         updateRecoveryBadge(false);
       })
       .catch(function (err) {
@@ -3798,22 +4205,40 @@
   function checkStoredSessionAvailable(notifyOnFound) {
     return openDB()
       .then(function (db) {
-        var tx = db.transaction(["editor_data"], "readonly");
+        var tx = db.transaction(["editor_data", "files"], "readonly");
         var dataReq = tx.objectStore("editor_data").get("document");
-        return new Promise(function (res) {
-          dataReq.onsuccess = function () {
-            res(dataReq.result);
-          };
-          dataReq.onerror = function () {
-            res(null);
-          };
-        });
+        var filesReq = tx.objectStore("files").get("current");
+        return Promise.all([
+          new Promise(function (res) {
+            dataReq.onsuccess = function () {
+              res(dataReq.result);
+            };
+            dataReq.onerror = function () {
+              res(null);
+            };
+          }),
+          new Promise(function (res) {
+            filesReq.onsuccess = function () {
+              res(filesReq.result);
+            };
+            filesReq.onerror = function () {
+              res(null);
+            };
+          }),
+        ]);
       })
-      .then(function (data) {
-        var hasData = !!(data && data.bytes);
+      .then(function (results) {
+        var data = results[0];
+        var filesRecord = results[1];
+        var hasData = !!(
+          (filesRecord && filesRecord.blob) ||
+          (data && data.bytes)
+        );
         updateRecoveryBadge(hasData);
-        if (hasData && notifyOnFound && !originalBytes) {
-          var name = data.fileName ? "'" + data.fileName + "'" : "Previous document";
+        if (hasData && notifyOnFound && !currentFileBlob) {
+          var storedName =
+            (filesRecord && filesRecord.fileName) || (data && data.fileName);
+          var name = storedName ? "'" + storedName + "'" : "Previous document";
           window.showToast(
             "Last session (" + name + ") is available. Click to restore.",
             "info",
@@ -3849,4 +4274,3 @@
   // Check stored session on startup
   checkStoredSessionAvailable(true);
 })();
-

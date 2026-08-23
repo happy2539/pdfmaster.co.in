@@ -46,8 +46,11 @@
     <meta property="og:url" content="https://pdfmaster.co.in/pdf-metadata" />
     <meta
       property="og:image"
-      content="https://pdfmaster.co.in/assets/android-chrome-512x512.png"
+      content="https://pdfmaster.co.in/assets/og-image/pdf-metadata-viewer-and-remover.jpg"
     />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:type" content="image/jpeg" />
     <meta property="og:site_name" content="PDFMaster" />
 
     <!-- Twitter -->
@@ -62,7 +65,7 @@
     />
     <meta
       name="twitter:image"
-      content="https://pdfmaster.co.in/assets/android-chrome-512x512.png"
+      content="https://pdfmaster.co.in/assets/og-image/pdf-metadata-viewer-and-remover.jpg"
     />
 
     <!-- Favicon -->
@@ -114,6 +117,7 @@
             "Privacy risk scoring",
             "Selective metadata removal",
             "Strips XMP metadata",
+            "Tiered Low-RAM Architecture (Handles 50MB+ files smoothly)",
             "Smart session recovery (IndexedDB)",
             "100% Private (No upload)",
             "On-device processing"
@@ -187,6 +191,14 @@
               "acceptedAnswer": {
                 "@type": "Answer",
                 "text": "Yes. The tool completely erases both the CreationDate and ModDate fields from the PDF's info dictionary, as well as any date references embedded in the XMP metadata stream."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "Why does PDFMaster inspect and clean large PDFs so smoothly without crashing?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "PDFMaster features an intelligent Tiered Low-RAM Architecture. When a PDF exceeds 50 MB, raw PDF data is cached directly into your browser's private IndexedDB disk storage instead of consuming active system RAM. Metadata is extracted and stripped sequentially on demand, reclaiming memory immediately to ensure zero lag and zero browser tab freezes even with large multi-hundred megabyte documents."
               }
             }
           ]
@@ -604,10 +616,10 @@
             <span class="trust-dot"></span> 100% private & free
           </div>
           <div class="trust-badge">
-            <span class="trust-dot"></span> XMP & Info Dict removal
+            <span class="trust-dot"></span> ⚡ Low-RAM Architecture
           </div>
           <div class="trust-badge">
-            <span class="trust-dot"></span> Works on any device
+            <span class="trust-dot"></span> XMP & Info Dict removal
           </div>
           <div class="trust-badge">
             <span class="trust-dot"></span> Session recovery (IndexedDB)
@@ -676,7 +688,7 @@
             Browse PDF
           </button>
           <p class="drop-formats">
-            Supports PDF files · No size limit · 100% local processing
+            Supports PDF files · ⚡ Low-RAM Architecture · No size limit · 100% local processing
           </p>
         </div>
       </div>
@@ -718,7 +730,10 @@
             </div>
             <div class="file-bar-info">
               <div class="file-bar-name" id="fileName">—</div>
-              <div class="file-bar-size" id="fileSize">—</div>
+              <div style="display: flex; align-items: center; gap: 8px; margin-top: 2px;">
+                <span class="file-bar-size" id="fileSize">—</span>
+                <span class="badge-low-ram" id="lowRamBadge" style="display: none;" title="Low-RAM Mode: Raw PDF data offloaded to IndexedDB disk storage to preserve system RAM">⚡ Low-RAM</span>
+              </div>
             </div>
             <button class="btn btn-outline btn-sm" onclick="resetTool()">
               <!-- @license lucide-static v0.330.0 - ISC -->
@@ -1641,6 +1656,29 @@ Loading…</pre
               Auto-saves your active document and inspection settings in local browser IndexedDB storage. Restore your entire session with a single click if your browser closes.
             </p>
           </article>
+          <article class="fcard">
+            <span class="fcard-icon">
+              <!-- @license lucide-static v0.330.0 - ISC -->
+              <svg
+                class="lucide lucide-zap"
+                xmlns="http://www.w3.org/2000/svg"
+                width="1em"
+                height="1em"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
+              </svg>
+            </span>
+            <h3>Tiered Low-RAM Architecture</h3>
+            <p>
+              Handles large PDF files over 50MB effortlessly using local IndexedDB disk offloading and sequential streaming, preventing browser memory exhaustion and tab freezes.
+            </p>
+          </article>
         </div>
       </div>
     </section>
@@ -2252,6 +2290,46 @@ Loading…</pre
                 locally in your browser. The practical limit depends on your
                 device's available RAM. Most modern browsers handle PDFs up to
                 100 MB or larger without any issues.</span
+              >
+            </div>
+          </div>
+          <div
+            class="faq-item"
+            role="listitem"
+            itemscope
+            itemtype="https://schema.org/Question"
+          >
+            <div
+              class="faq-q"
+              onclick="toggleFaq(this)"
+              role="button"
+              tabindex="0"
+              aria-expanded="false"
+            >
+              <span itemprop="name"
+                >How does the Tiered Low-RAM Architecture work for large PDFs?</span
+              >
+              <span class="faq-chevron"
+                ><!-- @license lucide-static v0.330.0 - ISC -->
+                <svg
+                  class="lucide lucide-chevron-down"
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="1em"
+                  height="1em"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path d="m6 9 6 6 6-6" />
+                </svg>
+              </span>
+            </div>
+            <div class="faq-a" itemscope itemtype="https://schema.org/Answer">
+              <span itemprop="text"
+                >Unlike standard web tools that load entire multi-hundred megabyte PDFs into browser RAM and crash your tab, PDFMaster features an intelligent Tiered Low-RAM Architecture. When a PDF exceeds 50 MB, raw PDF data is cached directly into your browser's private IndexedDB disk storage instead of consuming active system RAM. Metadata is extracted and stripped sequentially on demand, reclaiming memory immediately to ensure zero lag and zero browser tab freezes even with large documents.</span
               >
             </div>
           </div>
