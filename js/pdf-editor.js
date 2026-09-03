@@ -39,7 +39,11 @@
   var livePath = null,
     liveShape = null,
     liveEraser = null,
+    liveLasso = null,
     pendingPlaceable = null;
+  var selectedGroup = null,
+    groupDragOrigins = null,
+    lastSelectTool = "select";
   var librariesLoaded = false,
     librariesLoading = null;
   var sigDrawing = false,
@@ -84,6 +88,7 @@
     arrow: { width: 3 },
     "stroke-eraser": { width: 20 },
     "pixel-eraser": { width: 20 },
+    lasso: {},
   };
   var ZOOM_STEPS = [0.5, 0.75, 1, 1.25, 1.5, 2, 2.5];
   var PDFJS_SOURCES = [
@@ -564,12 +569,175 @@
       return a.id === id;
     });
   }
+  function isAnnotationEmpty(ann) {
+    if (!ann) return true;
+    if (ann.type === "eraser") return true;
+    if (ann.type === "text") {
+      return !ann.text || !ann.text.trim();
+    }
+    if (ann.type === "path") {
+      return !ann.points || ann.points.length === 0;
+    }
+    if (ann.type === "rect") {
+      return !ann.width || !ann.height || (ann.width <= 2 && ann.height <= 2);
+    }
+    if (ann.type === "ellipse") {
+      return !ann.rx || !ann.ry || (ann.rx <= 1 && ann.ry <= 1);
+    }
+    if (ann.type === "line" || ann.type === "arrow") {
+      return Math.hypot(ann.x2 - ann.x1, ann.y2 - ann.y1) < 2;
+    }
+    if (ann.type === "image") {
+      return !ann.dataUrl || !ann.width || !ann.height;
+    }
+    return false;
+  }
+
+  function cleanPageAnnotations(page) {
+    if (annotationsByPage[page]) {
+      annotationsByPage[page] = annotationsByPage[page].filter(function (a) {
+        return a && (a.type === "eraser" || !isAnnotationEmpty(a));
+      });
+    }
+  }
+
+  function pointInPoly(p, poly) {
+    var x = p.x,
+      y = p.y;
+    var inside = false;
+    var n = poly.length;
+    var j = n - 1;
+    for (var i = 0; i < n; i++) {
+      var xi = poly[i].x,
+        yi = poly[i].y;
+      var xj = poly[j].x,
+        yj = poly[j].y;
+      var intersect =
+        yi > y !== yj > y &&
+        x < ((xj - xi) * (y - yi)) / (yj - yi + 1e-12) + xi;
+      if (intersect) inside = !inside;
+      j = i;
+    }
+    return inside;
+  }
+
+  function isAnnotationInPolygon(ann, poly) {
+    if (!ann || isAnnotationEmpty(ann) || ann.type === "eraser") return false;
+    var c = getCenter(ann);
+    if (pointInPoly(c, poly)) return true;
+
+    if (ann.type === "path" && ann.points) {
+      for (var i = 0; i < ann.points.length; i++) {
+        if (pointInPoly(ann.points[i], poly)) return true;
+      }
+      return false;
+    }
+
+    if (ann.type === "line" || ann.type === "arrow") {
+      return (
+        pointInPoly({ x: ann.x1, y: ann.y1 }, poly) ||
+        pointInPoly({ x: ann.x2, y: ann.y2 }, poly)
+      );
+    }
+
+    var b = getBounds(ann);
+    return (
+      pointInPoly({ x: b.x, y: b.y }, poly) ||
+      pointInPoly({ x: b.x + b.w, y: b.y }, poly) ||
+      pointInPoly({ x: b.x, y: b.y + b.h }, poly) ||
+      pointInPoly({ x: b.x + b.w, y: b.y + b.h }, poly)
+    );
+  }
+
+  function getGroupAnnotations() {
+    if (!selectedGroup || selectedGroup.page !== currentPage) return [];
+    var list = annotationsByPage[currentPage] || [];
+    return list.filter(function (a) {
+      return selectedGroup.ids.indexOf(a.id) !== -1 && !isAnnotationEmpty(a);
+    });
+  }
+
+  function getGroupBounds(anns) {
+    if (!anns || anns.length === 0) return { x: 0, y: 0, w: 0, h: 0 };
+    var minX = Infinity,
+      minY = Infinity,
+      maxX = -Infinity,
+      maxY = -Infinity;
+    anns.forEach(function (a) {
+      var b = getBounds(a);
+      minX = Math.min(minX, b.x);
+      minY = Math.min(minY, b.y);
+      maxX = Math.max(maxX, b.x + b.w);
+      maxY = Math.max(maxY, b.y + b.h);
+    });
+    return {
+      x: minX,
+      y: minY,
+      w: Math.max(maxX - minX, 4),
+      h: Math.max(maxY - minY, 4),
+    };
+  }
+
+  function drawGroupSelectionUI(ctx, anns, scale) {
+    var b = getGroupBounds(anns);
+    var x = b.x * scale;
+    var y = b.y * scale;
+    var w = b.w * scale;
+    var h = b.h * scale;
+
+    ctx.save();
+    ctx.strokeStyle = "#2563eb";
+    ctx.setLineDash([5, 4]);
+    ctx.lineWidth = 1.8;
+    ctx.strokeRect(x - 4, y - 4, w + 8, h + 8);
+    ctx.setLineDash([]);
+
+    // Delete button for group
+    var delX = x + w + 8;
+    var delY = y - 8;
+    ctx.beginPath();
+    ctx.arc(delX, delY, 11, 0, Math.PI * 2);
+    ctx.fillStyle = "#e8372a";
+    ctx.fill();
+    ctx.strokeStyle = "#fff";
+    ctx.lineWidth = 1.6;
+    ctx.beginPath();
+    ctx.moveTo(delX - 4, delY - 4);
+    ctx.lineTo(delX + 4, delY + 4);
+    ctx.moveTo(delX + 4, delY - 4);
+    ctx.lineTo(delX - 4, delY + 4);
+    ctx.stroke();
+
+    // Selection badge
+    var badgeText = anns.length + " items";
+    ctx.font = "bold 11px system-ui, -apple-system, sans-serif";
+    var textWidth = ctx.measureText(badgeText).width;
+    var badgeW = textWidth + 12;
+    var badgeH = 20;
+    var badgeX = x - 4;
+    var badgeY = y - 28;
+    ctx.fillStyle = "#2563eb";
+    ctx.beginPath();
+    if (ctx.roundRect) {
+      ctx.roundRect(badgeX, badgeY, badgeW, badgeH, 4);
+    } else {
+      ctx.rect(badgeX, badgeY, badgeW, badgeH);
+    }
+    ctx.fill();
+    ctx.fillStyle = "#ffffff";
+    ctx.textBaseline = "middle";
+    ctx.fillText(badgeText, badgeX + 6, badgeY + badgeH / 2);
+
+    ctx.restore();
+  }
+
   function hitTest(pt) {
+    cleanPageAnnotations(currentPage);
     var list = annotationsByPage[currentPage] || [];
     var tol = 6 / currentScale;
     for (var i = list.length - 1; i >= 0; i--) {
       var ann = list[i];
-      if (ann.type === "eraser") {
+      if (isAnnotationEmpty(ann)) {
         continue;
       }
       var center = getCenter(ann);
@@ -746,18 +914,46 @@
         break;
       }
       case "path": {
-        if (ann.points && ann.points.length > 1) {
+        if (ann.points && ann.points.length > 0) {
           ctx.globalAlpha = ann.opacity != null ? ann.opacity : 1;
           ctx.strokeStyle = ann.color;
           ctx.lineWidth = Math.max(1, ann.strokeWidth * scale);
           ctx.lineCap = "round";
           ctx.lineJoin = "round";
+          var pts = ann.points;
           ctx.beginPath();
-          ctx.moveTo(ann.points[0].x * scale, ann.points[0].y * scale);
-          for (var i = 1; i < ann.points.length; i++) {
-            ctx.lineTo(ann.points[i].x * scale, ann.points[i].y * scale);
+          if (pts.length === 1) {
+            ctx.arc(
+              pts[0].x * scale,
+              pts[0].y * scale,
+              Math.max(1, ann.strokeWidth * scale) / 2,
+              0,
+              Math.PI * 2,
+            );
+            ctx.fillStyle = ann.color;
+            ctx.fill();
+          } else if (pts.length === 2) {
+            ctx.moveTo(pts[0].x * scale, pts[0].y * scale);
+            ctx.lineTo(pts[1].x * scale, pts[1].y * scale);
+            ctx.stroke();
+          } else {
+            ctx.moveTo(pts[0].x * scale, pts[0].y * scale);
+            for (var i = 1; i < pts.length - 1; i++) {
+              var midX = (pts[i].x + pts[i + 1].x) / 2;
+              var midY = (pts[i].y + pts[i + 1].y) / 2;
+              ctx.quadraticCurveTo(
+                pts[i].x * scale,
+                pts[i].y * scale,
+                midX * scale,
+                midY * scale,
+              );
+            }
+            ctx.lineTo(
+              pts[pts.length - 1].x * scale,
+              pts[pts.length - 1].y * scale,
+            );
+            ctx.stroke();
           }
-          ctx.stroke();
         }
         break;
       }
@@ -821,6 +1017,10 @@
     ctx.restore();
   }
   function drawSelectionUI(ctx, ann, scale) {
+    if (!ann || isAnnotationEmpty(ann)) {
+      selectedAnnotation = null;
+      return;
+    }
     var handles = getSelectionHandles(ann, scale);
     var b = handles.box;
     ctx.save();
@@ -960,6 +1160,7 @@
     var canvas = document.getElementById("annotation-canvas");
     var ctx = canvas.getContext("2d");
     ctx.clearRect(0, 0, canvas.width, canvas.height);
+    cleanPageAnnotations(currentPage);
     var list = annotationsByPage[currentPage] || [];
     for (var i = 0; i < list.length; i++) {
       drawAnnotation(ctx, list[i], currentScale);
@@ -993,9 +1194,42 @@
     }
     if (selectedAnnotation && selectedAnnotation.page === currentPage) {
       var ann = findAnnotation(currentPage, selectedAnnotation.id);
-      if (ann) {
+      if (ann && !isAnnotationEmpty(ann)) {
         drawSelectionUI(ctx, ann, currentScale);
+      } else {
+        selectedAnnotation = null;
       }
+    }
+    if (selectedGroup && selectedGroup.page === currentPage) {
+      var groupAnns = getGroupAnnotations();
+      if (groupAnns.length > 1) {
+        drawGroupSelectionUI(ctx, groupAnns, currentScale);
+      } else if (groupAnns.length === 1) {
+        selectedAnnotation = { page: currentPage, id: groupAnns[0].id };
+        selectedGroup = null;
+        drawSelectionUI(ctx, groupAnns[0], currentScale);
+      } else {
+        selectedGroup = null;
+      }
+    }
+    if (liveLasso && liveLasso.length > 1) {
+      ctx.save();
+      ctx.strokeStyle = "#2563eb";
+      ctx.lineWidth = 1.8;
+      ctx.setLineDash([5, 4]);
+      ctx.fillStyle = "rgba(37, 99, 235, 0.08)";
+      ctx.beginPath();
+      ctx.moveTo(liveLasso[0].x * currentScale, liveLasso[0].y * currentScale);
+      for (var li = 1; li < liveLasso.length; li++) {
+        ctx.lineTo(
+          liveLasso[li].x * currentScale,
+          liveLasso[li].y * currentScale,
+        );
+      }
+      ctx.closePath();
+      ctx.fill();
+      ctx.stroke();
+      ctx.restore();
     }
     if (
       (currentTool === "stroke-eraser" || currentTool === "pixel-eraser") &&
@@ -1016,8 +1250,7 @@
         currentTool === "stroke-eraser"
           ? "rgba(232, 55, 42, 0.14)"
           : "rgba(37, 99, 235, 0.14)";
-      ctx.strokeStyle =
-        currentTool === "stroke-eraser" ? "#e8372a" : "#2563eb";
+      ctx.strokeStyle = currentTool === "stroke-eraser" ? "#e8372a" : "#2563eb";
       ctx.lineWidth = 1.5;
       ctx.fill();
       ctx.stroke();
@@ -1383,14 +1616,47 @@
   }
 
   function updateCursorStyle(e) {
-    if (isPointerDown || currentTool !== "select" || !pdfDoc) return;
     var canvas = document.getElementById("annotation-canvas");
-    if (!canvas) return;
+    if (!canvas || !pdfDoc) return;
+    if (currentTool === "lasso") {
+      canvas.style.cursor = "crosshair";
+      return;
+    }
+    if (isPointerDown || currentTool !== "select") return;
+    if (!e) {
+      canvas.style.cursor = "default";
+      return;
+    }
 
     var pt = getCanvasPagePoint(e);
+    if (selectedGroup && selectedGroup.page === currentPage) {
+      var groupAnns = getGroupAnnotations();
+      if (groupAnns.length > 0) {
+        var gb = getGroupBounds(groupAnns);
+        var delBtn = {
+          x: (gb.x + gb.w) * currentScale + 8,
+          y: gb.y * currentScale - 8,
+          r: 11,
+        };
+        if (Math.hypot(pt.cx - delBtn.x, pt.cy - delBtn.y) <= delBtn.r + 4) {
+          canvas.style.cursor = "pointer";
+          return;
+        }
+        var tol = 6 / currentScale;
+        if (
+          pt.x >= gb.x - tol &&
+          pt.x <= gb.x + gb.w + tol &&
+          pt.y >= gb.y - tol &&
+          pt.y <= gb.y + gb.h + tol
+        ) {
+          canvas.style.cursor = "move";
+          return;
+        }
+      }
+    }
     if (selectedAnnotation && selectedAnnotation.page === currentPage) {
       var ann = findAnnotation(currentPage, selectedAnnotation.id);
-      if (ann) {
+      if (ann && !isAnnotationEmpty(ann)) {
         var center = getCenter(ann);
         var upt = unrotatePoint(pt, center, ann.rotation || 0);
         var handles = getSelectionHandles(ann, currentScale);
@@ -1580,19 +1846,30 @@
     });
   }
 
-  /* ============ TOOL GROUPS (DRAW, SHAPES, ERASER) ============ */
+  /* ============ TOOL GROUPS (SELECT, DRAW, SHAPES, ERASER) ============ */
   var TOOL_ICONS = {
+    select:
+      '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m4 4 7 17 2.3-6.7L20 12Z" /></svg>',
+    lasso:
+      '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 22a5 5 0 0 1-2-4c0-3.8 3.3-6.5 7-8 3.5-1.5 6-3 6-5.5a3.5 3.5 0 1 0-7 0c0 3.5 3.5 4.5 6 5.5s5 3 5 5.5c0 3-2.5 5.5-6.5 5.5-3 0-5.5-1.5-6.5-3.5" /><circle cx="12" cy="19" r="1.5" /></svg>',
     pen: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m4 20 1-4L17 4l3 3L8 19l-4 1Z" /></svg>',
-    highlighter: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 11 4 4M5 19l1.5-4L15 6.5a2.1 2.1 0 0 1 3 3L9.5 18Z" /></svg>',
+    highlighter:
+      '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 11 4 4M5 19l1.5-4L15 6.5a2.1 2.1 0 0 1 3 3L9.5 18Z" /></svg>',
     rect: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="6" width="16" height="12" rx="1.5" /></svg>',
-    ellipse: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="12" rx="8" ry="6" /></svg>',
+    ellipse:
+      '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="12" rx="8" ry="6" /></svg>',
     line: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 19 19 5" /></svg>',
-    arrow: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 19 19 5M19 5h-6M19 5v6" /></svg>',
-    "stroke-eraser": '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m7 21-4.3-4.3c-1-1-1-2.5 0-3.4l9.6-9.6c1-1 2.5-1 3.4 0l5.6 5.6c1 1 1 2.5 0 3.4L13 21" /><path d="M22 21H7" /><path d="m5 11 9 9" /></svg>',
-    "pixel-eraser": '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m18 14 4-4-5-5-4 4" /><path d="m14.5 17.5 4.5-4.5" /><path d="M2 22h20" /><path d="m3.5 15.5 8-8 4.5 4.5-8 8H3.5v-4.5Z" /></svg>'
+    arrow:
+      '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 19 19 5M19 5h-6M19 5v6" /></svg>',
+    "stroke-eraser":
+      '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m7 21-4.3-4.3c-1-1-1-2.5 0-3.4l9.6-9.6c1-1 2.5-1 3.4 0l5.6 5.6c1 1 1 2.5 0 3.4L13 21" /><path d="M22 21H7" /><path d="m5 11 9 9" /></svg>',
+    "pixel-eraser":
+      '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m18 14 4-4-5-5-4 4" /><path d="m14.5 17.5 4.5-4.5" /><path d="M2 22h20" /><path d="m3.5 15.5 8-8 4.5 4.5-8 8H3.5v-4.5Z" /></svg>',
   };
 
   var TOOL_LABELS = {
+    select: "Select",
+    lasso: "Lasso",
     pen: "Pen",
     highlighter: "Highlight",
     rect: "Rect",
@@ -1600,7 +1877,7 @@
     line: "Line",
     arrow: "Arrow",
     "stroke-eraser": "Stroke",
-    "pixel-eraser": "Pixel"
+    "pixel-eraser": "Pixel",
   };
 
   var lastDrawTool = "pen";
@@ -1615,46 +1892,71 @@
   var eraserPreviewPoint = null;
 
   function updateGroupButtons(tool) {
+    var selectGroupBtn = document.getElementById("select-group-btn");
     var drawGroupBtn = document.getElementById("draw-group-btn");
     var shapesGroupBtn = document.getElementById("shapes-group-btn");
     var eraserGroupBtn = document.getElementById("eraser-group-btn");
 
-    if (tool === "pen" || tool === "highlighter") {
+    if (tool === "select" || tool === "lasso") {
+      lastSelectTool = tool;
+      if (selectGroupBtn) selectGroupBtn.classList.add("is-active");
+      if (drawGroupBtn) drawGroupBtn.classList.remove("is-active");
+      if (shapesGroupBtn) shapesGroupBtn.classList.remove("is-active");
+      if (eraserGroupBtn) eraserGroupBtn.classList.remove("is-active");
+      var selectIconEl = document.getElementById("select-group-icon");
+      var selectTextEl = document.getElementById("select-group-text");
+      if (selectIconEl && TOOL_ICONS[tool])
+        selectIconEl.innerHTML = TOOL_ICONS[tool];
+      if (selectTextEl && TOOL_LABELS[tool])
+        selectTextEl.textContent = TOOL_LABELS[tool];
+    } else if (tool === "pen" || tool === "highlighter") {
       lastDrawTool = tool;
       if (drawGroupBtn) drawGroupBtn.classList.add("is-active");
+      if (selectGroupBtn) selectGroupBtn.classList.remove("is-active");
       if (shapesGroupBtn) shapesGroupBtn.classList.remove("is-active");
       if (eraserGroupBtn) eraserGroupBtn.classList.remove("is-active");
       var drawIconEl = document.getElementById("draw-group-icon");
       var drawTextEl = document.getElementById("draw-group-text");
-      if (drawIconEl && TOOL_ICONS[tool]) drawIconEl.innerHTML = TOOL_ICONS[tool];
-      if (drawTextEl && TOOL_LABELS[tool]) drawTextEl.textContent = TOOL_LABELS[tool];
+      if (drawIconEl && TOOL_ICONS[tool])
+        drawIconEl.innerHTML = TOOL_ICONS[tool];
+      if (drawTextEl && TOOL_LABELS[tool])
+        drawTextEl.textContent = TOOL_LABELS[tool];
     } else if (["rect", "ellipse", "line", "arrow"].indexOf(tool) !== -1) {
       lastShapeTool = tool;
       if (shapesGroupBtn) shapesGroupBtn.classList.add("is-active");
+      if (selectGroupBtn) selectGroupBtn.classList.remove("is-active");
       if (drawGroupBtn) drawGroupBtn.classList.remove("is-active");
       if (eraserGroupBtn) eraserGroupBtn.classList.remove("is-active");
       var shapesIconEl = document.getElementById("shapes-group-icon");
       var shapesTextEl = document.getElementById("shapes-group-text");
-      if (shapesIconEl && TOOL_ICONS[tool]) shapesIconEl.innerHTML = TOOL_ICONS[tool];
-      if (shapesTextEl && TOOL_LABELS[tool]) shapesTextEl.textContent = TOOL_LABELS[tool];
+      if (shapesIconEl && TOOL_ICONS[tool])
+        shapesIconEl.innerHTML = TOOL_ICONS[tool];
+      if (shapesTextEl && TOOL_LABELS[tool])
+        shapesTextEl.textContent = TOOL_LABELS[tool];
     } else if (tool === "stroke-eraser" || tool === "pixel-eraser") {
       lastEraserTool = tool;
       if (eraserGroupBtn) eraserGroupBtn.classList.add("is-active");
+      if (selectGroupBtn) selectGroupBtn.classList.remove("is-active");
       if (drawGroupBtn) drawGroupBtn.classList.remove("is-active");
       if (shapesGroupBtn) shapesGroupBtn.classList.remove("is-active");
       var eraserIconEl = document.getElementById("eraser-group-icon");
       var eraserTextEl = document.getElementById("eraser-group-text");
-      if (eraserIconEl && TOOL_ICONS[tool]) eraserIconEl.innerHTML = TOOL_ICONS[tool];
-      if (eraserTextEl && TOOL_LABELS[tool]) eraserTextEl.textContent = TOOL_LABELS[tool];
+      if (eraserIconEl && TOOL_ICONS[tool])
+        eraserIconEl.innerHTML = TOOL_ICONS[tool];
+      if (eraserTextEl && TOOL_LABELS[tool])
+        eraserTextEl.textContent = TOOL_LABELS[tool];
     } else {
+      if (selectGroupBtn) selectGroupBtn.classList.remove("is-active");
       if (drawGroupBtn) drawGroupBtn.classList.remove("is-active");
       if (shapesGroupBtn) shapesGroupBtn.classList.remove("is-active");
       if (eraserGroupBtn) eraserGroupBtn.classList.remove("is-active");
     }
 
-    document.querySelectorAll(".tool-group-item[data-tool]").forEach(function (el) {
-      el.classList.toggle("is-active", el.dataset.tool === tool);
-    });
+    document
+      .querySelectorAll(".tool-group-item[data-tool]")
+      .forEach(function (el) {
+        el.classList.toggle("is-active", el.dataset.tool === tool);
+      });
   }
 
   function setActiveTool(tool, isManual) {
@@ -1662,14 +1964,24 @@
     livePath = null;
     liveShape = null;
     liveEraser = null;
+    liveLasso = null;
     dragMode = null;
     dragOrigin = null;
     dragCenter = null;
     dragStartAngle = 0;
+    groupDragOrigins = null;
+    if (tool !== "select") {
+      selectedGroup = null;
+    }
     if (tool !== "image" && tool !== "signature") {
       pendingPlaceable = null;
     }
-    if (tool === "select" || tool === "image" || tool === "signature") {
+    if (
+      tool === "select" ||
+      tool === "lasso" ||
+      tool === "image" ||
+      tool === "signature"
+    ) {
       if (isManual || tool === "image" || tool === "signature") {
         lastActiveDrawingTool = null;
       }
@@ -1923,23 +2235,38 @@
     sigCtx.lineJoin = "round";
     if (!canvas._wired) {
       canvas._wired = true;
+      var lastSigPt = null;
       canvas.addEventListener("pointerdown", function (e) {
         sigDrawing = true;
         var r = canvas.getBoundingClientRect();
+        lastSigPt = { x: e.clientX - r.left, y: e.clientY - r.top };
         sigCtx.beginPath();
-        sigCtx.moveTo(e.clientX - r.left, e.clientY - r.top);
+        sigCtx.arc(lastSigPt.x, lastSigPt.y, 1.3, 0, Math.PI * 2);
+        sigCtx.fillStyle = "#16181d";
+        sigCtx.fill();
+        sigHasDrawn = true;
       });
       canvas.addEventListener("pointermove", function (e) {
-        if (!sigDrawing) {
+        if (!sigDrawing || !lastSigPt) {
           return;
         }
         var r = canvas.getBoundingClientRect();
-        sigCtx.lineTo(e.clientX - r.left, e.clientY - r.top);
-        sigCtx.stroke();
-        sigHasDrawn = true;
+        var curPt = { x: e.clientX - r.left, y: e.clientY - r.top };
+        var dist = Math.hypot(curPt.x - lastSigPt.x, curPt.y - lastSigPt.y);
+        if (dist >= 1.2) {
+          var midX = (lastSigPt.x + curPt.x) / 2;
+          var midY = (lastSigPt.y + curPt.y) / 2;
+          sigCtx.beginPath();
+          sigCtx.moveTo(lastSigPt.x, lastSigPt.y);
+          sigCtx.quadraticCurveTo(lastSigPt.x, lastSigPt.y, midX, midY);
+          sigCtx.stroke();
+          lastSigPt = curPt;
+          sigHasDrawn = true;
+        }
       });
       window.addEventListener("pointerup", function () {
         sigDrawing = false;
+        lastSigPt = null;
       });
     }
   }
@@ -2151,9 +2478,15 @@
     var showLayer = false;
 
     if (tool === "select") {
-      if (selectedAnnotation && selectedAnnotation.page === currentPage) {
+      if (selectedGroup && selectedGroup.page === currentPage) {
+        showColor = true;
+        showWidth = true;
+      } else if (
+        selectedAnnotation &&
+        selectedAnnotation.page === currentPage
+      ) {
         var ann = findAnnotation(currentPage, selectedAnnotation.id);
-        if (ann) {
+        if (ann && !isAnnotationEmpty(ann)) {
           showRotation = true;
           showLayer = true;
           if (ann.type === "text") {
@@ -2316,7 +2649,7 @@
 
     if (selectedAnnotation && selectedAnnotation.page === currentPage) {
       var ann = findAnnotation(currentPage, selectedAnnotation.id);
-      if (ann) {
+      if (ann && !isAnnotationEmpty(ann)) {
         var changed = false;
         if (ann.color !== undefined && ann.color !== currentColor) {
           pushHistory();
@@ -2357,6 +2690,29 @@
           redrawAnnotations();
         }
       }
+    } else if (selectedGroup && selectedGroup.page === currentPage) {
+      var groupAnns = getGroupAnnotations();
+      if (groupAnns.length > 0) {
+        var groupChanged = false;
+        groupAnns.forEach(function (gAnn) {
+          if (gAnn.color !== undefined && gAnn.color !== currentColor) {
+            if (!groupChanged) pushHistory();
+            gAnn.color = currentColor;
+            groupChanged = true;
+          }
+          if (
+            gAnn.strokeWidth !== undefined &&
+            gAnn.strokeWidth !== currentStrokeWidth
+          ) {
+            if (!groupChanged) pushHistory();
+            gAnn.strokeWidth = currentStrokeWidth;
+            groupChanged = true;
+          }
+        });
+        if (groupChanged) {
+          redrawAnnotations();
+        }
+      }
     }
   }
 
@@ -2374,10 +2730,7 @@
       if (ann.type === "path" || ann.type === "eraser") {
         var hit = false;
         var pts = ann.points || [];
-        var w =
-          ann.type === "eraser"
-            ? (ann.size || 20)
-            : (ann.strokeWidth || 3);
+        var w = ann.type === "eraser" ? ann.size || 20 : ann.strokeWidth || 3;
         for (var k = 0; k < pts.length - 1; k++) {
           if (distToSegment(upt, pts[k], pts[k + 1]) <= tol + w / 2) {
             hit = true;
@@ -2464,6 +2817,25 @@
     return res.length >= 2 ? res : pts;
   }
 
+  function smoothStrokePoints(pts) {
+    if (!pts || pts.length <= 2) return pts;
+    var res = [pts[0]];
+    for (var i = 0; i < pts.length - 1; i++) {
+      var p0 = pts[i];
+      var p1 = pts[i + 1];
+      res.push({
+        x: 0.78 * p0.x + 0.22 * p1.x,
+        y: 0.78 * p0.y + 0.22 * p1.y,
+      });
+      res.push({
+        x: 0.22 * p0.x + 0.78 * p1.x,
+        y: 0.22 * p0.y + 0.78 * p1.y,
+      });
+    }
+    res.push(pts[pts.length - 1]);
+    return res;
+  }
+
   /* ---------- pointer interaction on the page ---------- */
   function getCanvasPagePoint(evt) {
     var canvas = document.getElementById("annotation-canvas");
@@ -2485,9 +2857,47 @@
     isPointerDown = true;
 
     if (currentTool === "select") {
+      if (selectedGroup && selectedGroup.page === currentPage) {
+        var groupAnns = getGroupAnnotations();
+        if (groupAnns.length > 0) {
+          var gb = getGroupBounds(groupAnns);
+          var delBtn = {
+            x: (gb.x + gb.w) * currentScale + 8,
+            y: gb.y * currentScale - 8,
+            r: 11,
+          };
+          var isTouch = e.pointerType === "touch";
+          var dDist = Math.hypot(pt.cx - delBtn.x, pt.cy - delBtn.y);
+          if (dDist <= delBtn.r + (isTouch ? 12 : 4)) {
+            pushHistory();
+            groupAnns.forEach(function (a) {
+              deleteAnnotation(currentPage, a.id);
+            });
+            selectedGroup = null;
+            isPointerDown = false;
+            redrawAnnotations();
+            return;
+          }
+
+          var tol = 8 / currentScale;
+          if (
+            pt.x >= gb.x - tol &&
+            pt.x <= gb.x + gb.w + tol &&
+            pt.y >= gb.y - tol &&
+            pt.y <= gb.y + gb.h + tol
+          ) {
+            dragMode = "group-move";
+            groupDragOrigins = groupAnns.map(function (a) {
+              return { id: a.id, origin: deepClone(a) };
+            });
+            dragStartPoint = pt;
+            return;
+          }
+        }
+      }
       if (selectedAnnotation && selectedAnnotation.page === currentPage) {
         var ann = findAnnotation(currentPage, selectedAnnotation.id);
-        if (ann) {
+        if (ann && !isAnnotationEmpty(ann)) {
           var center = getCenter(ann);
           var upt = unrotatePoint(pt, center, ann.rotation || 0);
           var handles = getSelectionHandles(ann, currentScale);
@@ -2581,10 +2991,13 @@
             syncOptionInputs();
             return;
           }
+        } else {
+          selectedAnnotation = null;
         }
       }
       var hit = hitTest(pt);
       if (hit) {
+        selectedGroup = null;
         selectedAnnotation = { page: currentPage, id: hit.id };
         dragMode = "move";
         dragOrigin = deepClone(hit);
@@ -2612,8 +3025,9 @@
         updateToolOptionsPanel("select");
         syncOptionInputs();
         redrawAnnotations();
-      } else if (selectedAnnotation) {
+      } else {
         selectedAnnotation = null;
+        selectedGroup = null;
         if (lastActiveDrawingTool) {
           setActiveTool(lastActiveDrawingTool);
         } else {
@@ -2621,6 +3035,14 @@
           redrawAnnotations();
         }
       }
+      return;
+    }
+
+    if (currentTool === "lasso") {
+      liveLasso = [{ x: pt.x, y: pt.y }];
+      selectedAnnotation = null;
+      selectedGroup = null;
+      redrawAnnotations();
       return;
     }
 
@@ -2696,7 +3118,9 @@
       eraserPreviewPoint = pt;
       if (isErasing) {
         if (currentTool === "stroke-eraser") {
-          if (eraseStrokeAlongSegment(lastErasePoint || pt, pt, eraserSize / 2)) {
+          if (
+            eraseStrokeAlongSegment(lastErasePoint || pt, pt, eraserSize / 2)
+          ) {
             erasedAny = true;
           }
           lastErasePoint = pt;
@@ -2706,6 +3130,27 @@
           requestRedraw();
         }
       }
+      return;
+    }
+    if (currentTool === "lasso" && liveLasso) {
+      liveLasso.push({ x: pt.x, y: pt.y });
+      requestRedraw();
+      return;
+    }
+    if (
+      currentTool === "select" &&
+      dragMode === "group-move" &&
+      groupDragOrigins
+    ) {
+      var dx = pt.x - dragStartPoint.x;
+      var dy = pt.y - dragStartPoint.y;
+      groupDragOrigins.forEach(function (item) {
+        var a = findAnnotation(currentPage, item.id);
+        if (a) {
+          applyMove(a, item.origin, dx, dy);
+        }
+      });
+      requestRedraw();
       return;
     }
     if (currentTool === "select" && dragMode) {
@@ -2844,8 +3289,17 @@
       return;
     }
     if (livePath) {
-      livePath.points.push({ x: pt.x, y: pt.y });
-      requestRedraw();
+      var lastPt = livePath.points[livePath.points.length - 1];
+      var dist = Math.hypot(pt.x - lastPt.x, pt.y - lastPt.y);
+      if (dist >= 1.0) {
+        var weight = Math.min(0.88, Math.max(0.48, dist / 10));
+        var smoothedPt = {
+          x: lastPt.x + (pt.x - lastPt.x) * weight,
+          y: lastPt.y + (pt.y - lastPt.y) * weight,
+        };
+        livePath.points.push(smoothedPt);
+        requestRedraw();
+      }
       return;
     }
     if (liveShape && dragStartPoint) {
@@ -2855,11 +3309,12 @@
     }
   }
 
-  function onPointerUp() {
+  function onPointerUp(e) {
     if (!isPointerDown) {
       return;
     }
     isPointerDown = false;
+    var pt = e ? getCanvasPagePoint(e) : null;
     if (currentTool === "stroke-eraser") {
       if (isErasing) {
         isErasing = false;
@@ -2892,20 +3347,67 @@
       }
       return;
     }
+    if (currentTool === "lasso") {
+      if (liveLasso && liveLasso.length > 2) {
+        cleanPageAnnotations(currentPage);
+        var pageAnns = annotationsByPage[currentPage] || [];
+        var captured = pageAnns.filter(function (a) {
+          return isAnnotationInPolygon(a, liveLasso);
+        });
+
+        if (captured.length === 0) {
+          selectedAnnotation = null;
+          selectedGroup = null;
+          if (window.showToast) {
+            window.showToast("No elements captured by lasso");
+          }
+        } else if (captured.length === 1) {
+          selectedAnnotation = { page: currentPage, id: captured[0].id };
+          selectedGroup = null;
+          setActiveTool("select", true);
+        } else {
+          selectedGroup = {
+            page: currentPage,
+            ids: captured.map(function (a) {
+              return a.id;
+            }),
+          };
+          selectedAnnotation = null;
+          setActiveTool("select", true);
+        }
+      }
+      liveLasso = null;
+      redrawAnnotations();
+      return;
+    }
     if (currentTool === "select") {
+      if (dragMode === "group-move") {
+        scheduleDBSave();
+      }
       dragMode = null;
       dragOrigin = null;
       dragCenter = null;
       dragStartAngle = 0;
+      groupDragOrigins = null;
       return;
     }
     if (livePath) {
-      if (livePath.points.length > 1) {
+      if (livePath.points.length >= 1) {
+        if (pt) {
+          var last = livePath.points[livePath.points.length - 1];
+          if (Math.hypot(pt.x - last.x, pt.y - last.y) >= 0.5) {
+            livePath.points.push({ x: pt.x, y: pt.y });
+          }
+        }
+        var smoothedPoints =
+          livePath.points.length > 2
+            ? smoothStrokePoints(livePath.points)
+            : livePath.points;
         var pathAnn = {
           id: nextId(),
           type: "path",
           page: currentPage,
-          points: livePath.points,
+          points: smoothedPoints,
           color: livePath.style.color,
           strokeWidth: livePath.style.strokeWidth,
           opacity: livePath.style.opacity,
@@ -3189,9 +3691,47 @@
               };
             });
           }
-          var svgPathString = "M " + pts[0].x + "," + pts[0].y;
-          for (var k = 1; k < pts.length; k++) {
-            svgPathString += " L " + pts[k].x + "," + pts[k].y;
+          var svgPathString = "";
+          if (pts.length === 1) {
+            svgPathString =
+              "M " +
+              pts[0].x +
+              "," +
+              pts[0].y +
+              " L " +
+              (pts[0].x + 0.1) +
+              "," +
+              pts[0].y;
+          } else if (pts.length === 2) {
+            svgPathString =
+              "M " +
+              pts[0].x +
+              "," +
+              pts[0].y +
+              " L " +
+              pts[1].x +
+              "," +
+              pts[1].y;
+          } else {
+            svgPathString = "M " + pts[0].x + "," + pts[0].y;
+            for (var k = 1; k < pts.length - 1; k++) {
+              var midX = (pts[k].x + pts[k + 1].x) / 2;
+              var midY = (pts[k].y + pts[k + 1].y) / 2;
+              svgPathString +=
+                " Q " +
+                pts[k].x.toFixed(2) +
+                "," +
+                pts[k].y.toFixed(2) +
+                " " +
+                midX.toFixed(2) +
+                "," +
+                midY.toFixed(2);
+            }
+            svgPathString +=
+              " L " +
+              pts[pts.length - 1].x.toFixed(2) +
+              "," +
+              pts[pts.length - 1].y.toFixed(2);
           }
           page.drawSvgPath(svgPathString, {
             x: 0,
@@ -3426,6 +3966,10 @@
   }
 
   function closeAllGroupMenus() {
+    var selectMenu = document.getElementById("select-group-menu");
+    var selectWrap = document.getElementById("select-group-wrap");
+    var selectBtn = document.getElementById("select-group-btn");
+
     var drawMenu = document.getElementById("draw-group-menu");
     var drawWrap = document.getElementById("draw-group-wrap");
     var drawBtn = document.getElementById("draw-group-btn");
@@ -3436,6 +3980,10 @@
     var eraserMenu = document.getElementById("eraser-group-menu");
     var eraserWrap = document.getElementById("eraser-group-wrap");
     var eraserBtn = document.getElementById("eraser-group-btn");
+
+    if (selectMenu) selectMenu.classList.remove("is-open");
+    if (selectWrap) selectWrap.classList.remove("is-open");
+    if (selectBtn) selectBtn.setAttribute("aria-expanded", "false");
 
     if (drawMenu) drawMenu.classList.remove("is-open");
     if (drawWrap) drawWrap.classList.remove("is-open");
@@ -3469,7 +4017,7 @@
       menu.style.bottom = Math.max(8, window.innerHeight - rect.top + 6) + "px";
     } else {
       menu.style.bottom = "auto";
-      menu.style.top = (rect.bottom + 6) + "px";
+      menu.style.top = rect.bottom + 6 + "px";
     }
 
     var left = rect.left;
@@ -3486,7 +4034,11 @@
     closeAllGroupMenus();
 
     if (!isOpen) {
-      if (groupName === "draw") {
+      if (groupName === "select") {
+        if (currentTool !== "select" && currentTool !== "lasso") {
+          setActiveTool(lastSelectTool || "select", true);
+        }
+      } else if (groupName === "draw") {
         if (currentTool !== "pen" && currentTool !== "highlighter") {
           setActiveTool(lastDrawTool || "pen", true);
         }
@@ -3508,6 +4060,10 @@
   }
 
   function setupToolGroups() {
+    var selectGroupBtn = document.getElementById("select-group-btn");
+    var selectGroupWrap = document.getElementById("select-group-wrap");
+    var selectGroupMenu = document.getElementById("select-group-menu");
+
     var drawGroupBtn = document.getElementById("draw-group-btn");
     var drawGroupWrap = document.getElementById("draw-group-wrap");
     var drawGroupMenu = document.getElementById("draw-group-menu");
@@ -3520,6 +4076,18 @@
     var eraserGroupWrap = document.getElementById("eraser-group-wrap");
     var eraserGroupMenu = document.getElementById("eraser-group-menu");
 
+    if (selectGroupBtn) {
+      selectGroupBtn.addEventListener("click", function (e) {
+        e.stopPropagation();
+        toggleGroupMenu(
+          selectGroupBtn,
+          selectGroupWrap,
+          selectGroupMenu,
+          "select",
+        );
+      });
+    }
+
     if (drawGroupBtn) {
       drawGroupBtn.addEventListener("click", function (e) {
         e.stopPropagation();
@@ -3530,35 +4098,52 @@
     if (shapesGroupBtn) {
       shapesGroupBtn.addEventListener("click", function (e) {
         e.stopPropagation();
-        toggleGroupMenu(shapesGroupBtn, shapesGroupWrap, shapesGroupMenu, "shapes");
+        toggleGroupMenu(
+          shapesGroupBtn,
+          shapesGroupWrap,
+          shapesGroupMenu,
+          "shapes",
+        );
       });
     }
 
     if (eraserGroupBtn) {
       eraserGroupBtn.addEventListener("click", function (e) {
         e.stopPropagation();
-        toggleGroupMenu(eraserGroupBtn, eraserGroupWrap, eraserGroupMenu, "eraser");
+        toggleGroupMenu(
+          eraserGroupBtn,
+          eraserGroupWrap,
+          eraserGroupMenu,
+          "eraser",
+        );
       });
     }
 
-    document.querySelectorAll(".tool-group-item[data-tool]").forEach(function (item) {
-      item.addEventListener("click", function (e) {
-        e.stopPropagation();
-        var tool = item.dataset.tool;
-        if (tool === "pen" || tool === "highlighter") {
-          lastDrawTool = tool;
-        } else if (["rect", "ellipse", "line", "arrow"].indexOf(tool) !== -1) {
-          lastShapeTool = tool;
-        } else if (tool === "stroke-eraser" || tool === "pixel-eraser") {
-          lastEraserTool = tool;
-        }
-        setActiveTool(tool, true);
-        closeAllGroupMenus();
+    document
+      .querySelectorAll(".tool-group-item[data-tool]")
+      .forEach(function (item) {
+        item.addEventListener("click", function (e) {
+          e.stopPropagation();
+          var tool = item.dataset.tool;
+          if (tool === "select" || tool === "lasso") {
+            lastSelectTool = tool;
+          } else if (tool === "pen" || tool === "highlighter") {
+            lastDrawTool = tool;
+          } else if (
+            ["rect", "ellipse", "line", "arrow"].indexOf(tool) !== -1
+          ) {
+            lastShapeTool = tool;
+          } else if (tool === "stroke-eraser" || tool === "pixel-eraser") {
+            lastEraserTool = tool;
+          }
+          setActiveTool(tool, true);
+          closeAllGroupMenus();
+        });
       });
-    });
 
     document.addEventListener("click", function (e) {
       if (
+        !e.target.closest("#select-group-wrap") &&
         !e.target.closest("#draw-group-wrap") &&
         !e.target.closest("#shapes-group-wrap") &&
         !e.target.closest("#eraser-group-wrap") &&
@@ -4240,7 +4825,10 @@
       toggleToolbarPosBtn.setAttribute("aria-label", title);
     }
     try {
-      localStorage.setItem("pdfmaster-toolbar-pos", isBottom ? "bottom" : "top");
+      localStorage.setItem(
+        "pdfmaster-toolbar-pos",
+        isBottom ? "bottom" : "top",
+      );
     } catch (e) {}
   }
 
@@ -4458,13 +5046,48 @@
       return;
     }
 
-    if (
-      (e.key === "Delete" || e.key === "Backspace") &&
-      selectedAnnotation &&
-      !isInput
-    ) {
-      e.preventDefault();
-      deleteAnnotation(selectedAnnotation.page, selectedAnnotation.id);
+    if ((e.key === "Delete" || e.key === "Backspace") && !isInput) {
+      if (selectedAnnotation) {
+        e.preventDefault();
+        deleteAnnotation(selectedAnnotation.page, selectedAnnotation.id);
+      } else if (selectedGroup && selectedGroup.page === currentPage) {
+        e.preventDefault();
+        var groupAnns = getGroupAnnotations();
+        if (groupAnns.length > 0) {
+          pushHistory();
+          groupAnns.forEach(function (a) {
+            deleteAnnotation(currentPage, a.id);
+          });
+          selectedGroup = null;
+          redrawAnnotations();
+        }
+      }
+    }
+    if (selectedGroup && !isInput && selectedGroup.page === currentPage) {
+      if (
+        ["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"].indexOf(e.key) !==
+          -1 &&
+        !e.ctrlKey &&
+        !e.metaKey
+      ) {
+        e.preventDefault();
+        var groupAnns = getGroupAnnotations();
+        if (groupAnns.length > 0) {
+          pushHistory();
+          var amount = e.shiftKey ? 10 : 1;
+          var dx = 0,
+            dy = 0;
+          if (e.key === "ArrowUp") dy = -amount;
+          else if (e.key === "ArrowDown") dy = amount;
+          else if (e.key === "ArrowLeft") dx = -amount;
+          else if (e.key === "ArrowRight") dx = amount;
+
+          groupAnns.forEach(function (ann) {
+            applyMove(ann, ann, dx, dy);
+          });
+          redrawAnnotations();
+        }
+      }
     }
     if (selectedAnnotation && !isInput) {
       if (
