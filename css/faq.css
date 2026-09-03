@@ -203,8 +203,10 @@ header {
 
 /* ════════ DROPDOWN NAV ════════ */
 .nav-dropdown-wrap {
-  position: sticky;
+  position: fixed;
   top: var(--nav-h);
+  left: 0;
+  right: 0;
   z-index: 800;
   background: var(--surface);
   border-bottom: 1px solid var(--border);
