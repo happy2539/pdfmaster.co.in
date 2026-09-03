@@ -571,90 +571,207 @@
                   </svg>
                   Text
                 </button>
-                <button class="tool-btn" data-tool="pen" title="Freehand pen">
-                  <svg
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="2"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
+                <!-- Draw Group (Pen & Highlight) -->
+                <div class="tool-group-wrap" id="draw-group-wrap">
+                  <button
+                    class="tool-btn tool-group-btn"
+                    id="draw-group-btn"
+                    type="button"
+                    title="Draw tools (Pen, Highlight)"
+                    aria-expanded="false"
+                    aria-haspopup="true"
                   >
-                    <path d="m4 20 1-4L17 4l3 3L8 19l-4 1Z" />
-                  </svg>
-                  Pen
-                </button>
-                <button
-                  class="tool-btn"
-                  data-tool="highlighter"
-                  title="Highlighter"
-                >
-                  <svg
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="2"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
+                    <span class="group-btn-icon" id="draw-group-icon">
+                      <svg
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      >
+                        <path d="m4 20 1-4L17 4l3 3L8 19l-4 1Z" />
+                      </svg>
+                    </span>
+                    <span class="group-btn-label">
+                      <span id="draw-group-text">Draw</span>
+                      <svg class="group-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="m6 9 6 6 6-6"/>
+                      </svg>
+                    </span>
+                  </button>
+                  <div class="tool-group-menu" id="draw-group-menu" role="menu">
+                    <button
+                      class="tool-group-item"
+                      data-tool="pen"
+                      type="button"
+                      role="menuitem"
+                      title="Freehand pen"
+                    >
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="m4 20 1-4L17 4l3 3L8 19l-4 1Z" />
+                      </svg>
+                      <span>Pen</span>
+                    </button>
+                    <button
+                      class="tool-group-item"
+                      data-tool="highlighter"
+                      type="button"
+                      role="menuitem"
+                      title="Highlighter"
+                    >
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="m9 11 4 4M5 19l1.5-4L15 6.5a2.1 2.1 0 0 1 3 3L9.5 18Z" />
+                      </svg>
+                      <span>Highlight</span>
+                    </button>
+                  </div>
+                </div>
+
+                <!-- Shapes Group (Rect, Oval, Line, Arrow) -->
+                <div class="tool-group-wrap" id="shapes-group-wrap">
+                  <button
+                    class="tool-btn tool-group-btn"
+                    id="shapes-group-btn"
+                    type="button"
+                    title="Shapes (Rectangle, Oval, Line, Arrow)"
+                    aria-expanded="false"
+                    aria-haspopup="true"
                   >
-                    <path
-                      d="m9 11 4 4M5 19l1.5-4L15 6.5a2.1 2.1 0 0 1 3 3L9.5 18Z"
-                    />
-                  </svg>
-                  Highlight
-                </button>
-                <button class="tool-btn" data-tool="rect" title="Rectangle">
-                  <svg
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="2"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
+                    <span class="group-btn-icon" id="shapes-group-icon">
+                      <svg
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      >
+                        <rect x="4" y="6" width="16" height="12" rx="1.5" />
+                      </svg>
+                    </span>
+                    <span class="group-btn-label">
+                      <span id="shapes-group-text">Shapes</span>
+                      <svg class="group-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="m6 9 6 6 6-6"/>
+                      </svg>
+                    </span>
+                  </button>
+                  <div class="tool-group-menu" id="shapes-group-menu" role="menu">
+                    <button
+                      class="tool-group-item"
+                      data-tool="rect"
+                      type="button"
+                      role="menuitem"
+                      title="Rectangle"
+                    >
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="4" y="6" width="16" height="12" rx="1.5" />
+                      </svg>
+                      <span>Rectangle</span>
+                    </button>
+                    <button
+                      class="tool-group-item"
+                      data-tool="ellipse"
+                      type="button"
+                      role="menuitem"
+                      title="Oval / Ellipse"
+                    >
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <ellipse cx="12" cy="12" rx="8" ry="6" />
+                      </svg>
+                      <span>Oval</span>
+                    </button>
+                    <button
+                      class="tool-group-item"
+                      data-tool="line"
+                      type="button"
+                      role="menuitem"
+                      title="Line"
+                    >
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M5 19 19 5" />
+                      </svg>
+                      <span>Line</span>
+                    </button>
+                    <button
+                      class="tool-group-item"
+                      data-tool="arrow"
+                      type="button"
+                      role="menuitem"
+                      title="Arrow"
+                    >
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M5 19 19 5M19 5h-6M19 5v6" />
+                      </svg>
+                      <span>Arrow</span>
+                    </button>
+                  </div>
+                </div>
+
+                <!-- Eraser Group (Stroke & Pixel) -->
+                <div class="tool-group-wrap" id="eraser-group-wrap">
+                  <button
+                    class="tool-btn tool-group-btn"
+                    id="eraser-group-btn"
+                    type="button"
+                    title="Eraser (Stroke Eraser, Pixel Eraser)"
+                    aria-expanded="false"
+                    aria-haspopup="true"
                   >
-                    <rect x="4" y="6" width="16" height="12" rx="1.5" />
-                  </svg>
-                  Rect
-                </button>
-                <button class="tool-btn" data-tool="ellipse" title="Ellipse">
-                  <svg
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="2"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                  >
-                    <ellipse cx="12" cy="12" rx="8" ry="6" />
-                  </svg>
-                  Oval
-                </button>
-                <button class="tool-btn" data-tool="line" title="Line">
-                  <svg
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="2"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                  >
-                    <path d="M5 19 19 5" />
-                  </svg>
-                  Line
-                </button>
-                <button class="tool-btn" data-tool="arrow" title="Arrow">
-                  <svg
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="2"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                  >
-                    <path d="M5 19 19 5M19 5h-6M19 5v6" />
-                  </svg>
-                  Arrow
-                </button>
+                    <span class="group-btn-icon" id="eraser-group-icon">
+                      <svg
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      >
+                        <path d="m7 21-4.3-4.3c-1-1-1-2.5 0-3.4l9.6-9.6c1-1 2.5-1 3.4 0l5.6 5.6c1 1 1 2.5 0 3.4L13 21" />
+                        <path d="M22 21H7" />
+                        <path d="m5 11 9 9" />
+                      </svg>
+                    </span>
+                    <span class="group-btn-label">
+                      <span id="eraser-group-text">Eraser</span>
+                      <svg class="group-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="m6 9 6 6 6-6"/>
+                      </svg>
+                    </span>
+                  </button>
+                  <div class="tool-group-menu" id="eraser-group-menu" role="menu">
+                    <button
+                      class="tool-group-item"
+                      data-tool="stroke-eraser"
+                      type="button"
+                      role="menuitem"
+                      title="Stroke Eraser (erases whole stroke on touch)"
+                    >
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="m7 21-4.3-4.3c-1-1-1-2.5 0-3.4l9.6-9.6c1-1 2.5-1 3.4 0l5.6 5.6c1 1 1 2.5 0 3.4L13 21" />
+                        <path d="M22 21H7" />
+                        <path d="m5 11 9 9" />
+                      </svg>
+                      <span>Stroke Eraser</span>
+                    </button>
+                    <button
+                      class="tool-group-item"
+                      data-tool="pixel-eraser"
+                      type="button"
+                      role="menuitem"
+                      title="Pixel Eraser (erases portions of strokes precisely)"
+                    >
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="m18 14 4-4-5-5-4 4" />
+                        <path d="m14.5 17.5 4.5-4.5" />
+                        <path d="M2 22h20" />
+                        <path d="m3.5 15.5 8-8 4.5 4.5-8 8H3.5v-4.5Z" />
+                      </svg>
+                      <span>Pixel Eraser</span>
+                    </button>
+                  </div>
+                </div>
                 <button
                   class="tool-btn"
                   data-tool="image"
@@ -983,6 +1100,17 @@
                     value="3"
                   />
                   <div class="range-val" id="stroke-width-val">3px</div>
+                </div>
+                <div class="opt-group hidden" id="opt-eraser">
+                  <label>Eraser size</label>
+                  <input
+                    type="range"
+                    id="eraser-size"
+                    min="6"
+                    max="60"
+                    value="20"
+                  />
+                  <div class="range-val" id="eraser-size-val">20px</div>
                 </div>
                 <div class="opt-group hidden" id="opt-fontsize">
                   <label>Font size</label>
