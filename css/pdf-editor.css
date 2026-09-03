@@ -1375,13 +1375,66 @@ body.editor-active .tool-btn#download-btn {
   background: var(--accent) !important;
   color: #fff !important;
   border-radius: var(--radius-s) !important;
-  margin-left: auto !important;
+  margin-left: 0 !important;
   padding: 0 16px !important;
   width: auto !important;
   height: 44px !important;
   flex-direction: row !important;
   gap: 8px !important;
   font-size: 0.85rem !important;
+}
+
+body.editor-active .tool-btn#fullscreen-btn,
+body.editor-active .tool-btn#toggle-toolbar-pos-btn {
+  border: 1px solid var(--border) !important;
+  background: var(--surface) !important;
+  width: 44px !important;
+  height: 44px !important;
+  flex-shrink: 0 !important;
+}
+body.editor-active .tool-btn#fullscreen-btn:hover,
+body.editor-active .tool-btn#toggle-toolbar-pos-btn:hover {
+  border-color: var(--accent) !important;
+  color: var(--accent) !important;
+  background: var(--accent-soft) !important;
+}
+body.editor-active .tool-btn#fullscreen-btn.is-active {
+  background: var(--accent-soft) !important;
+  color: var(--accent) !important;
+  border-color: var(--accent) !important;
+}
+
+/* Toolbar position toggle */
+.tool-btn#toggle-toolbar-pos-btn svg {
+  transition: transform 0.25s ease;
+  transform-origin: center;
+}
+.editor-body.toolbar-bottom .tool-btn#toggle-toolbar-pos-btn svg {
+  transform: rotate(180deg);
+}
+
+/* Toolbar at bottom (change bar from up to down) */
+body.editor-active .editor-body.toolbar-bottom .toolbar {
+  order: 10 !important;
+  border-bottom: none !important;
+  border-top: 1px solid var(--border) !important;
+}
+body.editor-active .editor-body.toolbar-bottom .tool-options {
+  order: 9 !important;
+  border-bottom: none !important;
+  border-top: none !important;
+}
+body.editor-active .editor-body.toolbar-bottom .tool-options.is-open {
+  border-top: 1px solid var(--border) !important;
+}
+body.editor-active .editor-body.toolbar-bottom .canvas-stage {
+  order: 1 !important;
+}
+
+#editor-shell:fullscreen {
+  background: var(--bg);
+  width: 100vw;
+  height: 100vh;
 }
 
 body.editor-active .tool-btn#download-btn svg {
@@ -1509,6 +1562,16 @@ body.editor-active .sig-type-preview-card:hover {
     flex-shrink: 0 !important;
   }
   body.editor-active .toolbar .tool-btn svg {
+    width: 16px !important;
+    height: 16px !important;
+  }
+  body.editor-active .toolbar .tool-btn#fullscreen-btn,
+  body.editor-active .toolbar .tool-btn#toggle-toolbar-pos-btn {
+    width: 40px !important;
+    height: 40px !important;
+  }
+  body.editor-active .toolbar .tool-btn#fullscreen-btn svg,
+  body.editor-active .toolbar .tool-btn#toggle-toolbar-pos-btn svg {
     width: 16px !important;
     height: 16px !important;
   }

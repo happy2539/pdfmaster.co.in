@@ -3663,6 +3663,63 @@
       }
     });
 
+  /* ============ FULLSCREEN ============ */
+  var fullscreenBtn = document.getElementById("fullscreen-btn");
+  var editorShell =
+    document.getElementById("editor-shell") ||
+    document.getElementById("editor-wrap");
+  if (fullscreenBtn) {
+    fullscreenBtn.addEventListener("click", function () {
+      var target = editorShell || document.documentElement;
+      if (!document.fullscreenElement) {
+        var req = target.requestFullscreen || target.webkitRequestFullscreen;
+        if (req) req.call(target);
+      } else {
+        var exit = document.exitFullscreen || document.webkitExitFullscreen;
+        if (exit) exit.call(document);
+      }
+    });
+    document.addEventListener("fullscreenchange", function () {
+      fullscreenBtn.classList.toggle("is-active", !!document.fullscreenElement);
+    });
+  }
+
+  /* ============ TOOLBAR POSITION (UP / DOWN) ============ */
+  var toggleToolbarPosBtn = document.getElementById("toggle-toolbar-pos-btn");
+  var editorBody =
+    document.getElementById("editor-body") ||
+    document.querySelector(".editor-body");
+
+  function setToolbarPosition(pos) {
+    var isBottom = pos === "bottom";
+    if (editorBody) {
+      editorBody.classList.toggle("toolbar-bottom", isBottom);
+    }
+    if (toggleToolbarPosBtn) {
+      var title = isBottom ? "Move toolbar to top" : "Move toolbar to bottom";
+      toggleToolbarPosBtn.title = title;
+      toggleToolbarPosBtn.setAttribute("aria-label", title);
+    }
+    try {
+      localStorage.setItem("pdfmaster-toolbar-pos", isBottom ? "bottom" : "top");
+    } catch (e) {}
+  }
+
+  if (toggleToolbarPosBtn) {
+    toggleToolbarPosBtn.addEventListener("click", function () {
+      var isCurrentlyBottom =
+        editorBody && editorBody.classList.contains("toolbar-bottom");
+      setToolbarPosition(isCurrentlyBottom ? "top" : "bottom");
+    });
+  }
+
+  try {
+    var savedToolbarPos = localStorage.getItem("pdfmaster-toolbar-pos");
+    if (savedToolbarPos === "bottom") {
+      setToolbarPosition("bottom");
+    }
+  } catch (e) {}
+
   var annCanvasEl = document.getElementById("annotation-canvas");
   annCanvasEl.addEventListener("pointerdown", onPointerDown);
   annCanvasEl.addEventListener("pointermove", onPointerMove);

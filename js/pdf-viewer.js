@@ -112,6 +112,8 @@
   var fullscreenBtn = $("fullscreen-btn");
   var printBtn = $("print-btn");
   var downloadBtn = $("download-btn");
+  var toggleToolbarPosBtn = $("toggle-toolbar-pos-btn");
+  var viewerBody = $("viewer-body") || document.querySelector(".viewer-body");
 
   var searchToggleBtn = $("search-toggle-btn");
   var searchBar = $("search-bar");
@@ -1012,6 +1014,36 @@
   document.addEventListener("fullscreenchange", function () {
     fullscreenBtn.classList.toggle("is-active", !!document.fullscreenElement);
   });
+
+  /* ============ TOOLBAR POSITION (UP / DOWN) ============ */
+  function setToolbarPosition(pos) {
+    var isBottom = pos === "bottom";
+    if (viewerBody) {
+      viewerBody.classList.toggle("toolbar-bottom", isBottom);
+    }
+    if (toggleToolbarPosBtn) {
+      var title = isBottom ? "Move toolbar to top" : "Move toolbar to bottom";
+      toggleToolbarPosBtn.title = title;
+      toggleToolbarPosBtn.setAttribute("aria-label", title);
+    }
+    try {
+      localStorage.setItem("pdfmaster-toolbar-pos", isBottom ? "bottom" : "top");
+    } catch (e) {}
+  }
+
+  toggleToolbarPosBtn &&
+    toggleToolbarPosBtn.addEventListener("click", function () {
+      var isCurrentlyBottom =
+        viewerBody && viewerBody.classList.contains("toolbar-bottom");
+      setToolbarPosition(isCurrentlyBottom ? "top" : "bottom");
+    });
+
+  try {
+    var savedToolbarPos = localStorage.getItem("pdfmaster-toolbar-pos");
+    if (savedToolbarPos === "bottom") {
+      setToolbarPosition("bottom");
+    }
+  } catch (e) {}
 
   /* ============ INDEXEDDB RECOVERY ENGINE ============ */
   var DB_NAME = "pdfmaster_viewer_db";

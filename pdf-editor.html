@@ -448,7 +448,7 @@
 
       <section class="editor-wrap hidden" id="editor-wrap">
         <div class="container">
-          <div class="editor-shell">
+          <div class="editor-shell" id="editor-shell">
             <div
               id="mobile-warning-banner"
               style="
@@ -514,7 +514,7 @@
                 </svg>
               </button>
             </div>
-            <div class="editor-body">
+            <div class="editor-body" id="editor-body">
               <div class="toolbar" id="toolbar">
                 <!-- Restart/Start Over Group -->
                 <button
@@ -812,11 +812,33 @@
                   </button>
                 </div>
 
-                <!-- Spacer to push download to the far right -->
+                <!-- Spacer to push actions to the far right -->
                 <div
                   class="toolbar-spacer"
                   style="flex: 1; min-width: 16px"
                 ></div>
+
+                <!-- Fullscreen Action -->
+                <button
+                  class="tool-btn"
+                  id="fullscreen-btn"
+                  type="button"
+                  title="Fullscreen"
+                  aria-label="Toggle fullscreen"
+                >
+                  <svg
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <path
+                      d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"
+                    />
+                  </svg>
+                </button>
 
                 <!-- Download Primary Action -->
                 <button
@@ -837,6 +859,27 @@
                     <line x1="12" y1="15" x2="12" y2="3" />
                   </svg>
                   Download
+                </button>
+
+                <!-- Toolbar Position (Up / Down) -->
+                <button
+                  class="tool-btn"
+                  id="toggle-toolbar-pos-btn"
+                  type="button"
+                  title="Move toolbar to bottom"
+                  aria-label="Move toolbar to bottom"
+                >
+                  <svg
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <path d="M12 5v14" />
+                    <path d="m19 12-7 7-7-7" />
+                  </svg>
                 </button>
               </div>
 

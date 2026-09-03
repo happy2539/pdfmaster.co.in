@@ -1346,6 +1346,12 @@ body.viewer-active .tool-btn#start-over-btn:hover {
     width: 16px !important;
     height: 16px !important;
   }
+  body.viewer-active .toolbar .tool-btn#fullscreen-btn,
+  body.viewer-active .toolbar .tool-btn#print-btn,
+  body.viewer-active .toolbar .tool-btn#toggle-toolbar-pos-btn {
+    width: 40px !important;
+    height: 40px !important;
+  }
   body.viewer-active .toolbar-divider {
     height: 18px !important;
     margin: 0 4px !important;
@@ -1390,17 +1396,44 @@ body.viewer-active .tool-btn#start-over-btn:hover {
   outline: none;
 }
 body.viewer-active .tool-btn#fullscreen-btn,
-body.viewer-active .tool-btn#print-btn {
+body.viewer-active .tool-btn#print-btn,
+body.viewer-active .tool-btn#toggle-toolbar-pos-btn {
   border: 1px solid var(--border) !important;
   background: var(--surface) !important;
   width: 44px !important;
   height: 44px !important;
+  flex-shrink: 0 !important;
 }
 body.viewer-active .tool-btn#fullscreen-btn:hover,
-body.viewer-active .tool-btn#print-btn:hover {
+body.viewer-active .tool-btn#print-btn:hover,
+body.viewer-active .tool-btn#toggle-toolbar-pos-btn:hover {
   border-color: var(--accent) !important;
   color: var(--accent-text) !important;
   background: var(--accent-soft) !important;
+}
+
+/* Toolbar position toggle */
+.tool-btn#toggle-toolbar-pos-btn svg {
+  transition: transform 0.25s ease;
+  transform-origin: center;
+}
+.viewer-body.toolbar-bottom .tool-btn#toggle-toolbar-pos-btn svg {
+  transform: rotate(180deg);
+}
+
+/* Toolbar at bottom (change bar from up to down) */
+body.viewer-active .viewer-body.toolbar-bottom .toolbar {
+  order: 10 !important;
+  border-bottom: none !important;
+  border-top: 1px solid var(--border) !important;
+}
+body.viewer-active .viewer-body.toolbar-bottom .search-bar {
+  order: 9 !important;
+  border-bottom: none !important;
+  border-top: 1px solid var(--border) !important;
+}
+body.viewer-active .viewer-body.toolbar-bottom .canvas-stage {
+  order: 1 !important;
 }
 body.viewer-active .tool-btn.is-active {
   background: var(--accent-soft) !important;
