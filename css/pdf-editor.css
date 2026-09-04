@@ -889,6 +889,110 @@ html[data-theme="dark"] .theme-toggle .icon-moon {
   line-height: 1;
 }
 
+/* Stroke & Eraser Size Previews */
+.tool-options .size-preview-bubble {
+  width: 32px;
+  height: 32px;
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--surface-2, #f8fafc);
+  border: 1px solid var(--border, #e2e8f0);
+  border-radius: 8px;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.04);
+}
+
+.tool-options .size-preview-circle.stroke-preview-circle {
+  display: block;
+  border-radius: 50%;
+  background: var(--accent, #2563eb);
+  transition: width 0.08s ease, height 0.08s ease, background 0.15s ease, opacity 0.15s ease;
+  flex: none;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.18);
+}
+
+.tool-options .eraser-preview-box {
+  width: 100%;
+  height: 68px;
+  background: var(--surface-2, #f8fafc);
+  border: 1px dashed var(--border, #cbd5e1);
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+  box-sizing: border-box;
+  margin-top: 4px;
+}
+
+.tool-options .eraser-preview-circle {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: 1.5px solid #e8372a;
+  background: rgba(232, 55, 42, 0.14);
+  color: #e8372a;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  transition: width 0.08s ease, height 0.08s ease, border-color 0.15s ease, background 0.15s ease, color 0.15s ease;
+  box-sizing: border-box;
+  flex: none;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+}
+
+.tool-options .eraser-preview-circle.is-pixel {
+  border-color: #2563eb;
+  background: rgba(37, 99, 235, 0.14);
+  color: #2563eb;
+}
+
+.tool-options .eraser-preview-crosshair {
+  width: 5px;
+  height: 5px;
+  position: relative;
+  pointer-events: none;
+  opacity: 0.7;
+}
+
+.tool-options .eraser-preview-crosshair::before,
+.tool-options .eraser-preview-crosshair::after {
+  content: "";
+  position: absolute;
+  background: currentColor;
+}
+
+.tool-options .eraser-preview-crosshair::before {
+  left: 2px;
+  top: 0;
+  width: 1px;
+  height: 5px;
+}
+
+.tool-options .eraser-preview-crosshair::after {
+  left: 0;
+  top: 2px;
+  width: 5px;
+  height: 1px;
+}
+
+.tool-options .eraser-preview-badge {
+  position: absolute;
+  bottom: 4px;
+  right: 6px;
+  font-size: 0.62rem;
+  font-weight: 700;
+  color: var(--text-faint);
+  letter-spacing: 0.04em;
+  background: rgba(125, 125, 125, 0.1);
+  padding: 1px 5px;
+  border-radius: 4px;
+  line-height: 1.2;
+}
+
 /* Split row for Text (Font size + Formatting) */
 .tool-options .opt-row-split {
   display: grid;

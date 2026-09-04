@@ -1561,6 +1561,40 @@
       ctx.restore();
     }
     if (
+      (currentTool === "pen" || currentTool === "highlighter") &&
+      strokePreviewPoint &&
+      !isPointerDown
+    ) {
+      ctx.save();
+      ctx.globalCompositeOperation = "source-over";
+      ctx.beginPath();
+      var sRad = Math.max(1.5, (currentStrokeWidth / 2) * currentScale);
+      ctx.arc(
+        strokePreviewPoint.x * currentScale,
+        strokePreviewPoint.y * currentScale,
+        sRad,
+        0,
+        Math.PI * 2,
+      );
+      if (currentTool === "highlighter") {
+        ctx.fillStyle = currentColor;
+        ctx.globalAlpha = 0.45;
+        ctx.fill();
+        ctx.strokeStyle = currentColor;
+        ctx.globalAlpha = 0.9;
+        ctx.lineWidth = 1;
+        ctx.stroke();
+      } else {
+        ctx.fillStyle = currentColor;
+        ctx.globalAlpha = 0.85;
+        ctx.fill();
+        ctx.strokeStyle = "#ffffff";
+        ctx.lineWidth = 0.8;
+        ctx.stroke();
+      }
+      ctx.restore();
+    }
+    if (
       (currentTool === "stroke-eraser" || currentTool === "pixel-eraser") &&
       eraserPreviewPoint
     ) {
@@ -2342,6 +2376,7 @@
   var erasedAny = false;
   var lastErasePoint = null;
   var eraserPreviewPoint = null;
+  var strokePreviewPoint = null;
 
   function updateGroupButtons(tool) {
     var selectGroupBtn = document.getElementById("select-group-btn");
@@ -3265,8 +3300,34 @@
     var actionsRow = document.querySelector(".opt-actions-row");
     if (actionsRow) actionsRow.classList.add("hidden");
 
+    updateSizePreviews();
     positionToolOptionsPanel("tool", activeTool);
   }
+
+  function updateSizePreviews() {
+    var strokeCircle = document.getElementById("stroke-preview-circle");
+    if (strokeCircle) {
+      var w = Math.max(1, currentStrokeWidth);
+      strokeCircle.style.width = w + "px";
+      strokeCircle.style.height = w + "px";
+      strokeCircle.style.background = currentColor;
+      strokeCircle.style.opacity = currentTool === "highlighter" ? "0.45" : "1";
+    }
+
+    var eraserCircle = document.getElementById("eraser-preview-circle");
+    if (eraserCircle) {
+      var sz = Math.max(6, Math.min(60, eraserSize));
+      eraserCircle.style.width = sz + "px";
+      eraserCircle.style.height = sz + "px";
+      var isPixel = currentTool === "pixel-eraser";
+      eraserCircle.classList.toggle("is-pixel", isPixel);
+      var badge = document.getElementById("eraser-preview-badge");
+      if (badge) {
+        badge.textContent = sz + "px";
+      }
+    }
+  }
+
   function syncOptionInputs() {
     document.getElementById("stroke-width").value = currentStrokeWidth;
     document.getElementById("stroke-width-val").textContent =
@@ -3280,6 +3341,8 @@
     if (eraserVal) {
       eraserVal.textContent = eraserSize + "px";
     }
+
+    updateSizePreviews();
 
     var fsInput = document.getElementById("font-size");
     if (fsInput) {
@@ -3795,6 +3858,8 @@
     }
 
     hideToolOptionsPanel();
+    strokePreviewPoint = null;
+    eraserPreviewPoint = null;
 
     if (currentTool === "lasso") {
       liveLasso = [{ x: pt.x, y: pt.y }];
@@ -3864,10 +3929,18 @@
     if (!isPointerDown) {
       if (currentTool === "stroke-eraser" || currentTool === "pixel-eraser") {
         eraserPreviewPoint = pt;
+        if (strokePreviewPoint) strokePreviewPoint = null;
         requestRedraw();
-      } else if (eraserPreviewPoint) {
-        eraserPreviewPoint = null;
+      } else if (currentTool === "pen" || currentTool === "highlighter") {
+        strokePreviewPoint = pt;
+        if (eraserPreviewPoint) eraserPreviewPoint = null;
         requestRedraw();
+      } else {
+        if (eraserPreviewPoint || strokePreviewPoint) {
+          eraserPreviewPoint = null;
+          strokePreviewPoint = null;
+          requestRedraw();
+        }
       }
       updateCursorStyle(e);
       return;
@@ -5070,6 +5143,7 @@
       eraserSize = parseInt(e.target.value, 10) || 20;
       var valEl = document.getElementById("eraser-size-val");
       if (valEl) valEl.textContent = eraserSize + "px";
+      updateSizePreviews();
       requestRedraw();
     });
   }
@@ -5089,6 +5163,7 @@
     .addEventListener("input", function (e) {
       currentStrokeWidth = parseInt(e.target.value, 10);
       syncOptionInputs();
+      requestRedraw();
     });
   var fontSizeInput = document.getElementById("font-size");
   if (fontSizeInput) {
@@ -5791,8 +5866,9 @@
   annCanvasEl.addEventListener("pointerdown", onPointerDown);
   annCanvasEl.addEventListener("pointermove", onPointerMove);
   annCanvasEl.addEventListener("pointerleave", function () {
-    if (eraserPreviewPoint) {
+    if (eraserPreviewPoint || strokePreviewPoint) {
       eraserPreviewPoint = null;
+      strokePreviewPoint = null;
       requestRedraw();
     }
   });
