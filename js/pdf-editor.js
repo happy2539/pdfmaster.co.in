@@ -43,6 +43,7 @@
     pendingPlaceable = null;
   var selectedGroup = null,
     groupDragOrigins = null,
+    groupOrigBounds = null,
     lastSelectTool = "select";
   var librariesLoaded = false,
     librariesLoading = null;
@@ -412,6 +413,9 @@
         .promise.then(function () {
           if (myToken !== renderToken) return; // a newer page render won the race
           redrawAnnotations();
+          if (selectedAnnotation || selectedGroup) {
+            positionToolOptionsPanel();
+          }
           document.getElementById("page-indicator").textContent =
             "Page " + currentPage + " of " + numPages;
           document.getElementById("prev-page").disabled = currentPage <= 1;
@@ -877,36 +881,127 @@
     };
   }
 
-  function drawGroupSelectionUI(ctx, anns, scale) {
+  function getGroupSelectionHandles(anns, scale) {
     var b = getGroupBounds(anns);
     var pad = 10;
-    var x = b.x * scale - pad;
-    var y = b.y * scale - pad;
-    var w = Math.max(b.w * scale + pad * 2, 24);
-    var h = Math.max(b.h * scale + pad * 2, 24);
+    var bx = b.x * scale - pad,
+      by = b.y * scale - pad,
+      bw = Math.max(b.w * scale + pad * 2, 24),
+      bh = Math.max(b.h * scale + pad * 2, 24);
+    var deleteBtn = { x: bx + bw + 10, y: by - 10, r: 12 };
+    var rotateBtn = { x: bx + bw / 2, y: by - 28, r: 10 };
+
+    return {
+      box: { x: bx, y: by, w: bw, h: bh },
+      deleteBtn: deleteBtn,
+      rotateBtn: rotateBtn,
+      // Corners
+      tl: { x: bx, y: by, size: 9 },
+      tr: { x: bx + bw, y: by, size: 9 },
+      br: { x: bx + bw, y: by + bh, size: 9 },
+      bl: { x: bx, y: by + bh, size: 9 },
+      // Sides
+      t: { x: bx + bw / 2, y: by, size: 9 },
+      b: { x: bx + bw / 2, y: by + bh, size: 9 },
+      l: { x: bx, y: by + bh / 2, size: 9 },
+      r: { x: bx + bw, y: by + bh / 2, size: 9 },
+    };
+  }
+
+  function drawGroupSelectionUI(ctx, anns, scale) {
+    var handles = getGroupSelectionHandles(anns, scale);
+    var b = handles.box;
 
     ctx.save();
     ctx.strokeStyle = "#2563eb";
     ctx.setLineDash([5, 4]);
     ctx.lineWidth = 1.8;
-    ctx.strokeRect(x, y, w, h);
+    ctx.strokeRect(b.x, b.y, b.w, b.h);
     ctx.setLineDash([]);
 
-    // Delete button for group
-    var delX = x + w + 10;
-    var delY = y - 10;
+    // Stalk line to rotate handle
     ctx.beginPath();
-    ctx.arc(delX, delY, 12, 0, Math.PI * 2);
+    ctx.moveTo(b.x + b.w / 2, b.y);
+    ctx.lineTo(handles.rotateBtn.x, handles.rotateBtn.y + handles.rotateBtn.r);
+    ctx.strokeStyle = "#10b981";
+    ctx.lineWidth = 1.5;
+    ctx.stroke();
+
+    // Rotate handle circle
+    ctx.beginPath();
+    ctx.arc(
+      handles.rotateBtn.x,
+      handles.rotateBtn.y,
+      handles.rotateBtn.r,
+      0,
+      Math.PI * 2,
+    );
+    ctx.fillStyle = "#10b981";
+    ctx.fill();
+    ctx.strokeStyle = "#fff";
+    ctx.lineWidth = 1.6;
+    ctx.stroke();
+
+    // Rotate icon inside circle
+    ctx.beginPath();
+    ctx.arc(
+      handles.rotateBtn.x,
+      handles.rotateBtn.y,
+      4.5,
+      0.2 * Math.PI,
+      1.5 * Math.PI,
+    );
+    ctx.strokeStyle = "#fff";
+    ctx.lineWidth = 1.5;
+    ctx.stroke();
+    var ahX = handles.rotateBtn.x + 4.5 * Math.cos(1.5 * Math.PI);
+    var ahY = handles.rotateBtn.y + 4.5 * Math.sin(1.5 * Math.PI);
+    ctx.beginPath();
+    ctx.moveTo(ahX - 3, ahY - 1);
+    ctx.lineTo(ahX, ahY);
+    ctx.lineTo(ahX - 1, ahY + 3);
+    ctx.stroke();
+
+    // Delete button for group
+    ctx.beginPath();
+    ctx.arc(
+      handles.deleteBtn.x,
+      handles.deleteBtn.y,
+      handles.deleteBtn.r,
+      0,
+      Math.PI * 2,
+    );
     ctx.fillStyle = "#e8372a";
     ctx.fill();
     ctx.strokeStyle = "#fff";
     ctx.lineWidth = 1.6;
     ctx.beginPath();
-    ctx.moveTo(delX - 4, delY - 4);
-    ctx.lineTo(delX + 4, delY + 4);
-    ctx.moveTo(delX + 4, delY - 4);
-    ctx.lineTo(delX - 4, delY + 4);
+    ctx.moveTo(handles.deleteBtn.x - 4, handles.deleteBtn.y - 4);
+    ctx.lineTo(handles.deleteBtn.x + 4, handles.deleteBtn.y + 4);
+    ctx.moveTo(handles.deleteBtn.x + 4, handles.deleteBtn.y - 4);
+    ctx.lineTo(handles.deleteBtn.x - 4, handles.deleteBtn.y + 4);
     ctx.stroke();
+
+    // Resize handles
+    var list = [
+      handles.tl,
+      handles.tr,
+      handles.br,
+      handles.bl,
+      handles.t,
+      handles.b,
+      handles.l,
+      handles.r,
+    ];
+    ctx.fillStyle = "#fff";
+    ctx.strokeStyle = "#2563eb";
+    ctx.lineWidth = 1.6;
+    list.forEach(function (h) {
+      ctx.beginPath();
+      ctx.rect(h.x - 5, h.y - 5, 10, 10);
+      ctx.fill();
+      ctx.stroke();
+    });
 
     // Selection badge
     var badgeText = anns.length + " items";
@@ -914,8 +1009,8 @@
     var textWidth = ctx.measureText(badgeText).width;
     var badgeW = textWidth + 12;
     var badgeH = 20;
-    var badgeX = x;
-    var badgeY = y - 28;
+    var badgeX = b.x;
+    var badgeY = b.y - 28;
     ctx.fillStyle = "#2563eb";
     ctx.beginPath();
     if (ctx.roundRect) {
@@ -1010,6 +1105,39 @@
       l: { x: x, y: y + h / 2, size: 9 },
       r: { x: x + w, y: y + h / 2, size: 9 },
     };
+  }
+
+  function getElementAABB(ann, scale) {
+    var handles = getSelectionHandles(ann, scale);
+    var b = handles.box;
+    var rot = (ann.rotation || 0) * (Math.PI / 180);
+    if (!rot) return b;
+    var center = getCenter(ann);
+    var cx = center.x * scale;
+    var cy = center.y * scale;
+    var corners = [
+      { x: b.x, y: b.y },
+      { x: b.x + b.w, y: b.y },
+      { x: b.x + b.w, y: b.y + b.h },
+      { x: b.x, y: b.y + b.h },
+    ];
+    var cos = Math.cos(rot);
+    var sin = Math.sin(rot);
+    var minX = Infinity,
+      maxX = -Infinity,
+      minY = Infinity,
+      maxY = -Infinity;
+    for (var i = 0; i < corners.length; i++) {
+      var dx = corners[i].x - cx;
+      var dy = corners[i].y - cy;
+      var rx = cx + dx * cos - dy * sin;
+      var ry = cy + dx * sin + dy * cos;
+      if (rx < minX) minX = rx;
+      if (rx > maxX) maxX = rx;
+      if (ry < minY) minY = ry;
+      if (ry > maxY) maxY = ry;
+    }
+    return { x: minX, y: minY, w: maxX - minX, h: maxY - minY };
   }
 
   /* ---------- drawing ---------- */
@@ -1712,6 +1840,79 @@
     }
   }
 
+  function applyGroupRotate(groupItems, center, deltaRad) {
+    var cosA = Math.cos(deltaRad);
+    var sinA = Math.sin(deltaRad);
+    var deltaDeg = (deltaRad * 180) / Math.PI;
+
+    groupItems.forEach(function (item) {
+      var ann = findAnnotation(currentPage, item.id);
+      if (!ann) return;
+      var origin = item.origin;
+
+      if (ann.type === "path") {
+        ann.points = (origin.points || []).map(function (p) {
+          var dx = p.x - center.x;
+          var dy = p.y - center.y;
+          return {
+            x: center.x + dx * cosA - dy * sinA,
+            y: center.y + dx * sinA + dy * cosA,
+          };
+        });
+      } else if (ann.type === "line" || ann.type === "arrow") {
+        var dx1 = origin.x1 - center.x;
+        var dy1 = origin.y1 - center.y;
+        ann.x1 = center.x + dx1 * cosA - dy1 * sinA;
+        ann.y1 = center.y + dx1 * sinA + dy1 * cosA;
+
+        var dx2 = origin.x2 - center.x;
+        var dy2 = origin.y2 - center.y;
+        ann.x2 = center.x + dx2 * cosA - dy2 * sinA;
+        ann.y2 = center.y + dx2 * sinA + dy2 * cosA;
+      } else if (ann.type === "ellipse") {
+        var dx = origin.cx - center.x;
+        var dy = origin.cy - center.y;
+        ann.cx = center.x + dx * cosA - dy * sinA;
+        ann.cy = center.y + dx * sinA + dy * cosA;
+        ann.rotation = Math.round(((origin.rotation || 0) + deltaDeg) % 360);
+      } else {
+        var oc = getCenter(origin);
+        var dx = oc.x - center.x;
+        var dy = oc.y - center.y;
+        var nc = {
+          x: center.x + dx * cosA - dy * sinA,
+          y: center.y + dx * sinA + dy * cosA,
+        };
+        var b = getBounds(origin);
+        ann.x = nc.x - b.w / 2;
+        ann.y = nc.y - b.h / 2;
+        ann.rotation = Math.round(((origin.rotation || 0) + deltaDeg) % 360);
+      }
+    });
+  }
+
+  function applyGroupResize(groupItems, origBounds, newBox) {
+    if (origBounds.w === 0 || origBounds.h === 0) return;
+    var ratioX = newBox.w / origBounds.w;
+    var ratioY = newBox.h / origBounds.h;
+
+    groupItems.forEach(function (item) {
+      var ann = findAnnotation(currentPage, item.id);
+      if (!ann) return;
+      var origin = item.origin;
+      var b = getBounds(origin);
+
+      var annNewBox = {
+        x: newBox.x + (b.x - origBounds.x) * ratioX,
+        y: newBox.y + (b.y - origBounds.y) * ratioY,
+        w: Math.max(2, b.w * ratioX),
+        h: Math.max(2, b.h * ratioY),
+      };
+
+      applyBoundsResize(ann, origin, annNewBox);
+    });
+  }
+
   /* ---------- text tool ---------- */
   function finalizeTextBox(box) {
     if (!box.parentNode) {
@@ -1733,12 +1934,15 @@
         }
         if (currentTool === "select") {
           selectedAnnotation = { page: currentPage, id: ann.id };
+          updateToolOptionsPanel("select");
         } else {
           selectedAnnotation = null;
+          hideToolOptionsPanel();
         }
       } else {
         pushHistory();
         deleteAnnotation(currentPage, ann.id);
+        hideToolOptionsPanel();
       }
       redrawAnnotations();
     } else {
@@ -1759,6 +1963,7 @@
         };
         addAnnotation(currentPage, ann);
         selectedAnnotation = null;
+        hideToolOptionsPanel();
         redrawAnnotations();
       }
     }
@@ -1766,6 +1971,7 @@
 
   function startTextEditingOf(ann) {
     finalizeAnyOpenTextBox();
+    hideToolOptionsPanel();
     var frame = document.getElementById("canvas-frame");
     var box = document.createElement("textarea");
     box.className = "text-edit-box";
@@ -1790,6 +1996,7 @@
 
     ann.isEditing = true;
     selectedAnnotation = null;
+    hideToolOptionsPanel();
     redrawAnnotations();
 
     window._activeTextBox = box;
@@ -1832,26 +2039,67 @@
     if (selectedGroup && selectedGroup.page === currentPage) {
       var groupAnns = getGroupAnnotations();
       if (groupAnns.length > 0) {
-        var gb = getGroupBounds(groupAnns);
-        var pad = 10;
-        var gbx = gb.x * currentScale - pad;
-        var gby = gb.y * currentScale - pad;
-        var gbw = Math.max(gb.w * currentScale + pad * 2, 24);
-        var gbh = Math.max(gb.h * currentScale + pad * 2, 24);
-        var delBtn = {
-          x: gbx + gbw + 10,
-          y: gby - 10,
-          r: 12,
-        };
-        if (Math.hypot(pt.cx - delBtn.x, pt.cy - delBtn.y) <= delBtn.r + 4) {
+        var handles = getGroupSelectionHandles(groupAnns, currentScale);
+
+        if (
+          Math.hypot(pt.cx - handles.deleteBtn.x, pt.cy - handles.deleteBtn.y) <=
+          handles.deleteBtn.r + 4
+        ) {
           canvas.style.cursor = "pointer";
           return;
         }
+
         if (
-          pt.cx >= gbx &&
-          pt.cx <= gbx + gbw &&
-          pt.cy >= gby &&
-          pt.cy <= gby + gbh
+          Math.hypot(pt.cx - handles.rotateBtn.x, pt.cy - handles.rotateBtn.y) <=
+          handles.rotateBtn.r + 4
+        ) {
+          canvas.style.cursor = "grab";
+          return;
+        }
+
+        if (
+          Math.hypot(pt.cx - handles.tl.x, pt.cy - handles.tl.y) <=
+            handles.tl.size + 4 ||
+          Math.hypot(pt.cx - handles.br.x, pt.cy - handles.br.y) <=
+            handles.br.size + 4
+        ) {
+          canvas.style.cursor = "nwse-resize";
+          return;
+        }
+        if (
+          Math.hypot(pt.cx - handles.tr.x, pt.cy - handles.tr.y) <=
+            handles.tr.size + 4 ||
+          Math.hypot(pt.cx - handles.bl.x, pt.cy - handles.bl.y) <=
+            handles.bl.size + 4
+        ) {
+          canvas.style.cursor = "nesw-resize";
+          return;
+        }
+        if (
+          Math.hypot(pt.cx - handles.t.x, pt.cy - handles.t.y) <=
+            handles.t.size + 4 ||
+          Math.hypot(pt.cx - handles.b.x, pt.cy - handles.b.y) <=
+            handles.b.size + 4
+        ) {
+          canvas.style.cursor = "ns-resize";
+          return;
+        }
+        if (
+          Math.hypot(pt.cx - handles.l.x, pt.cy - handles.l.y) <=
+            handles.l.size + 4 ||
+          Math.hypot(pt.cx - handles.r.x, pt.cy - handles.r.y) <=
+            handles.r.size + 4
+        ) {
+          canvas.style.cursor = "ew-resize";
+          return;
+        }
+
+        var b = handles.box;
+        if (
+          pt.cx >= b.x &&
+          pt.cx <= b.x + b.w &&
+          pt.cy >= b.y &&
+          pt.cy <= b.y + b.h
         ) {
           canvas.style.cursor = "move";
           return;
@@ -1984,6 +2232,7 @@
   }
   function startTextEditing(pt) {
     finalizeAnyOpenTextBox();
+    hideToolOptionsPanel();
     var frame = document.getElementById("canvas-frame");
     var box = document.createElement("textarea");
     box.className = "text-edit-box";
@@ -2174,6 +2423,7 @@
     dragStartAngle = 0;
     groupDragOrigins = null;
     if (tool !== "select") {
+      selectedAnnotation = null;
       selectedGroup = null;
     }
     if (tool !== "image" && tool !== "signature") {
@@ -2670,26 +2920,226 @@
     closeCropModal();
   }
 
-  /* ---------- tool switching ---------- */
+  var CONFIGURABLE_TOOLS = [
+    "pen",
+    "highlighter",
+    "rect",
+    "ellipse",
+    "line",
+    "arrow",
+    "text",
+    "stroke-eraser",
+    "pixel-eraser",
+  ];
+
+  /* ---------- tool options panel lifecycle ---------- */
+  function hideToolOptionsPanel() {
+    var panel = document.getElementById("tool-options");
+    if (panel) {
+      panel.classList.remove("is-open");
+    }
+  }
+
+  function positionToolOptionsPanel(mode, tool) {
+    var panel = document.getElementById("tool-options");
+    var editorBody =
+      document.getElementById("editor-body") ||
+      document.querySelector(".editor-body");
+    if (!panel || !editorBody) return;
+
+    if (!mode) {
+      if (
+        (selectedAnnotation && selectedAnnotation.page === currentPage) ||
+        (selectedGroup && selectedGroup.page === currentPage)
+      ) {
+        mode = "element";
+      } else if (CONFIGURABLE_TOOLS.indexOf(currentTool) !== -1) {
+        mode = "tool";
+        tool = currentTool;
+      } else {
+        hideToolOptionsPanel();
+        return;
+      }
+    }
+
+    var bodyRect = editorBody.getBoundingClientRect();
+
+    if (mode === "element") {
+      var b = null;
+      if (selectedAnnotation && selectedAnnotation.page === currentPage) {
+        var ann = findAnnotation(currentPage, selectedAnnotation.id);
+        if (ann && !isAnnotationEmpty(ann)) {
+          b = getElementAABB(ann, currentScale);
+        }
+      } else if (selectedGroup && selectedGroup.page === currentPage) {
+        var groupAnns = getGroupAnnotations();
+        if (groupAnns.length > 0) {
+          var handles = getGroupSelectionHandles(groupAnns, currentScale);
+          b = handles.box;
+        }
+      }
+
+      if (!b) {
+        hideToolOptionsPanel();
+        return;
+      }
+
+      var canvasEl = document.getElementById("annotation-canvas");
+      if (!canvasEl) {
+        hideToolOptionsPanel();
+        return;
+      }
+
+      var canvasRect = canvasEl.getBoundingClientRect();
+      var elemX = canvasRect.left - bodyRect.left + b.x;
+      var elemY = canvasRect.top - bodyRect.top + b.y;
+
+      var canvasStage = document.getElementById("canvas-stage");
+      var stageRect = canvasStage ? canvasStage.getBoundingClientRect() : bodyRect;
+      var visibleTop = Math.max(bodyRect.top, stageRect.top) - bodyRect.top + 8;
+      var visibleBottom = Math.min(bodyRect.bottom, stageRect.bottom) - bodyRect.top - 8;
+
+      // If element is scrolled out of stage view, hide panel
+      if (elemY + b.h < visibleTop - 20 || elemY > visibleBottom + 20) {
+        panel.style.visibility = "hidden";
+        return;
+      }
+
+      panel.style.visibility = "hidden";
+      panel.classList.add("is-open");
+      var panelW = panel.offsetWidth || 292;
+      var panelH = panel.offsetHeight || 190;
+      panel.style.visibility = "";
+
+      // Center horizontally relative to element
+      var left = elemX + b.w / 2 - panelW / 2;
+      left = Math.max(10, Math.min(bodyRect.width - panelW - 10, left));
+
+      // Place below element (with 14px gap for selection handles)
+      var gap = 14;
+      var top = elemY + b.h + gap;
+
+      // If overflows bottom of visible canvas stage, flip above
+      if (top + panelH > visibleBottom) {
+        var topAbove = elemY - panelH - gap;
+        if (topAbove >= visibleTop) {
+          top = topAbove;
+        } else {
+          top = Math.max(visibleTop, visibleBottom - panelH);
+        }
+      }
+
+      panel.style.left = Math.round(left) + "px";
+      panel.style.top = Math.round(top) + "px";
+    } else if (mode === "tool") {
+      var targetTool = tool || currentTool;
+      var anchorEl = null;
+
+      if (targetTool === "pen" || targetTool === "highlighter") {
+        anchorEl =
+          document.getElementById("draw-group-btn") ||
+          document.getElementById("draw-group-wrap");
+      } else if (
+        ["rect", "ellipse", "line", "arrow"].indexOf(targetTool) !== -1
+      ) {
+        anchorEl =
+          document.getElementById("shapes-group-btn") ||
+          document.getElementById("shapes-group-wrap");
+      } else if (
+        targetTool === "stroke-eraser" ||
+        targetTool === "pixel-eraser"
+      ) {
+        anchorEl =
+          document.getElementById("eraser-group-btn") ||
+          document.getElementById("eraser-group-wrap");
+      } else if (targetTool === "select" || targetTool === "lasso") {
+        anchorEl =
+          document.getElementById("select-group-btn") ||
+          document.getElementById("select-group-wrap");
+      } else {
+        anchorEl = document.querySelector(
+          '.toolbar .tool-btn[data-tool="' + targetTool + '"]'
+        );
+      }
+
+      if (!anchorEl) {
+        var toolItem = document.querySelector(
+          '.toolbar [data-tool="' + targetTool + '"]'
+        );
+        anchorEl =
+          (toolItem && toolItem.closest(".tool-group-wrap")) || toolItem;
+      }
+
+      if (!anchorEl) {
+        hideToolOptionsPanel();
+        return;
+      }
+
+      panel.style.visibility = "hidden";
+      panel.classList.add("is-open");
+      var panelW = panel.offsetWidth || 292;
+      var panelH = panel.offsetHeight || 190;
+      panel.style.visibility = "";
+
+      var anchorRect = anchorEl.getBoundingClientRect();
+      var isToolbarBottom =
+        editorBody.classList.contains("toolbar-bottom") ||
+        anchorRect.top > bodyRect.top + bodyRect.height / 2;
+
+      var left =
+        anchorRect.left + anchorRect.width / 2 - bodyRect.left - panelW / 2;
+      left = Math.max(10, Math.min(bodyRect.width - panelW - 10, left));
+
+      var top;
+      if (isToolbarBottom) {
+        top = anchorRect.top - bodyRect.top - panelH - 8;
+        if (top < 10) top = 10;
+      } else {
+        top = anchorRect.bottom - bodyRect.top + 8;
+        if (top + panelH > bodyRect.height - 10) {
+          top = Math.max(10, bodyRect.height - panelH - 10);
+        }
+      }
+
+      panel.style.left = Math.round(left) + "px";
+      panel.style.top = Math.round(top) + "px";
+    }
+  }
+
   function updateToolOptionsPanel(tool) {
     var panel = document.getElementById("tool-options");
+    if (!panel) return;
+
+    var activeTool = tool || currentTool;
     var showColor = false;
     var showWidth = false;
     var showFont = false;
     var showCrop = false;
     var showRotation = false;
     var showLayer = false;
+    var showEraser = false;
+    var hasSelection = false;
 
-    if (tool === "select") {
+    if (
+      (selectedGroup && selectedGroup.page === currentPage) ||
+      (selectedAnnotation && selectedAnnotation.page === currentPage)
+    ) {
       if (selectedGroup && selectedGroup.page === currentPage) {
-        showColor = true;
-        showWidth = true;
+        var groupAnns = getGroupAnnotations();
+        if (groupAnns.length > 0) {
+          hasSelection = true;
+          showColor = true;
+          showWidth = true;
+          showRotation = false;
+          showLayer = false;
+        }
       } else if (
         selectedAnnotation &&
         selectedAnnotation.page === currentPage
       ) {
         var ann = findAnnotation(currentPage, selectedAnnotation.id);
         if (ann && !isAnnotationEmpty(ann)) {
+          hasSelection = true;
           showRotation = true;
           showLayer = true;
           if (ann.type === "text") {
@@ -2703,96 +3153,133 @@
           }
         }
       }
-    } else {
-      showColor =
-        [
-          "text",
-          "pen",
-          "highlighter",
-          "rect",
-          "ellipse",
-          "line",
-          "arrow",
-        ].indexOf(tool) !== -1;
-      showWidth =
-        ["pen", "highlighter", "rect", "ellipse", "line", "arrow"].indexOf(
-          tool,
-        ) !== -1;
-      showFont = tool === "text";
-    }
-    var showEraser = tool === "stroke-eraser" || tool === "pixel-eraser";
-
-    panel.classList.toggle(
-      "is-open",
-      showColor ||
-        showWidth ||
-        showFont ||
-        showCrop ||
-        showRotation ||
-        showLayer ||
-        showEraser,
-    );
-    document.getElementById("opt-color").classList.toggle("hidden", !showColor);
-    document.getElementById("opt-width").classList.toggle("hidden", !showWidth);
-    var eraserOpt = document.getElementById("opt-eraser");
-    if (eraserOpt) {
-      eraserOpt.classList.toggle("hidden", !showEraser);
-      var eraserInput = document.getElementById("eraser-size");
-      var eraserVal = document.getElementById("eraser-size-val");
-      if (eraserInput) eraserInput.value = eraserSize;
-      if (eraserVal) eraserVal.textContent = eraserSize + "px";
-    }
-    document
-      .getElementById("opt-fontsize")
-      .classList.toggle("hidden", !showFont);
-
-    var formattingOpt = document.getElementById("opt-formatting");
-    if (formattingOpt) {
-      formattingOpt.classList.toggle("hidden", !showFont);
     }
 
-    var cropOpt = document.getElementById("opt-crop");
-    if (cropOpt) {
-      cropOpt.classList.toggle("hidden", !showCrop);
-    }
+    if (hasSelection) {
+      // Element selected: show options anchored below the element
+      var colorOpt = document.getElementById("opt-color");
+      if (colorOpt) colorOpt.classList.toggle("hidden", !showColor);
 
-    var rotationOpt = document.getElementById("opt-rotation");
-    if (rotationOpt) {
-      rotationOpt.classList.toggle("hidden", !showRotation);
-      if (showRotation && selectedAnnotation) {
-        var selAnn = findAnnotation(currentPage, selectedAnnotation.id);
-        if (selAnn) {
-          var rotInput = document.getElementById("rotation-val");
-          if (rotInput) rotInput.value = Math.round(selAnn.rotation || 0);
+      var widthOpt = document.getElementById("opt-width");
+      if (widthOpt) widthOpt.classList.toggle("hidden", !showWidth);
+
+      var textControls = document.getElementById("opt-text-controls");
+      if (textControls) textControls.classList.toggle("hidden", !showFont);
+
+      var fontSizeOpt = document.getElementById("opt-fontsize");
+      if (fontSizeOpt) fontSizeOpt.classList.toggle("hidden", !showFont);
+
+      var formattingOpt = document.getElementById("opt-formatting");
+      if (formattingOpt) formattingOpt.classList.toggle("hidden", !showFont);
+
+      var cropOpt = document.getElementById("opt-crop");
+      if (cropOpt) cropOpt.classList.toggle("hidden", !showCrop);
+
+      var eraserOpt = document.getElementById("opt-eraser");
+      if (eraserOpt) eraserOpt.classList.add("hidden");
+
+      var actionsRow = document.querySelector(".opt-actions-row");
+      var showActions = showRotation || showLayer || hasSelection;
+      if (actionsRow) actionsRow.classList.toggle("hidden", !showActions);
+
+      var rotationOpt = document.getElementById("opt-rotation");
+      if (rotationOpt) {
+        rotationOpt.classList.toggle("hidden", !showRotation);
+        if (showRotation && selectedAnnotation) {
+          var selAnn = findAnnotation(currentPage, selectedAnnotation.id);
+          if (selAnn) {
+            var rotInput = document.getElementById("rotation-val");
+            if (rotInput) rotInput.value = Math.round(selAnn.rotation || 0);
+          }
         }
       }
-    }
 
-    var layerOpt = document.getElementById("opt-layer");
-    if (layerOpt) {
-      layerOpt.classList.toggle("hidden", !showLayer);
-      if (showLayer && selectedAnnotation) {
-        var list = annotationsByPage[currentPage] || [];
-        var idx = getAnnotationIndex(currentPage, selectedAnnotation.id);
-        var isAtFront = idx === -1 || idx === list.length - 1;
-        var isAtBack = idx === -1 || idx === 0;
+      var layerOpt = document.getElementById("opt-layer");
+      if (layerOpt) {
+        layerOpt.classList.toggle("hidden", !showLayer);
+        if (showLayer && selectedAnnotation) {
+          var list = annotationsByPage[currentPage] || [];
+          var idx = getAnnotationIndex(currentPage, selectedAnnotation.id);
+          var isAtFront = idx === -1 || idx === list.length - 1;
+          var isAtBack = idx === -1 || idx === 0;
 
-        var toFrontBtn = document.getElementById("layer-to-front-btn");
-        var fwdBtn = document.getElementById("layer-forward-btn");
-        var bwdBtn = document.getElementById("layer-backward-btn");
-        var toBackBtn = document.getElementById("layer-to-back-btn");
+          var toFrontBtn = document.getElementById("layer-to-front-btn");
+          var fwdBtn = document.getElementById("layer-forward-btn");
+          var bwdBtn = document.getElementById("layer-backward-btn");
+          var toBackBtn = document.getElementById("layer-to-back-btn");
 
-        if (toFrontBtn) toFrontBtn.disabled = isAtFront;
-        if (fwdBtn) fwdBtn.disabled = isAtFront;
-        if (bwdBtn) bwdBtn.disabled = isAtBack;
-        if (toBackBtn) toBackBtn.disabled = isAtBack;
+          if (toFrontBtn) toFrontBtn.disabled = isAtFront;
+          if (fwdBtn) fwdBtn.disabled = isAtFront;
+          if (bwdBtn) bwdBtn.disabled = isAtBack;
+          if (toBackBtn) toBackBtn.disabled = isAtBack;
+        }
       }
+
+      positionToolOptionsPanel("element");
+      return;
     }
+
+    // No element selection: check if a configurable drawing/editing tool is selected
+    if (CONFIGURABLE_TOOLS.indexOf(activeTool) === -1) {
+      hideToolOptionsPanel();
+      return;
+    }
+
+    // Configure tool options
+    if (
+      activeTool === "pen" ||
+      activeTool === "highlighter" ||
+      ["rect", "ellipse", "line", "arrow"].indexOf(activeTool) !== -1
+    ) {
+      showColor = true;
+      showWidth = true;
+    } else if (activeTool === "text") {
+      showColor = true;
+      showFont = true;
+    } else if (activeTool === "stroke-eraser" || activeTool === "pixel-eraser") {
+      showEraser = true;
+    }
+
+    var colorOpt = document.getElementById("opt-color");
+    if (colorOpt) colorOpt.classList.toggle("hidden", !showColor);
+
+    var widthOpt = document.getElementById("opt-width");
+    if (widthOpt) widthOpt.classList.toggle("hidden", !showWidth);
+
+    var textControls = document.getElementById("opt-text-controls");
+    if (textControls) textControls.classList.toggle("hidden", !showFont);
+
+    var fontSizeOpt = document.getElementById("opt-fontsize");
+    if (fontSizeOpt) fontSizeOpt.classList.toggle("hidden", !showFont);
+
+    var formattingOpt = document.getElementById("opt-formatting");
+    if (formattingOpt) formattingOpt.classList.toggle("hidden", !showFont);
+
+    var cropOpt = document.getElementById("opt-crop");
+    if (cropOpt) cropOpt.classList.add("hidden");
+
+    var eraserOpt = document.getElementById("opt-eraser");
+    if (eraserOpt) eraserOpt.classList.toggle("hidden", !showEraser);
+
+    // Hide element-specific actions when configuring a tool
+    var actionsRow = document.querySelector(".opt-actions-row");
+    if (actionsRow) actionsRow.classList.add("hidden");
+
+    positionToolOptionsPanel("tool", activeTool);
   }
   function syncOptionInputs() {
     document.getElementById("stroke-width").value = currentStrokeWidth;
     document.getElementById("stroke-width-val").textContent =
       currentStrokeWidth + "px";
+
+    var eraserInput = document.getElementById("eraser-size");
+    if (eraserInput) {
+      eraserInput.value = eraserSize;
+    }
+    var eraserVal = document.getElementById("eraser-size-val");
+    if (eraserVal) {
+      eraserVal.textContent = eraserSize + "px";
+    }
 
     var fsInput = document.getElementById("font-size");
     if (fsInput) {
@@ -2891,6 +3378,7 @@
         }
         if (changed) {
           redrawAnnotations();
+          positionToolOptionsPanel();
         }
       }
     } else if (selectedGroup && selectedGroup.page === currentPage) {
@@ -2914,6 +3402,7 @@
         });
         if (groupChanged) {
           redrawAnnotations();
+          positionToolOptionsPanel();
         }
       }
     }
@@ -3063,41 +3552,101 @@
       if (selectedGroup && selectedGroup.page === currentPage) {
         var groupAnns = getGroupAnnotations();
         if (groupAnns.length > 0) {
-          var gb = getGroupBounds(groupAnns);
-          var pad = 10;
-          var gbx = gb.x * currentScale - pad;
-          var gby = gb.y * currentScale - pad;
-          var gbw = Math.max(gb.w * currentScale + pad * 2, 24);
-          var gbh = Math.max(gb.h * currentScale + pad * 2, 24);
-          var delBtn = {
-            x: gbx + gbw + 10,
-            y: gby - 10,
-            r: 12,
-          };
+          var handles = getGroupSelectionHandles(groupAnns, currentScale);
           var isTouch = e.pointerType === "touch";
-          var dDist = Math.hypot(pt.cx - delBtn.x, pt.cy - delBtn.y);
-          if (dDist <= delBtn.r + (isTouch ? 12 : 4)) {
+          var tolerance = isTouch ? 16 : 6;
+
+          // Delete button
+          if (
+            Math.hypot(pt.cx - handles.deleteBtn.x, pt.cy - handles.deleteBtn.y) <=
+            handles.deleteBtn.r + (isTouch ? 12 : 4)
+          ) {
             pushHistory();
             groupAnns.forEach(function (a) {
               deleteAnnotation(currentPage, a.id);
             });
             selectedGroup = null;
             isPointerDown = false;
+            hideToolOptionsPanel();
             redrawAnnotations();
             return;
           }
 
+          // Rotate button
           if (
-            pt.cx >= gbx &&
-            pt.cx <= gbx + gbw &&
-            pt.cy >= gby &&
-            pt.cy <= gby + gbh
+            Math.hypot(pt.cx - handles.rotateBtn.x, pt.cy - handles.rotateBtn.y) <=
+            handles.rotateBtn.r + (isTouch ? 12 : 4)
           ) {
+            pushHistory();
+            dragMode = "group-rotate";
+            groupDragOrigins = groupAnns.map(function (a) {
+              return { id: a.id, origin: deepClone(a) };
+            });
+            groupOrigBounds = getGroupBounds(groupAnns);
+            dragCenter = {
+              x: groupOrigBounds.x + groupOrigBounds.w / 2,
+              y: groupOrigBounds.y + groupOrigBounds.h / 2,
+            };
+            var cScreenX = dragCenter.x * currentScale;
+            var cScreenY = dragCenter.y * currentScale;
+            dragStartAngle = Math.atan2(pt.cy - cScreenY, pt.cx - cScreenX);
+            hideToolOptionsPanel();
+            return;
+          }
+
+          // Corner Resizers Click Detection
+          var cornerNames = ["tl", "tr", "br", "bl"];
+          for (var i = 0; i < cornerNames.length; i++) {
+            var name = cornerNames[i];
+            var h = handles[name];
+            var dist = Math.hypot(pt.cx - h.x, pt.cy - h.y);
+            if (dist <= h.size + tolerance) {
+              pushHistory();
+              dragMode = "group-resize-" + name;
+              groupDragOrigins = groupAnns.map(function (a) {
+                return { id: a.id, origin: deepClone(a) };
+              });
+              groupOrigBounds = getGroupBounds(groupAnns);
+              dragStartPoint = pt;
+              hideToolOptionsPanel();
+              return;
+            }
+          }
+
+          // Side Resizers Click Detection
+          var sideNames = ["t", "b", "l", "r"];
+          for (var i = 0; i < sideNames.length; i++) {
+            var name = sideNames[i];
+            var h = handles[name];
+            var dist = Math.hypot(pt.cx - h.x, pt.cy - h.y);
+            if (dist <= h.size + tolerance) {
+              pushHistory();
+              dragMode = "group-resize-" + name;
+              groupDragOrigins = groupAnns.map(function (a) {
+                return { id: a.id, origin: deepClone(a) };
+              });
+              groupOrigBounds = getGroupBounds(groupAnns);
+              dragStartPoint = pt;
+              hideToolOptionsPanel();
+              return;
+            }
+          }
+
+          // Inside box for moving
+          var b = handles.box;
+          if (
+            pt.cx >= b.x &&
+            pt.cx <= b.x + b.w &&
+            pt.cy >= b.y &&
+            pt.cy <= b.y + b.h
+          ) {
+            pushHistory();
             dragMode = "group-move";
             groupDragOrigins = groupAnns.map(function (a) {
               return { id: a.id, origin: deepClone(a) };
             });
             dragStartPoint = pt;
+            hideToolOptionsPanel();
             return;
           }
         }
@@ -3117,6 +3666,7 @@
           if (dDist <= handles.deleteBtn.r + (isTouch ? 12 : 4)) {
             deleteAnnotation(currentPage, ann.id);
             isPointerDown = false;
+            hideToolOptionsPanel();
             return;
           }
           if (handles.cropBtn) {
@@ -3125,6 +3675,7 @@
               upt.cy - handles.cropBtn.y,
             );
             if (cDist <= handles.cropBtn.r + (isTouch ? 12 : 4)) {
+              hideToolOptionsPanel();
               openCropModal(ann);
               isPointerDown = false;
               return;
@@ -3142,6 +3693,7 @@
               var cScreenX = dragCenter.x * currentScale;
               var cScreenY = dragCenter.y * currentScale;
               dragStartAngle = Math.atan2(pt.cy - cScreenY, pt.cx - cScreenX);
+              hideToolOptionsPanel();
               return;
             }
           }
@@ -3157,6 +3709,7 @@
               dragMode = "resize-" + name;
               dragOrigin = deepClone(ann);
               dragStartPoint = pt;
+              hideToolOptionsPanel();
               return;
             }
           }
@@ -3170,6 +3723,7 @@
               dragMode = "resize-" + name;
               dragOrigin = deepClone(ann);
               dragStartPoint = pt;
+              hideToolOptionsPanel();
               return;
             }
           }
@@ -3193,7 +3747,7 @@
             if (ann.strokeWidth !== undefined) {
               currentStrokeWidth = ann.strokeWidth;
             }
-            updateToolOptionsPanel("select");
+            hideToolOptionsPanel();
             syncOptionInputs();
             return;
           }
@@ -3228,17 +3782,19 @@
           currentIsItalic = false;
           currentIsUnderline = false;
         }
-        updateToolOptionsPanel("select");
+        hideToolOptionsPanel();
         syncOptionInputs();
         redrawAnnotations();
       } else {
         selectedAnnotation = null;
         selectedGroup = null;
-        updateToolOptionsPanel("select");
+        hideToolOptionsPanel();
         redrawAnnotations();
       }
       return;
     }
+
+    hideToolOptionsPanel();
 
     if (currentTool === "lasso") {
       liveLasso = [{ x: pt.x, y: pt.y }];
@@ -3351,6 +3907,106 @@
         if (a) {
           applyMove(a, item.origin, dx, dy);
         }
+      });
+      requestRedraw();
+      return;
+    }
+    if (
+      currentTool === "select" &&
+      dragMode === "group-rotate" &&
+      groupDragOrigins &&
+      dragCenter
+    ) {
+      var cScreenX = dragCenter.x * currentScale;
+      var cScreenY = dragCenter.y * currentScale;
+      var currentAngle = Math.atan2(pt.cy - cScreenY, pt.cx - cScreenX);
+      var deltaRad = currentAngle - dragStartAngle;
+      if (e.shiftKey) {
+        var deg = (deltaRad * 180) / Math.PI;
+        deg = Math.round(deg / 15) * 15;
+        deltaRad = (deg * Math.PI) / 180;
+      }
+      applyGroupRotate(groupDragOrigins, dragCenter, deltaRad);
+      requestRedraw();
+      return;
+    }
+    if (
+      currentTool === "select" &&
+      dragMode &&
+      dragMode.indexOf("group-resize-") === 0 &&
+      groupDragOrigins &&
+      groupOrigBounds
+    ) {
+      var direction = dragMode.substring(13);
+      var ox = groupOrigBounds.x;
+      var oy = groupOrigBounds.y;
+      var ow = groupOrigBounds.w;
+      var oh = groupOrigBounds.h;
+      var dx = pt.x - dragStartPoint.x;
+      var dy = pt.y - dragStartPoint.y;
+
+      var newX = ox;
+      var newY = oy;
+      var newW = ow;
+      var newH = oh;
+
+      if (direction.indexOf("l") !== -1) {
+        newX = ox + dx;
+        newW = ow - dx;
+      }
+      if (direction.indexOf("r") !== -1) {
+        newW = ow + dx;
+      }
+      if (direction.indexOf("t") !== -1) {
+        newY = oy + dy;
+        newH = oh - dy;
+      }
+      if (direction.indexOf("b") !== -1) {
+        newH = oh + dy;
+      }
+
+      var minW = 10;
+      var minH = 10;
+      if (newW < minW) {
+        if (direction.indexOf("l") !== -1) newX = ox + ow - minW;
+        newW = minW;
+      }
+      if (newH < minH) {
+        if (direction.indexOf("t") !== -1) newY = oy + oh - minH;
+        newH = minH;
+      }
+
+      if (direction === "t" || direction === "b") {
+        var s = newH / oh;
+        newW = Math.max(minW, ow * s);
+        newX = ox + (ow - newW) / 2;
+      } else if (direction === "l" || direction === "r") {
+        var s = newW / ow;
+        newH = Math.max(minH, oh * s);
+        newY = oy + (oh - newH) / 2;
+      } else {
+        var s = newW / ow;
+        newH = Math.max(minH, oh * s);
+        if (direction === "tl") {
+          newX = ox + ow - newW;
+          newY = oy + oh - newH;
+        } else if (direction === "tr") {
+          newX = ox;
+          newY = oy + oh - newH;
+        } else if (direction === "bl") {
+          newX = ox + ow - newW;
+          newY = oy;
+        } else if (direction === "br") {
+          newX = ox;
+          newY = oy;
+        }
+      }
+
+      applyGroupResize(groupDragOrigins, groupOrigBounds, {
+        x: newX,
+        y: newY,
+        w: newW,
+        h: newH,
       });
       requestRedraw();
       return;
@@ -3585,7 +4241,7 @@
       return;
     }
     if (currentTool === "select") {
-      if (dragMode === "group-move") {
+      if (dragMode && dragMode.indexOf("group-") === 0) {
         scheduleDBSave();
       }
       dragMode = null;
@@ -3593,6 +4249,13 @@
       dragCenter = null;
       dragStartAngle = 0;
       groupDragOrigins = null;
+      groupOrigBounds = null;
+
+      if (selectedAnnotation || selectedGroup) {
+        updateToolOptionsPanel("select");
+      } else {
+        hideToolOptionsPanel();
+      }
       return;
     }
     if (livePath) {
@@ -4234,6 +4897,7 @@
     closeAllGroupMenus();
 
     if (!isOpen) {
+      hideToolOptionsPanel();
       if (groupName === "select") {
         if (currentTool !== "select" && currentTool !== "lasso") {
           setActiveTool(lastSelectTool || "select", true);
@@ -4251,11 +4915,16 @@
           setActiveTool(lastEraserTool || "stroke-eraser", true);
         }
       }
+      hideToolOptionsPanel();
       positionGroupMenu(btn, menu);
       menu.classList.add("is-open");
       wrap.classList.add("is-open");
       btn.setAttribute("aria-expanded", "true");
       activeGroupMenu = menu;
+    } else {
+      if (CONFIGURABLE_TOOLS.indexOf(currentTool) !== -1) {
+        updateToolOptionsPanel(currentTool);
+      }
     }
   }
 
@@ -4336,8 +5005,8 @@
           } else if (tool === "stroke-eraser" || tool === "pixel-eraser") {
             lastEraserTool = tool;
           }
-          setActiveTool(tool, true);
           closeAllGroupMenus();
+          setActiveTool(tool, true);
         });
       });
 
@@ -4355,9 +5024,39 @@
 
     var toolbarEl = document.getElementById("toolbar");
     if (toolbarEl) {
-      toolbarEl.addEventListener("scroll", closeAllGroupMenus);
+      toolbarEl.addEventListener("scroll", function () {
+        closeAllGroupMenus();
+        if (
+          !selectedAnnotation &&
+          !selectedGroup &&
+          document.getElementById("tool-options") &&
+          document.getElementById("tool-options").classList.contains("is-open")
+        ) {
+          positionToolOptionsPanel("tool", currentTool);
+        }
+      });
     }
-    window.addEventListener("resize", closeAllGroupMenus);
+    window.addEventListener("resize", function () {
+      closeAllGroupMenus();
+      if (selectedAnnotation || selectedGroup) {
+        positionToolOptionsPanel("element");
+      } else if (
+        CONFIGURABLE_TOOLS.indexOf(currentTool) !== -1 &&
+        document.getElementById("tool-options") &&
+        document.getElementById("tool-options").classList.contains("is-open")
+      ) {
+        positionToolOptionsPanel("tool", currentTool);
+      }
+    });
+
+    var canvasStageEl = document.getElementById("canvas-stage");
+    if (canvasStageEl) {
+      canvasStageEl.addEventListener("scroll", function () {
+        if (selectedAnnotation || selectedGroup) {
+          positionToolOptionsPanel("element");
+        }
+      });
+    }
   }
 
   /* ---------- wire up UI ---------- */
@@ -4418,6 +5117,7 @@
           ann.rotation = norm;
           if (rotationInput) rotationInput.value = norm;
           redrawAnnotations();
+          positionToolOptionsPanel();
         }
       }
     });
@@ -4435,6 +5135,7 @@
           ann.rotation = norm;
           if (rotationInput) rotationInput.value = norm;
           redrawAnnotations();
+          positionToolOptionsPanel();
         }
       }
     });
@@ -4451,6 +5152,7 @@
           while (val <= -180) val += 360;
           ann.rotation = val;
           redrawAnnotations();
+          positionToolOptionsPanel();
         }
       }
     };
@@ -4512,6 +5214,44 @@
         deleteAnnotation(currentPage, selectedAnnotation.id);
       }
       hideContextMenu();
+    });
+  }
+
+  // Floating options card delete button
+  var optDeleteBtn = document.getElementById("opt-delete-btn");
+  if (optDeleteBtn) {
+    optDeleteBtn.addEventListener("click", function (e) {
+      e.stopPropagation();
+      if (selectedAnnotation && selectedAnnotation.page === currentPage) {
+        deleteAnnotation(currentPage, selectedAnnotation.id);
+        hideToolOptionsPanel();
+      } else if (selectedGroup && selectedGroup.page === currentPage) {
+        var groupAnns = getGroupAnnotations();
+        if (groupAnns.length > 0) {
+          pushHistory();
+          var gIds = groupAnns.map(function (a) {
+            return a.id;
+          });
+          annotationsByPage[currentPage] = (
+            annotationsByPage[currentPage] || []
+          ).filter(function (a) {
+            return gIds.indexOf(a.id) === -1;
+          });
+          selectedGroup = null;
+          redrawAnnotations();
+          hideToolOptionsPanel();
+        }
+      }
+    });
+  }
+
+  // Prevent interactions inside tool-options card from propagating to canvas
+  var toolOptionsEl = document.getElementById("tool-options");
+  if (toolOptionsEl) {
+    ["pointerdown", "mousedown", "touchstart"].forEach(function (evtName) {
+      toolOptionsEl.addEventListener(evtName, function (e) {
+        e.stopPropagation();
+      });
     });
   }
 
@@ -5026,6 +5766,10 @@
         isBottom ? "bottom" : "top",
       );
     } catch (e) {}
+    var optPanel = document.getElementById("tool-options");
+    if (optPanel && optPanel.classList.contains("is-open")) {
+      positionToolOptionsPanel();
+    }
   }
 
   if (toggleToolbarPosBtn) {
@@ -5341,6 +6085,7 @@
       hideContextMenu();
       closeCropModal();
       closeSignatureModal(true);
+      hideToolOptionsPanel();
     }
   });
   window.addEventListener("resize", function () {
