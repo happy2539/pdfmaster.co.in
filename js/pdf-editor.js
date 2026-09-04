@@ -593,10 +593,209 @@
     return false;
   }
 
+  function isPointInEraserStroke(p, eraserPoints, r) {
+    if (!eraserPoints || eraserPoints.length === 0) return false;
+    if (eraserPoints.length === 1) {
+      return Math.hypot(p.x - eraserPoints[0].x, p.y - eraserPoints[0].y) <= r;
+    }
+    for (var i = 0; i < eraserPoints.length - 1; i++) {
+      if (distToSegment(p, eraserPoints[i], eraserPoints[i + 1]) <= r) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  function segmentIntersectsEraser(p1, p2, eraserPoints, r) {
+    var segLen = Math.hypot(p2.x - p1.x, p2.y - p1.y);
+    if (segLen <= r) return false;
+    var steps = Math.ceil(segLen / (r * 0.75));
+    for (var s = 1; s < steps; s++) {
+      var t = s / steps;
+      var mid = {
+        x: p1.x + (p2.x - p1.x) * t,
+        y: p1.y + (p2.y - p1.y) * t,
+      };
+      if (isPointInEraserStroke(mid, eraserPoints, r)) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  function applyPixelErasureToAnnotations(eraserPoints, eraserRadius, page) {
+    if (!eraserPoints || eraserPoints.length === 0) return false;
+    var list = annotationsByPage[page] || [];
+    var modified = false;
+    var r = eraserRadius;
+
+    for (var i = list.length - 1; i >= 0; i--) {
+      var ann = list[i];
+      if (!ann || ann.type === "eraser") continue;
+
+      if (ann.type === "path") {
+        var pts = ann.points || [];
+        if (pts.length === 0) {
+          list.splice(i, 1);
+          modified = true;
+          continue;
+        }
+
+        var strokeTol = r + (ann.strokeWidth || 2) * 0.3;
+        var erasedMap = new Array(pts.length);
+        var anyErased = false;
+        var allErased = true;
+
+        for (var k = 0; k < pts.length; k++) {
+          if (isPointInEraserStroke(pts[k], eraserPoints, strokeTol)) {
+            erasedMap[k] = true;
+            anyErased = true;
+          } else {
+            erasedMap[k] = false;
+            allErased = false;
+          }
+        }
+
+        if (!anyErased) {
+          for (var k = 0; k < pts.length - 1; k++) {
+            if (
+              segmentIntersectsEraser(pts[k], pts[k + 1], eraserPoints, strokeTol)
+            ) {
+              anyErased = true;
+              break;
+            }
+          }
+        }
+
+        if (!anyErased) {
+          continue;
+        }
+
+        modified = true;
+
+        if (allErased) {
+          list.splice(i, 1);
+          if (selectedAnnotation && selectedAnnotation.id === ann.id) {
+            selectedAnnotation = null;
+          }
+          continue;
+        }
+
+        var survivingRuns = [];
+        var currentRun = [];
+
+        for (var k = 0; k < pts.length; k++) {
+          if (!erasedMap[k]) {
+            if (currentRun.length > 0 && k > 0) {
+              if (
+                segmentIntersectsEraser(pts[k - 1], pts[k], eraserPoints, strokeTol)
+              ) {
+                survivingRuns.push(currentRun);
+                currentRun = [];
+              }
+            }
+            currentRun.push(pts[k]);
+          } else {
+            if (currentRun.length > 0) {
+              survivingRuns.push(currentRun);
+              currentRun = [];
+            }
+          }
+        }
+        if (currentRun.length > 0) {
+          survivingRuns.push(currentRun);
+        }
+
+        survivingRuns = survivingRuns.filter(function (run) {
+          return run.length >= 1;
+        });
+
+        if (survivingRuns.length === 0) {
+          list.splice(i, 1);
+          if (selectedAnnotation && selectedAnnotation.id === ann.id) {
+            selectedAnnotation = null;
+          }
+        } else {
+          ann.points = survivingRuns[0];
+          for (var m = 1; m < survivingRuns.length; m++) {
+            var newPath = {
+              id: nextId(),
+              page: page,
+              type: "path",
+              points: survivingRuns[m],
+              color: ann.color,
+              strokeWidth: ann.strokeWidth,
+              opacity: ann.opacity,
+            };
+            list.push(newPath);
+          }
+        }
+      } else if (ann.type === "line" || ann.type === "arrow") {
+        var p1 = { x: ann.x1, y: ann.y1 };
+        var p2 = { x: ann.x2, y: ann.y2 };
+        var strokeTol = r + (ann.strokeWidth || 2) * 0.5;
+        if (
+          isPointInEraserStroke(p1, eraserPoints, strokeTol) ||
+          isPointInEraserStroke(p2, eraserPoints, strokeTol) ||
+          segmentIntersectsEraser(p1, p2, eraserPoints, strokeTol)
+        ) {
+          list.splice(i, 1);
+          if (selectedAnnotation && selectedAnnotation.id === ann.id) {
+            selectedAnnotation = null;
+          }
+          modified = true;
+        }
+      } else {
+        var b = getBounds(ann);
+        var hit = false;
+        for (var ep = 0; ep < eraserPoints.length; ep++) {
+          var p = eraserPoints[ep];
+          if (
+            p.x >= b.x - r &&
+            p.x <= b.x + b.w + r &&
+            p.y >= b.y - r &&
+            p.y <= b.y + b.h + r
+          ) {
+            hit = true;
+            break;
+          }
+        }
+        if (hit) {
+          list.splice(i, 1);
+          if (selectedAnnotation && selectedAnnotation.id === ann.id) {
+            selectedAnnotation = null;
+          }
+          modified = true;
+        }
+      }
+    }
+    return modified;
+  }
+
   function cleanPageAnnotations(page) {
-    if (annotationsByPage[page]) {
+    if (!annotationsByPage[page]) return;
+    var list = annotationsByPage[page];
+    var legacyErasers = list.filter(function (a) {
+      return a && a.type === "eraser";
+    });
+
+    if (legacyErasers.length > 0) {
+      legacyErasers.forEach(function (eraser) {
+        if (eraser.points && eraser.points.length > 0) {
+          applyPixelErasureToAnnotations(
+            eraser.points,
+            (eraser.size || 20) / 2,
+            page,
+          );
+        }
+      });
       annotationsByPage[page] = annotationsByPage[page].filter(function (a) {
-        return a && (a.type === "eraser" || !isAnnotationEmpty(a));
+        return a && a.type !== "eraser" && !isAnnotationEmpty(a);
+      });
+      scheduleDBSave();
+    } else {
+      annotationsByPage[page] = list.filter(function (a) {
+        return a && a.type !== "eraser" && !isAnnotationEmpty(a);
       });
     }
   }
@@ -680,23 +879,24 @@
 
   function drawGroupSelectionUI(ctx, anns, scale) {
     var b = getGroupBounds(anns);
-    var x = b.x * scale;
-    var y = b.y * scale;
-    var w = b.w * scale;
-    var h = b.h * scale;
+    var pad = 10;
+    var x = b.x * scale - pad;
+    var y = b.y * scale - pad;
+    var w = Math.max(b.w * scale + pad * 2, 24);
+    var h = Math.max(b.h * scale + pad * 2, 24);
 
     ctx.save();
     ctx.strokeStyle = "#2563eb";
     ctx.setLineDash([5, 4]);
     ctx.lineWidth = 1.8;
-    ctx.strokeRect(x - 4, y - 4, w + 8, h + 8);
+    ctx.strokeRect(x, y, w, h);
     ctx.setLineDash([]);
 
     // Delete button for group
-    var delX = x + w + 8;
-    var delY = y - 8;
+    var delX = x + w + 10;
+    var delY = y - 10;
     ctx.beginPath();
-    ctx.arc(delX, delY, 11, 0, Math.PI * 2);
+    ctx.arc(delX, delY, 12, 0, Math.PI * 2);
     ctx.fillStyle = "#e8372a";
     ctx.fill();
     ctx.strokeStyle = "#fff";
@@ -714,7 +914,7 @@
     var textWidth = ctx.measureText(badgeText).width;
     var badgeW = textWidth + 12;
     var badgeH = 20;
-    var badgeX = x - 4;
+    var badgeX = x;
     var badgeY = y - 28;
     ctx.fillStyle = "#2563eb";
     ctx.beginPath();
@@ -785,13 +985,14 @@
   }
   function getSelectionHandles(ann, scale) {
     var b = getBounds(ann);
-    var x = b.x * scale,
-      y = b.y * scale,
-      w = b.w * scale,
-      h = b.h * scale;
-    var deleteBtn = { x: x + w + 8, y: y - 8, r: 11 };
-    var cropBtn = ann.type === "image" ? { x: x - 8, y: y - 8, r: 11 } : null;
-    var rotateBtn = { x: x + w / 2, y: y - 26, r: 10 };
+    var pad = 10;
+    var x = b.x * scale - pad,
+      y = b.y * scale - pad,
+      w = Math.max(b.w * scale + pad * 2, 24),
+      h = Math.max(b.h * scale + pad * 2, 24);
+    var deleteBtn = { x: x + w + 10, y: y - 10, r: 12 };
+    var cropBtn = ann.type === "image" ? { x: x - 10, y: y - 10, r: 12 } : null;
+    var rotateBtn = { x: x + w / 2, y: y - 28, r: 10 };
 
     return {
       box: { x: x, y: y, w: w, h: h },
@@ -799,15 +1000,15 @@
       cropBtn: cropBtn,
       rotateBtn: rotateBtn,
       // Corners
-      tl: { x: x, y: y, size: 8 },
-      tr: { x: x + w, y: y, size: 8 },
-      br: { x: x + w, y: y + h, size: 8 },
-      bl: { x: x, y: y + h, size: 8 },
+      tl: { x: x, y: y, size: 9 },
+      tr: { x: x + w, y: y, size: 9 },
+      br: { x: x + w, y: y + h, size: 9 },
+      bl: { x: x, y: y + h, size: 9 },
       // Sides
-      t: { x: x + w / 2, y: y, size: 8 },
-      b: { x: x + w / 2, y: y + h, size: 8 },
-      l: { x: x, y: y + h / 2, size: 8 },
-      r: { x: x + w, y: y + h / 2, size: 8 },
+      t: { x: x + w / 2, y: y, size: 9 },
+      b: { x: x + w / 2, y: y + h, size: 9 },
+      l: { x: x, y: y + h / 2, size: 9 },
+      r: { x: x + w, y: y + h / 2, size: 9 },
     };
   }
 
@@ -1034,12 +1235,12 @@
     ctx.strokeStyle = "#e8372a";
     ctx.setLineDash([5, 4]);
     ctx.lineWidth = 1.5;
-    ctx.strokeRect(b.x - 4, b.y - 4, b.w + 8, b.h + 8);
+    ctx.strokeRect(b.x, b.y, b.w, b.h);
     ctx.setLineDash([]);
 
     // Stalk line to rotate handle
     ctx.beginPath();
-    ctx.moveTo(b.x + b.w / 2, b.y - 4);
+    ctx.moveTo(b.x + b.w / 2, b.y);
     ctx.lineTo(handles.rotateBtn.x, handles.rotateBtn.y + handles.rotateBtn.r);
     ctx.strokeStyle = "#10b981";
     ctx.lineWidth = 1.5;
@@ -1390,11 +1591,7 @@
     );
     if (selectedAnnotation && selectedAnnotation.id === id) {
       selectedAnnotation = null;
-      if (lastActiveDrawingTool) {
-        setActiveTool(lastActiveDrawingTool);
-      } else {
-        updateToolOptionsPanel("select");
-      }
+      updateToolOptionsPanel(currentTool);
     }
     redrawAnnotations();
   }
@@ -1534,7 +1731,11 @@
           pushHistory();
           ann.text = value;
         }
-        selectedAnnotation = { page: currentPage, id: ann.id };
+        if (currentTool === "select") {
+          selectedAnnotation = { page: currentPage, id: ann.id };
+        } else {
+          selectedAnnotation = null;
+        }
       } else {
         pushHistory();
         deleteAnnotation(currentPage, ann.id);
@@ -1557,8 +1758,7 @@
           isUnderline: currentIsUnderline,
         };
         addAnnotation(currentPage, ann);
-        selectedAnnotation = { page: currentPage, id: ann.id };
-        setActiveTool("select");
+        selectedAnnotation = null;
         redrawAnnotations();
       }
     }
@@ -1633,21 +1833,25 @@
       var groupAnns = getGroupAnnotations();
       if (groupAnns.length > 0) {
         var gb = getGroupBounds(groupAnns);
+        var pad = 10;
+        var gbx = gb.x * currentScale - pad;
+        var gby = gb.y * currentScale - pad;
+        var gbw = Math.max(gb.w * currentScale + pad * 2, 24);
+        var gbh = Math.max(gb.h * currentScale + pad * 2, 24);
         var delBtn = {
-          x: (gb.x + gb.w) * currentScale + 8,
-          y: gb.y * currentScale - 8,
-          r: 11,
+          x: gbx + gbw + 10,
+          y: gby - 10,
+          r: 12,
         };
         if (Math.hypot(pt.cx - delBtn.x, pt.cy - delBtn.y) <= delBtn.r + 4) {
           canvas.style.cursor = "pointer";
           return;
         }
-        var tol = 6 / currentScale;
         if (
-          pt.x >= gb.x - tol &&
-          pt.x <= gb.x + gb.w + tol &&
-          pt.y >= gb.y - tol &&
-          pt.y <= gb.y + gb.h + tol
+          pt.cx >= gbx &&
+          pt.cx <= gbx + gbw &&
+          pt.cy >= gby &&
+          pt.cy <= gby + gbh
         ) {
           canvas.style.cursor = "move";
           return;
@@ -1751,13 +1955,12 @@
           return;
         }
 
-        var b = getBounds(ann);
-        var tol = 6 / currentScale;
+        var b = handles.box;
         if (
-          upt.x >= b.x - tol &&
-          upt.x <= b.x + b.w + tol &&
-          upt.y >= b.y - tol &&
-          upt.y <= b.y + b.h + tol
+          upt.cx >= b.x &&
+          upt.cx <= b.x + b.w &&
+          upt.cy >= b.y &&
+          upt.cy <= b.y + b.h
         ) {
           canvas.style.cursor = "move";
           return;
@@ -2135,7 +2338,7 @@
     };
     addAnnotation(currentPage, ann);
     pendingPlaceable = null;
-    selectedAnnotation = { page: currentPage, id: ann.id };
+    selectedAnnotation = null;
     setActiveTool("select");
     redrawAnnotations();
   }
@@ -2861,10 +3064,15 @@
         var groupAnns = getGroupAnnotations();
         if (groupAnns.length > 0) {
           var gb = getGroupBounds(groupAnns);
+          var pad = 10;
+          var gbx = gb.x * currentScale - pad;
+          var gby = gb.y * currentScale - pad;
+          var gbw = Math.max(gb.w * currentScale + pad * 2, 24);
+          var gbh = Math.max(gb.h * currentScale + pad * 2, 24);
           var delBtn = {
-            x: (gb.x + gb.w) * currentScale + 8,
-            y: gb.y * currentScale - 8,
-            r: 11,
+            x: gbx + gbw + 10,
+            y: gby - 10,
+            r: 12,
           };
           var isTouch = e.pointerType === "touch";
           var dDist = Math.hypot(pt.cx - delBtn.x, pt.cy - delBtn.y);
@@ -2879,12 +3087,11 @@
             return;
           }
 
-          var tol = 8 / currentScale;
           if (
-            pt.x >= gb.x - tol &&
-            pt.x <= gb.x + gb.w + tol &&
-            pt.y >= gb.y - tol &&
-            pt.y <= gb.y + gb.h + tol
+            pt.cx >= gbx &&
+            pt.cx <= gbx + gbw &&
+            pt.cy >= gby &&
+            pt.cy <= gby + gbh
           ) {
             dragMode = "group-move";
             groupDragOrigins = groupAnns.map(function (a) {
@@ -2967,13 +3174,12 @@
             }
           }
           // Allow dragging by clicking inside the selected element's bounding box
-          var b = getBounds(ann);
-          var tol = 6 / currentScale;
+          var b = handles.box;
           if (
-            upt.x >= b.x - tol &&
-            upt.x <= b.x + b.w + tol &&
-            upt.y >= b.y - tol &&
-            upt.y <= b.y + b.h + tol
+            upt.cx >= b.x &&
+            upt.cx <= b.x + b.w &&
+            upt.cy >= b.y &&
+            upt.cy <= b.y + b.h
           ) {
             dragMode = "move";
             dragOrigin = deepClone(ann);
@@ -3028,12 +3234,8 @@
       } else {
         selectedAnnotation = null;
         selectedGroup = null;
-        if (lastActiveDrawingTool) {
-          setActiveTool(lastActiveDrawingTool);
-        } else {
-          updateToolOptionsPanel("select");
-          redrawAnnotations();
-        }
+        updateToolOptionsPanel("select");
+        redrawAnnotations();
       }
       return;
     }
@@ -3331,15 +3533,17 @@
     if (currentTool === "pixel-eraser") {
       if (liveEraser) {
         if (liveEraser.points.length > 0) {
-          var eraserAnn = {
-            id: nextId(),
-            type: "eraser",
-            page: currentPage,
-            points: simplifyPoints(liveEraser.points),
-            size: liveEraser.size,
-          };
-          addAnnotation(currentPage, eraserAnn);
-          scheduleDBSave();
+          pushHistory();
+          var modified = applyPixelErasureToAnnotations(
+            liveEraser.points,
+            (liveEraser.size || 20) / 2,
+            currentPage,
+          );
+          if (modified) {
+            scheduleDBSave();
+          } else {
+            history.pop();
+          }
         }
         liveEraser = null;
         isErasing = false;
@@ -3413,8 +3617,6 @@
           opacity: livePath.style.opacity,
         };
         addAnnotation(currentPage, pathAnn);
-        selectedAnnotation = { page: currentPage, id: pathAnn.id };
-        setActiveTool("select");
       }
       livePath = null;
       redrawAnnotations();
@@ -3428,8 +3630,6 @@
           liveShape,
         );
         addAnnotation(currentPage, shapeAnn);
-        selectedAnnotation = { page: currentPage, id: shapeAnn.id };
-        setActiveTool("select");
       }
       liveShape = null;
       dragStartPoint = null;
@@ -4763,18 +4963,14 @@
   document.getElementById("prev-page").addEventListener("click", function () {
     if (currentPage > 1) {
       selectedAnnotation = null;
-      if (lastActiveDrawingTool) {
-        setActiveTool(lastActiveDrawingTool);
-      }
+      selectedGroup = null;
       renderPage(currentPage - 1);
     }
   });
   document.getElementById("next-page").addEventListener("click", function () {
     if (currentPage < numPages) {
       selectedAnnotation = null;
-      if (lastActiveDrawingTool) {
-        setActiveTool(lastActiveDrawingTool);
-      }
+      selectedGroup = null;
       renderPage(currentPage + 1);
     }
   });
@@ -5377,6 +5573,9 @@
             numPages = doc.numPages;
             fileName = name || (data && data.fileName) || "document.pdf";
             annotationsByPage = (data && data.annotationsByPage) || {};
+            Object.keys(annotationsByPage).forEach(function (p) {
+              cleanPageAnnotations(p);
+            });
             history = [];
             redoHistoryStack = [];
             imageElCache = {};
