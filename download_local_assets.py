@@ -71,23 +71,27 @@ def main():
         except Exception as e:
             print(f"Error parsing resources.json: {e}")
             
-    # 3. Rewrite js/pdf-editor.js to use local paths
+    # 3. Rewrite js/pdf-editor/signature-modal.js (and js/pdf-editor.js) to use local paths
     print("\nStep 3: Configuring references in website code...")
-    js_path = os.path.join(base_dir, "js", "pdf-editor.js")
-    if os.path.exists(js_path):
-        with open(js_path, 'r', encoding='utf-8') as f:
-            content = f.read()
+    target_paths = [
+        os.path.join(base_dir, "js", "pdf-editor", "signature-modal.js"),
+        os.path.join(base_dir, "js", "pdf-editor.js"),
+    ]
+    for js_path in target_paths:
+        if os.path.exists(js_path):
+            with open(js_path, 'r', encoding='utf-8') as f:
+                content = f.read()
+                
+            old_pattern = r'publicPath:\s*["\']https://staticimgly\.com/@imgly/background-removal-data/1\.5\.6/dist/["\']'
+            new_string = 'publicPath: "./assets/vendor/imgly-data/"'
             
-        old_pattern = r'publicPath:\s*["\']https://staticimgly\.com/@imgly/background-removal-data/1\.5\.6/dist/["\']'
-        new_string = 'publicPath: "./assets/vendor/imgly-data/"'
-        
-        if re.search(old_pattern, content):
-            content = re.sub(old_pattern, new_string, content)
-            with open(js_path, 'w', encoding='utf-8') as f:
-                f.write(content)
-            print("Successfully updated publicPath inside js/pdf-editor.js to point locally!")
-        else:
-            print("publicPath was already configured locally or not found inside js/pdf-editor.js.")
+            if re.search(old_pattern, content):
+                content = re.sub(old_pattern, new_string, content)
+                with open(js_path, 'w', encoding='utf-8') as f:
+                    f.write(content)
+                print(f"Successfully updated publicPath inside {os.path.relpath(js_path, base_dir)} to point locally!")
+            else:
+                print(f"publicPath was already configured locally or not found inside {os.path.relpath(js_path, base_dir)}.")
             
     print("\nDone! Local offline setup is complete. You can now run the PDF Editor completely offline.")
 

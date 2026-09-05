@@ -441,6 +441,8 @@ pdfmaster.co.in/
 ├── privacy.html                # Privacy Policy
 ├── pdf-metadata.html           # PDF Metadata Editor Page
 ├── pdf-editor.html             # Advanced PDF Editor Page
+├── pdf-viewer.html             # PDF Viewer Page
+├── watermark-pdf-add.html      # Watermark PDF Page
 ├── about.html                  # About Page
 ├── announcements.html          # Announcement Page
 ├── happy-gupta-founder-of-pdfmaster.html       #Founder Page of PDFMaster
@@ -462,6 +464,8 @@ pdfmaster.co.in/
 │   ├── privacy.css                # CSS Privacy Policy
 │   ├── pdf-metadata.css           # CSS PDF Metadata Editor Page
 │   ├── pdf-editor.css             # CSS Advanced PDF Editor Page
+│   ├── pdf-viewer.css             # CSS PDF Viewer Page
+│   ├── watermark-pdf-add.css      # CSS Watermark PDF Page
 │   ├── about.css                  # CSS About Page
 │   ├── announcements.css          # CSS Announcement Page
 |   ├── happy-gupta-founder-of-pdfmaster.css        #stylesheet
@@ -481,7 +485,10 @@ pdfmaster.co.in/
 │   ├── thank-you.js              # Js Thank You redirect page for subscribers
 │   ├── privacy.js                # Js Privacy Policy
 │   ├── pdf-metadata.js           # Js PDF Metadata Editor Page
-│   ├── pdf-editor.js             # Js Advanced PDF Editor Page
+│   ├── pdf-editor.js             # Js Advanced PDF Editor Page (loader)
+│   ├── pdf-editor/               # Modularized PDF Editor modules
+│   ├── pdf-viewer.js             # Js PDF Viewer Page
+│   ├── watermark-pdf-add.js      # Js Watermark PDF Page
 │   ├── about.js                  # Js About Page
 │   ├── announcements.js          # Js Announcement Page
 |   ├── happy-gupta-founder-of-pdfmaster.js         #JS file for the founder page

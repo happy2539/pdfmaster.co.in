@@ -24,7 +24,7 @@
  * visit - see the activate handler below.
  */
 
-const CACHE_VERSION = "v20";
+const CACHE_VERSION = "v25";
 const CACHE_PREFIX = "pdfmaster-";
 
 const STATIC_CACHE = `${CACHE_PREFIX}static-${CACHE_VERSION}`;
@@ -100,11 +100,13 @@ const PRECACHE_URLS = [
   "/css/pdf-reorder.css",
   "/css/pdf-split.css",
   "/css/pdf-to-photo.css",
+  "/css/pdf-viewer.css",
   "/css/photo-to-pdf.css",
   "/css/privacy-policy.css",
   "/css/subscribe.css",
   "/css/terms.css",
   "/css/thank-you.css",
+  "/css/watermark-pdf-add.css",
   "/js/404.js",
   "/js/about.js",
   "/js/announcements.js",
@@ -114,16 +116,34 @@ const PRECACHE_URLS = [
   "/js/index.js",
   "/js/pdf-compiler.js",
   "/js/pdf-editor.js",
+  "/js/pdf-editor/state.js",
+  "/js/pdf-editor/utils.js",
+  "/js/pdf-editor/loader.js",
+  "/js/pdf-editor/geometry.js",
+  "/js/pdf-editor/history.js",
+  "/js/pdf-editor/renderer.js",
+  "/js/pdf-editor/eraser.js",
+  "/js/pdf-editor/crop-modal.js",
+  "/js/pdf-editor/signature-modal.js",
+  "/js/pdf-editor/text-tool.js",
+  "/js/pdf-editor/tool-options.js",
+  "/js/pdf-editor/pointer.js",
+  "/js/pdf-editor/export.js",
+  "/js/pdf-editor/storage.js",
+  "/js/pdf-editor/ui.js",
+  "/js/pdf-editor/main.js",
   "/js/pdf-metadata.js",
   "/js/pdf-reorder.js",
   "/js/pdf-split.js",
   "/js/pdf-to-photo.js",
+  "/js/pdf-viewer.js",
   "/js/photo-to-pdf.js",
   "/js/privacy-policy.js",
   "/js/subscribe.js",
   "/js/sw-register.js",
   "/js/terms.js",
   "/js/thank-you.js",
+  "/js/watermark-pdf-add.js",
 ];
 
 const BYPASS_HOSTS = [
