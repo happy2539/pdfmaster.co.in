@@ -24,7 +24,7 @@
  * visit - see the activate handler below.
  */
 
-const CACHE_VERSION = "v30";
+const CACHE_VERSION = "v32";
 const CACHE_PREFIX = "pdfmaster-";
 
 const STATIC_CACHE = `${CACHE_PREFIX}static-${CACHE_VERSION}`;
@@ -207,6 +207,11 @@ self.addEventListener("message", (event) => {
   if (event.data && event.data.type === "SKIP_WAITING") {
     self.skipWaiting();
   }
+  if (event.data && event.data.type === "PRECACHE_PAGE" && event.data.url) {
+    caches.open(PAGES_CACHE).then((cache) => {
+      cache.add(event.data.url).catch(() => {});
+    });
+  }
 });
 
 // ---------------------------------------------------------------------
@@ -277,7 +282,22 @@ self.addEventListener("fetch", (event) => {
 // when the network is genuinely unreachable.
 async function networkFirstPage(request) {
   try {
-    const fresh = await fetch(request);
+    let fresh = await fetch(request);
+    if ((!fresh || fresh.status === 404) && request.url) {
+      const url = new URL(request.url);
+      if (
+        url.origin === self.location.origin &&
+        !url.pathname.includes(".") &&
+        !url.pathname.endsWith("/")
+      ) {
+        try {
+          const htmlFresh = await fetch(`${url.pathname}.html${url.search}`);
+          if (htmlFresh && htmlFresh.ok) {
+            fresh = htmlFresh;
+          }
+        } catch (_) {}
+      }
+    }
     if (fresh && fresh.ok) {
       const cache = await caches.open(PAGES_CACHE);
       cache.put(request, fresh.clone());

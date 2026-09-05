@@ -119,7 +119,10 @@ document.getElementById("submitBtn").addEventListener("click", async () => {
     const data = await res.json();
 
     if (res.ok && data.success) {
-      window.location.href = "/thank-you";
+      const thankYouTarget = window.location.pathname.endsWith(".html")
+        ? "/thank-you.html"
+        : "/thank-you";
+      window.location.href = thankYouTarget;
     } else if (res.status === 429) {
       showAlert(
         data.message || "Too many submissions. Please try again later.",
@@ -136,6 +139,129 @@ document.getElementById("submitBtn").addEventListener("click", async () => {
     btn.disabled = false;
   }
 });
+
+// ===== PRE-DOWNLOAD THANK-YOU PAGE ON FORM INTERACTION =====
+let thankYouPrefetched = false;
+
+function prefetchThankYouPage() {
+  if (thankYouPrefetched) return;
+  thankYouPrefetched = true;
+
+  const targetUrls = ["/thank-you", "/thank-you.html"];
+  const assetUrls = ["/css/thank-you.css", "/js/thank-you.js"];
+
+  // 1. Speculation Rules API (Prerender) for instant 0ms transition in modern browsers
+  if (
+    typeof HTMLScriptElement !== "undefined" &&
+    HTMLScriptElement.supports &&
+    HTMLScriptElement.supports("speculationrules")
+  ) {
+    try {
+      const specScript = document.createElement("script");
+      specScript.type = "speculationrules";
+      specScript.textContent = JSON.stringify({
+        prerender: [
+          {
+            source: "list",
+            urls: targetUrls,
+            eagerness: "immediate",
+          },
+        ],
+      });
+      document.head.appendChild(specScript);
+    } catch (_) {}
+  }
+
+  // 2. Declarative prefetch link tags for document and core assets
+  [
+    { url: "/thank-you", as: "document" },
+    { url: "/thank-you.html", as: "document" },
+    { url: "/css/thank-you.css", as: "style" },
+    { url: "/js/thank-you.js", as: "script" },
+  ].forEach(({ url, as }) => {
+    try {
+      const link = document.createElement("link");
+      link.rel = "prefetch";
+      link.href = url;
+      if (as) link.as = as;
+      document.head.appendChild(link);
+    } catch (_) {}
+  });
+
+  // Legacy prerender hint
+  try {
+    const prerenderLink = document.createElement("link");
+    prerenderLink.rel = "prerender";
+    prerenderLink.href = "/thank-you";
+    document.head.appendChild(prerenderLink);
+  } catch (_) {}
+
+  // 3. Background fetch() to warm the browser HTTP disk/memory cache
+  [...targetUrls, ...assetUrls].forEach((url) => {
+    try {
+      fetch(url, { priority: "low" }).catch(() => {});
+    } catch (_) {}
+  });
+
+  // 4. Populate Service Worker Cache (PAGES_CACHE) if available
+  if ("caches" in window) {
+    caches
+      .keys()
+      .then((keys) => {
+        const pagesKey = keys.find((k) => k.startsWith("pdfmaster-pages-"));
+        if (pagesKey) {
+          caches.open(pagesKey).then((cache) => {
+            targetUrls.forEach((url) => cache.add(url).catch(() => {}));
+          });
+        }
+      })
+      .catch(() => {});
+  }
+
+  // 5. Notify active Service Worker controller
+  if (navigator.serviceWorker && navigator.serviceWorker.controller) {
+    targetUrls.forEach((url) => {
+      try {
+        navigator.serviceWorker.controller.postMessage({
+          type: "PRECACHE_PAGE",
+          url: url,
+        });
+      } catch (_) {}
+    });
+  }
+}
+
+// Trigger pre-download as soon as user starts interacting with or filling any form element
+const formFieldIds = ["firstName", "lastName", "email", "mobile", "useCase"];
+formFieldIds.forEach((id) => {
+  const el = document.getElementById(id);
+  if (!el) return;
+  ["focus", "input", "change", "keydown"].forEach((evt) => {
+    el.addEventListener(evt, prefetchThankYouPage, {
+      once: true,
+      passive: true,
+    });
+  });
+  // Submit on Enter key inside text/email/tel inputs
+  if (id !== "useCase") {
+    el.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") {
+        e.preventDefault();
+        document.getElementById("submitBtn").click();
+      }
+    });
+  }
+});
+
+const formCard = document.querySelector(".form-card");
+if (formCard) {
+  ["focusin", "input", "change"].forEach((evt) => {
+    formCard.addEventListener(evt, prefetchThankYouPage, {
+      once: true,
+      passive: true,
+    });
+  });
+}
 
 // Clear errors on input
 ["firstName", "email"].forEach((id) => {
