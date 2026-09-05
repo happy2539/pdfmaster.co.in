@@ -420,6 +420,40 @@ A powerful, privacy-first metadata editor that lets you view, edit, update, or r
 
 
 
+### 8. Delete PDF Pages (New!)
+
+👉 **Live Website**: [https://pdfmaster.co.in/delete-pdf-pages](https://pdfmaster.co.in/delete-pdf-pages)
+
+A powerful, privacy-first PDF page removal tool that lets you delete unwanted pages, blank sheets, or page ranges directly in your browser without uploading files to any server.
+
+* **100% Client-Side Processing**:
+  * Every page removal operation happens locally inside your browser using `pdf-lib` and `PDF.js`.
+  * Documents never leave your computer or phone.
+
+* **Tiered Low-RAM Architecture**:
+  * Offloads raw PDF buffers directly into browser IndexedDB when files exceed 50 MB to prevent tab crashes.
+  * Sequential micro-yield rendering ensures zero freezing even on lower-end devices.
+
+* **Smart Session Recovery (IndexedDB)**:
+  * Automatically saves file data, total pages, and marked deletion states.
+  * Recover your exact workspace and selections with one click from the navbar if the tab closes or reloads.
+
+* **Flexible Deletion Methods**:
+  * **Visual Selection**: Click any page thumbnail in the responsive grid to mark/unmark for deletion.
+  * **Range & Number Parser**: Type ranges like `1, 3-5, 8` for rapid multi-page marking.
+  * **Batch Actions**: One-click filters for Odd pages, Even pages, Invert selection, Select all, and Reset.
+
+* **High-Resolution Page Inspector**:
+  * Inspect full-size pages in a crisp modal to read content before confirming removal.
+
+* **Undo & Redo History**:
+  * 30-level undo/redo history stack (with `Ctrl+Z` and `Ctrl+Y` keyboard shortcuts).
+
+* **Original Lossless Quality**:
+  * Preserves original dimensions, vector paths, embedded fonts, and raster images without recompression.
+
+
+
 ---
 
 ## 📁 Project Structure
@@ -429,6 +463,7 @@ The project has a flat HTML structure at the root, with corresponding styling an
 ```text
 pdfmaster.co.in/
 ├── index.html                  # Homepage (Main Portal)
+├── delete-pdf-pages.html       # Delete PDF Pages Page
 ├── merge-pdf.html              # Merge PDF Page
 ├── split-pdf.html              # Split PDF Page
 ├── pdf-reorder.html            # Reorder PDF Page
@@ -452,6 +487,7 @@ pdfmaster.co.in/
 ├── css/                        # Stylesheets for each page
 │   │
 │   ├── index.css                  # CSS Homepage (Main Portal)
+│   ├── delete-pdf-pages.css       # CSS Delete PDF Pages Page
 │   ├── merge-pdf.css              # CSS Merge PDF Page
 │   ├── split-pdf.css              # CSS Split PDF Page
 │   ├── pdf-reorder.css            # CSS Reorder PDF Page
@@ -474,6 +510,7 @@ pdfmaster.co.in/
 ├── js/                         # Client-Side Processing Logic
 │   │
 │   ├── index.js                  # Js Homepage (Main Portal)
+│   ├── delete-pdf-pages.js       # Js Delete PDF Pages Page
 │   ├── merge-pdf.js              # Js Merge PDF Page
 │   ├── split-pdf.js              # Js Split PDF Page
 │   ├── pdf-reorder.js            # Js Reorder PDF Page

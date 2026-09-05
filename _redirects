@@ -45,6 +45,14 @@
 /watermark-pdf         /watermark-pdf-add 301!
 /add-watermark-pdf     /watermark-pdf-add 301!
 /pdf-watermark         /watermark-pdf-add 301!
+/delete-pdf-pages.html /delete-pdf-pages 301!
+/pdf-delete-pages.html /delete-pdf-pages 301!
+/pdf-delete-pages      /delete-pdf-pages 301!
+/delete-pages-from-pdf /delete-pdf-pages 301!
+/remove-pdf-pages      /delete-pdf-pages 301!
+/remove-pages-from-pdf /delete-pdf-pages 301!
+/delete-pdf-page       /delete-pdf-pages 301!
+/delete-pdf-pages.html      /delete-pdf-pages 301!
 
 
 
