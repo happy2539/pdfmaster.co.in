@@ -43,10 +43,34 @@
   }
 
   /**
+   * Load Trustpilot script and initialize widget
+   */
+  function ensureTrustpilot() {
+    if (!document.getElementById("trustpilot-widget-script")) {
+      const s = document.createElement("script");
+      s.id = "trustpilot-widget-script";
+      s.type = "text/javascript";
+      s.src = "//widget.trustpilot.com/bootstrap/v5/tp.widget.bootstrap.min.js";
+      s.async = true;
+      s.onload = () => {
+        if (window.Trustpilot) {
+          const w = document.querySelector("#pdfmUniversalModal .trustpilot-widget");
+          if (w) window.Trustpilot.loadFromElement(w, true);
+        }
+      };
+      document.head.appendChild(s);
+    } else if (window.Trustpilot) {
+      const w = document.querySelector("#pdfmUniversalModal .trustpilot-widget");
+      if (w) window.Trustpilot.loadFromElement(w, true);
+    }
+  }
+
+  /**
    * Ensure modal element exists in DOM
    */
   function ensureModal() {
     ensureStyles();
+    ensureTrustpilot();
 
     let overlay = document.getElementById("pdfmUniversalModal");
     if (!overlay) {
@@ -106,6 +130,14 @@
               Done
             </button>
           </div>
+
+          <!-- TrustBox widget - Review Collector -->
+          <div class="pdfm-popup-trustpilot">
+            <div class="trustpilot-widget" data-locale="en-US" data-template-id="56278e9abfbbba0bdcd568bc" data-businessunit-id="6a9c668c9888d1e2a1ab5719" data-style-height="52px" data-style-width="100%" data-token="19a1dd93-f14d-4877-959e-6df0e8ca8ef0">
+              <a href="https://www.trustpilot.com/review/pdfmaster.co.in" target="_blank" rel="noopener">Trustpilot</a>
+            </div>
+          </div>
+          <!-- End TrustBox widget -->
 
           <p class="pdfm-popup-footer-note">
             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block; vertical-align:-2px; margin-right:3px; color:var(--primary, #e63946);">
@@ -308,6 +340,7 @@
     void modalOverlay.offsetWidth; // force reflow
     modalOverlay.classList.add("show");
     document.body.style.overflow = "hidden";
+    ensureTrustpilot();
 
     // Focus download button
     setTimeout(() => {

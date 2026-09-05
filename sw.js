@@ -24,7 +24,7 @@
  * visit - see the activate handler below.
  */
 
-const CACHE_VERSION = "v35";
+const CACHE_VERSION = "v36";
 const CACHE_PREFIX = "pdfmaster-";
 
 const STATIC_CACHE = `${CACHE_PREFIX}static-${CACHE_VERSION}`;
@@ -158,6 +158,7 @@ const BYPASS_HOSTS = [
   "gamingwithhappy39.workers.dev",
   "script.google.com",
   "script.googleusercontent.com",
+  "trustpilot.com",
 ];
 
 // Cross-origin hosts that are safe to cache aggressively: the pinned-
