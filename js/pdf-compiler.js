@@ -640,6 +640,10 @@ class PDFCompiler {
   }
   clearAll() {
     this.files = [];
+    this.lastMergedBlob = null;
+    this.lastMergedName = null;
+    const readyBtn = document.getElementById("downloadReadyBtn");
+    if (readyBtn) readyBtn.style.display = "none";
     this.render();
     this.updateButtons();
     this.updateStats();
@@ -830,16 +834,50 @@ class PDFCompiler {
           document.getElementById("pdfName").value.trim() || "merged_document"
         ).replace(/\.pdf$/i, "") + ".pdf";
       const blob = new Blob([pdfBytes], { type: "application/pdf" });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = name;
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      setTimeout(() => URL.revokeObjectURL(url), 5000);
+      this.lastMergedBlob = blob;
+      this.lastMergedName = name;
 
-      showToast(`"${name}" downloaded successfully!`, "success", 5000);
+      // Activate on-page legacy Download button so user can download directly if popup is closed
+      const readyBtn = document.getElementById("downloadReadyBtn");
+      if (readyBtn) {
+        readyBtn.style.display = "inline-flex";
+        readyBtn.onclick = () => {
+          if (!this.lastMergedBlob) return;
+          const url = URL.createObjectURL(this.lastMergedBlob);
+          const a = document.createElement("a");
+          a.href = url;
+          a.download = this.lastMergedName;
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+          setTimeout(() => URL.revokeObjectURL(url), 60000);
+          showToast(`"${this.lastMergedName}" downloaded successfully!`, "success", 4000);
+        };
+      }
+
+      // Show universal popup modal
+      if (window.PDFMasterPopup && typeof window.PDFMasterPopup.show === "function") {
+        window.PDFMasterPopup.show({
+          title: "Thank You for Using PDFMaster!",
+          desc: "Your PDF files have been combined into a single document. Everything was processed right on your device for <strong>100% privacy</strong>.",
+          fileName: name,
+          fileType: "pdf",
+          fileDetails: `${this.files.length} files combined • 100% Private`,
+          downloadText: "Download Merged PDF",
+          blob: blob,
+          syncButtonTextEl: "downloadReadyBtnText"
+        });
+      } else {
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = name;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        setTimeout(() => URL.revokeObjectURL(url), 5000);
+        showToast(`"${name}" downloaded successfully!`, "success", 5000);
+      }
     } catch (err) {
       console.error(err);
       this.showLoadingModal(false);

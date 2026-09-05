@@ -51,6 +51,7 @@ function showToast(
     setTimeout(() => t.remove(), 300);
   }, dur);
 }
+window.showToast = showToast;
 
 /* ── Theme — same localStorage key as homepage (pdfmaster-theme) ── */
 const btn = document.getElementById("themeBtn");
@@ -154,17 +155,92 @@ const previewSec = document.getElementById("previewSec");
 const previewGrid = document.getElementById("previewGrid");
 const pdfNameInput = document.getElementById("pdfName");
 const downloadModal = document.getElementById("downloadModal");
+const downloadReadyBtn = document.getElementById("downloadReadyBtn");
+const downloadReadyBtnText = document.getElementById("downloadReadyBtnText");
+const convertBtnText = document.getElementById("convertBtnText");
+let generatedPdfBlob = null;
+let generatedFileName = "converted_document.pdf";
+let generatedPageCount = 1;
+
+function downloadGeneratedPdf() {
+  if (!generatedPdfUrl && !generatedPdfBlob) return;
+  const name =
+    (pdfNameInput ? pdfNameInput.value.trim() : "converted_document") ||
+    "converted_document";
+  const cleanName = name.replace(/\.pdf$/i, "");
+  const fileName = `${cleanName}.pdf`;
+
+  if (isInApp) {
+    if (generatedPdfUrl) {
+      window.open(
+        `data:application/pdf;base64,${generatedPdfUrl.split(",")[1]}`,
+        "_system",
+      );
+    } else if (generatedPdfBlob) {
+      const url = URL.createObjectURL(generatedPdfBlob);
+      window.open(url, "_system");
+      setTimeout(() => URL.revokeObjectURL(url), 60000);
+    }
+  } else {
+    const a = document.createElement("a");
+    if (generatedPdfBlob) {
+      const url = URL.createObjectURL(generatedPdfBlob);
+      a.href = url;
+      a.download = fileName;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      setTimeout(() => URL.revokeObjectURL(url), 60000);
+    } else {
+      a.href = generatedPdfUrl;
+      a.download = fileName;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+    }
+  }
+
+  if (downloadReadyBtnText) {
+    downloadReadyBtnText.textContent = "Downloaded! (Download Again)";
+  }
+  showToast(`"${fileName}" downloaded successfully!`, "success", 4000);
+}
+
+function invalidateGeneratedPdf() {
+  generatedPdfUrl = null;
+  generatedPdfBlob = null;
+  if (downloadReadyBtn) {
+    downloadReadyBtn.style.display = "none";
+  }
+  if (convertBtnText) {
+    convertBtnText.textContent = "Convert to PDF";
+  }
+  if (convertBtn) {
+    convertBtn.classList.remove("btn-outline");
+    convertBtn.classList.add("btn-red");
+  }
+}
+
+if (downloadReadyBtn) {
+  downloadReadyBtn.addEventListener("click", downloadGeneratedPdf);
+}
 
 if (pdfNameInput) {
   pdfNameInput.addEventListener("input", scheduleDBSave);
 }
 const chkCompress = document.getElementById("chkCompress");
 if (chkCompress) {
-  chkCompress.addEventListener("change", scheduleDBSave);
+  chkCompress.addEventListener("change", () => {
+    invalidateGeneratedPdf();
+    scheduleDBSave();
+  });
 }
 const chkOnePage = document.getElementById("chkOnePage");
 if (chkOnePage) {
-  chkOnePage.addEventListener("change", scheduleDBSave);
+  chkOnePage.addEventListener("change", () => {
+    invalidateGeneratedPdf();
+    scheduleDBSave();
+  });
 }
 
 /* ── Upload Events ── */
@@ -207,6 +283,7 @@ function handleFiles(list) {
   });
   refreshZone();
   renderPreviews();
+  invalidateGeneratedPdf();
   convertBtn.disabled = false;
   resetBtn.disabled = false;
   scheduleDBSave();
@@ -271,6 +348,7 @@ function removeImg(id) {
   imageOrder = imageOrder.filter((i) => i !== id);
   refreshZone();
   renderPreviews();
+  invalidateGeneratedPdf();
   if (!imageFiles.length) {
     convertBtn.disabled = true;
     resetBtn.disabled = true;
@@ -309,6 +387,7 @@ function setupDragDrop() {
         imageOrder.splice(fi, 1);
         imageOrder.splice(ti, 0, fId);
         renderPreviews();
+        invalidateGeneratedPdf();
         scheduleDBSave();
       }
     });
@@ -321,6 +400,7 @@ resetBtn.addEventListener("click", () => {
   imageOrder = [];
   refreshZone();
   renderPreviews();
+  invalidateGeneratedPdf();
   convertBtn.disabled = true;
   resetBtn.disabled = true;
   loadingWrap.style.display = "none";
@@ -476,14 +556,70 @@ convertBtn.addEventListener("click", async () => {
     await new Promise((r) => setTimeout(r, 400));
     const out = pdf.output("datauristring");
     generatedPdfUrl = out;
-    if (isInApp) {
-      downloadModal.classList.add("show");
+    const pdfBlob = pdf.output("blob");
+    generatedPdfBlob = pdfBlob;
+    generatedFileName = `${name}.pdf`;
+    generatedPageCount = page;
+
+    // Show the on-page legacy Download button so user can download directly if popup is closed
+    if (downloadReadyBtn) {
+      downloadReadyBtn.style.display = "inline-flex";
+      if (downloadReadyBtnText) {
+        downloadReadyBtnText.textContent = "Download PDF";
+      }
+    }
+    if (convertBtnText) {
+      convertBtnText.textContent = "Re-convert PDF";
+    }
+    if (convertBtn) {
+      convertBtn.classList.remove("btn-red");
+      convertBtn.classList.add("btn-outline");
+    }
+
+    statusText.innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: middle; margin-right: 5px; display: inline-block;"><polyline points="20 6 9 17 4 12"></polyline></svg>PDF created successfully! <button type="button" id="reopenPopupBtn" class="link-btn">View thank-you popup</button>`;
+
+    const reopenBtn = document.getElementById("reopenPopupBtn");
+    if (reopenBtn) {
+      reopenBtn.addEventListener("click", () => {
+        if (
+          window.PhotoToPdfPopup &&
+          typeof window.PhotoToPdfPopup.show === "function"
+        ) {
+          window.PhotoToPdfPopup.show({
+            pdfUrl: generatedPdfUrl,
+            blob: generatedPdfBlob,
+            fileName: generatedFileName,
+            pageCount: generatedPageCount,
+            isInApp: isInApp,
+          });
+        }
+      });
+    }
+
+    // Trigger popup modal with download button and thank you message via separate script
+    if (
+      window.PhotoToPdfPopup &&
+      typeof window.PhotoToPdfPopup.show === "function"
+    ) {
+      window.PhotoToPdfPopup.show({
+        pdfUrl: out,
+        blob: pdfBlob,
+        fileName: `${name}.pdf`,
+        pageCount: page,
+        isInApp: isInApp,
+      });
     } else {
-      const a = document.createElement("a");
-      a.href = out;
-      a.download = `${name}.pdf`;
-      a.click();
-      statusText.innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: middle; margin-right: 5px; display: inline-block;"><polyline points="20 6 9 17 4 12"></polyline></svg>PDF downloaded successfully!`;
+      window.dispatchEvent(
+        new CustomEvent("pdfmaster:photo-to-pdf-complete", {
+          detail: {
+            pdfUrl: out,
+            blob: pdfBlob,
+            fileName: `${name}.pdf`,
+            pageCount: page,
+            isInApp: isInApp,
+          },
+        }),
+      );
     }
   } catch (err) {
     console.error(err);
@@ -496,18 +632,18 @@ convertBtn.addEventListener("click", async () => {
   }
 });
 
-/* ── Modal ── */
-document.getElementById("openBrowserBtn").addEventListener("click", () => {
+/* ── Legacy Modal Fallback ── */
+document.getElementById("openBrowserBtn")?.addEventListener("click", () => {
   if (generatedPdfUrl)
     window.open(
       `data:application/pdf;base64,${generatedPdfUrl.split(",")[1]}`,
       "_system",
     );
-  downloadModal.classList.remove("show");
+  downloadModal?.classList.remove("show");
 });
 document
   .getElementById("cancelModalBtn")
-  .addEventListener("click", () => downloadModal.classList.remove("show"));
+  ?.addEventListener("click", () => downloadModal?.classList.remove("show"));
 
 /* ── Back to top — identical to homepage ── */
 const b2t = document.getElementById("b2t");

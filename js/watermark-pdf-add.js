@@ -1558,6 +1558,40 @@
           applyBtn.disabled = false;
           setStatus("Done.");
           scheduleDBSave();
+
+          if (window.PDFMasterPopup && state.resultBlobs.length > 0) {
+            if (state.resultBlobs.length === 1) {
+              var r = state.resultBlobs[0];
+              window.PDFMasterPopup.show({
+                fileType: "pdf",
+                fileName: r.name,
+                fileSize: r.blob.size,
+                downloadText: "Download PDF",
+                toolName: "Watermark PDF",
+                blob: r.blob,
+                onDownload: function () {
+                  downloadBlob(r.blob, r.name);
+                },
+              });
+            } else {
+              var totalSize = state.resultBlobs.reduce(function (acc, item) {
+                return acc + (item.blob ? item.blob.size : 0);
+              }, 0);
+              window.PDFMasterPopup.show({
+                fileType: "zip",
+                fileName: "pdfmaster-watermarked.zip",
+                fileSize: totalSize,
+                downloadText:
+                  "Download All as ZIP (" +
+                  state.resultBlobs.length +
+                  " files)",
+                toolName: "Watermark PDF",
+                onDownload: function () {
+                  downloadBtn.click();
+                },
+              });
+            }
+          }
         }
 
         downloadBtn.addEventListener("click", function () {

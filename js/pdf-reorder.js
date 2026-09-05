@@ -15,6 +15,7 @@ const state = {
   totalPages: 0,
   fileName: "document.pdf",
   sortableInstance: null,
+  lastReorderedBlob: null,
 };
 
 // =============================================
@@ -338,6 +339,7 @@ function initSortable() {
 }
 
 function rebuildPageOrder() {
+  state.lastReorderedBlob = null;
   const thumbs = pagesGrid.querySelectorAll(".page-thumb");
   state.pageOrder = Array.from(thumbs).map((t) =>
     parseInt(t.getAttribute("data-orig-idx"), 10),
@@ -382,6 +384,7 @@ changeFileBtn.addEventListener("click", () => {
   state.pdfBytes = null;
   state.pdfJsDoc = null;
   state.pageOrder = [];
+  state.lastReorderedBlob = null;
   fileInput.value = "";
   if (state.sortableInstance) {
     state.sortableInstance.destroy();
@@ -392,6 +395,7 @@ changeFileBtn.addEventListener("click", () => {
 
 resetOrderBtn.addEventListener("click", async () => {
   if (!state.pdfJsDoc) return;
+  state.lastReorderedBlob = null;
   state.pageOrder = Array.from({ length: state.totalPages }, (_, i) => i);
   await renderAllThumbs();
   initSortable();
@@ -413,6 +417,42 @@ reverseBtn.addEventListener("click", () => {
 // =============================================
 downloadBtn.addEventListener("click", async () => {
   if (!state.pdfBytes || state.pageOrder.length === 0) return;
+
+  const nameWithout = state.fileName ? state.fileName.replace(/\.pdf$/i, "") : "document";
+  const outputFileName = `${nameWithout}-reordered.pdf`;
+
+  if (state.lastReorderedBlob) {
+    const url = URL.createObjectURL(state.lastReorderedBlob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = outputFileName;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    setTimeout(() => URL.revokeObjectURL(url), 5000);
+
+    if (window.PDFMasterPopup) {
+      window.PDFMasterPopup.show({
+        fileType: "pdf",
+        fileName: outputFileName,
+        fileSize: state.lastReorderedBlob.size,
+        downloadText: "Download PDF",
+        toolName: "PDF Reorder",
+        blob: state.lastReorderedBlob,
+        onDownload: () => {
+          const u = URL.createObjectURL(state.lastReorderedBlob);
+          const dl = document.createElement("a");
+          dl.href = u;
+          dl.download = outputFileName;
+          document.body.appendChild(dl);
+          dl.click();
+          document.body.removeChild(dl);
+          setTimeout(() => URL.revokeObjectURL(u), 5000);
+        },
+      });
+    }
+    return;
+  }
 
   downloadBtn.disabled = true;
   downloadBtn.textContent = "Building PDF…";
@@ -436,17 +476,38 @@ downloadBtn.addEventListener("click", async () => {
 
     const outBytes = await newDoc.save();
     const blob = new Blob([outBytes], { type: "application/pdf" });
-    const url = URL.createObjectURL(blob);
+    state.lastReorderedBlob = blob;
 
+    const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
-    const nameWithout = state.fileName.replace(/\.pdf$/i, "");
-    a.download = `${nameWithout}-reordered.pdf`;
+    a.download = outputFileName;
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
     setTimeout(() => URL.revokeObjectURL(url), 5000);
     showToast("PDF downloaded successfully!", "success");
+
+    if (window.PDFMasterPopup) {
+      window.PDFMasterPopup.show({
+        fileType: "pdf",
+        fileName: outputFileName,
+        fileSize: blob.size,
+        downloadText: "Download PDF",
+        toolName: "PDF Reorder",
+        blob: blob,
+        onDownload: () => {
+          const u = URL.createObjectURL(blob);
+          const dl = document.createElement("a");
+          dl.href = u;
+          dl.download = outputFileName;
+          document.body.appendChild(dl);
+          dl.click();
+          document.body.removeChild(dl);
+          setTimeout(() => URL.revokeObjectURL(u), 5000);
+        },
+      });
+    }
   } catch (err) {
     console.error(err);
     showToast("Failed to generate PDF: " + err.message, "error", 5000);

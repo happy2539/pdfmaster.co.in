@@ -436,11 +436,15 @@ function renderResults() {
       const img = convertedImages.find((x) => x.pageNum === pn);
       if (!img) return;
       const useFmt = downloadFormat === "same" ? img.fmt : downloadFormat;
+      const qual = parseInt(qualitySlider.value) / 100;
       const url = img.canvas.toDataURL(
         "image/" + useFmt,
-        parseInt(qualitySlider.value) / 100,
+        qual,
       );
-      triggerDownload(url, `${baseName()}_page${pn}.${getExt(useFmt)}`);
+      const ext = getExt(useFmt);
+      const fileName = `${baseName()}_page${pn}.${ext}`;
+      triggerDownload(url, fileName);
+      showToast(`Page ${pn} downloaded (${ext.toUpperCase()})!`, "success");
     });
   });
 
@@ -465,11 +469,27 @@ downloadSingleBtn.addEventListener("click", () => {
   if (convertedImages.length !== 1) return;
   const img = convertedImages[0];
   const useFmt = downloadFormat === "same" ? img.fmt : downloadFormat;
+  const qual = parseInt(qualitySlider.value) / 100;
   const url = img.canvas.toDataURL(
     "image/" + useFmt,
-    parseInt(qualitySlider.value) / 100,
+    qual,
   );
-  triggerDownload(url, `${baseName()}_page${img.pageNum}.${getExt(useFmt)}`);
+  const fn = `${baseName()}_page${img.pageNum}.${getExt(useFmt)}`;
+  triggerDownload(url, fn);
+  showToast("Image downloaded!", "success");
+
+  if (window.PDFMasterPopup) {
+    window.PDFMasterPopup.show({
+      fileType: "image",
+      fileName: fn,
+      fileSize: null,
+      downloadText: "Download Image Again",
+      toolName: "PDF to Photo",
+      onDownload: () => {
+        triggerDownload(url, fn);
+      },
+    });
+  }
 });
 
 // ─── Download all as ZIP ──────────────────────────────────────────────────
@@ -523,8 +543,24 @@ downloadAllBtn.addEventListener("click", async () => {
     progressFill.style.width = "100%";
     progressPct.textContent = "100%";
     progressText.textContent = "Done!";
-    triggerDownload(URL.createObjectURL(blob), `${baseName()}_images.zip`);
+    const zipName = `${baseName()}_images.zip`;
+    triggerDownload(URL.createObjectURL(blob), zipName);
     showToast("ZIP downloaded!", "success");
+
+    if (window.PDFMasterPopup) {
+      window.PDFMasterPopup.show({
+        fileType: "zip",
+        fileName: zipName,
+        fileSize: blob.size,
+        downloadText: "Download ZIP Again",
+        secondaryText: "Done",
+        toolName: "PDF to Photo",
+        blob: blob,
+        onDownload: () => {
+          triggerDownload(URL.createObjectURL(blob), zipName);
+        },
+      });
+    }
   } catch (err) {
     showToast("ZIP creation failed: " + err.message, "error");
     console.error(err);

@@ -988,16 +988,40 @@
   downloadBtn &&
     downloadBtn.addEventListener("click", function () {
       if (!currentFile) return;
+      var fname = currentFile.name || "document.pdf";
       var url = URL.createObjectURL(currentFile);
       var a = document.createElement("a");
       a.href = url;
-      a.download = currentFile.name || "document.pdf";
+      a.download = fname;
       document.body.appendChild(a);
       a.click();
       a.remove();
       setTimeout(function () {
         URL.revokeObjectURL(url);
-      }, 1000);
+      }, 4000);
+
+      if (window.PDFMasterPopup) {
+        window.PDFMasterPopup.show({
+          fileType: "pdf",
+          fileName: fname,
+          fileSize: currentFile.size,
+          downloadText: "Download PDF",
+          toolName: "PDF Viewer",
+          blob: currentFile,
+          onDownload: function () {
+            var u = URL.createObjectURL(currentFile);
+            var dl = document.createElement("a");
+            dl.href = u;
+            dl.download = fname;
+            document.body.appendChild(dl);
+            dl.click();
+            dl.remove();
+            setTimeout(function () {
+              URL.revokeObjectURL(u);
+            }, 4000);
+          },
+        });
+      }
     });
 
   fullscreenBtn &&

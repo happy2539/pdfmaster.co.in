@@ -24,7 +24,7 @@
  * visit - see the activate handler below.
  */
 
-const CACHE_VERSION = "v32";
+const CACHE_VERSION = "v35";
 const CACHE_PREFIX = "pdfmaster-";
 
 const STATIC_CACHE = `${CACHE_PREFIX}static-${CACHE_VERSION}`;
@@ -108,6 +108,7 @@ const PRECACHE_URLS = [
   "/css/thank-you.css",
   "/css/delete-pdf-pages.css",
   "/css/watermark-pdf-add.css",
+  "/css/universal-popup.css",
   "/js/404.js",
   "/js/about.js",
   "/js/announcements.js",
@@ -139,12 +140,14 @@ const PRECACHE_URLS = [
   "/js/pdf-split.js",
   "/js/pdf-to-photo.js",
   "/js/pdf-viewer.js",
+  "/js/photo-to-pdf-popup.js",
   "/js/photo-to-pdf.js",
   "/js/privacy-policy.js",
   "/js/subscribe.js",
   "/js/sw-register.js",
   "/js/terms.js",
   "/js/thank-you.js",
+  "/js/universal-popup.js",
   "/js/watermark-pdf-add.js",
 ];
 

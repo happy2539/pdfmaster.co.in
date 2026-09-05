@@ -315,10 +315,59 @@ function drawAnnotationOnPdf(
       return Promise.resolve();
   }
 }
+var cachedExportBlob = null;
+var cachedExportName = null;
+
+window._invalidateEditorExport = function () {
+  cachedExportBlob = null;
+  cachedExportName = null;
+};
+
 function exportPdf() {
   if (!currentFileBlob) {
     return;
   }
+  var base = (fileName || "document.pdf").replace(/\.pdf$/i, "");
+  var outputName = base + "-edited.pdf";
+
+  if (cachedExportBlob) {
+    var url = URL.createObjectURL(cachedExportBlob);
+    var a = document.createElement("a");
+    a.href = url;
+    a.download = outputName;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    setTimeout(function () {
+      URL.revokeObjectURL(url);
+    }, 4000);
+    window.showToast("Your edited PDF is downloading.");
+
+    if (window.PDFMasterPopup) {
+      window.PDFMasterPopup.show({
+        fileType: "pdf",
+        fileName: outputName,
+        fileSize: cachedExportBlob.size,
+        downloadText: "Download Edited PDF",
+        toolName: "PDF Editor",
+        blob: cachedExportBlob,
+        onDownload: function () {
+          var u = URL.createObjectURL(cachedExportBlob);
+          var dl = document.createElement("a");
+          dl.href = u;
+          dl.download = outputName;
+          document.body.appendChild(dl);
+          dl.click();
+          dl.remove();
+          setTimeout(function () {
+            URL.revokeObjectURL(u);
+          }, 4000);
+        },
+      });
+    }
+    return;
+  }
+
   var btn = document.getElementById("download-btn");
   var oldLabel = btn.textContent;
   btn.disabled = true;
@@ -472,11 +521,12 @@ function exportPdf() {
     })
     .then(function (bytes) {
       var blob = new Blob([bytes], { type: "application/pdf" });
+      cachedExportBlob = blob;
+      cachedExportName = outputName;
       var url = URL.createObjectURL(blob);
       var a = document.createElement("a");
-      var base = (fileName || "document.pdf").replace(/\.pdf$/i, "");
       a.href = url;
-      a.download = base + "-edited.pdf";
+      a.download = outputName;
       document.body.appendChild(a);
       a.click();
       a.remove();
@@ -484,6 +534,29 @@ function exportPdf() {
         URL.revokeObjectURL(url);
       }, 4000);
       window.showToast("Your edited PDF is downloading.");
+
+      if (window.PDFMasterPopup) {
+        window.PDFMasterPopup.show({
+          fileType: "pdf",
+          fileName: outputName,
+          fileSize: blob.size,
+          downloadText: "Download Edited PDF",
+          toolName: "PDF Editor",
+          blob: blob,
+          onDownload: function () {
+            var u = URL.createObjectURL(blob);
+            var dl = document.createElement("a");
+            dl.href = u;
+            dl.download = outputName;
+            document.body.appendChild(dl);
+            dl.click();
+            dl.remove();
+            setTimeout(function () {
+              URL.revokeObjectURL(u);
+            }, 4000);
+          },
+        });
+      }
     })
     .catch(function (err) {
       console.error(err);

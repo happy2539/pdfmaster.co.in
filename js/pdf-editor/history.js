@@ -70,6 +70,9 @@ function sendToBack() {
 }
 
 function pushHistory() {
+  if (typeof window._invalidateEditorExport === "function") {
+    window._invalidateEditorExport();
+  }
   undoHistoryStack.push({
     annotations: deepClone(annotationsByPage),
     rotations: Object.assign({}, pageRotations),

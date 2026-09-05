@@ -616,7 +616,29 @@
                 />
                 <polyline points="14 2 14 8 20 8" />
               </svg>
-              Convert to PDF
+              <span id="convertBtnText">Convert to PDF</span>
+            </button>
+            <button
+              type="button"
+              class="btn-red btn-download-ready"
+              id="downloadReadyBtn"
+              style="display: none;"
+            >
+              <svg
+                width="15"
+                height="15"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2.5"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                <polyline points="7 10 12 15 17 10"></polyline>
+                <line x1="12" y1="15" x2="12" y2="3"></line>
+              </svg>
+              <span id="downloadReadyBtnText">Download PDF</span>
             </button>
             <button class="btn-outline" id="resetBtn" disabled>
               Clear All
@@ -1820,43 +1842,153 @@
 
     <button class="b2t" id="b2t" aria-label="Back to top"></button>
 
-    <!-- Download Modal (WebView fallback) -->
-    <div class="modal-bg" id="downloadModal">
-      <div class="modal-box">
-        <h2>
-          <!-- @license lucide-static v0.330.0 - ISC -->
+    <!-- Photo to PDF Success & Download Modal -->
+    <div
+      class="popup-modal-bg"
+      id="photoToPdfModal"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="popupModalTitle"
+      hidden
+    >
+      <div class="popup-modal-box">
+        <button
+          type="button"
+          class="popup-modal-close"
+          id="popupModalCloseBtn"
+          aria-label="Close dialog"
+        >
           <svg
-            class="lucide lucide-download"
-            xmlns="http://www.w3.org/2000/svg"
-            width="1em"
-            height="1em"
+            width="18"
+            height="18"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2.2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+
+        <div class="popup-icon-wrap" aria-hidden="true">
+          <div class="popup-icon-glow"></div>
+          <div class="popup-icon-badge">
+            <svg
+              width="30"
+              height="30"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+              <polyline points="22 4 12 14.01 9 11.01"></polyline>
+            </svg>
+          </div>
+        </div>
+
+        <h2 class="popup-title" id="popupModalTitle">
+          Thank You for Using PDFMaster!
+        </h2>
+
+        <p class="popup-desc" id="popupModalDesc">
+          Your images have been converted into a high-quality PDF. Everything
+          was processed right on your device for <strong>100% privacy</strong>.
+        </p>
+
+        <div class="popup-file-card">
+          <div class="popup-file-icon" aria-hidden="true">
+            <svg
+              width="22"
+              height="22"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path
+                d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"
+              ></path>
+              <polyline points="14 2 14 8 20 8"></polyline>
+              <line x1="16" y1="13" x2="8" y2="13"></line>
+              <line x1="16" y1="17" x2="8" y2="17"></line>
+            </svg>
+          </div>
+          <div class="popup-file-meta">
+            <span class="popup-file-name" id="popupFileName">document.pdf</span>
+            <span class="popup-file-details" id="popupFileDetails"
+              >Ready to download • 100% Private</span
+            >
+          </div>
+        </div>
+
+        <div class="popup-modal-btns">
+          <button
+            type="button"
+            class="btn-red popup-download-btn"
+            id="popupDownloadBtn"
+          >
+            <svg
+              width="18"
+              height="18"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+              <polyline points="7 10 12 15 17 10"></polyline>
+              <line x1="12" y1="15" x2="12" y2="3"></line>
+            </svg>
+            <span id="popupDownloadBtnText">Download PDF</span>
+          </button>
+          <button
+            type="button"
+            class="btn-outline popup-secondary-btn"
+            id="popupConvertMoreBtn"
+          >
+            Convert Another Image
+          </button>
+        </div>
+
+        <p class="popup-footer-note">
+          <svg
+            width="13"
+            height="13"
             viewBox="0 0 24 24"
             fill="none"
             stroke="currentColor"
             stroke-width="2"
             stroke-linecap="round"
             stroke-linejoin="round"
+            style="
+              display: inline-block;
+              vertical-align: -2px;
+              margin-right: 3px;
+              color: var(--primary);
+            "
           >
-            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-            <polyline points="7 10 12 15 17 10" />
-            <line x1="12" x2="12" y1="15" y2="3" />
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
           </svg>
-          PDF Ready!
-        </h2>
-        <p>
-          Your PDF has been created. Click the button below to open it in your
-          browser for download.
+          Free & private client-side tool. No uploads. No accounts.
         </p>
-        <div class="modal-btns">
-          <button class="btn-red" id="openBrowserBtn">Open PDF</button>
-          <button class="btn-outline" id="cancelModalBtn">Cancel</button>
-        </div>
       </div>
     </div>
 
     <!-- Toast Container -->
     <div class="toast-container" id="toastContainer"></div>
 
+    <!-- Universal Popup -->
+    <script src="/js/universal-popup.js"></script>
     <script src="js/photo-to-pdf.js"></script>
   </body>
 </html>

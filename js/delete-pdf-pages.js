@@ -776,17 +776,13 @@
   //  VIEWPORT DETECTION & DYNAMIC PRIORITY QUEUE
   // =============================================
   function isElementInViewport(el) {
-    if (!el || !el.isConnected || el.classList.contains("filter-hidden")) return false;
+    if (!el || !el.isConnected || el.classList.contains("filter-hidden"))
+      return false;
     const rect = el.getBoundingClientRect();
     if (rect.width === 0 && rect.height === 0) return false;
     const vh = window.innerHeight || document.documentElement.clientHeight;
     const vw = window.innerWidth || document.documentElement.clientWidth;
-    return (
-      rect.bottom > 0 &&
-      rect.top < vh &&
-      rect.right > 0 &&
-      rect.left < vw
-    );
+    return rect.bottom > 0 && rect.top < vh && rect.right > 0 && rect.left < vw;
   }
 
   function getCardViewportPriority(el) {
@@ -800,12 +796,8 @@
     const vh = window.innerHeight || document.documentElement.clientHeight;
     const vw = window.innerWidth || document.documentElement.clientWidth;
 
-    const inViewport = (
-      rect.bottom > 0 &&
-      rect.top < vh &&
-      rect.right > 0 &&
-      rect.left < vw
-    );
+    const inViewport =
+      rect.bottom > 0 && rect.top < vh && rect.right > 0 && rect.left < vw;
 
     if (inViewport) {
       // Tier 0: Directly on the user's screen right now!
@@ -819,12 +811,12 @@
     // Tier 1: Near screen (within 400px margin above or below the viewport)
     const isNear = rect.bottom >= -400 && rect.top <= vh + 400;
     if (isNear) {
-      const dist = rect.top >= vh ? (rect.top - vh) : Math.abs(rect.bottom);
+      const dist = rect.top >= vh ? rect.top - vh : Math.abs(rect.bottom);
       return { tier: 1, dist };
     }
 
     // Tier 2: Far outside viewport (scrolled past or far ahead)
-    const dist = rect.top >= vh ? (rect.top - vh) : Math.abs(rect.bottom);
+    const dist = rect.top >= vh ? rect.top - vh : Math.abs(rect.bottom);
     return { tier: 2, dist };
   }
 
@@ -850,7 +842,9 @@
     if (!pagesGrid || !state.pdfJsDoc || state.isDedicatedRendering) return;
 
     // 1. Ensure any cards CURRENTLY on the user's screen are queued
-    const cards = pagesGrid.querySelectorAll(".page-card:not([data-rendered='true'])");
+    const cards = pagesGrid.querySelectorAll(
+      ".page-card:not([data-rendered='true'])",
+    );
     cards.forEach((card) => {
       if (isElementInViewport(card)) {
         const pageNum = parseInt(card.dataset.page, 10);
@@ -1550,7 +1544,8 @@
   //  PAGE INSPECTOR MODAL
   // =============================================
   async function openInspector(pageNum) {
-    if (!state.pdfJsDoc || !inspectModalOverlay || state.isDedicatedRendering) return;
+    if (!state.pdfJsDoc || !inspectModalOverlay || state.isDedicatedRendering)
+      return;
 
     // Halt background thumbnail rendering immediately so 100% resources are dedicated to preview!
     isRenderingQueue = false;
@@ -1754,7 +1749,8 @@
     }
   }
 
-  if (inspectCloseBtn) inspectCloseBtn.addEventListener("click", closeInspector);
+  if (inspectCloseBtn)
+    inspectCloseBtn.addEventListener("click", closeInspector);
   if (inspectModalOverlay) {
     inspectModalOverlay.addEventListener("click", (e) => {
       if (e.target === inspectModalOverlay) closeInspector();
@@ -1932,15 +1928,12 @@
       const baseName = state.fileName.replace(/\.[^/.]+$/, "");
       lastGeneratedName = `${baseName}-pages-removed.pdf`;
 
-      // Trigger instant download
-      downloadBlob(outBlob, lastGeneratedName);
-
       updateLoadingProgress(100, "Done! Ready for download.");
       await new Promise((r) => setTimeout(r, 150));
 
       showLoadingModal(false);
 
-      // Show results card
+      // Show results card (legacy on-page download button)
       if (resultsCard) {
         resultsCard.classList.add("active");
         if (origPagesStat)
@@ -1951,11 +1944,35 @@
         resultsCard.scrollIntoView({ behavior: "smooth", block: "nearest" });
       }
 
-      showToast(
-        `Success! Deleted ${delCount} page(s) and downloaded "${lastGeneratedName}"`,
-        "success",
-        5000,
-      );
+      // Show Universal Thank You & Download Popup
+      if (
+        window.PDFMasterPopup &&
+        typeof window.PDFMasterPopup.show === "function"
+      ) {
+        window.PDFMasterPopup.show({
+          title: "Thank You for Using PDFMaster!",
+          desc: `Your selected ${delCount} page(s) have been removed. Everything was processed right on your device for <strong>100% privacy</strong>.`,
+          fileName: lastGeneratedName,
+          fileType: "pdf",
+          fileDetails: `${keepCount} pages remaining • ${fmtBytes(outBlob.size)} • 100% Private`,
+          downloadText: "Download Clean PDF",
+          blob: outBlob,
+          onSecondary: () => {
+            if (resultsCard)
+              resultsCard.scrollIntoView({
+                behavior: "smooth",
+                block: "nearest",
+              });
+          },
+        });
+      } else {
+        downloadBlob(outBlob, lastGeneratedName);
+        showToast(
+          `Success! Deleted ${delCount} page(s) and downloaded "${lastGeneratedName}"`,
+          "success",
+          5000,
+        );
+      }
     } catch (err) {
       showLoadingModal(false);
       console.error("PDF modification error:", err);

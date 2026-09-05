@@ -836,6 +836,20 @@ async function removeMetadata() {
     };
 
     showToast("Metadata removed and clean PDF downloaded!", "success", 4000);
+
+    if (window.PDFMasterPopup) {
+      window.PDFMasterPopup.show({
+        fileType: "pdf",
+        fileName: fname,
+        fileSize: blob.size,
+        downloadText: "Download Clean PDF",
+        toolName: "PDF Metadata Remover",
+        blob: blob,
+        onDownload: () => {
+          dl(blob, fname);
+        },
+      });
+    }
   } catch (err) {
     console.error(err);
     showToast("Failed to process PDF. Please try again.", "error");

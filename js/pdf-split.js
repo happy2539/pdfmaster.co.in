@@ -621,6 +621,37 @@
             behavior: "smooth",
             block: "nearest",
           });
+
+          if (window.PDFMasterPopup && splitResults.length > 0) {
+            if (splitResults.length === 1) {
+              const single = splitResults[0];
+              const blob = new Blob([single.bytes], { type: "application/pdf" });
+              window.PDFMasterPopup.show({
+                fileType: "pdf",
+                fileName: single.name,
+                fileSize: single.size,
+                downloadText: "Download PDF",
+                toolName: "Split PDF",
+                blob: blob,
+                onDownload: () => {
+                  triggerDownload(single.bytes, single.name);
+                },
+              });
+            } else {
+              const baseName = (pdfFile ? pdfFile.name : "document").replace(/\.pdf$/i, "");
+              const totalSize = splitResults.reduce((acc, r) => acc + (r.size || 0), 0);
+              window.PDFMasterPopup.show({
+                fileType: "zip",
+                fileName: `${baseName}_split.zip`,
+                fileSize: totalSize,
+                downloadText: `Download All as ZIP (${splitResults.length} files)`,
+                toolName: "Split PDF",
+                onDownload: () => {
+                  downloadAllBtn.click();
+                },
+              });
+            }
+          }
         }
 
         downloadAllBtn.addEventListener("click", async () => {
