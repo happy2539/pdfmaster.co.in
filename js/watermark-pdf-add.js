@@ -346,6 +346,8 @@
           imageDataUrl: null,
           imageAspect: 1.77,
           resultBlobs: [],
+          watermarkStartTime: null,
+          lastWatermarkDurationMs: null,
         };
         var idCounter = 0;
 
@@ -1249,6 +1251,7 @@
         });
 
         async function applyWatermark() {
+          state.watermarkStartTime = performance.now();
           var maxPages = Math.max.apply(
             null,
             state.files.map(function (f) {
@@ -1560,6 +1563,10 @@
           scheduleDBSave();
 
           if (window.PDFMasterPopup && state.resultBlobs.length > 0) {
+            var durationMs = state.watermarkStartTime
+              ? Math.max(1, Math.round(performance.now() - state.watermarkStartTime))
+              : (state.lastWatermarkDurationMs || null);
+            if (durationMs) state.lastWatermarkDurationMs = durationMs;
             if (state.resultBlobs.length === 1) {
               var r = state.resultBlobs[0];
               window.PDFMasterPopup.show({
@@ -1568,6 +1575,7 @@
                 fileSize: r.blob.size,
                 downloadText: "Download PDF",
                 toolName: "Watermark PDF",
+                durationMs: durationMs,
                 blob: r.blob,
                 onDownload: function () {
                   downloadBlob(r.blob, r.name);
@@ -1586,6 +1594,7 @@
                   state.resultBlobs.length +
                   " files)",
                 toolName: "Watermark PDF",
+                durationMs: durationMs,
                 onDownload: function () {
                   downloadBtn.click();
                 },
@@ -1628,6 +1637,8 @@
         resetBtn.addEventListener("click", function () {
           state.files = [];
           state.resultBlobs = [];
+          state.watermarkStartTime = null;
+          state.lastWatermarkDurationMs = null;
           fileQueueEl.innerHTML = "";
           showDropzone();
           setStatus(

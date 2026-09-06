@@ -704,6 +704,7 @@ async function removeMetadata() {
   const rmXmp = document.getElementById("rmXmp").checked;
   const rmCustom = document.getElementById("rmCustom").checked;
 
+  const cleanStartTime = performance.now();
   removeBtn.disabled = true;
   progressWrap.classList.add("visible");
   resultCard.classList.remove("visible");
@@ -844,6 +845,7 @@ async function removeMetadata() {
         fileSize: blob.size,
         downloadText: "Download Clean PDF",
         toolName: "PDF Metadata Remover",
+        durationMs: Math.max(1, Math.round(performance.now() - cleanStartTime)),
         blob: blob,
         onDownload: () => {
           dl(blob, fname);

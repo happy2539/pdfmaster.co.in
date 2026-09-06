@@ -1828,6 +1828,7 @@
     }
 
     // ENTER DEDICATED RENDER MODE: Halt all background previews, thumbnails, timers & animations!
+    const deleteStartTime = performance.now();
     enterDedicatedRenderMode();
 
     showLoadingModal(
@@ -1956,6 +1957,8 @@
           fileType: "pdf",
           fileDetails: `${keepCount} pages remaining • ${fmtBytes(outBlob.size)} • 100% Private`,
           downloadText: "Download Clean PDF",
+          toolName: "Delete PDF Pages",
+          durationMs: Math.max(1, Math.round(performance.now() - deleteStartTime)),
           blob: outBlob,
           onSecondary: () => {
             if (resultsCard)

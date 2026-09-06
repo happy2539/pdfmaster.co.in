@@ -417,6 +417,7 @@ reverseBtn.addEventListener("click", () => {
 // =============================================
 downloadBtn.addEventListener("click", async () => {
   if (!state.pdfBytes || state.pageOrder.length === 0) return;
+  const reorderStartTime = performance.now();
 
   const nameWithout = state.fileName ? state.fileName.replace(/\.pdf$/i, "") : "document";
   const outputFileName = `${nameWithout}-reordered.pdf`;
@@ -438,6 +439,7 @@ downloadBtn.addEventListener("click", async () => {
         fileSize: state.lastReorderedBlob.size,
         downloadText: "Download PDF",
         toolName: "PDF Reorder",
+        durationMs: state.lastReorderDurationMs || null,
         blob: state.lastReorderedBlob,
         onDownload: () => {
           const u = URL.createObjectURL(state.lastReorderedBlob);
@@ -488,6 +490,8 @@ downloadBtn.addEventListener("click", async () => {
     setTimeout(() => URL.revokeObjectURL(url), 5000);
     showToast("PDF downloaded successfully!", "success");
 
+    state.lastReorderDurationMs = Math.max(1, Math.round(performance.now() - reorderStartTime));
+
     if (window.PDFMasterPopup) {
       window.PDFMasterPopup.show({
         fileType: "pdf",
@@ -495,6 +499,7 @@ downloadBtn.addEventListener("click", async () => {
         fileSize: blob.size,
         downloadText: "Download PDF",
         toolName: "PDF Reorder",
+        durationMs: state.lastReorderDurationMs,
         blob: blob,
         onDownload: () => {
           const u = URL.createObjectURL(blob);

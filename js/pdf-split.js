@@ -160,6 +160,8 @@
         let currentMode = "range";
         let outputFormat = "zip";
         let splitResults = [];
+        let splitStartTime = null;
+        let lastSplitDurationMs = null;
 
         /* ─────────── ELEMENTS ─────────── */
         const uploadZone = document.getElementById("uploadZone");
@@ -247,6 +249,8 @@
             selectedPages.clear();
             resultsSection.classList.remove("active");
             splitResults = [];
+            splitStartTime = null;
+            lastSplitDurationMs = null;
             progressWrap.classList.remove("active");
 
             uploadZone.style.display = "none";
@@ -499,6 +503,7 @@
 
         async function doSplit() {
           if (!pdfDoc) return;
+          splitStartTime = performance.now();
 
           let groups = [];
 
@@ -623,6 +628,11 @@
           });
 
           if (window.PDFMasterPopup && splitResults.length > 0) {
+            const durationMs = splitStartTime
+              ? Math.max(1, Math.round(performance.now() - splitStartTime))
+              : (lastSplitDurationMs || null);
+            if (durationMs) lastSplitDurationMs = durationMs;
+
             if (splitResults.length === 1) {
               const single = splitResults[0];
               const blob = new Blob([single.bytes], { type: "application/pdf" });
@@ -632,6 +642,7 @@
                 fileSize: single.size,
                 downloadText: "Download PDF",
                 toolName: "Split PDF",
+                durationMs: durationMs,
                 blob: blob,
                 onDownload: () => {
                   triggerDownload(single.bytes, single.name);
@@ -646,6 +657,7 @@
                 fileSize: totalSize,
                 downloadText: `Download All as ZIP (${splitResults.length} files)`,
                 toolName: "Split PDF",
+                durationMs: durationMs,
                 onDownload: () => {
                   downloadAllBtn.click();
                 },
@@ -687,6 +699,8 @@
         splitAgainBtn.addEventListener("click", () => {
           resultsSection.classList.remove("active");
           splitResults = [];
+          splitStartTime = null;
+          lastSplitDurationMs = null;
           rangeInput.value = "";
           selectedPages.clear();
           pagesGrid

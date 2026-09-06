@@ -470,12 +470,14 @@ function getPageDims(size, orient) {
 }
 
 /* ── Convert ── */
+let lastConversionDurationMs = null;
 convertBtn.addEventListener("click", async () => {
   if (!imageFiles.length) return;
   if (!jsPdfReady) {
     alert("PDF library still loading — please wait a moment and try again.");
     return;
   }
+  const conversionStartTime = performance.now();
   loadingWrap.style.display = "block";
   loadingTitle.textContent = "Creating your PDF…";
   convertBtn.disabled = true;
@@ -576,6 +578,8 @@ convertBtn.addEventListener("click", async () => {
       convertBtn.classList.add("btn-outline");
     }
 
+    lastConversionDurationMs = Math.max(1, Math.round(performance.now() - conversionStartTime));
+
     statusText.innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: middle; margin-right: 5px; display: inline-block;"><polyline points="20 6 9 17 4 12"></polyline></svg>PDF created successfully! <button type="button" id="reopenPopupBtn" class="link-btn">View thank-you popup</button>`;
 
     const reopenBtn = document.getElementById("reopenPopupBtn");
@@ -590,6 +594,8 @@ convertBtn.addEventListener("click", async () => {
             blob: generatedPdfBlob,
             fileName: generatedFileName,
             pageCount: generatedPageCount,
+            durationMs: lastConversionDurationMs,
+            toolName: "Photo to PDF",
             isInApp: isInApp,
           });
         }
@@ -606,6 +612,8 @@ convertBtn.addEventListener("click", async () => {
         blob: pdfBlob,
         fileName: `${name}.pdf`,
         pageCount: page,
+        durationMs: lastConversionDurationMs,
+        toolName: "Photo to PDF",
         isInApp: isInApp,
       });
     } else {
@@ -616,6 +624,7 @@ convertBtn.addEventListener("click", async () => {
             blob: pdfBlob,
             fileName: `${name}.pdf`,
             pageCount: page,
+            durationMs: lastConversionDurationMs,
             isInApp: isInApp,
           },
         }),

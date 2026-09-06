@@ -327,6 +327,7 @@ function exportPdf() {
   if (!currentFileBlob) {
     return;
   }
+  var exportStartTime = performance.now();
   var base = (fileName || "document.pdf").replace(/\.pdf$/i, "");
   var outputName = base + "-edited.pdf";
 
@@ -350,6 +351,7 @@ function exportPdf() {
         fileSize: cachedExportBlob.size,
         downloadText: "Download Edited PDF",
         toolName: "PDF Editor",
+        durationMs: window._lastEditorExportDurationMs || null,
         blob: cachedExportBlob,
         onDownload: function () {
           var u = URL.createObjectURL(cachedExportBlob);
@@ -535,6 +537,8 @@ function exportPdf() {
       }, 4000);
       window.showToast("Your edited PDF is downloading.");
 
+      window._lastEditorExportDurationMs = Math.max(1, Math.round(performance.now() - exportStartTime));
+
       if (window.PDFMasterPopup) {
         window.PDFMasterPopup.show({
           fileType: "pdf",
@@ -542,6 +546,7 @@ function exportPdf() {
           fileSize: blob.size,
           downloadText: "Download Edited PDF",
           toolName: "PDF Editor",
+          durationMs: window._lastEditorExportDurationMs,
           blob: blob,
           onDownload: function () {
             var u = URL.createObjectURL(blob);

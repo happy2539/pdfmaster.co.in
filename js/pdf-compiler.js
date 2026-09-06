@@ -746,6 +746,7 @@ class PDFCompiler {
       return;
     }
 
+    const mergeStartTime = performance.now();
     const totalCombinedSize = this.files.reduce((s, f) => s + f.size, 0);
     const useLowRam =
       totalCombinedSize > 50 * 1024 * 1024 ||
@@ -864,6 +865,8 @@ class PDFCompiler {
           fileType: "pdf",
           fileDetails: `${this.files.length} files combined • 100% Private`,
           downloadText: "Download Merged PDF",
+          toolName: "Merge PDF",
+          durationMs: Math.max(1, Math.round(performance.now() - mergeStartTime)),
           blob: blob,
           syncButtonTextEl: "downloadReadyBtnText"
         });
