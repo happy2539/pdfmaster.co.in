@@ -52,7 +52,15 @@
 /remove-pdf-pages      /delete-pdf-pages 301!
 /remove-pages-from-pdf /delete-pdf-pages 301!
 /delete-pdf-page       /delete-pdf-pages 301!
-/delete-pdf-pages.html      /delete-pdf-pages 301!
+/rotate-pdf.html       /rotate-pdf       301!
+/pdf-rotate.html       /rotate-pdf       301!
+/pdf-rotate            /rotate-pdf       301!
+/rotate-pdf-pages.html /rotate-pdf       301!
+/rotate-pdf-pages      /rotate-pdf       301!
+/rotate-pages-from-pdf /rotate-pdf       301!
+/pdf-rotator           /rotate-pdf       301!
+/rotate-pdf-online     /rotate-pdf       301!
+
 
 
 
