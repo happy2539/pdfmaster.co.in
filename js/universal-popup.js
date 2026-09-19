@@ -47,7 +47,7 @@
     },
     {
       max: 2,
-      tag: "🚀 Lightning fast",
+      tag: "🚀 Fast",
       lines: [
         "No upload, no queue, no server — just done.",
         "While others wait on a server, you're already downloading.",
@@ -56,7 +56,7 @@
     },
     {
       max: 6,
-      tag: "🔥 Nicely done",
+      tag: "🔥 Fast",
       lines: [
         "Still 100% on your device — not a single byte left it.",
         "A bigger job, handled without ever leaving your browser.",
@@ -65,7 +65,7 @@
     },
     {
       max: Infinity,
-      tag: "🛡️ Worth the wait",
+      tag: "🛡️ Private",
       lines: [
         "Big file, zero uploads — every second of that stayed private.",
         "That's real work, done without a server in sight.",
@@ -242,82 +242,71 @@
             </svg>
           </button>
 
-          <div class="pdfm-popup-icon-wrap" aria-hidden="true">
-            <div class="pdfm-popup-icon-glow"></div>
-            <div class="pdfm-popup-icon-badge">
-              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
-                <polyline points="22 4 12 14.01 9 11.01"></polyline>
-              </svg>
-            </div>
+          <div class="pdfm-results-icon" aria-hidden="true">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="20 6 9 17 4 12"></polyline>
+            </svg>
           </div>
 
-          <h2 class="pdfm-popup-title" id="pdfmPopupTitle">Thank You for Using PDF<span>Master</span>!</h2>
+          <h3 class="pdfm-results-title" id="pdfmPopupTitle">PDF Processed Successfully!</h3>
 
-          <p class="pdfm-popup-desc" id="pdfmPopupDesc">
-            Processed 100% locally on your device for <strong>complete privacy</strong>.
+          <p class="pdfm-results-sub" id="pdfmPopupDesc">
+            Your document has been processed permanently and losslessly on your device for <strong>complete privacy</strong>.
           </p>
 
-          <!-- Speed hero: the one bold, memorable stat. Hidden until JS
-               fills it in with a real measured duration. -->
-          <div class="pdfm-speed-hero" id="pdfmSpeedHero">
-            <p class="pdfm-speed-hero-kicker" id="pdfmSpeedHeroKicker">Converted in</p>
-            <p class="pdfm-speed-hero-time" id="pdfmSpeedHeroTime">0.5s</p>
-            <span class="pdfm-speed-hero-tag" id="pdfmSpeedHeroTag">⚡ Instant</span>
-            <p class="pdfm-speed-hero-line" id="pdfmSpeedHeroLine">No upload, no queue, no server — just done.</p>
+          <div class="pdfm-results-stats" id="pdfmPopupStats">
+            <div class="pdfm-stat-item">
+              <span class="pdfm-stat-label">File:</span>
+              <span class="pdfm-stat-val" id="pdfmPopupFileName" title="document.pdf">document.pdf</span>
+            </div>
+            <div class="pdfm-results-stat-divider"></div>
+            <div class="pdfm-stat-item">
+              <span class="pdfm-stat-label">Speed:</span>
+              <span class="pdfm-stat-val pdfm-stat-speed" id="pdfmSpeedVal">⚡ Instant</span>
+            </div>
+            <div class="pdfm-results-stat-divider"></div>
+            <div class="pdfm-stat-item">
+              <span class="pdfm-stat-label" id="pdfmStatDetailsLabel">Size:</span>
+              <span class="pdfm-stat-val" id="pdfmPopupFileDetails">0 KB</span>
+              <span id="pdfmPopupFileSize" style="display:none;"></span>
+            </div>
           </div>
 
-          <div class="pdfm-popup-file-row" id="pdfmPopupFileRow">
-            <div class="pdfm-popup-file-icon" id="pdfmPopupFileIcon" aria-hidden="true">
-              ${ICONS.pdf}
-            </div>
-            <div class="pdfm-popup-file-meta">
-              <span class="pdfm-popup-file-name" id="pdfmPopupFileName">document.pdf</span>
-              <span class="pdfm-popup-file-details" id="pdfmPopupFileDetails">Ready to download</span>
-            </div>
-          </div>
-
-          <div class="pdfm-popup-btns">
-            <button type="button" class="pdfm-popup-download-btn" id="pdfmPopupDownloadBtn">
-              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-                <polyline points="7 10 12 15 17 10"></polyline>
-                <line x1="12" y1="15" x2="12" y2="3"></line>
+          <div class="pdfm-results-actions" id="pdfmPopupBtns">
+            <button type="button" class="pdfm-btn-primary" id="pdfmPopupDownloadBtn">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                <polyline points="7 10 12 15 17 10" />
+                <line x1="12" y1="15" x2="12" y2="3" />
               </svg>
               <span id="pdfmPopupDownloadBtnText">Download File</span>
             </button>
-            <button type="button" class="pdfm-popup-secondary-btn" id="pdfmPopupSecondaryBtn">
+            <button type="button" class="pdfm-btn-secondary" id="pdfmPopupSecondaryBtn">
               Done
             </button>
           </div>
 
-          <!-- Brand Retention & Bookmark Callout -->
-          <div class="pdfm-popup-brand-card" id="pdfmPopupBrandCard">
-            <div class="pdfm-brand-inner">
-              <span class="pdfm-brand-title">⭐ Bookmark <strong>pdfmaster.co.in</strong> for next time</span>
-              <button type="button" class="pdfm-bookmark-btn" id="pdfmBookmarkBtn" aria-label="Bookmark or copy link">
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
-                </svg>
-                <span id="pdfmBookmarkBtnText">Save Link (Ctrl+D)</span>
-              </button>
-            </div>
+          <div class="pdfm-bookmark-row">
+            <button type="button" class="pdfm-bookmark-btn" id="pdfmBookmarkBtn" aria-label="Bookmark PDFMaster">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor" stroke="none">
+                <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+              </svg>
+              <span id="pdfmBookmarkBtnText">Bookmark PDFMaster (Ctrl+D)</span>
+            </button>
           </div>
 
-          <!-- TrustBox widget - Review Collector -->
-          <div class="pdfm-popup-trustpilot">
-            <div class="trustpilot-widget" data-locale="en-US" data-template-id="56278e9abfbbba0bdcd568bc" data-businessunit-id="6a9c668c9888d1e2a1ab5719" data-style-height="52px" data-style-width="100%" data-token="19a1dd93-f14d-4877-959e-6df0e8ca8ef0">
+          <div class="pdfm-privacy-guarantee">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+            </svg>
+            <span>100% Private · Client-Side Only · Zero Server Uploads</span>
+          </div>
+
+          <div class="pdfm-popup-trustpilot" id="pdfmPopupTrustpilot">
+            <div class="trustpilot-widget" data-locale="en-US" data-template-id="56278e9abfbbba0bdcd568bc" data-businessunit-id="6a9c668c9888d1e2a1ab5719" data-style-height="44px" data-style-width="100%" data-token="19a1dd93-f14d-4877-959e-6df0e8ca8ef0">
               <a href="https://www.trustpilot.com/review/pdfmaster.co.in" target="_blank" rel="noopener">Trustpilot</a>
             </div>
           </div>
-          <!-- End TrustBox widget -->
-
-          <p class="pdfm-popup-footer-note">
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
-            </svg>
-            Every file stays on this device — 100% private, zero uploads, always free.
-          </p>
         </div>
       `;
       document.body.appendChild(overlay);
@@ -354,51 +343,110 @@
     // Bookmark / Save Link button
     const bookmarkBtn = overlay.querySelector("#pdfmBookmarkBtn");
     if (bookmarkBtn) {
+      const isMobile =
+        /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
+          navigator.userAgent || "",
+        ) ||
+        (navigator.maxTouchPoints > 1 && /Macintosh/.test(navigator.userAgent));
+
       const isMac = /Mac|iPod|iPhone|iPad/i.test(
         (navigator.userAgentData && navigator.userAgentData.platform) ||
           navigator.platform ||
           navigator.userAgent ||
           "",
       );
+
+      const isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent || "");
       const shortcut = isMac ? "⌘+D" : "Ctrl+D";
       const btnText = overlay.querySelector("#pdfmBookmarkBtnText");
-      if (btnText) btnText.textContent = `Save Link (${shortcut})`;
 
-      bookmarkBtn.addEventListener("click", () => {
+      if (btnText) {
+        btnText.textContent = isMobile
+          ? "Bookmark / Save PDFMaster"
+          : `Bookmark PDFMaster (${shortcut})`;
+      }
+
+      bookmarkBtn.addEventListener("click", async () => {
         const siteUrl = "https://pdfmaster.co.in";
+        const shareData = {
+          title: "PDFMaster — Free Online PDF Tools",
+          text: "100% private, client-side PDF tools with zero uploads.",
+          url: siteUrl,
+        };
+
+        // 1. On mobile devices with Web Share API, open native bookmark/share sheet
+        if (isMobile && typeof navigator.share === "function") {
+          try {
+            await navigator.share(shareData);
+            if (btnText) btnText.textContent = "✓ PDFMaster Saved!";
+            if (typeof window.showToast === "function") {
+              window.showToast(
+                "PDFMaster saved! Tap 'Add Bookmark' or 'Add to Home Screen' in your browser.",
+                "success",
+                4500,
+              );
+            }
+            setTimeout(() => {
+              if (btnText) btnText.textContent = "Bookmark / Save PDFMaster";
+            }, 3500);
+            return;
+          } catch (err) {
+            // User dismissed or aborted the native share sheet
+            if (
+              err &&
+              (err.name === "AbortError" ||
+                (err.message && err.message.includes("abort")))
+            ) {
+              return;
+            }
+            // If share API errored, fall through to clipboard
+          }
+        }
+
+        // 2. Clipboard copy fallback
+        let copied = false;
         if (navigator.clipboard && navigator.clipboard.writeText) {
-          navigator.clipboard
-            .writeText(siteUrl)
-            .then(() => {
-              if (btnText) btnText.textContent = `✓ Link Copied! (${shortcut})`;
-              if (typeof window.showToast === "function") {
-                window.showToast(
-                  `pdfmaster.co.in copied! Press ${shortcut} to bookmark PDFMaster.`,
-                  "success",
-                  4000,
-                );
-              }
-              setTimeout(() => {
-                if (btnText) btnText.textContent = `Save Link (${shortcut})`;
-              }, 3500);
-            })
-            .catch(() => {
-              if (typeof window.showToast === "function") {
-                window.showToast(
-                  `Press ${shortcut} to bookmark pdfmaster.co.in!`,
-                  "info",
-                  4000,
-                );
-              }
-            });
+          try {
+            await navigator.clipboard.writeText(siteUrl);
+            copied = true;
+          } catch (_) {
+            copied = false;
+          }
+        }
+
+        if (isMobile) {
+          if (btnText) btnText.textContent = "✓ Link Copied to Bookmark!";
+          if (typeof window.showToast === "function") {
+            if (isIOS) {
+              window.showToast(
+                "Link copied! In Safari, tap Share ⎙ > 'Add Bookmark' or 'Add to Home Screen'.",
+                "info",
+                5000,
+              );
+            } else {
+              window.showToast(
+                "Link copied! Tap browser menu ⋮ > ★ Star to bookmark PDFMaster.",
+                "info",
+                5000,
+              );
+            }
+          }
+          setTimeout(() => {
+            if (btnText) btnText.textContent = "Bookmark / Save PDFMaster";
+          }, 3500);
         } else {
+          if (btnText) btnText.textContent = `✓ Link Copied! (${shortcut})`;
           if (typeof window.showToast === "function") {
             window.showToast(
-              `Press ${shortcut} to bookmark pdfmaster.co.in!`,
-              "info",
+              `pdfmaster.co.in copied! Press ${shortcut} to bookmark PDFMaster.`,
+              "success",
               4000,
             );
           }
+          setTimeout(() => {
+            if (btnText)
+              btnText.textContent = `Bookmark PDFMaster (${shortcut})`;
+          }, 3500);
         }
       });
     }
@@ -520,12 +568,13 @@
 
     currentOptions = Object.assign(
       {
-        title: "Thank You for Using PDF<span>Master</span>!",
-        desc: "Processed 100% locally on your device for <strong>complete privacy</strong>.",
+        title: "PDF Processed Successfully!",
+        desc: "Your document has been processed permanently and losslessly on your device for <strong>complete privacy</strong>.",
         fileName: "document.pdf",
         fileType: "pdf",
         fileDetails: null,
-        downloadText: "Download PDF",
+        fileSize: null,
+        downloadText: "Download File",
         secondaryText: "Done",
         showSecondary: true,
         blob: null,
@@ -539,7 +588,7 @@
     const titleEl = document.getElementById("pdfmPopupTitle");
     if (titleEl) {
       const rawTitle =
-        currentOptions.title || "Thank You for Using PDF<span>Master</span>!";
+        currentOptions.title || "PDF Processed Successfully!";
       titleEl.innerHTML = rawTitle.includes("<span")
         ? rawTitle
         : rawTitle.replace(/PDFMaster/g, "PDF<span>Master</span>");
@@ -547,35 +596,21 @@
 
     // Desc
     const descEl = document.getElementById("pdfmPopupDesc");
-    if (descEl) descEl.innerHTML = currentOptions.desc;
+    if (descEl) {
+      descEl.innerHTML =
+        currentOptions.desc ||
+        "Your document has been processed permanently and losslessly on your device for <strong>complete privacy</strong>.";
+    }
 
     // File name
     const fileNameEl = document.getElementById("pdfmPopupFileName");
-    if (fileNameEl) fileNameEl.textContent = currentOptions.fileName;
-
-    // File Icon
-    const iconEl = document.getElementById("pdfmPopupFileIcon");
-    if (iconEl) {
-      const type = (currentOptions.fileType || "pdf").toLowerCase();
-      iconEl.innerHTML = ICONS[type] || ICONS.pdf;
+    if (fileNameEl) {
+      const fn = currentOptions.fileName || "document.pdf";
+      fileNameEl.textContent = fn;
+      fileNameEl.title = fn;
     }
 
-    // File Details
-    const detailsEl = document.getElementById("pdfmPopupFileDetails");
-    if (detailsEl) {
-      if (currentOptions.fileDetails) {
-        detailsEl.textContent = currentOptions.fileDetails;
-      } else {
-        const sz =
-          currentOptions.fileSize ||
-          (currentOptions.blob ? currentOptions.blob.size : 0);
-        detailsEl.textContent = sz
-          ? `Ready to download • ${formatBytes(sz)}`
-          : "Ready to download";
-      }
-    }
-
-    // Conversion time -> speed hero
+    // Conversion time -> speed pill
     let elapsedMs = null;
     if (
       typeof currentOptions.durationMs === "number" &&
@@ -595,27 +630,68 @@
     }
     activeTimerStart = null;
 
-    const heroEl = document.getElementById("pdfmSpeedHero");
-    if (heroEl) {
+    const speedValEl = document.getElementById("pdfmSpeedVal");
+    if (speedValEl) {
       if (elapsedMs) {
         const formatted = formatDuration(elapsedMs);
         const tier = pickSpeedTier(elapsedMs / 1000);
-        const verb = resolveVerb();
-
-        const kickerEl = document.getElementById("pdfmSpeedHeroKicker");
-        const timeEl = document.getElementById("pdfmSpeedHeroTime");
-        const tagEl = document.getElementById("pdfmSpeedHeroTag");
-        const lineEl = document.getElementById("pdfmSpeedHeroLine");
-
-        if (kickerEl) kickerEl.textContent = `${verb} in`;
-        if (timeEl) timeEl.textContent = formatted;
-        if (tagEl) tagEl.textContent = tier.tag;
-        if (lineEl) lineEl.textContent = pickRandom(tier.lines);
-
-        heroEl.style.display = "block";
+        speedValEl.textContent = `${formatted} · ${tier.tag}`;
+        speedValEl.title = pickRandom(tier.lines);
       } else {
-        heroEl.style.display = "none";
+        speedValEl.textContent = "⚡ Instant";
+        speedValEl.title = "Processed 100% locally on your device";
       }
+    }
+
+    // File Size & Details
+    const sz =
+      currentOptions.fileSize ||
+      (currentOptions.blob ? currentOptions.blob.size : 0);
+    const formattedSize = sz ? formatBytes(sz) : "";
+
+    let detailsText = "";
+    let labelText = "Size:";
+
+    if (currentOptions.fileDetails) {
+      let cleaned = currentOptions.fileDetails
+        .replace(/•\s*100%\s*Private/gi, "")
+        .replace(/Ready to download\s*•?/gi, "")
+        .replace(/\s*•\s*/g, " · ")
+        .replace(/rotated/gi, "rot")
+        .replace(/remaining/gi, "left")
+        .replace(/\s+/g, " ")
+        .trim()
+        .replace(/^[·•]\s*|[·•]\s*$/g, "")
+        .trim();
+
+      if (cleaned) {
+        detailsText = cleaned;
+        if (/page|file|photo|item/i.test(cleaned)) {
+          labelText = "Details:";
+        }
+      }
+    }
+
+    if (!detailsText && formattedSize) {
+      detailsText = formattedSize;
+      labelText = "Size:";
+    } else if (!detailsText) {
+      detailsText = "Ready";
+      labelText = "Status:";
+    }
+
+    const labelEl = document.getElementById("pdfmStatDetailsLabel");
+    if (labelEl) labelEl.textContent = labelText;
+
+    const detailsEl = document.getElementById("pdfmPopupFileDetails");
+    if (detailsEl) {
+      detailsEl.textContent = detailsText;
+      detailsEl.title = currentOptions.fileDetails || detailsText;
+    }
+
+    const sizeEl = document.getElementById("pdfmPopupFileSize");
+    if (sizeEl) {
+      sizeEl.textContent = formattedSize || detailsText;
     }
 
     // Download Button Text

@@ -1,39 +1,44 @@
 /* ══════════════════════════════════════════════════════════
    PDFMaster — Universal Thank You & Download Popup Modal
    ══════════════════════════════════════════════════════════
-   All tokens are scoped to .pdfm-popup-overlay so this modal
-   renders identically on every tool page, no matter what that
-   page's own CSS variables happen to be. Neutrals (bg/text/
-   border) politely inherit a host page's tokens when present;
-   the brand accent is fixed to the WCAG-AA-safe red/orange
-   pair so the popup is never accidentally low-contrast on a
-   page that hasn't been updated yet.
+   Redesigned to match the clean, clutter-free, responsive
+   aesthetic of the signature resultsCard in rotate-pdf.
+   Scoped tokens inherit from host pages while preserving
+   perfect contrast, typography, and theme parity across
+   both light and dark modes.
    ══════════════════════════════════════════════════════════ */
 
 .pdfm-popup-overlay {
-  /* Surfaces — inherit host page where possible, else fall back */
-  --pdfm-bg: var(--bg, #f5f6fa);
-  --pdfm-card: var(--bg-card, #ffffff);
-  --pdfm-border: var(--border, #e4e7ee);
-  --pdfm-text: var(--text, #14151f);
-  --pdfm-text-2: var(--text-2, #52596a);
+  /* Surfaces & Neutrals — inherit host page where possible, fallback gracefully */
+  --pdfm-bg: var(--bg, #f8f7f5);
+  --pdfm-surface: var(--surface, #ffffff);
+  --pdfm-surface-2: var(--surface-2, #f2f1ef);
+  --pdfm-surface-3: var(--surface-3, #eae9e6);
+  --pdfm-border: var(--border, #e4e2de);
+  --pdfm-border-focus: var(--border-focus, #c8c5be);
+  --pdfm-text: var(--text, #1a1917);
+  --pdfm-text-2: var(--text-2, #4a4845);
+  --pdfm-text-3: var(--text-3, #7a7875);
+  --pdfm-radius: var(--radius, 12px);
+  --pdfm-radius-sm: var(--radius-sm, 8px);
   --pdfm-radius-lg: var(--radius-lg, 20px);
+  --pdfm-radius-full: var(--radius-full, 9999px);
 
-  /* Brand accent — intentionally fixed, not inherited (see header note) */
-  --pdfm-accent-fill: #d1301f;
-  --pdfm-accent-fill-hover: #b8271a;
-  --pdfm-accent-text: #d1301f;
-  --pdfm-accent-soft: rgba(209, 48, 31, 0.08);
-  --pdfm-accent-soft-strong: rgba(209, 48, 31, 0.16);
-  --pdfm-accent-glow: rgba(230, 66, 48, 0.24);
+  /* Signature resultsCard Green */
+  --pdfm-success-green: #10b981;
+  --pdfm-success-green-dark: #059669;
+  --pdfm-success-bg: rgba(16, 185, 129, 0.12);
+  --pdfm-success-glow: rgba(16, 185, 129, 0.25);
 
-  /* Success (download-complete state) — fixed across both themes on
-     purpose: it's a white-text-on-fill button, so it needs to stay
-     dark enough for 4.5:1 with white regardless of page theme. A
-     brighter mint green here would look nice but drops white text
-     to ~1.7:1, so we don't use the lighter dark-mode green for this. */
-  --pdfm-success: #15803d;
-  --pdfm-success-border: rgba(22, 163, 74, 0.3);
+  /* Primary Brand Accent */
+  --pdfm-accent: var(--accent, #e8372a);
+  --pdfm-accent-dark: var(--accent-dark, #c42d21);
+  --pdfm-accent-glow: rgba(232, 55, 42, 0.32);
+
+  /* Modal Backdrop */
+  --pdfm-overlay: var(--modal-overlay, rgba(15, 15, 15, 0.65));
+  --pdfm-font-heading: var(--font-heading, "Sora", sans-serif);
+  --pdfm-font-body: var(--font-body, "DM Sans", sans-serif);
 
   position: fixed;
   inset: 0;
@@ -43,30 +48,30 @@
   z-index: 3000;
   padding: 16px;
   box-sizing: border-box;
-  background: rgba(8, 10, 15, 0.68);
+  background: var(--pdfm-overlay);
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
   opacity: 0;
   visibility: hidden;
   transition:
-    opacity 0.28s ease,
-    visibility 0.28s ease;
+    opacity 0.25s ease,
+    visibility 0.25s ease;
 }
 
-[data-theme="dark"] .pdfm-popup-overlay {
-  --pdfm-bg: var(--bg, #0c0e13);
-  --pdfm-card: var(--bg-card, #13161f);
-  --pdfm-border: var(--border, #1e2232);
-  --pdfm-text: var(--text, #edf0f8);
-  --pdfm-text-2: var(--text-2, #8c95a8);
-
-  --pdfm-accent-fill-hover: #e2432f;
-  --pdfm-accent-text: #ff6b5f;
-  --pdfm-accent-soft: rgba(255, 107, 95, 0.14);
-  --pdfm-accent-soft-strong: rgba(255, 107, 95, 0.22);
-  --pdfm-accent-glow: rgba(255, 107, 95, 0.32);
-
-  --pdfm-success-border: rgba(74, 222, 128, 0.35);
+[data-theme="dark"] .pdfm-popup-overlay,
+.pdfm-popup-overlay[data-theme="dark"] {
+  --pdfm-bg: var(--bg, #111110);
+  --pdfm-surface: var(--surface, #1c1b1a);
+  --pdfm-surface-2: var(--surface-2, #252422);
+  --pdfm-surface-3: var(--surface-3, #2e2c2a);
+  --pdfm-border: var(--border, #333230);
+  --pdfm-border-focus: var(--border-focus, #4a4845);
+  --pdfm-text: var(--text, #f0ede8);
+  --pdfm-text-2: var(--text-2, #b5b0a8);
+  --pdfm-text-3: var(--text-3, #7a7875);
+  --pdfm-overlay: var(--modal-overlay, rgba(0, 0, 0, 0.82));
+  --pdfm-success-bg: rgba(16, 185, 129, 0.16);
+  --pdfm-accent-glow: rgba(232, 55, 42, 0.45);
 }
 
 .pdfm-popup-overlay.show {
@@ -75,30 +80,32 @@
   visibility: visible;
 }
 
-/* ── Modal box ───────────────────────────────────────────── */
+/* ── Modal box (matches .results-card) ───────────────────── */
 
 .pdfm-popup-box {
   position: relative;
   width: 100%;
-  max-width: 460px;
-  max-height: 94vh;
+  max-width: 580px;
+  max-height: 92vh;
   overflow-y: auto;
   overscroll-behavior: contain;
   box-sizing: border-box;
-  padding: 22px 22px 16px;
+  padding: 36px 32px 24px;
   text-align: center;
-  background: var(--pdfm-card);
-  border: 1px solid var(--pdfm-border);
+  background: var(--pdfm-surface);
+  border: 2px solid var(--pdfm-success-green);
   border-radius: var(--pdfm-radius-lg);
   box-shadow:
-    0 16px 48px rgba(0, 0, 0, 0.18),
-    0 24px 60px rgba(0, 0, 0, 0.22);
-  transform: scale(0.95) translateY(8px);
+    0 20px 50px rgba(16, 185, 129, 0.14),
+    0 24px 64px rgba(0, 0, 0, 0.22);
+  transform: scale(0.96) translateY(8px);
   transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 [data-theme="dark"] .pdfm-popup-box {
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
+  box-shadow:
+    0 20px 60px rgba(0, 0, 0, 0.7),
+    0 0 35px rgba(16, 185, 129, 0.15);
 }
 
 .pdfm-popup-overlay.show .pdfm-popup-box {
@@ -112,7 +119,7 @@
   background: transparent;
 }
 .pdfm-popup-box::-webkit-scrollbar-thumb {
-  background: rgba(128, 128, 128, 0.3);
+  background: rgba(128, 128, 128, 0.25);
   border-radius: 4px;
 }
 
@@ -120,374 +127,314 @@
 
 .pdfm-popup-close {
   position: absolute;
-  top: 12px;
-  right: 12px;
+  top: 14px;
+  right: 14px;
   z-index: 2;
-  width: 28px;
-  height: 28px;
+  width: 32px;
+  height: 32px;
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 0;
   border-radius: 50%;
   border: 1px solid var(--pdfm-border);
-  background: var(--pdfm-bg);
+  background: var(--pdfm-surface-2);
   color: var(--pdfm-text-2);
   cursor: pointer;
   transition:
     background 0.2s ease,
     color 0.2s ease,
+    border-color 0.2s ease,
     transform 0.2s ease;
 }
 
 .pdfm-popup-close:hover {
-  background: var(--pdfm-border);
+  background: var(--pdfm-surface-3);
   color: var(--pdfm-text);
+  border-color: var(--pdfm-border-focus);
   transform: rotate(90deg);
 }
 
-/* ── Success icon ────────────────────────────────────────── */
+/* ── Success Icon Badge (64px circle checkmark) ─────────── */
 
+.pdfm-results-icon,
 .pdfm-popup-icon-wrap {
-  position: relative;
-  width: 38px;
-  height: 38px;
-  margin: 0 auto 10px;
+  width: 64px;
+  height: 64px;
+  margin: 0 auto 16px;
+  border-radius: 50%;
+  background: var(--pdfm-success-bg);
+  color: var(--pdfm-success-green);
   display: flex;
   align-items: center;
   justify-content: center;
+  transition: transform 0.3s ease;
 }
 
-.pdfm-popup-icon-glow {
-  position: absolute;
-  inset: -4px;
-  border-radius: 50%;
-  background: radial-gradient(
-    circle,
-    var(--pdfm-accent-glow) 0%,
-    transparent 72%
-  );
-  animation: pdfmPopupPulse 2.6s ease-in-out infinite;
+.pdfm-popup-overlay.show .pdfm-results-icon {
+  animation: pdfmIconPop 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
 }
 
-@keyframes pdfmPopupPulse {
-  0%,
+@keyframes pdfmIconPop {
+  0% {
+    transform: scale(0.6);
+    opacity: 0;
+  }
   100% {
     transform: scale(1);
-    opacity: 0.8;
+    opacity: 1;
   }
-  50% {
-    transform: scale(1.14);
-    opacity: 0.35;
-  }
-}
-
-.pdfm-popup-icon-badge {
-  position: relative;
-  width: 38px;
-  height: 38px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 11px;
-  background: linear-gradient(
-    135deg,
-    var(--pdfm-accent-soft),
-    var(--pdfm-accent-soft-strong)
-  );
-  border: 1px solid var(--pdfm-accent-soft-strong);
-  color: var(--pdfm-accent-text);
-}
-
-.pdfm-popup-icon-badge svg {
-  width: 19px;
-  height: 19px;
 }
 
 /* ── Title & description ─────────────────────────────────── */
 
+.pdfm-results-title,
 .pdfm-popup-title {
-  margin: 0 0 4px;
-  font-family: "Sora", sans-serif;
-  font-weight: 800;
-  font-size: 1.14rem;
+  margin: 0 0 8px;
+  font-family: var(--pdfm-font-heading);
+  font-weight: 700;
+  font-size: 1.55rem;
   line-height: 1.25;
   color: var(--pdfm-text);
   letter-spacing: -0.02em;
 }
 
+.pdfm-results-title span,
 .pdfm-popup-title span {
-  color: var(--accent, var(--primary, var(--pdfm-accent-fill, #e8372a)));
+  color: var(--pdfm-accent);
 }
 
+.pdfm-results-sub,
 .pdfm-popup-desc {
-  margin: 0 0 14px;
-  font-family: "DM Sans", sans-serif;
-  font-size: 0.8rem;
-  line-height: 1.4;
+  margin: 0 auto 22px;
+  max-width: 480px;
+  font-family: var(--pdfm-font-body);
+  font-size: 0.93rem;
+  line-height: 1.5;
   color: var(--pdfm-text-2);
 }
 
+.pdfm-results-sub strong,
 .pdfm-popup-desc strong {
   color: var(--pdfm-text);
   font-weight: 700;
 }
 
-/* ══════════════════════════════════════════════════════════
-   Speed hero — the one bold, memorable moment. Populated by
-   JS only when a real measured duration exists; hidden
-   entirely otherwise so nothing renders empty.
-   ══════════════════════════════════════════════════════════ */
+/* ── Signature Stats Capsule (matches .results-stats) ────── */
 
-.pdfm-speed-hero {
-  display: none;
-  margin: 0 0 14px;
-  padding: 12px 16px 13px;
-  border-radius: 16px;
-  background:
-    radial-gradient(
-      120% 130% at 50% 0%,
-      var(--pdfm-accent-soft-strong),
-      transparent 65%
-    ),
-    var(--pdfm-accent-soft);
-  border: 1px solid var(--pdfm-accent-soft-strong);
-}
-
-.pdfm-speed-hero-kicker {
-  margin: 0;
-  font-family: "DM Sans", sans-serif;
-  font-size: 0.72rem;
-  font-weight: 600;
-  color: var(--pdfm-text-2);
-}
-
-.pdfm-speed-hero-time {
-  margin: 1px 0 0;
-  font-family: "JetBrains Mono", "SF Mono", "Consolas", monospace;
-  font-variant-numeric: tabular-nums;
-  font-weight: 700;
-  font-size: 2.1rem;
-  line-height: 1.05;
-  letter-spacing: -0.01em;
-  color: var(--pdfm-accent-text);
-}
-
-.pdfm-speed-hero-tag {
-  display: inline-block;
-  margin-top: 7px;
-  padding: 3px 11px;
-  border-radius: 20px;
-  font-family: "Sora", sans-serif;
-  font-weight: 700;
-  font-size: 0.68rem;
-  color: var(--pdfm-accent-text);
-  background: var(--pdfm-card);
-  border: 1px solid var(--pdfm-accent-soft-strong);
-}
-
-.pdfm-speed-hero-line {
-  max-width: 32ch;
-  margin: 8px auto 0;
-  font-family: "DM Sans", sans-serif;
-  font-size: 0.76rem;
-  line-height: 1.4;
-  color: var(--pdfm-text-2);
-}
-
-/* ── File row (compact, single line — not a boxed card) ─── */
-
-.pdfm-popup-file-row {
+.pdfm-results-stats {
   display: flex;
   align-items: center;
-  gap: 10px;
-  margin: 0 0 14px;
-  text-align: left;
+  justify-content: space-between;
+  width: 100%;
+  max-width: 520px;
+  margin: 0 auto 24px;
+  padding: 14px 20px;
+  background: var(--pdfm-surface-2);
+  border: 1px solid var(--pdfm-border);
+  border-radius: var(--pdfm-radius);
+  box-sizing: border-box;
 }
 
-.pdfm-popup-file-icon {
-  flex-shrink: 0;
-  width: 32px;
-  height: 32px;
+.pdfm-stat-item {
+  flex: 1;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
-  border-radius: 9px;
-  background: var(--pdfm-accent-soft);
-  color: var(--pdfm-accent-text);
-}
-
-.pdfm-popup-file-icon svg {
-  width: 17px;
-  height: 17px;
-}
-
-.pdfm-popup-file-meta {
-  flex: 1;
+  text-align: center;
   min-width: 0;
+  padding: 0 6px;
 }
 
-.pdfm-popup-file-name {
-  display: block;
-  font-family: "DM Sans", sans-serif;
+.pdfm-stat-label {
+  color: var(--pdfm-text-3);
+  font-family: var(--pdfm-font-body);
+  font-size: 0.74rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin-bottom: 4px;
+  white-space: nowrap;
+}
+
+.pdfm-stat-val,
+.pdfm-popup-file-name,
+.pdfm-popup-file-details {
+  font-family: var(--pdfm-font-body);
   font-weight: 700;
-  font-size: 0.84rem;
+  font-size: 0.94rem;
   color: var(--pdfm-text);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  max-width: 100%;
+  line-height: 1.3;
 }
 
-.pdfm-popup-file-details {
-  display: block;
-  margin-top: 1px;
-  font-family: "DM Sans", sans-serif;
-  font-size: 0.72rem;
-  color: var(--pdfm-text-2);
+.pdfm-stat-speed {
+  color: var(--pdfm-success-green);
 }
 
-/* ── Action buttons ──────────────────────────────────────── */
+.pdfm-results-stat-divider {
+  width: 1px;
+  height: 28px;
+  background: var(--pdfm-border);
+  flex-shrink: 0;
+  margin: 0 4px;
+}
 
+/* ── Action buttons (matches .results-actions) ───────────── */
+
+.pdfm-results-actions,
 .pdfm-popup-btns {
   display: flex;
-  gap: 8px;
-  margin-bottom: 12px;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin-bottom: 18px;
+  flex-wrap: wrap;
 }
 
+.pdfm-btn-primary,
 .pdfm-popup-download-btn {
-  flex: 1.7;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 7px;
-  padding: 11px 14px;
-  font-family: "DM Sans", sans-serif;
-  font-weight: 700;
-  font-size: 0.88rem;
-  white-space: nowrap;
+  gap: 8px;
+  padding: 13px 28px;
+  font-family: var(--pdfm-font-body);
+  font-weight: 600;
+  font-size: 0.96rem;
   color: #ffffff;
-  background: var(--pdfm-accent-fill);
+  background: var(--pdfm-accent);
   border: none;
-  border-radius: 11px;
+  border-radius: var(--pdfm-radius-full);
   cursor: pointer;
-  box-shadow: 0 4px 14px rgba(209, 48, 31, 0.32);
+  box-shadow: 0 4px 14px var(--pdfm-accent-glow);
   transition:
     background 0.2s ease,
     box-shadow 0.2s ease,
     transform 0.2s ease;
 }
 
+.pdfm-btn-primary:hover,
 .pdfm-popup-download-btn:hover {
-  background: var(--pdfm-accent-fill-hover);
-  box-shadow: 0 8px 20px rgba(209, 48, 31, 0.4);
+  background: var(--pdfm-accent-dark);
+  box-shadow: 0 6px 20px var(--pdfm-accent-glow);
   transform: translateY(-1px);
 }
 
+.pdfm-btn-primary.is-downloaded,
 .pdfm-popup-download-btn.is-downloaded {
-  background: var(--pdfm-success);
-  box-shadow: 0 4px 14px var(--pdfm-success-border);
+  background: var(--pdfm-success-green);
+  box-shadow: 0 4px 14px var(--pdfm-success-glow);
 }
 
+.pdfm-btn-primary.is-downloaded:hover,
 .pdfm-popup-download-btn.is-downloaded:hover {
-  filter: brightness(1.06);
-  box-shadow: 0 8px 20px var(--pdfm-success-border);
+  background: var(--pdfm-success-green-dark);
+  box-shadow: 0 6px 20px var(--pdfm-success-glow);
 }
 
+.pdfm-btn-secondary,
 .pdfm-popup-secondary-btn {
-  flex: 1;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 6px;
-  padding: 11px 12px;
-  font-family: "DM Sans", sans-serif;
+  padding: 12px 22px;
+  font-family: var(--pdfm-font-body);
   font-weight: 600;
-  font-size: 0.85rem;
-  white-space: nowrap;
-  color: var(--pdfm-text);
-  background: transparent;
-  border: 1.5px solid var(--pdfm-border);
-  border-radius: 11px;
+  font-size: 0.9rem;
+  color: var(--pdfm-text-2);
+  background: var(--pdfm-surface-2);
+  border: 1px solid var(--pdfm-border);
+  border-radius: var(--pdfm-radius-full);
   cursor: pointer;
   transition:
-    border-color 0.2s ease,
+    background 0.2s ease,
     color 0.2s ease,
-    background 0.2s ease;
+    border-color 0.2s ease;
 }
 
+.pdfm-btn-secondary:hover,
 .pdfm-popup-secondary-btn:hover {
-  border-color: var(--pdfm-accent-text);
-  color: var(--pdfm-accent-text);
-  background: var(--pdfm-accent-soft);
+  background: var(--pdfm-surface-3);
+  color: var(--pdfm-text);
+  border-color: var(--pdfm-text-3);
 }
 
-/* ── Brand retention / bookmark strip ────────────────────── */
+/* ── Bookmark Button (Prominent & Clear) ─────────────────── */
 
-.pdfm-popup-brand-card {
-  margin-bottom: 10px;
-  padding: 6px 10px;
-  border-radius: 10px;
-  background: var(--pdfm-bg);
-  border: 1px dashed var(--pdfm-border);
-  text-align: left;
-}
-
-.pdfm-brand-inner {
+.pdfm-bookmark-row {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 8px;
-}
-
-.pdfm-brand-title {
-  font-family: "Sora", sans-serif;
-  font-weight: 600;
-  font-size: 0.72rem;
-  color: var(--pdfm-text);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  justify-content: center;
+  margin-bottom: 16px;
+  width: 100%;
 }
 
 .pdfm-bookmark-btn {
-  flex-shrink: 0;
   display: inline-flex;
   align-items: center;
-  gap: 4px;
-  padding: 4px 9px;
-  font-family: "DM Sans", sans-serif;
+  justify-content: center;
+  gap: 8px;
+  padding: 9px 22px;
+  background: var(--pdfm-surface-2);
+  border: 1.5px solid var(--pdfm-border);
+  border-radius: var(--pdfm-radius-full);
+  font-family: var(--pdfm-font-body);
+  font-size: 0.86rem;
   font-weight: 600;
-  font-size: 0.7rem;
-  white-space: nowrap;
   color: var(--pdfm-text);
-  background: var(--pdfm-card);
-  border: 1px solid var(--pdfm-border);
-  border-radius: 14px;
   cursor: pointer;
   transition:
-    border-color 0.2s ease,
-    color 0.2s ease,
     background 0.2s ease,
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
     transform 0.2s ease;
 }
 
 .pdfm-bookmark-btn:hover {
-  border-color: var(--pdfm-accent-text);
-  color: var(--pdfm-accent-text);
-  background: var(--pdfm-accent-soft);
+  background: var(--pdfm-surface-3);
+  border-color: #f59e0b;
+  color: var(--pdfm-text);
   transform: translateY(-1px);
+  box-shadow: 0 4px 14px rgba(245, 158, 11, 0.18);
 }
 
 .pdfm-bookmark-btn svg {
+  flex-shrink: 0;
   color: #f59e0b;
 }
 
-/* ── Trustpilot widget ───────────────────────────────────── */
+/* ── Privacy Guarantee (Dedicated clean line) ────────────── */
+
+.pdfm-privacy-guarantee {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  font-family: var(--pdfm-font-body);
+  font-size: 0.77rem;
+  line-height: 1.4;
+  color: var(--pdfm-text-3);
+  margin-bottom: 12px;
+}
+
+.pdfm-privacy-guarantee svg {
+  flex-shrink: 0;
+  color: var(--pdfm-success-green);
+}
+
+/* ── TrustBox widget ─────────────────────────────────────── */
 
 .pdfm-popup-trustpilot {
   width: 100%;
-  min-height: 48px;
-  margin: 2px 0 0;
+  min-height: 44px;
+  max-height: 48px;
+  margin-top: 4px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -496,26 +443,7 @@
 
 .pdfm-popup-trustpilot .trustpilot-widget {
   width: 100%;
-  min-height: 48px;
-}
-
-/* ── Footer note (privacy + trust, one line) ────────────── */
-
-.pdfm-popup-footer-note {
-  margin: 8px 0 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 4px;
-  font-family: "DM Sans", sans-serif;
-  font-size: 0.7rem;
-  line-height: 1.4;
-  color: var(--pdfm-text-2);
-}
-
-.pdfm-popup-footer-note svg {
-  flex-shrink: 0;
-  color: var(--pdfm-accent-text);
+  min-height: 44px;
 }
 
 /* ══════════════════════════════════════════════════════════
@@ -557,40 +485,120 @@
 }
 
 /* ══════════════════════════════════════════════════════════
-   Responsive
+   Responsive (down to 320px screen width)
    ══════════════════════════════════════════════════════════ */
 
 @media (max-width: 480px) {
+  .pdfm-popup-overlay {
+    padding: 12px;
+  }
+
   .pdfm-popup-box {
-    padding: 20px 16px 14px;
+    padding: 24px 16px 18px;
     border-radius: 18px;
+    max-width: 100%;
   }
 
-  .pdfm-speed-hero-time {
-    font-size: 1.8rem;
+  .pdfm-popup-close {
+    top: 10px;
+    right: 10px;
+    width: 30px;
+    height: 30px;
   }
 
-  .pdfm-brand-inner {
+  .pdfm-results-icon,
+  .pdfm-popup-icon-wrap {
+    width: 52px;
+    height: 52px;
+    margin-bottom: 12px;
+  }
+
+  .pdfm-results-icon svg {
+    width: 26px;
+    height: 26px;
+  }
+
+  .pdfm-results-title,
+  .pdfm-popup-title {
+    font-size: 1.35rem;
+  }
+
+  .pdfm-results-sub,
+  .pdfm-popup-desc {
+    font-size: 0.88rem;
+    margin-bottom: 18px;
+  }
+
+  .pdfm-results-stats {
+    display: flex;
     flex-direction: column;
-    align-items: flex-start;
-    gap: 8px;
+    width: 100%;
+    gap: 10px;
+    padding: 12px 14px;
+    margin-bottom: 20px;
+  }
+
+  .pdfm-results-stats .pdfm-stat-item {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+  }
+
+  .pdfm-stat-val,
+  .pdfm-popup-file-name,
+  .pdfm-popup-file-details {
+    max-width: 180px;
+    text-align: right;
+  }
+
+  .pdfm-results-stat-divider {
+    display: block !important;
+    width: 100% !important;
+    height: 1px !important;
+    background: var(--pdfm-border) !important;
+  }
+
+  .pdfm-results-actions,
+  .pdfm-popup-btns {
+    flex-direction: column;
+    width: 100%;
+    gap: 10px;
+    margin-bottom: 14px;
+  }
+
+  .pdfm-results-actions button,
+  .pdfm-popup-btns button {
+    width: 100%;
+    justify-content: center;
+    padding: 13px 20px;
+  }
+
+  .pdfm-bookmark-row {
+    width: 100%;
+    margin-bottom: 12px;
   }
 
   .pdfm-bookmark-btn {
     width: 100%;
     justify-content: center;
+    padding: 11px 18px;
+    font-size: 0.88rem;
+  }
+
+  .pdfm-privacy-guarantee {
+    font-size: 0.74rem;
+    margin-bottom: 8px;
+    text-align: center;
   }
 }
 
 @media (max-width: 360px) {
-  .pdfm-popup-btns {
-    flex-direction: column;
-  }
-
-  .pdfm-popup-download-btn,
-  .pdfm-popup-secondary-btn {
-    flex: 1;
-    width: 100%;
+  .pdfm-stat-val,
+  .pdfm-popup-file-name,
+  .pdfm-popup-file-details {
+    max-width: 140px;
   }
 }
 
@@ -600,12 +608,13 @@
   .pdfm-popup-overlay,
   .pdfm-popup-box,
   .pdfm-popup-close,
+  .pdfm-btn-primary,
   .pdfm-popup-download-btn,
+  .pdfm-btn-secondary,
+  .pdfm-popup-secondary-btn,
+  .pdfm-bookmark-link,
   .pdfm-bookmark-btn {
     transition: none !important;
-  }
-
-  .pdfm-popup-icon-glow {
     animation: none !important;
   }
 }
