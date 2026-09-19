@@ -76,7 +76,9 @@ body {
   background: var(--bg);
   color: var(--text);
   line-height: 1.65;
-  transition: background var(--transition), color var(--transition);
+  transition:
+    background var(--transition),
+    color var(--transition);
   overflow-x: hidden;
 }
 
@@ -131,7 +133,9 @@ ul {
   backdrop-filter: blur(18px);
   -webkit-backdrop-filter: blur(18px);
   border-bottom: 1px solid var(--border);
-  transition: background var(--transition), border-color var(--transition);
+  transition:
+    background var(--transition),
+    border-color var(--transition);
 }
 
 .site-header nav {
@@ -185,7 +189,11 @@ ul {
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: background 0.3s, border-color 0.3s, transform 0.2s, color 0.2s;
+  transition:
+    background 0.3s,
+    border-color 0.3s,
+    transform 0.2s,
+    color 0.2s;
   color: var(--text-2);
   flex-shrink: 0;
   cursor: pointer;
@@ -219,9 +227,18 @@ ul {
 }
 
 @keyframes pulse-badge {
-  0% { transform: scale(0.9); box-shadow: 0 0 0 0 rgba(232, 55, 42, 0.6); }
-  70% { transform: scale(1.1); box-shadow: 0 0 0 6px rgba(232, 55, 42, 0); }
-  100% { transform: scale(0.9); box-shadow: 0 0 0 0 rgba(232, 55, 42, 0); }
+  0% {
+    transform: scale(0.9);
+    box-shadow: 0 0 0 0 rgba(232, 55, 42, 0.6);
+  }
+  70% {
+    transform: scale(1.1);
+    box-shadow: 0 0 0 6px rgba(232, 55, 42, 0);
+  }
+  100% {
+    transform: scale(0.9);
+    box-shadow: 0 0 0 0 rgba(232, 55, 42, 0);
+  }
 }
 
 .hamburger-btn {
@@ -248,7 +265,9 @@ ul {
   height: 2px;
   background: var(--text);
   border-radius: 2px;
-  transition: transform var(--transition), opacity var(--transition);
+  transition:
+    transform var(--transition),
+    opacity var(--transition);
 }
 
 /* ===== SIDE DRAWER ===== */
@@ -336,7 +355,9 @@ ul {
   color: var(--text-2);
   font-weight: 500;
   font-size: 0.95rem;
-  transition: background var(--transition), color var(--transition);
+  transition:
+    background var(--transition),
+    color var(--transition);
 }
 
 .side-nav a:hover {
@@ -499,7 +520,11 @@ ul {
   background: var(--surface);
   box-shadow: var(--shadow-sm);
   cursor: pointer;
-  transition: border-color var(--transition), background var(--transition), transform var(--transition), box-shadow var(--transition);
+  transition:
+    border-color var(--transition),
+    background var(--transition),
+    transform var(--transition),
+    box-shadow var(--transition);
   position: relative;
   outline: none;
 }
@@ -567,7 +592,10 @@ ul {
   font-weight: 600;
   font-size: 0.96rem;
   box-shadow: 0 4px 14px rgba(232, 55, 42, 0.3);
-  transition: background var(--transition), transform var(--transition), box-shadow var(--transition);
+  transition:
+    background var(--transition),
+    transform var(--transition),
+    box-shadow var(--transition);
 }
 
 .btn-primary:hover {
@@ -588,7 +616,10 @@ ul {
   border-radius: var(--radius-sm);
   font-weight: 600;
   font-size: 0.86rem;
-  transition: background var(--transition), color var(--transition), border-color var(--transition);
+  transition:
+    background var(--transition),
+    color var(--transition),
+    border-color var(--transition);
 }
 
 .btn-secondary:hover {
@@ -796,7 +827,9 @@ ul {
   color: var(--text);
   font-family: var(--font-body);
   font-size: 0.9rem;
-  transition: border-color var(--transition), box-shadow var(--transition);
+  transition:
+    border-color var(--transition),
+    box-shadow var(--transition);
 }
 
 .range-input:focus {
@@ -947,7 +980,10 @@ ul {
   border-radius: var(--radius);
   overflow: hidden;
   box-shadow: var(--card-shadow);
-  transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+  transition:
+    transform 0.2s ease,
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
   display: flex;
   flex-direction: column;
   user-select: none;
@@ -1031,7 +1067,9 @@ ul {
 }
 
 @keyframes spin {
-  to { transform: rotate(360deg); }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 .page-card__footer {
@@ -1164,7 +1202,10 @@ ul {
   font-weight: 700;
   font-size: 0.96rem;
   box-shadow: 0 4px 14px rgba(239, 68, 68, 0.35);
-  transition: background var(--transition), transform var(--transition), box-shadow var(--transition);
+  transition:
+    background var(--transition),
+    transform var(--transition),
+    box-shadow var(--transition);
 }
 
 .btn-delete-main:hover:not(:disabled) {
@@ -1209,8 +1250,14 @@ ul {
 }
 
 @keyframes modal-in {
-  from { opacity: 0; transform: scale(0.95); }
-  to { opacity: 1; transform: scale(1); }
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
 }
 
 .loading-modal__icon {
@@ -1448,7 +1495,9 @@ body.rendering-mode .pages-grid {
   transform: translateY(30px);
   opacity: 0;
   pointer-events: none;
-  transition: transform 0.25s ease, opacity 0.25s ease;
+  transition:
+    transform 0.25s ease,
+    opacity 0.25s ease;
 }
 
 .toast.show {
@@ -1644,7 +1693,9 @@ body.rendering-mode .pages-grid {
   border-radius: var(--radius);
   padding: 28px;
   box-shadow: var(--shadow-sm);
-  transition: transform var(--transition), box-shadow var(--transition);
+  transition:
+    transform var(--transition),
+    box-shadow var(--transition);
 }
 
 .feature-card:hover {
@@ -1881,7 +1932,10 @@ body.rendering-mode .pages-grid {
   border-radius: var(--radius);
   padding: 24px;
   box-shadow: var(--shadow-sm);
-  transition: transform var(--transition), box-shadow var(--transition), border-color var(--transition);
+  transition:
+    transform var(--transition),
+    box-shadow var(--transition),
+    border-color var(--transition);
 }
 
 .tool-card:hover {
@@ -2135,11 +2189,17 @@ body.rendering-mode .pages-grid {
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25), 0 2px 6px rgba(232, 55, 42, 0.35);
+  box-shadow:
+    0 4px 16px rgba(0, 0, 0, 0.25),
+    0 2px 6px rgba(232, 55, 42, 0.35);
   opacity: 0;
   pointer-events: none;
   transform: translateY(12px) scale(0.92);
-  transition: opacity 0.25s ease, transform 0.25s ease, background 0.2s ease, box-shadow 0.2s ease;
+  transition:
+    opacity 0.25s ease,
+    transform 0.25s ease,
+    background 0.2s ease,
+    box-shadow 0.2s ease;
   z-index: 1000;
   cursor: pointer;
 }
@@ -2155,7 +2215,9 @@ body.rendering-mode .pages-grid {
   color: #ffffff;
   border-color: rgba(255, 255, 255, 0.4);
   transform: translateY(-2px) scale(1.04);
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3), 0 4px 10px rgba(232, 55, 42, 0.45);
+  box-shadow:
+    0 6px 20px rgba(0, 0, 0, 0.3),
+    0 4px 10px rgba(232, 55, 42, 0.45);
 }
 
 .back-top svg {

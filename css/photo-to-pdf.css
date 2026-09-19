@@ -845,7 +845,8 @@ nav {
   transform: translateY(-2px);
 }
 @keyframes downloadPulse {
-  0%, 100% {
+  0%,
+  100% {
     box-shadow: 0 4px 14px rgba(22, 163, 74, 0.35);
   }
   50% {
@@ -1586,7 +1587,9 @@ footer {
   justify-content: center;
   opacity: 0;
   visibility: hidden;
-  transition: opacity 0.28s ease, visibility 0.28s ease;
+  transition:
+    opacity 0.28s ease,
+    visibility 0.28s ease;
   padding: 16px;
 }
 .popup-modal-bg.show {
@@ -1603,7 +1606,9 @@ footer {
   max-width: 460px;
   width: 100%;
   text-align: center;
-  box-shadow: var(--shadow-lg), 0 20px 50px rgba(0, 0, 0, 0.25);
+  box-shadow:
+    var(--shadow-lg),
+    0 20px 50px rgba(0, 0, 0, 0.25);
   transform: scale(0.94) translateY(12px);
   transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1);
 }
@@ -1644,19 +1649,35 @@ footer {
   position: absolute;
   inset: -6px;
   border-radius: 50%;
-  background: radial-gradient(circle, rgba(230, 57, 70, 0.28) 0%, rgba(244, 162, 97, 0.05) 70%, transparent 100%);
+  background: radial-gradient(
+    circle,
+    rgba(230, 57, 70, 0.28) 0%,
+    rgba(244, 162, 97, 0.05) 70%,
+    transparent 100%
+  );
   animation: popupPulse 2.4s infinite ease-in-out;
 }
 @keyframes popupPulse {
-  0%, 100% { transform: scale(1); opacity: 0.8; }
-  50% { transform: scale(1.15); opacity: 0.4; }
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 0.8;
+  }
+  50% {
+    transform: scale(1.15);
+    opacity: 0.4;
+  }
 }
 .popup-icon-badge {
   position: relative;
   width: 60px;
   height: 60px;
   border-radius: 20px;
-  background: linear-gradient(135deg, rgba(230, 57, 70, 0.15), rgba(244, 162, 97, 0.22));
+  background: linear-gradient(
+    135deg,
+    rgba(230, 57, 70, 0.15),
+    rgba(244, 162, 97, 0.22)
+  );
   border: 1px solid rgba(230, 57, 70, 0.25);
   color: var(--primary);
   display: flex;

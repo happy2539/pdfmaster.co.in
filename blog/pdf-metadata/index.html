@@ -67,12 +67,12 @@
 
     <!-- Fonts -->
 
-    <link rel="preload" as="style" href="../../assets/fonts/fonts.css" />
-    <link href="../../assets/fonts/fonts.css" rel="stylesheet" />
+    <link rel="preload" as="style" href="/assets/fonts/fonts.css" />
+    <link href="/assets/fonts/fonts.css" rel="stylesheet" />
 
     <!--Stylesheet-->
-    <link rel="preload" href="../photo-to-pdf/css/index.css" as="style" />
-    <link rel="stylesheet" href="../photo-to-pdf/css/index.css" />
+    <link rel="preload" href="/blog/pdf-metadata/css/style.css" as="style" />
+    <link rel="stylesheet" href="/blog/pdf-metadata/css/style.css" />
 
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="default" />
@@ -188,7 +188,7 @@
 
     <!-- ═══ NAVBAR ═══ -->
     <nav class="navbar" aria-label="Main navigation">
-      <a href="/" class="nav-logo" aria-label="PDFMaster Home">
+      <a href="https://pdfmaster.co.in" class="nav-logo" aria-label="PDFMaster Home">
         <img
           src="https://pdfmaster.co.in/assets/apple-touch-icon.png"
           alt="PDFMaster Logo"
@@ -196,7 +196,7 @@
           height="34"
           fetchpriority="high"
         />
-        PDF<b>Master</b>
+        <span class="nav-logo-text">PDF<span>Master</span></span>
       </a>
 
       <ul class="nav-links" role="list">
@@ -307,14 +307,14 @@
       aria-modal="true"
     >
       <div class="drawer-head">
-        <a href="https://pdfmaster.co.in" class="drawer-logo">
+        <a href="https://pdfmaster.co.in" class="drawer-logo" aria-label="PDFMaster Home">
           <img
             src="https://pdfmaster.co.in/assets/apple-touch-icon.png"
             alt="PDFMaster"
             width="30"
             height="30"
           />
-          PDF<b>Master</b>
+          <span class="nav-logo-text">PDF<span>Master</span></span>
         </a>
         <div
           class="drawer-close"
@@ -766,7 +766,7 @@
                 height="34"
                 loading="lazy"
               />
-              PDF<b>Master</b>
+              <span class="nav-logo-text">PDF<span>Master</span></span>
             </a>
             <p>
               Free, private, browser-based PDF tools. Your files never leave
@@ -793,7 +793,11 @@
                 <a href="https://pdfmaster.co.in/pdf-to-photo">PDF to Photo</a>
               </li>
               <li><a href="https://pdfmaster.co.in/split-pdf">Split PDF</a></li>
-              <li><a href="https://pdfmaster.co.in/delete-pdf-pages">Delete PDF Pages</a></li>
+              <li>
+                <a href="https://pdfmaster.co.in/delete-pdf-pages"
+                  >Delete PDF Pages</a
+                >
+              </li>
               <li>
                 <a href="https://pdfmaster.co.in/pdf-reorder">PDF Reorder</a>
               </li>
@@ -878,6 +882,6 @@
     <button class="back-to-top" id="backToTop" aria-label="Back to top">
       ↑
     </button>
-    <script src="../photo-to-pdf/script/index.js" defer></script>
+    <script src="/blog/pdf-metadata/js/script.js" defer></script>
   </body>
 </html>

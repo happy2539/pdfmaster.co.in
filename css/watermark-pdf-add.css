@@ -302,7 +302,9 @@ p {
 .toast.toast-clickable:hover {
   transform: translateY(-2px);
   border-color: var(--accent-solid);
-  box-shadow: var(--shadow-lg), 0 0 0 1px var(--accent-border);
+  box-shadow:
+    var(--shadow-lg),
+    0 0 0 1px var(--accent-border);
 }
 .toast-btn {
   display: inline-flex;

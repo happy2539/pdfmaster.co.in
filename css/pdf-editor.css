@@ -202,8 +202,6 @@ section {
   cursor: not-allowed;
 }
 
-
-
 /* ============ NAVBAR ============ */
 .navbar {
   position: sticky;
@@ -687,7 +685,9 @@ html[data-theme="dark"] .theme-toggle .icon-moon {
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: var(--radius-s);
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.16), 0 3px 8px rgba(0, 0, 0, 0.08);
+  box-shadow:
+    0 10px 30px rgba(0, 0, 0, 0.16),
+    0 3px 8px rgba(0, 0, 0, 0.08);
   padding: 5px;
   min-width: 135px;
   z-index: 1200;
@@ -726,7 +726,9 @@ html[data-theme="dark"] .theme-toggle .icon-moon {
   cursor: pointer;
   width: 100%;
   text-align: left;
-  transition: background 0.15s, color 0.15s;
+  transition:
+    background 0.15s,
+    color 0.15s;
   white-space: nowrap;
 }
 
@@ -757,7 +759,9 @@ html[data-theme="dark"] .theme-toggle .icon-moon {
   background: var(--surface, #ffffff);
   border: 1px solid var(--border);
   border-radius: 14px;
-  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.16), 0 2px 6px rgba(0, 0, 0, 0.08);
+  box-shadow:
+    0 12px 32px rgba(0, 0, 0, 0.16),
+    0 2px 6px rgba(0, 0, 0, 0.08);
   padding: 12px;
   flex-direction: column;
   gap: 10px;
@@ -818,7 +822,9 @@ html[data-theme="dark"] .theme-toggle .icon-moon {
   border: 2px solid var(--border);
   cursor: pointer;
   padding: 0;
-  transition: transform 0.15s ease, border-color 0.15s ease;
+  transition:
+    transform 0.15s ease,
+    border-color 0.15s ease;
   flex-shrink: 0;
 }
 
@@ -828,7 +834,9 @@ html[data-theme="dark"] .theme-toggle .icon-moon {
 
 .tool-options .swatch.is-active {
   border-color: var(--text);
-  box-shadow: 0 0 0 2px var(--surface), 0 0 0 3.5px var(--accent);
+  box-shadow:
+    0 0 0 2px var(--surface),
+    0 0 0 3.5px var(--accent);
 }
 
 .tool-options .swatches-divider {
@@ -852,7 +860,9 @@ html[data-theme="dark"] .theme-toggle .icon-moon {
   background: var(--surface);
   color: var(--text);
   flex-shrink: 0;
-  transition: transform 0.15s ease, border-color 0.15s ease;
+  transition:
+    transform 0.15s ease,
+    border-color 0.15s ease;
 }
 
 .tool-options .swatch-special-btn:hover {
@@ -862,7 +872,9 @@ html[data-theme="dark"] .theme-toggle .icon-moon {
 
 .tool-options .swatch-special-btn.is-active {
   border-color: var(--text);
-  box-shadow: 0 0 0 2px var(--surface), 0 0 0 3.5px var(--accent);
+  box-shadow:
+    0 0 0 2px var(--surface),
+    0 0 0 3.5px var(--accent);
 }
 
 .tool-options .opt-control-row {
@@ -907,7 +919,11 @@ html[data-theme="dark"] .theme-toggle .icon-moon {
   display: block;
   border-radius: 50%;
   background: var(--accent, #2563eb);
-  transition: width 0.08s ease, height 0.08s ease, background 0.15s ease, opacity 0.15s ease;
+  transition:
+    width 0.08s ease,
+    height 0.08s ease,
+    background 0.15s ease,
+    opacity 0.15s ease;
   flex: none;
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.18);
 }
@@ -938,7 +954,12 @@ html[data-theme="dark"] .theme-toggle .icon-moon {
   align-items: center;
   justify-content: center;
   position: relative;
-  transition: width 0.08s ease, height 0.08s ease, border-color 0.15s ease, background 0.15s ease, color 0.15s ease;
+  transition:
+    width 0.08s ease,
+    height 0.08s ease,
+    border-color 0.15s ease,
+    background 0.15s ease,
+    color 0.15s ease;
   box-sizing: border-box;
   flex: none;
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
@@ -1887,7 +1908,9 @@ body.editor-active .tool-btn#start-over-btn:hover {
 }
 
 body.editor-active .swatch-special-btn {
-  transition: transform 0.1s ease, border-color 0.15s ease;
+  transition:
+    transform 0.1s ease,
+    border-color 0.15s ease;
 }
 body.editor-active .swatch-special-btn:active {
   transform: scale(0.9);
@@ -1912,7 +1935,9 @@ body.editor-active .sig-tab-btn {
   padding: 10px 6px;
   cursor: pointer;
   text-align: center;
-  transition: color 0.15s ease, border-color 0.15s ease;
+  transition:
+    color 0.15s ease,
+    border-color 0.15s ease;
 }
 body.editor-active .sig-tab-btn.active {
   color: var(--accent);
@@ -1932,7 +1957,10 @@ body.editor-active .sig-type-preview-card {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  transition: border-color 0.15s ease, background 0.15s ease, box-shadow 0.15s ease;
+  transition:
+    border-color 0.15s ease,
+    background 0.15s ease,
+    box-shadow 0.15s ease;
   user-select: none;
 }
 html[data-theme="dark"] body.editor-active .sig-type-preview-card {
@@ -2134,4 +2162,3 @@ body.editor-active .sig-type-preview-card:hover {
   background: rgba(232, 55, 42, 0.12);
   color: var(--accent);
 }
-

@@ -859,7 +859,7 @@ class PDFCompiler {
       // Show universal popup modal
       if (window.PDFMasterPopup && typeof window.PDFMasterPopup.show === "function") {
         window.PDFMasterPopup.show({
-          title: "Thank You for Using PDFMaster!",
+          title: "Thank You for Using PDF<span>Master</span>!",
           desc: "Your PDF files have been combined into a single document. Everything was processed right on your device for <strong>100% privacy</strong>.",
           fileName: name,
           fileType: "pdf",

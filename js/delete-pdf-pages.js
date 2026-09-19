@@ -1951,7 +1951,7 @@
         typeof window.PDFMasterPopup.show === "function"
       ) {
         window.PDFMasterPopup.show({
-          title: "Thank You for Using PDFMaster!",
+          title: "Thank You for Using PDF<span>Master</span>!",
           desc: `Your selected ${delCount} page(s) have been removed. Everything was processed right on your device for <strong>100% privacy</strong>.`,
           fileName: lastGeneratedName,
           fileType: "pdf",

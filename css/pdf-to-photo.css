@@ -1422,7 +1422,9 @@ footer {
   cursor: pointer;
   margin-left: 10px;
   flex-shrink: 0;
-  transition: opacity 0.2s, transform 0.15s;
+  transition:
+    opacity 0.2s,
+    transform 0.15s;
 }
 .toast-btn:hover {
   opacity: 0.9;

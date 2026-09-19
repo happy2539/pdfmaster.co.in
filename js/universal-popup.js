@@ -5,14 +5,23 @@
  * When processing completes on any tool page, this module provides
  * an elegant modal featuring a prominent download button, file details,
  * and a thank-you message for using the platform.
+ *
+ * Public API (unchanged — safe drop-in replacement):
+ *   window.PDFMasterPopup = { show, close, download, init,
+ *                              startTimer, getDurationMs, formatDuration }
+ *   window.PhotoToPdfPopup                  (alias of the above)
+ *   window.showPhotoToPdfSuccessModal(opts) (alias of .show)
+ *   window.showPDFMasterSuccessModal(opts)  (alias of .show)
+ *   window.dispatchEvent(new CustomEvent("pdfmaster:success-popup", { detail: opts }))
  */
-
 (function () {
   "use strict";
 
   let modalOverlay = null;
   let currentOptions = {};
   let currentObjectUrl = null;
+  let activeTimerStart = null;
+  let lastMeasuredDuration = null;
 
   const ICONS = {
     pdf: `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>`,
@@ -20,8 +29,61 @@
     image: `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>`,
   };
 
-  let activeTimerStart = null;
-  let lastMeasuredDuration = null;
+  /**
+   * Speed marketing copy, bucketed by measured seconds. Every line leans
+   * on the one claim PDFMaster can always make honestly: nothing was
+   * uploaded. A random line per tier keeps repeat visitors seeing
+   * something new instead of the same badge every time.
+   */
+  const SPEED_TIERS = [
+    {
+      max: 0.6,
+      tag: "⚡ Instant",
+      lines: [
+        "Most sites are still opening your upload dialog.",
+        "That's the speed of skipping the upload entirely.",
+        "Quicker than this popup finished animating in.",
+      ],
+    },
+    {
+      max: 2,
+      tag: "🚀 Lightning fast",
+      lines: [
+        "No upload, no queue, no server — just done.",
+        "While others wait on a server, you're already downloading.",
+        "That's what zero uploads feels like.",
+      ],
+    },
+    {
+      max: 6,
+      tag: "🔥 Nicely done",
+      lines: [
+        "Still 100% on your device — not a single byte left it.",
+        "A bigger job, handled without ever leaving your browser.",
+        "No server touched that file. Your device just did.",
+      ],
+    },
+    {
+      max: Infinity,
+      tag: "🛡️ Worth the wait",
+      lines: [
+        "Big file, zero uploads — every second of that stayed private.",
+        "That's real work, done without a server in sight.",
+        "Took a moment, but nothing ever left this device.",
+      ],
+    },
+  ];
+
+  function pickSpeedTier(seconds) {
+    return (
+      SPEED_TIERS.find((tier) => seconds < tier.max) ||
+      SPEED_TIERS[SPEED_TIERS.length - 1]
+    );
+  }
+
+  function pickRandom(list) {
+    return list[Math.floor(Math.random() * list.length)];
+  }
 
   /**
    * Start conversion timer
@@ -58,6 +120,51 @@
       const remSecs = Math.round(seconds % 60);
       return remSecs > 0 ? `${mins}m ${remSecs}s` : `${mins}m`;
     }
+  }
+
+  /**
+   * Work out the past-tense verb for "___ in 0.8s" (Merged / Split / etc.),
+   * preferring an explicit override, then toolName, then downloadText,
+   * then the page URL. Same priority order and fallbacks as before, just
+   * consolidated into one function instead of three separate branches.
+   */
+  function resolveVerb() {
+    if (currentOptions.verb) return currentOptions.verb;
+
+    if (currentOptions.toolName) {
+      const tn = currentOptions.toolName.toLowerCase();
+      if (tn.includes("merge") || tn.includes("compiler")) return "Merged";
+      if (tn.includes("split")) return "Split";
+      if (tn.includes("delete") || tn.includes("remove pages"))
+        return "Processed";
+      if (tn.includes("reorder")) return "Reordered";
+      if (tn.includes("watermark")) return "Watermarked";
+      if (tn.includes("metadata")) return "Cleaned";
+      if (tn.includes("editor")) return "Exported";
+      if (tn.includes("photo") || tn.includes("image")) return "Converted";
+      return "Processed";
+    }
+
+    if (currentOptions.downloadText) {
+      const dt = currentOptions.downloadText.toLowerCase();
+      if (dt.includes("merge")) return "Merged";
+      if (dt.includes("split")) return "Split";
+      if (dt.includes("clean")) return "Cleaned";
+      if (dt.includes("reorder")) return "Reordered";
+      if (dt.includes("watermark")) return "Watermarked";
+      if (dt.includes("edit")) return "Exported";
+    }
+
+    const path = (window.location.pathname || "").toLowerCase();
+    if (path.includes("merge")) return "Merged";
+    if (path.includes("split")) return "Split";
+    if (path.includes("delete")) return "Processed";
+    if (path.includes("reorder")) return "Reordered";
+    if (path.includes("watermark")) return "Watermarked";
+    if (path.includes("metadata")) return "Cleaned";
+    if (path.includes("editor")) return "Exported";
+    if (path.includes("photo")) return "Converted";
+    return "Converted";
   }
 
   /**
@@ -145,48 +252,28 @@
             </div>
           </div>
 
-          <h2 class="pdfm-popup-title" id="pdfmPopupTitle">Thank You for Using PDFMaster!</h2>
+          <h2 class="pdfm-popup-title" id="pdfmPopupTitle">Thank You for Using PDF<span>Master</span>!</h2>
 
           <p class="pdfm-popup-desc" id="pdfmPopupDesc">
             Processed 100% locally on your device for <strong>complete privacy</strong>.
           </p>
 
-          <!-- Unified Performance & File Card -->
-          <div class="pdfm-popup-file-card" id="pdfmPopupFileCard">
-            <div class="pdfm-card-top-row">
-              <div class="pdfm-popup-file-icon" id="pdfmPopupFileIcon" aria-hidden="true">
-                ${ICONS.pdf}
-              </div>
-              <div class="pdfm-popup-file-meta">
-                <span class="pdfm-popup-file-name" id="pdfmPopupFileName">document.pdf</span>
-                <span class="pdfm-popup-file-details" id="pdfmPopupFileDetails">Ready to download • 100% Private</span>
-              </div>
-              <div class="pdfm-speed-metric-tag" id="pdfmMarketingSpeedBox" style="display: none;">
-                <span class="pdfm-speed-metric-time" id="pdfmSpeedHeroTime">0.5s</span>
-                <span class="pdfm-speed-metric-caption">⚡ TURBO</span>
-              </div>
+          <!-- Speed hero: the one bold, memorable stat. Hidden until JS
+               fills it in with a real measured duration. -->
+          <div class="pdfm-speed-hero" id="pdfmSpeedHero">
+            <p class="pdfm-speed-hero-kicker" id="pdfmSpeedHeroKicker">Converted in</p>
+            <p class="pdfm-speed-hero-time" id="pdfmSpeedHeroTime">0.5s</p>
+            <span class="pdfm-speed-hero-tag" id="pdfmSpeedHeroTag">⚡ Instant</span>
+            <p class="pdfm-speed-hero-line" id="pdfmSpeedHeroLine">No upload, no queue, no server — just done.</p>
+          </div>
+
+          <div class="pdfm-popup-file-row" id="pdfmPopupFileRow">
+            <div class="pdfm-popup-file-icon" id="pdfmPopupFileIcon" aria-hidden="true">
+              ${ICONS.pdf}
             </div>
-            <div class="pdfm-card-bottom-row">
-              <div class="pdfm-popup-time-badge" id="pdfmPopupTimeBadge" style="display: none;">
-                <svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-                  <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
-                </svg>
-                <span id="pdfmPopupTimeText">Converted in 0.5s</span>
-              </div>
-              <div class="pdfm-speed-pillars">
-                <span class="pdfm-pillar-item">
-                  <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-                  10x Faster
-                </span>
-                <span class="pdfm-pillar-item">
-                  <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-                  100% Local
-                </span>
-                <span class="pdfm-pillar-item">
-                  <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-                  Always Free
-                </span>
-              </div>
+            <div class="pdfm-popup-file-meta">
+              <span class="pdfm-popup-file-name" id="pdfmPopupFileName">document.pdf</span>
+              <span class="pdfm-popup-file-details" id="pdfmPopupFileDetails">Ready to download</span>
             </div>
           </div>
 
@@ -208,7 +295,7 @@
           <div class="pdfm-popup-brand-card" id="pdfmPopupBrandCard">
             <div class="pdfm-brand-inner">
               <span class="pdfm-brand-title">⭐ Bookmark <strong>pdfmaster.co.in</strong> for next time</span>
-              <button type="button" class="pdfm-bookmark-btn" id="pdfmBookmarkBtn" aria-label="Bookmark or Copy Link">
+              <button type="button" class="pdfm-bookmark-btn" id="pdfmBookmarkBtn" aria-label="Bookmark or copy link">
                 <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                   <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
                 </svg>
@@ -226,10 +313,10 @@
           <!-- End TrustBox widget -->
 
           <p class="pdfm-popup-footer-note">
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block; vertical-align:-2px; margin-right:3px; color:var(--primary, #e63946);">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
               <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
             </svg>
-            Free & private client-side tool. No uploads. No accounts.
+            Every file stays on this device — 100% private, zero uploads, always free.
           </p>
         </div>
       `;
@@ -269,9 +356,9 @@
     if (bookmarkBtn) {
       const isMac = /Mac|iPod|iPhone|iPad/i.test(
         (navigator.userAgentData && navigator.userAgentData.platform) ||
-        navigator.platform ||
-        navigator.userAgent ||
-        ""
+          navigator.platform ||
+          navigator.userAgent ||
+          "",
       );
       const shortcut = isMac ? "⌘+D" : "Ctrl+D";
       const btnText = overlay.querySelector("#pdfmBookmarkBtnText");
@@ -280,22 +367,37 @@
       bookmarkBtn.addEventListener("click", () => {
         const siteUrl = "https://pdfmaster.co.in";
         if (navigator.clipboard && navigator.clipboard.writeText) {
-          navigator.clipboard.writeText(siteUrl).then(() => {
-            if (btnText) btnText.textContent = `✓ Link Copied! (${shortcut})`;
-            if (typeof window.showToast === "function") {
-              window.showToast(`pdfmaster.co.in copied! Press ${shortcut} to bookmark PDFMaster.`, "success", 4000);
-            }
-            setTimeout(() => {
-              if (btnText) btnText.textContent = `Save Link (${shortcut})`;
-            }, 3500);
-          }).catch(() => {
-            if (typeof window.showToast === "function") {
-              window.showToast(`Press ${shortcut} to bookmark pdfmaster.co.in!`, "info", 4000);
-            }
-          });
+          navigator.clipboard
+            .writeText(siteUrl)
+            .then(() => {
+              if (btnText) btnText.textContent = `✓ Link Copied! (${shortcut})`;
+              if (typeof window.showToast === "function") {
+                window.showToast(
+                  `pdfmaster.co.in copied! Press ${shortcut} to bookmark PDFMaster.`,
+                  "success",
+                  4000,
+                );
+              }
+              setTimeout(() => {
+                if (btnText) btnText.textContent = `Save Link (${shortcut})`;
+              }, 3500);
+            })
+            .catch(() => {
+              if (typeof window.showToast === "function") {
+                window.showToast(
+                  `Press ${shortcut} to bookmark pdfmaster.co.in!`,
+                  "info",
+                  4000,
+                );
+              }
+            });
         } else {
           if (typeof window.showToast === "function") {
-            window.showToast(`Press ${shortcut} to bookmark pdfmaster.co.in!`, "info", 4000);
+            window.showToast(
+              `Press ${shortcut} to bookmark pdfmaster.co.in!`,
+              "info",
+              4000,
+            );
           }
         }
       });
@@ -389,7 +491,7 @@
     const btnText = document.getElementById("pdfmPopupDownloadBtnText");
     const btn = document.getElementById("pdfmPopupDownloadBtn");
     if (btnText) btnText.textContent = "Downloaded! (Click to Download Again)";
-    if (btn) btn.style.boxShadow = "0 4px 14px rgba(22, 163, 74, 0.45)";
+    if (btn) btn.classList.add("is-downloaded");
 
     // Sync any on-page download button
     if (currentOptions.syncButtonTextEl) {
@@ -418,7 +520,7 @@
 
     currentOptions = Object.assign(
       {
-        title: "Thank You for Using PDFMaster!",
+        title: "Thank You for Using PDF<span>Master</span>!",
         desc: "Processed 100% locally on your device for <strong>complete privacy</strong>.",
         fileName: "document.pdf",
         fileType: "pdf",
@@ -435,7 +537,13 @@
 
     // Title
     const titleEl = document.getElementById("pdfmPopupTitle");
-    if (titleEl) titleEl.textContent = currentOptions.title;
+    if (titleEl) {
+      const rawTitle =
+        currentOptions.title || "Thank You for Using PDF<span>Master</span>!";
+      titleEl.innerHTML = rawTitle.includes("<span")
+        ? rawTitle
+        : rawTitle.replace(/PDFMaster/g, "PDF<span>Master</span>");
+    }
 
     // Desc
     const descEl = document.getElementById("pdfmPopupDesc");
@@ -461,12 +569,13 @@
         const sz =
           currentOptions.fileSize ||
           (currentOptions.blob ? currentOptions.blob.size : 0);
-        const sizeStr = sz ? ` • ${formatBytes(sz)}` : "";
-        detailsEl.textContent = `Ready to download${sizeStr} • 100% Private`;
+        detailsEl.textContent = sz
+          ? `Ready to download • ${formatBytes(sz)}`
+          : "Ready to download";
       }
     }
 
-    // Conversion Time calculation
+    // Conversion time -> speed hero
     let elapsedMs = null;
     if (
       typeof currentOptions.durationMs === "number" &&
@@ -484,67 +593,37 @@
     if (elapsedMs) {
       lastMeasuredDuration = elapsedMs;
     }
+    activeTimerStart = null;
 
-    const timeBadge = document.getElementById("pdfmPopupTimeBadge");
-    const timeText = document.getElementById("pdfmPopupTimeText");
-    const speedBox = document.getElementById("pdfmMarketingSpeedBox");
-    const speedHeroTime = document.getElementById("pdfmSpeedHeroTime");
-    if (timeBadge && timeText) {
+    const heroEl = document.getElementById("pdfmSpeedHero");
+    if (heroEl) {
       if (elapsedMs) {
         const formatted = formatDuration(elapsedMs);
-        if (speedHeroTime) speedHeroTime.textContent = formatted;
-        if (speedBox) speedBox.style.display = "block";
-        let verb = currentOptions.verb || null;
-        if (!verb && currentOptions.toolName) {
-          const tn = currentOptions.toolName.toLowerCase();
-          if (tn.includes("merge") || tn.includes("compiler")) verb = "Merged";
-          else if (tn.includes("split")) verb = "Split";
-          else if (tn.includes("delete") || tn.includes("remove pages"))
-            verb = "Processed";
-          else if (tn.includes("reorder")) verb = "Reordered";
-          else if (tn.includes("watermark")) verb = "Watermarked";
-          else if (tn.includes("metadata")) verb = "Cleaned";
-          else if (tn.includes("editor")) verb = "Exported";
-          else if (tn.includes("photo") || tn.includes("image"))
-            verb = "Converted";
-          else verb = "Processed";
-        }
-        if (!verb && currentOptions.downloadText) {
-          const dt = currentOptions.downloadText.toLowerCase();
-          if (dt.includes("merge")) verb = "Merged";
-          else if (dt.includes("split")) verb = "Split";
-          else if (dt.includes("clean")) verb = "Cleaned";
-          else if (dt.includes("reorder")) verb = "Reordered";
-          else if (dt.includes("watermark")) verb = "Watermarked";
-          else if (dt.includes("edit")) verb = "Exported";
-        }
-        if (!verb) {
-          const path = (window.location.pathname || "").toLowerCase();
-          if (path.includes("merge")) verb = "Merged";
-          else if (path.includes("split")) verb = "Split";
-          else if (path.includes("delete")) verb = "Processed";
-          else if (path.includes("reorder")) verb = "Reordered";
-          else if (path.includes("watermark")) verb = "Watermarked";
-          else if (path.includes("metadata")) verb = "Cleaned";
-          else if (path.includes("editor")) verb = "Exported";
-          else if (path.includes("photo")) verb = "Converted";
-          else verb = "Converted";
-        }
-        timeText.textContent = `${verb} in ${formatted}`;
-        timeBadge.style.display = "inline-flex";
+        const tier = pickSpeedTier(elapsedMs / 1000);
+        const verb = resolveVerb();
+
+        const kickerEl = document.getElementById("pdfmSpeedHeroKicker");
+        const timeEl = document.getElementById("pdfmSpeedHeroTime");
+        const tagEl = document.getElementById("pdfmSpeedHeroTag");
+        const lineEl = document.getElementById("pdfmSpeedHeroLine");
+
+        if (kickerEl) kickerEl.textContent = `${verb} in`;
+        if (timeEl) timeEl.textContent = formatted;
+        if (tagEl) tagEl.textContent = tier.tag;
+        if (lineEl) lineEl.textContent = pickRandom(tier.lines);
+
+        heroEl.style.display = "block";
       } else {
-        timeBadge.style.display = "none";
-        if (speedBox) speedBox.style.display = "none";
+        heroEl.style.display = "none";
       }
     }
-    activeTimerStart = null;
 
     // Download Button Text
     const dlBtnText = document.getElementById("pdfmPopupDownloadBtnText");
     if (dlBtnText) dlBtnText.textContent = currentOptions.downloadText;
 
     const dlBtn = document.getElementById("pdfmPopupDownloadBtn");
-    if (dlBtn) dlBtn.style.boxShadow = "";
+    if (dlBtn) dlBtn.classList.remove("is-downloaded");
 
     // Secondary Button
     const secBtn = document.getElementById("pdfmPopupSecondaryBtn");
