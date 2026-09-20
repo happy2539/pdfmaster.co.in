@@ -717,6 +717,32 @@
     document.body.style.overflow = "hidden";
     ensureTrustpilot();
 
+    // Notify Universal Conversion Tracker
+    try {
+      const conversionPayload = {
+        tool: currentOptions.toolName || resolveVerb(),
+        durationMs: elapsedMs,
+        fileSize: sz,
+        fileName: currentOptions.fileName || "document.pdf",
+        fileType: currentOptions.fileType || "pdf",
+        fileDetails: currentOptions.fileDetails || null,
+        blob: currentOptions.blob || null,
+      };
+
+      if (
+        window.PDFMasterTracker &&
+        typeof window.PDFMasterTracker.trackConversion === "function"
+      ) {
+        window.PDFMasterTracker.trackConversion(conversionPayload);
+      }
+
+      window.dispatchEvent(
+        new CustomEvent("pdfmaster:conversion-tracked", {
+          detail: conversionPayload,
+        }),
+      );
+    } catch (_) {}
+
     // Focus download button
     setTimeout(() => {
       const btn = document.getElementById("pdfmPopupDownloadBtn");
