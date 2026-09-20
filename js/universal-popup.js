@@ -477,7 +477,31 @@
     }
 
     if (typeof currentOptions.onDownload === "function") {
-      currentOptions.onDownload();
+      try {
+        const res = currentOptions.onDownload();
+        if (res && typeof res.then === "function") {
+          const btn = document.getElementById("pdfmPopupDownloadBtn");
+          const btnText = document.getElementById("pdfmPopupDownloadBtnText");
+          const origText = btnText ? btnText.textContent : "";
+          if (btnText) btnText.textContent = "Downloading…";
+          if (btn) btn.disabled = true;
+
+          res
+            .then(() => {
+              updateDownloadSuccessState();
+            })
+            .catch((err) => {
+              console.error("PDFMasterPopup onDownload error:", err);
+              if (btnText) btnText.textContent = origText;
+            })
+            .finally(() => {
+              if (btn) btn.disabled = false;
+            });
+          return;
+        }
+      } catch (err) {
+        console.error("PDFMasterPopup onDownload sync error:", err);
+      }
       updateDownloadSuccessState();
       return;
     }
@@ -717,30 +741,39 @@
     document.body.style.overflow = "hidden";
     ensureTrustpilot();
 
-    // Notify Universal Conversion Tracker
+    // Notify Universal Conversion Tracker (only on actual conversion, ignore re-opens or download-again)
     try {
-      const conversionPayload = {
-        tool: currentOptions.toolName || resolveVerb(),
-        durationMs: elapsedMs,
-        fileSize: sz,
-        fileName: currentOptions.fileName || "document.pdf",
-        fileType: currentOptions.fileType || "pdf",
-        fileDetails: currentOptions.fileDetails || null,
-        blob: currentOptions.blob || null,
-      };
+      const isReDownload =
+        currentOptions.skipTracking === true ||
+        (currentOptions.downloadText &&
+          /again/i.test(currentOptions.downloadText)) ||
+        (currentOptions.title && /download again/i.test(currentOptions.title));
 
-      if (
-        window.PDFMasterTracker &&
-        typeof window.PDFMasterTracker.trackConversion === "function"
-      ) {
-        window.PDFMasterTracker.trackConversion(conversionPayload);
+      if (!isReDownload && !currentOptions.__trackedByTracker) {
+        currentOptions.__trackedByTracker = true;
+        const conversionPayload = {
+          tool: currentOptions.toolName || resolveVerb(),
+          durationMs: elapsedMs,
+          fileSize: sz,
+          fileName: currentOptions.fileName || "document.pdf",
+          fileType: currentOptions.fileType || "pdf",
+          fileDetails: currentOptions.fileDetails || null,
+          blob: currentOptions.blob || null,
+        };
+
+        if (
+          window.PDFMasterTracker &&
+          typeof window.PDFMasterTracker.trackConversion === "function"
+        ) {
+          window.PDFMasterTracker.trackConversion(conversionPayload);
+        } else {
+          window.dispatchEvent(
+            new CustomEvent("pdfmaster:conversion-tracked", {
+              detail: conversionPayload,
+            }),
+          );
+        }
       }
-
-      window.dispatchEvent(
-        new CustomEvent("pdfmaster:conversion-tracked", {
-          detail: conversionPayload,
-        }),
-      );
     } catch (_) {}
 
     // Focus download button

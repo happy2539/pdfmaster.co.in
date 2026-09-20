@@ -191,18 +191,31 @@
       const fileType =
         data.fileType || (fileName.split(".").pop() || "pdf").toLowerCase();
 
-      // Deduplication check: prevent recording duplicate calls within 4000ms
+      // Deduplication check: prevent recording duplicate calls within cooldown (25s)
       const now = Date.now();
-      const dedupeKey = `${tool}:${fileName}:${fileSize}:${Math.floor(now / 4000)}`;
+      const normTool = (tool || "pdf-tool")
+        .toLowerCase()
+        .replace(/[^a-z0-9]/g, "");
+      const normFile = (fileName || "doc")
+        .toLowerCase()
+        .replace(/[^a-z0-9]/g, "");
+      const dedupeKey = `${normTool}:${normFile}`;
 
       if (recentEventKeys.has(dedupeKey)) {
-        log("Duplicate conversion suppressed:", dedupeKey);
-        return;
+        const lastTime = recentEventKeys.get(dedupeKey);
+        if (now - lastTime < 25000) {
+          log(
+            "Duplicate conversion suppressed (cooldown active):",
+            dedupeKey,
+            `${now - lastTime}ms ago`,
+          );
+          return;
+        }
       }
 
-      // Cleanup old dedupe keys
+      // Cleanup old dedupe keys (> 60s)
       for (const [k, time] of recentEventKeys.entries()) {
-        if (now - time > 15000) recentEventKeys.delete(k);
+        if (now - time > 60000) recentEventKeys.delete(k);
       }
       recentEventKeys.set(dedupeKey, now);
 
@@ -247,21 +260,30 @@
         const wrappedShow = function (options) {
           try {
             if (options && typeof options === "object") {
-              const sz =
-                options.fileSize ||
-                (options.blob && typeof options.blob.size === "number"
-                  ? options.blob.size
-                  : 0);
+              const isReDownload =
+                options.skipTracking === true ||
+                (options.downloadText &&
+                  /again/i.test(options.downloadText)) ||
+                (options.title && /again/i.test(options.title));
 
-              trackConversion({
-                tool: options.toolName,
-                durationMs: options.durationMs,
-                fileSize: sz,
-                fileName: options.fileName,
-                fileType: options.fileType,
-                fileDetails: options.fileDetails,
-                blob: options.blob,
-              });
+              if (!isReDownload && !options.__trackedByTracker) {
+                options.__trackedByTracker = true;
+                const sz =
+                  options.fileSize ||
+                  (options.blob && typeof options.blob.size === "number"
+                    ? options.blob.size
+                    : 0);
+
+                trackConversion({
+                  tool: options.toolName,
+                  durationMs: options.durationMs,
+                  fileSize: sz,
+                  fileName: options.fileName,
+                  fileType: options.fileType,
+                  fileDetails: options.fileDetails,
+                  blob: options.blob,
+                });
+              }
             }
           } catch (hookErr) {
             log("Popup wrapper error:", hookErr);
@@ -275,9 +297,37 @@
     }
   }
 
+  // Reset dedupe cache on conversion button click to allow deliberate re-conversions
+  function setupConversionButtonListeners() {
+    try {
+      const selectors = [
+        "#convertBtn",
+        ".btn-convert",
+        "#mergeBtn",
+        "#splitBtn",
+        "#rotateBtn",
+        "#applyWatermarkBtn",
+        "#cleanMetaBtn",
+        "[data-action='convert']",
+        "[data-action='process']",
+      ];
+      selectors.forEach((sel) => {
+        document.querySelectorAll(sel).forEach((el) => {
+          if (!el.__trackerListenerBound) {
+            el.__trackerListenerBound = true;
+            el.addEventListener("click", () => {
+              recentEventKeys.clear();
+              log("Conversion button clicked, dedupe cooldown reset.");
+            });
+          }
+        });
+      });
+    } catch (_) {}
+  }
+
   // Listen for custom conversion events
   window.addEventListener("pdfmaster:conversion-tracked", function (e) {
-    if (e.detail) {
+    if (e.detail && !e.detail.__alreadyHandledByDirectCall) {
       trackConversion(e.detail);
     }
   });
@@ -303,21 +353,31 @@
     setEnabled: function (val) {
       config.enabled = Boolean(val);
     },
+    clearDedupeCache: function () {
+      recentEventKeys.clear();
+      log("Dedupe cache manually cleared.");
+    },
     init: function () {
       hookUniversalPopup();
+      setupConversionButtonListeners();
     },
   };
 
   window.PDFMasterTracker = TrackerAPI;
 
+  function initTracker() {
+    hookUniversalPopup();
+    setupConversionButtonListeners();
+  }
+
   // Initialize hooks on load
   if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", hookUniversalPopup);
+    document.addEventListener("DOMContentLoaded", initTracker);
   } else {
-    hookUniversalPopup();
+    initTracker();
   }
 
   // Second pass in case universal-popup.js was loaded deferred
-  setTimeout(hookUniversalPopup, 500);
-  setTimeout(hookUniversalPopup, 1500);
+  setTimeout(initTracker, 500);
+  setTimeout(initTracker, 1500);
 })();
