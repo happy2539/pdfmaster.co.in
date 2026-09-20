@@ -247,6 +247,7 @@ class PDFCompiler {
 
     // Check stored session on startup
     this.checkStoredSessionAvailable(true);
+    this.updateButtons();
   }
 
   async handleFiles(fileList) {
@@ -662,6 +663,10 @@ class PDFCompiler {
   updateButtons() {
     const mergeBtn = document.getElementById("mergePdfBtn");
     const clearBtn = document.getElementById("clearAllBtn");
+    const actionRow = document.getElementById("actionRow") || document.querySelector(".action-row");
+    if (actionRow) {
+      actionRow.style.display = this.files.length > 0 ? "" : "none";
+    }
     clearBtn.disabled = this.files.length === 0;
     mergeBtn.disabled = this.files.length < 2;
     mergeBtn.innerHTML =

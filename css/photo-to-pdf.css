@@ -773,20 +773,66 @@ nav {
   cursor: pointer;
 }
 
-/* Buttons — same as homepage */
-.btn-row {
+/* Floating Action Bar */
+.action-bar {
+  position: sticky;
+  bottom: 20px;
   display: flex;
-  gap: 10px;
+  align-items: center;
+  justify-content: center;
+  margin-top: 16px;
+  padding: 8px 14px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 50px;
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.12);
+  z-index: 100;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  width: fit-content;
+  max-width: min(90%, 540px);
+  margin-left: auto;
+  margin-right: auto;
+  text-align: center;
+  box-sizing: border-box;
+}
+
+[data-theme="dark"] .action-bar {
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.45);
+}
+
+.action-bar__btns {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
   flex-wrap: wrap;
-  margin-top: 22px;
+  width: auto;
+}
+.action-bar__btns .btn-red,
+.action-bar__btns .btn-outline {
+  height: 38px;
+  min-height: 38px;
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 18px;
+  font-size: 0.88rem;
+  border-radius: 30px;
+  line-height: 1;
 }
 .btn-red {
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 8px;
   background: var(--primary);
   color: #fff;
-  padding: 11px 24px;
+  padding: 0 22px;
+  height: 44px;
+  min-height: 44px;
+  box-sizing: border-box;
   border-radius: 10px;
   font-family: "DM Sans", sans-serif;
   font-weight: 600;
@@ -795,6 +841,7 @@ nav {
   border: none;
   cursor: pointer;
   transition: all 0.2s;
+  line-height: 1;
 }
 .btn-red:hover {
   background: var(--primary-dark);
@@ -810,10 +857,14 @@ nav {
 .btn-outline {
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 8px;
   background: transparent;
   color: var(--text);
-  padding: 10px 24px;
+  padding: 0 22px;
+  height: 44px;
+  min-height: 44px;
+  box-sizing: border-box;
   border-radius: 10px;
   font-family: "DM Sans", sans-serif;
   font-weight: 600;
@@ -821,6 +872,7 @@ nav {
   border: 1.5px solid var(--border);
   cursor: pointer;
   transition: all 0.2s;
+  line-height: 1;
 }
 .btn-outline:hover {
   border-color: var(--primary);
@@ -908,25 +960,35 @@ nav {
 /* Preview */
 .preview-sec {
   display: none;
-  padding-bottom: 8px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 24px 28px 28px;
+  box-shadow: var(--shadow-sm);
+  margin-top: 24px;
+  margin-bottom: 24px;
+  position: relative;
 }
 .preview-head {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 14px;
+  margin-bottom: 16px;
   flex-wrap: wrap;
   gap: 8px;
 }
 .preview-head h3 {
   font-family: "Sora", sans-serif;
   font-weight: 700;
-  font-size: 0.97rem;
+  font-size: 1rem;
   color: var(--text);
 }
 .preview-head p {
-  font-size: 1rem;
-  color: blue;
+  font-size: 0.88rem;
+  color: var(--text-3);
+  display: flex;
+  align-items: center;
+  gap: 6px;
 }
 
 .preview-grid {
@@ -1787,12 +1849,40 @@ footer {
   .upload-zone {
     padding: 32px 16px;
   }
-  .btn-row {
-    flex-direction: column;
+  .preview-sec {
+    padding: 18px 16px;
   }
-  .btn-row .btn-red,
-  .btn-row .btn-outline {
+  .action-bar {
+    position: sticky;
+    bottom: 12px;
+    border-radius: 30px;
+    padding: 8px 12px;
+    flex-direction: row;
+    align-items: center;
     justify-content: center;
+    text-align: center;
+    gap: 8px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+    width: fit-content;
+    max-width: calc(100% - 24px);
+    margin: 12px auto 0;
+  }
+  .action-bar .btn-red,
+  .action-bar .btn-outline {
+    width: auto;
+    padding: 0 14px;
+    font-size: 0.82rem;
+    height: 36px;
+    min-height: 36px;
+    border-radius: 30px;
+    justify-content: center;
+  }
+  .action-bar__btns {
+    width: auto;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
   }
   .info-sec {
     padding: 44px 0;
@@ -1824,6 +1914,27 @@ footer {
   }
   .preview-grid {
     grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+  }
+  .action-bar {
+    width: 100%;
+    max-width: 100%;
+    padding: 8px 10px;
+    box-sizing: border-box;
+  }
+  .action-bar__btns {
+    width: 100%;
+    gap: 8px;
+    flex-direction: row;
+    flex-wrap: nowrap;
+  }
+  .action-bar__btns .btn-red,
+  .action-bar__btns .btn-outline {
+    flex: 1;
+    min-width: 0;
+    padding: 0 10px;
+    font-size: 0.82rem;
+    height: 36px;
+    min-height: 36px;
   }
 }
 @media (max-width: 360px) {

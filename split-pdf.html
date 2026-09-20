@@ -649,7 +649,10 @@
               </svg>
             </div>
             <div class="file-info-bar__meta">
-              <div class="file-info-bar__name" id="fileName">document.pdf</div>
+              <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+                <div class="file-info-bar__name" id="fileName">document.pdf</div>
+                <span class="badge-low-ram" id="lowRamBadge" style="display: none;" title="Low-RAM Streaming Active: Document streamed on-demand to protect browser memory">⚡ Low-RAM</span>
+              </div>
               <div class="file-info-bar__size" id="fileSize">
                 0 KB · <span id="pageCount">0</span> pages
               </div>

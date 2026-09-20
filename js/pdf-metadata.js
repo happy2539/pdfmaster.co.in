@@ -10,10 +10,10 @@ let currentFileObj = null;
 let currentPdfBytes = null;
 let currentBlobUrl = null;
 let currentMeta = null;
-let cleanPdfBytes = null;
+let cleanPdfBlob = null;
 let isOffloaded = false;
 
-const LOW_RAM_THRESHOLD = 50 * 1024 * 1024; // 50 MB threshold for Low-RAM mode
+const LOW_RAM_THRESHOLD = 25 * 1024 * 1024; // 25 MB threshold for Low-RAM mode
 
 // ── Theme ─────────────────────────────────────────────
 const btn = document.getElementById("themeBtn");
@@ -186,7 +186,7 @@ function resetTool() {
     } catch (e) {}
     currentBlobUrl = null;
   }
-  currentFile = currentFileObj = currentPdfBytes = currentMeta = cleanPdfBytes = null;
+  currentFile = currentFileObj = currentPdfBytes = currentMeta = cleanPdfBlob = null;
   isOffloaded = false;
   const lowRamBadge = document.getElementById("lowRamBadge");
   if (lowRamBadge) {
@@ -207,7 +207,7 @@ function resetTool() {
 async function loadFile(file) {
   currentFile = file;
   currentFileObj = file;
-  cleanPdfBytes = null;
+  cleanPdfBlob = null;
 
   if (currentBlobUrl) {
     try {
@@ -644,18 +644,206 @@ function dl(blob, name) {
   setTimeout(() => URL.revokeObjectURL(a.href), 1000);
 }
 
-// ── Remove Metadata ───────────────────────────────────
-// Uses the deep deletion approach: directly removes keys from the raw PDF
-// Info Dictionary via pdf-lib's context API, rather than setting empty strings.
-// In Low-RAM mode, reads from IndexedDB/Blob sequentially and frees memory immediately.
+// ── High-Performance Streaming PDF Metadata Sanitizer ──────────
+// Removes metadata directly from PDF byte streams with zero AST inflation.
+// Preserves exact byte offsets and xref tables without loading huge files into memory.
 
-async function getFileBytesForProcessing() {
+const latin1Decoder = new TextDecoder("latin1");
+function decodeLatin1(u8) {
+  return latin1Decoder.decode(u8);
+}
+
+const asciiEncoder = new TextEncoder();
+function encodeAscii(str) {
+  return asciiEncoder.encode(str);
+}
+
+const SPACES_CHUNK_SIZE = 64 * 1024;
+const spacesCache = new Uint8Array(SPACES_CHUNK_SIZE);
+spacesCache.fill(0x20);
+
+function getSpaces(len) {
+  if (len <= SPACES_CHUNK_SIZE) {
+    return spacesCache.subarray(0, len);
+  }
+  const buf = new Uint8Array(len);
+  buf.fill(0x20);
+  return buf;
+}
+
+function findDictEnd(str, startPos) {
+  let depth = 1;
+  let i = startPos;
+  const len = str.length;
+  while (i < len && depth > 0) {
+    const c = str[i];
+    if (c === "(") {
+      i++;
+      let pDepth = 1;
+      while (i < len && pDepth > 0) {
+        if (str[i] === "\\") {
+          i += 2;
+        } else if (str[i] === "(") {
+          pDepth++;
+          i++;
+        } else if (str[i] === ")") {
+          pDepth--;
+          i++;
+        } else {
+          i++;
+        }
+      }
+    } else if (c === "<" && str[i + 1] === "<") {
+      depth++;
+      i += 2;
+    } else if (c === ">" && str[i + 1] === ">") {
+      depth--;
+      i += 2;
+      if (depth === 0) return i - 2;
+    } else {
+      i++;
+    }
+  }
+  return -1;
+}
+
+function parseDictEntries(str, startPos, endPos) {
+  const pairs = [];
+  let i = startPos;
+  while (i < endPos) {
+    while (i < endPos && /\s/.test(str[i])) i++;
+    if (i >= endPos) break;
+    if (str[i] === "%") {
+      while (i < endPos && str[i] !== "\r" && str[i] !== "\n") i++;
+      continue;
+    }
+    if (str[i] !== "/") {
+      i++;
+      continue;
+    }
+    const keyStart = i;
+    i++;
+    const nameStart = i;
+    while (i < endPos && !/[\s\(\)<>\[\]\{\}/%]/.test(str[i])) i++;
+    const keyName = str.slice(nameStart, i);
+    while (i < endPos && /\s/.test(str[i])) i++;
+    if (i >= endPos) break;
+
+    const first = str[i];
+    let valEnd = i;
+    if (first === "(") {
+      let pDepth = 1;
+      i++;
+      while (i < endPos && pDepth > 0) {
+        if (str[i] === "\\") {
+          i += 2;
+        } else if (str[i] === "(") {
+          pDepth++;
+          i++;
+        } else if (str[i] === ")") {
+          pDepth--;
+          i++;
+        } else {
+          i++;
+        }
+      }
+      valEnd = i;
+    } else if (first === "<" && i + 1 < endPos && str[i + 1] === "<") {
+      const nestedEnd = findDictEnd(str, i + 2);
+      valEnd = nestedEnd !== -1 ? nestedEnd + 2 : i + 2;
+      i = valEnd;
+    } else if (first === "<") {
+      i++;
+      while (i < endPos && str[i] !== ">") i++;
+      if (i < endPos) i++;
+      valEnd = i;
+    } else if (first === "[") {
+      let aDepth = 1;
+      i++;
+      while (i < endPos && aDepth > 0) {
+        if (str[i] === "[") aDepth++;
+        else if (str[i] === "]") aDepth--;
+        else if (str[i] === "(") {
+          let pDepth = 1;
+          i++;
+          while (i < endPos && pDepth > 0) {
+            if (str[i] === "\\") i += 2;
+            else if (str[i] === "(") { pDepth++; i++; }
+            else if (str[i] === ")") { pDepth--; i++; }
+            else i++;
+          }
+          continue;
+        }
+        i++;
+      }
+      valEnd = i;
+    } else if (first === "/") {
+      i++;
+      while (i < endPos && !/[\s\(\)<>\[\]\{\}/%]/.test(str[i])) i++;
+      valEnd = i;
+    } else {
+      while (i < endPos && !/[\s\(\)<>\[\]\{\}/%]/.test(str[i])) i++;
+      let j = i;
+      while (j < endPos && /\s/.test(str[j])) j++;
+      const num2Start = j;
+      while (j < endPos && !/[\s\(\)<>\[\]\{\}/%]/.test(str[j])) j++;
+      let k = j;
+      while (k < endPos && /\s/.test(str[k])) k++;
+      if (k < endPos && str[k] === "R" && (k + 1 >= endPos || /[\s\(\)<>\[\]\{\}/%]/.test(str[k + 1]))) {
+        valEnd = k + 1;
+        i = valEnd;
+      } else {
+        valEnd = i;
+      }
+    }
+
+    pairs.push({
+      key: keyName,
+      start: keyStart,
+      end: valEnd
+    });
+  }
+  return pairs;
+}
+
+const STANDARD_INFO_KEYS = new Set([
+  "Title",
+  "Author",
+  "Subject",
+  "Keywords",
+  "Creator",
+  "Producer",
+  "CreationDate",
+  "ModDate",
+  "Trapped",
+  "GTS_PDFXVersion",
+  "GTS_PDFXConformance"
+]);
+
+function shouldRemoveKey(key, options) {
+  if (options.rmAuthor && key === "Author") return true;
+  if (options.rmDates && (key === "CreationDate" || key === "ModDate")) return true;
+  if (options.rmTitle && (key === "Title" || key === "Subject" || key === "Keywords")) return true;
+  if (options.rmApp && (
+    key === "Creator" ||
+    key === "Producer" ||
+    key === "Trapped" ||
+    key === "GTS_PDFXVersion" ||
+    key === "GTS_PDFXConformance"
+  )) return true;
+  if (options.rmCustom && !STANDARD_INFO_KEYS.has(key)) return true;
+  return false;
+}
+
+async function getFileSource() {
+  if (currentFileObj instanceof Blob) {
+    return currentFileObj;
+  }
+  if (currentFile instanceof Blob) {
+    return currentFile;
+  }
   if (currentPdfBytes) {
     return currentPdfBytes;
-  }
-  if (currentFileObj instanceof Blob) {
-    const ab = await currentFileObj.arrayBuffer();
-    return new Uint8Array(ab);
   }
   const db = await openDB();
   const tx = db.transaction(["metadata_data"], "readonly");
@@ -666,20 +854,318 @@ async function getFileBytesForProcessing() {
   });
   if (data) {
     if (data.file instanceof Blob) {
-      const ab = await data.file.arrayBuffer();
-      return new Uint8Array(ab);
+      return data.file;
     }
     if (data.bytes) {
-      return new Uint8Array(data.bytes);
+      return data.bytes instanceof Uint8Array ? data.bytes : new Uint8Array(data.bytes);
     }
   }
-  throw new Error("PDF file buffer unavailable in local storage");
+  throw new Error("PDF file unavailable in local storage");
+}
+
+function sanitizeUint8ArrayInPlace(u8, options) {
+  const totalSize = u8.length;
+  const latin1Text = decodeLatin1(u8);
+  const rmAllInfo = options.rmAuthor && options.rmDates && options.rmTitle && options.rmApp && options.rmCustom;
+
+  const infoIds = new Set();
+  const infoRefRe = /\/Info\s+(\d+\s+\d+)\s+R/g;
+  let infoRefMatch;
+  while ((infoRefMatch = infoRefRe.exec(latin1Text)) !== null) {
+    infoIds.add(infoRefMatch[1]);
+  }
+
+  const blankRange = (start, end) => {
+    if (start < end && start >= 0 && end <= totalSize) {
+      u8.fill(0x20, start, end);
+    }
+  };
+
+  const blankObjBody = (start, end, prefixLen) => {
+    const innerStart = start + prefixLen;
+    const innerEnd = end - 6; // before "endobj"
+    if (innerEnd > innerStart) {
+      const emptyDict = encodeAscii("\n<<>>\n");
+      if (innerEnd - innerStart >= emptyDict.length) {
+        u8.set(emptyDict, innerStart);
+        u8.fill(0x20, innerStart + emptyDict.length, innerEnd);
+      } else {
+        u8.fill(0x20, innerStart, innerEnd);
+      }
+    }
+  };
+
+  // 1. XMP Removal
+  if (options.rmXmp) {
+    const xmpRe = /<\?xpacket begin[\s\S]*?<\?xpacket end=["'][rw]["']\?>/g;
+    let m;
+    while ((m = xmpRe.exec(latin1Text)) !== null) {
+      blankRange(m.index, m.index + m[0].length);
+    }
+    const metaRefRe = /\/Metadata\s+\d+\s+\d+\s+R/g;
+    while ((m = metaRefRe.exec(latin1Text)) !== null) {
+      blankRange(m.index, m.index + m[0].length);
+    }
+    const pieceRefRe = /\/PieceInfo\s+\d+\s+\d+\s+R/g;
+    while ((m = pieceRefRe.exec(latin1Text)) !== null) {
+      blankRange(m.index, m.index + m[0].length);
+    }
+    const metaObjRe = /(\d+\s+\d+\s+obj)(?:(?!endobj)[\s\S])*?\/Type\s*\/Metadata(?:(?!endobj)[\s\S])*?endobj/g;
+    while ((m = metaObjRe.exec(latin1Text)) !== null) {
+      blankObjBody(m.index, m.index + m[0].length, m[1].length);
+    }
+  }
+
+  // 2. Info Dictionary Removal
+  if (rmAllInfo) {
+    const trailerInfoRe = /\/Info\s+\d+\s+\d+\s+R/g;
+    let m;
+    while ((m = trailerInfoRe.exec(latin1Text)) !== null) {
+      blankRange(m.index, m.index + m[0].length);
+    }
+    infoIds.forEach((id) => {
+      const safeId = id.replace(/\s+/g, "\\s+");
+      const objRe = new RegExp(`(${safeId}\\s+obj)(?:(?!endobj)[\\s\\S])*?endobj`, "g");
+      while ((m = objRe.exec(latin1Text)) !== null) {
+        blankObjBody(m.index, m.index + m[0].length, m[1].length);
+      }
+    });
+    const anyInfoRe = /(\d+\s+\d+\s+obj)(?:(?!endobj)[\s\S])*?(?:\/CreationDate|\/ModDate|\/Producer|\/Creator)(?:(?!endobj)[\s\S])*?endobj/g;
+    while ((m = anyInfoRe.exec(latin1Text)) !== null) {
+      if (!m[0].includes("/Type /Page") && !m[0].includes("/Type/Page") && !m[0].includes("/Type /Font") && !m[0].includes("/Type/Font")) {
+        blankObjBody(m.index, m.index + m[0].length, m[1].length);
+      }
+    }
+  } else {
+    const processInfoObj = (objContent, objStart) => {
+      const dStart = objContent.indexOf("<<");
+      const dEnd = objContent.lastIndexOf(">>");
+      if (dStart !== -1 && dEnd !== -1) {
+        const pairs = parseDictEntries(objContent, dStart + 2, dEnd);
+        pairs.forEach((pair) => {
+          if (shouldRemoveKey(pair.key, options)) {
+            blankRange(objStart + pair.start, objStart + pair.end);
+          }
+        });
+      }
+    };
+
+    infoIds.forEach((id) => {
+      const safeId = id.replace(/\s+/g, "\\s+");
+      const objRe = new RegExp(`${safeId}\\s+obj(?:(?!endobj)[\\s\\S])*?endobj`, "g");
+      let m;
+      while ((m = objRe.exec(latin1Text)) !== null) {
+        processInfoObj(m[0], m.index);
+      }
+    });
+
+    const anyInfoRe = /\d+\s+\d+\s+obj(?:(?!endobj)[\s\S])*?(?:\/CreationDate|\/ModDate|\/Producer|\/Creator)(?:(?!endobj)[\s\S])*?endobj/g;
+    let m;
+    while ((m = anyInfoRe.exec(latin1Text)) !== null) {
+      if (!m[0].includes("/Type /Page") && !m[0].includes("/Type/Page") && !m[0].includes("/Type /Font") && !m[0].includes("/Type/Font")) {
+        processInfoObj(m[0], m.index);
+      }
+    }
+  }
+
+  return new Blob([u8], { type: "application/pdf" });
+}
+
+async function sanitizePdfStreaming(sourceBlob, options, setProgress) {
+  const totalFileSize = sourceBlob.size;
+  const CHUNK_SIZE = 8 * 1024 * 1024; // 8 MB
+  const OVERLAP_SIZE = 256 * 1024; // 256 KB
+  const rmAllInfo = options.rmAuthor && options.rmDates && options.rmTitle && options.rmApp && options.rmCustom;
+
+  // Step 1: Scan tail for Info reference
+  setProgress(10, "⚡ Low-RAM: Inspecting PDF trailer…");
+  const tailSize = Math.min(totalFileSize, 256 * 1024);
+  const tailBlob = sourceBlob.slice(totalFileSize - tailSize, totalFileSize);
+  const tailBuf = await tailBlob.arrayBuffer();
+  const tailText = decodeLatin1(new Uint8Array(tailBuf));
+
+  const infoIds = new Set();
+  const infoRefRe = /\/Info\s+(\d+\s+\d+)\s+R/g;
+  let infoMatch;
+  while ((infoMatch = infoRefRe.exec(tailText)) !== null) {
+    infoIds.add(infoMatch[1]);
+  }
+
+  const patches = [];
+  const addPatch = (start, end, customReplacement = null) => {
+    if (start < end && start >= 0 && end <= totalFileSize) {
+      patches.push({ start, end, customReplacement });
+    }
+  };
+
+  // Step 2: Stream scan chunks
+  let curOffset = 0;
+  while (curOffset < totalFileSize) {
+    const chunkEnd = Math.min(totalFileSize, curOffset + CHUNK_SIZE);
+    const progressPct = Math.min(85, Math.round(15 + (curOffset / totalFileSize) * 70));
+    const mbDone = Math.round(curOffset / (1024 * 1024));
+    const mbTotal = Math.round(totalFileSize / (1024 * 1024));
+    setProgress(progressPct, `⚡ Low-RAM: Scanning document (${mbDone} MB / ${mbTotal} MB)…`);
+
+    // Allow UI to repaint
+    await new Promise((r) => setTimeout(r, 0));
+
+    const chunkBlob = sourceBlob.slice(curOffset, chunkEnd);
+    const chunkBuf = await chunkBlob.arrayBuffer();
+    const chunkU8 = new Uint8Array(chunkBuf);
+    const chunkText = decodeLatin1(chunkU8);
+
+    while ((infoMatch = infoRefRe.exec(chunkText)) !== null) {
+      infoIds.add(infoMatch[1]);
+    }
+
+    const createObjBodyPatch = (objStartInChunk, totalObjLen, prefixLen) => {
+      const innerStart = curOffset + objStartInChunk + prefixLen;
+      const innerEnd = curOffset + objStartInChunk + totalObjLen - 6;
+      if (innerEnd > innerStart) {
+        const len = innerEnd - innerStart;
+        const emptyDict = encodeAscii("\n<<>>\n");
+        let replacement;
+        if (len >= emptyDict.length) {
+          replacement = new Uint8Array(len);
+          replacement.set(emptyDict, 0);
+          replacement.fill(0x20, emptyDict.length);
+        } else {
+          replacement = getSpaces(len);
+        }
+        addPatch(innerStart, innerEnd, replacement);
+      }
+    };
+
+    // A. XMP Removal
+    if (options.rmXmp) {
+      const xmpRe = /<\?xpacket begin[\s\S]*?<\?xpacket end=["'][rw]["']\?>/g;
+      let m;
+      while ((m = xmpRe.exec(chunkText)) !== null) {
+        addPatch(curOffset + m.index, curOffset + m.index + m[0].length);
+      }
+      const metaRefRe = /\/Metadata\s+\d+\s+\d+\s+R/g;
+      while ((m = metaRefRe.exec(chunkText)) !== null) {
+        addPatch(curOffset + m.index, curOffset + m.index + m[0].length);
+      }
+      const pieceRefRe = /\/PieceInfo\s+\d+\s+\d+\s+R/g;
+      while ((m = pieceRefRe.exec(chunkText)) !== null) {
+        addPatch(curOffset + m.index, curOffset + m.index + m[0].length);
+      }
+      const metaObjRe = /(\d+\s+\d+\s+obj)(?:(?!endobj)[\s\S])*?\/Type\s*\/Metadata(?:(?!endobj)[\s\S])*?endobj/g;
+      while ((m = metaObjRe.exec(chunkText)) !== null) {
+        createObjBodyPatch(m.index, m[0].length, m[1].length);
+      }
+    }
+
+    // B. Info Dictionary Removal
+    if (rmAllInfo) {
+      const trailerInfoRe = /\/Info\s+\d+\s+\d+\s+R/g;
+      let m;
+      while ((m = trailerInfoRe.exec(chunkText)) !== null) {
+        addPatch(curOffset + m.index, curOffset + m.index + m[0].length);
+      }
+      infoIds.forEach((id) => {
+        const safeId = id.replace(/\s+/g, "\\s+");
+        const objRe = new RegExp(`(${safeId}\\s+obj)(?:(?!endobj)[\\s\\S])*?endobj`, "g");
+        while ((m = objRe.exec(chunkText)) !== null) {
+          createObjBodyPatch(m.index, m[0].length, m[1].length);
+        }
+      });
+      const anyInfoRe = /(\d+\s+\d+\s+obj)(?:(?!endobj)[\s\S])*?(?:\/CreationDate|\/ModDate|\/Producer|\/Creator)(?:(?!endobj)[\s\S])*?endobj/g;
+      while ((m = anyInfoRe.exec(chunkText)) !== null) {
+        if (!m[0].includes("/Type /Page") && !m[0].includes("/Type/Page") && !m[0].includes("/Type /Font") && !m[0].includes("/Type/Font")) {
+          createObjBodyPatch(m.index, m[0].length, m[1].length);
+        }
+      }
+    } else {
+      // Granular Info key removal
+      const processInfoObj = (objContent, objStart) => {
+        const dStart = objContent.indexOf("<<");
+        const dEnd = objContent.lastIndexOf(">>");
+        if (dStart !== -1 && dEnd !== -1) {
+          const pairs = parseDictEntries(objContent, dStart + 2, dEnd);
+          pairs.forEach((pair) => {
+            if (shouldRemoveKey(pair.key, options)) {
+              addPatch(curOffset + objStart + pair.start, curOffset + objStart + pair.end);
+            }
+          });
+        }
+      };
+
+      infoIds.forEach((id) => {
+        const safeId = id.replace(/\s+/g, "\\s+");
+        const objRe = new RegExp(`${safeId}\\s+obj(?:(?!endobj)[\\s\\S])*?endobj`, "g");
+        let m;
+        while ((m = objRe.exec(chunkText)) !== null) {
+          processInfoObj(m[0], m.index);
+        }
+      });
+      const anyInfoRe = /\d+\s+\d+\s+obj(?:(?!endobj)[\s\S])*?(?:\/CreationDate|\/ModDate|\/Producer|\/Creator)(?:(?!endobj)[\s\S])*?endobj/g;
+      let m;
+      while ((m = anyInfoRe.exec(chunkText)) !== null) {
+        if (!m[0].includes("/Type /Page") && !m[0].includes("/Type/Page") && !m[0].includes("/Type /Font") && !m[0].includes("/Type/Font")) {
+          processInfoObj(m[0], m.index);
+        }
+      }
+    }
+
+    if (chunkEnd >= totalFileSize) break;
+    curOffset = chunkEnd - OVERLAP_SIZE;
+  }
+
+  // Step 3: Consolidate patches
+  setProgress(88, "⚡ Low-RAM: Preparing clean file structure…");
+  patches.sort((a, b) => a.start - b.start || a.end - b.end);
+
+  const consolidated = [];
+  for (const p of patches) {
+    const s = Math.max(0, Math.min(totalFileSize, p.start));
+    const e = Math.max(0, Math.min(totalFileSize, p.end));
+    if (s >= e) continue;
+    if (!consolidated.length) {
+      consolidated.push({ start: s, end: e, customReplacement: p.customReplacement });
+      continue;
+    }
+    const prev = consolidated[consolidated.length - 1];
+    if (s <= prev.end) {
+      prev.end = Math.max(prev.end, e);
+      prev.customReplacement = null;
+    } else {
+      consolidated.push({ start: s, end: e, customReplacement: p.customReplacement });
+    }
+  }
+
+  // Step 4: Assemble composite Blob
+  setProgress(95, "⚡ Low-RAM: Assembling sanitized PDF…");
+  const blobParts = [];
+  let curPos = 0;
+
+  for (const patch of consolidated) {
+    if (patch.start > curPos) {
+      blobParts.push(sourceBlob.slice(curPos, patch.start));
+    }
+    const len = patch.end - patch.start;
+    if (patch.customReplacement && patch.customReplacement.length === len) {
+      blobParts.push(patch.customReplacement);
+    } else {
+      blobParts.push(getSpaces(len));
+    }
+    curPos = patch.end;
+  }
+
+  if (curPos < totalFileSize) {
+    blobParts.push(sourceBlob.slice(curPos, totalFileSize));
+  }
+
+  return new Blob(blobParts, { type: "application/pdf" });
 }
 
 async function removeAll() {
   ["rmAuthor", "rmDates", "rmTitle", "rmApp", "rmXmp", "rmCustom"].forEach(
     (id) => {
-      document.getElementById(id).checked = true;
+      const el = document.getElementById(id);
+      if (el) el.checked = true;
     },
   );
   await removeMetadata();
@@ -697,12 +1183,20 @@ async function removeMetadata() {
   const progressLabel = document.getElementById("progressLabel");
   const resultCard = document.getElementById("resultCard");
 
-  const rmAuthor = document.getElementById("rmAuthor").checked;
-  const rmDates = document.getElementById("rmDates").checked;
-  const rmTitle = document.getElementById("rmTitle").checked;
-  const rmApp = document.getElementById("rmApp").checked;
-  const rmXmp = document.getElementById("rmXmp").checked;
-  const rmCustom = document.getElementById("rmCustom").checked;
+  const options = {
+    rmAuthor: document.getElementById("rmAuthor").checked,
+    rmDates: document.getElementById("rmDates").checked,
+    rmTitle: document.getElementById("rmTitle").checked,
+    rmApp: document.getElementById("rmApp").checked,
+    rmXmp: document.getElementById("rmXmp").checked,
+    rmCustom: document.getElementById("rmCustom").checked,
+  };
+
+  const anyChecked = Object.values(options).some(Boolean);
+  if (!anyChecked) {
+    showToast("Please select at least one metadata option to remove.", "warning");
+    return;
+  }
 
   const cleanStartTime = performance.now();
   removeBtn.disabled = true;
@@ -715,113 +1209,30 @@ async function removeMetadata() {
   };
 
   try {
-    if (isOffloaded) {
-      setProgress(10, "⚡ Low-RAM Streaming: Reading from disk cache…");
+    setProgress(5, isOffloaded ? "⚡ Low-RAM Mode: Initializing…" : "Reading file…");
+    await new Promise((r) => setTimeout(r, 20));
+
+    const source = await getFileSource();
+    let cleanBlob;
+
+    if (source instanceof Blob) {
+      cleanBlob = await sanitizePdfStreaming(source, options, setProgress);
+    } else if (source instanceof Uint8Array) {
+      setProgress(40, "Sanitizing PDF metadata…");
+      await new Promise((r) => setTimeout(r, 10));
+      cleanBlob = sanitizeUint8ArrayInPlace(source, options);
     } else {
-      setProgress(10, "Loading PDF…");
+      throw new Error("Unsupported PDF source type");
     }
-    await new Promise((r) => setTimeout(r, 30));
-
-    let bytes = await getFileBytesForProcessing();
-
-    const { PDFDocument, PDFName } = PDFLib;
-    const pdfDoc = await PDFDocument.load(bytes, {
-      ignoreEncryption: true,
-    });
-
-    if (isOffloaded) {
-      bytes = null; // Reclaim intermediate raw buffer immediately
-    }
-
-    setProgress(35, "Stripping info dictionary fields…");
-    await new Promise((r) => setTimeout(r, 20));
-
-    // ── Step 1: Delete keys directly from the Info Dictionary ──
-    const infoRef = pdfDoc.context.trailerInfo?.Info;
-    if (infoRef) {
-      const infoDict = pdfDoc.context.lookup(infoRef);
-      if (infoDict && typeof infoDict.delete === "function") {
-        const toDelete = [];
-        if (rmTitle) toDelete.push("Title", "Subject", "Keywords");
-        if (rmAuthor) toDelete.push("Author");
-        if (rmDates) toDelete.push("CreationDate", "ModDate");
-        if (rmApp)
-          toDelete.push(
-            "Creator",
-            "Producer",
-            "Trapped",
-            "GTS_PDFXVersion",
-            "GTS_PDFXConformance",
-          );
-
-        toDelete.forEach((k) => {
-          try {
-            infoDict.delete(PDFName.of(k));
-          } catch {}
-        });
-
-        // Remove all custom / non-standard fields
-        if (rmCustom) {
-          const stdSet = new Set([
-            "Title",
-            "Author",
-            "Subject",
-            "Keywords",
-            "Creator",
-            "Producer",
-            "CreationDate",
-            "ModDate",
-            "Trapped",
-            "GTS_PDFXVersion",
-            "GTS_PDFXConformance",
-          ]);
-          try {
-            const entries = Array.from(infoDict.entries());
-            entries.forEach(([k]) => {
-              try {
-                const kName = k.decodeText?.() ?? String(k);
-                if (!stdSet.has(kName)) infoDict.delete(k);
-              } catch {}
-            });
-          } catch {}
-        }
-      }
-    }
-
-    setProgress(60, "Removing XMP metadata stream…");
-    await new Promise((r) => setTimeout(r, 20));
-
-    // ── Step 2: Remove XMP stream and PieceInfo from catalog ──
-    if (rmXmp) {
-      try {
-        pdfDoc.catalog.delete(PDFName.of("Metadata"));
-      } catch {}
-      try {
-        pdfDoc.catalog.delete(PDFName.of("PieceInfo"));
-      } catch {}
-    }
-
-    if (isOffloaded) {
-      setProgress(80, "⚡ Low-RAM: Rebuilding clean PDF…");
-    } else {
-      setProgress(80, "Rebuilding clean PDF…");
-    }
-    await new Promise((r) => setTimeout(r, 20));
-
-    // ── Step 3: Save — no metadata update, no extra pages ──
-    cleanPdfBytes = await pdfDoc.save({
-      addDefaultPage: false,
-      updateFieldAppearances: false,
-    });
 
     setProgress(100, "Done!");
+    cleanPdfBlob = cleanBlob;
 
     const base = currentFile?.name.replace(/\.pdf$/i, "") || "document";
     const fname = `${base}_clean.pdf`;
 
     // Trigger download
-    const blob = new Blob([cleanPdfBytes], { type: "application/pdf" });
-    dl(blob, fname);
+    dl(cleanPdfBlob, fname);
 
     // Update result card
     document.getElementById("resultSub").textContent = `Saved as: ${fname}`;
@@ -829,9 +1240,8 @@ async function removeMetadata() {
 
     // Wire up "Download Again" button
     document.getElementById("dlAgainBtn").onclick = () => {
-      if (cleanPdfBytes) {
-        const b2 = new Blob([cleanPdfBytes], { type: "application/pdf" });
-        dl(b2, fname);
+      if (cleanPdfBlob) {
+        dl(cleanPdfBlob, fname);
         showToast("Downloaded again: " + fname, "success");
       }
     };
@@ -842,18 +1252,18 @@ async function removeMetadata() {
       window.PDFMasterPopup.show({
         fileType: "pdf",
         fileName: fname,
-        fileSize: blob.size,
+        fileSize: cleanPdfBlob.size,
         downloadText: "Download Clean PDF",
         toolName: "PDF Metadata Remover",
         durationMs: Math.max(1, Math.round(performance.now() - cleanStartTime)),
-        blob: blob,
+        blob: cleanPdfBlob,
         onDownload: () => {
-          dl(blob, fname);
+          dl(cleanPdfBlob, fname);
         },
       });
     }
   } catch (err) {
-    console.error(err);
+    console.error("Metadata removal failed:", err);
     showToast("Failed to process PDF. Please try again.", "error");
     removeBtn.disabled = false;
   } finally {
@@ -969,7 +1379,7 @@ async function loadSessionFromDB(isManual = false) {
 
     currentFile = storedBlob instanceof File ? storedBlob : new File([storedBlob], fileName, { type: "application/pdf" });
     currentFileObj = currentFile;
-    cleanPdfBytes = null;
+    cleanPdfBlob = null;
 
     if (currentBlobUrl) {
       try {

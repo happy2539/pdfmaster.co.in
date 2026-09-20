@@ -36,6 +36,11 @@ const downloadBtn = document.getElementById("downloadBtn");
 const changeFileBtn = document.getElementById("changeFileBtn");
 const resetOrderBtn = document.getElementById("resetOrderBtn");
 const reverseBtn = document.getElementById("reverseBtn");
+const reorderActionBar = document.getElementById("reorderActionBar");
+const reorderActionSummaryText = document.getElementById("reorderActionSummaryText");
+const bottomResetBtn = document.getElementById("bottomResetBtn");
+const bottomReverseBtn = document.getElementById("bottomReverseBtn");
+const bottomDownloadBtn = document.getElementById("bottomDownloadBtn");
 
 // =============================================
 //  THEME
@@ -210,6 +215,7 @@ async function loadFile(file) {
   reorderWorkspace.classList.add("active");
   setLoading("Loading your PDF…");
   toolToolbar.style.display = "none";
+  if (reorderActionBar) reorderActionBar.style.display = "none";
   hintBar.style.display = "none";
   pagesGrid.innerHTML = "";
   emptyState.classList.remove("show");
@@ -229,6 +235,12 @@ async function loadFile(file) {
 
     hideStatus();
     toolToolbar.style.display = "";
+    if (reorderActionBar) {
+      reorderActionBar.style.display = "";
+      if (reorderActionSummaryText) {
+        reorderActionSummaryText.textContent = `${state.totalPages} page${state.totalPages === 1 ? "" : "s"} loaded. Drag pages to reorder.`;
+      }
+    }
     hintBar.style.display = "";
 
     await renderAllThumbs();
@@ -352,6 +364,9 @@ function rebuildPageOrder() {
     if (delBtn) delBtn.setAttribute("aria-label", `Delete page ${i + 1}`);
   });
   pageCountEl.textContent = state.pageOrder.length;
+  if (reorderActionSummaryText) {
+    reorderActionSummaryText.textContent = `${state.pageOrder.length} page${state.pageOrder.length === 1 ? "" : "s"} arranged. Click Download PDF to save.`;
+  }
   scheduleDBSave();
 }
 
@@ -367,6 +382,7 @@ pagesGrid.addEventListener("click", (e) => {
     if (state.pageOrder.length === 0) {
       emptyState.classList.add("show");
       toolToolbar.style.display = "none";
+      if (reorderActionBar) reorderActionBar.style.display = "none";
       hintBar.style.display = "none";
     }
   }
@@ -381,6 +397,7 @@ changeFileBtn.addEventListener("click", () => {
   reorderWorkspace.classList.remove("active");
   pagesGrid.innerHTML = "";
   emptyState.classList.remove("show");
+  if (reorderActionBar) reorderActionBar.style.display = "none";
   state.pdfBytes = null;
   state.pdfJsDoc = null;
   state.pageOrder = [];
@@ -402,6 +419,12 @@ resetOrderBtn.addEventListener("click", async () => {
   pageCountEl.textContent = state.totalPages;
   emptyState.classList.remove("show");
   toolToolbar.style.display = "";
+  if (reorderActionBar) {
+    reorderActionBar.style.display = "";
+    if (reorderActionSummaryText) {
+      reorderActionSummaryText.textContent = `${state.totalPages} page${state.totalPages === 1 ? "" : "s"} reset to original order.`;
+    }
+  }
   hintBar.style.display = "";
   scheduleDBSave();
 });
@@ -411,6 +434,11 @@ reverseBtn.addEventListener("click", () => {
   thumbs.reverse().forEach((t) => pagesGrid.appendChild(t));
   rebuildPageOrder();
 });
+
+// Wire bottom floating action bar buttons to match toolbar
+bottomResetBtn?.addEventListener("click", () => resetOrderBtn.click());
+bottomReverseBtn?.addEventListener("click", () => reverseBtn.click());
+bottomDownloadBtn?.addEventListener("click", () => downloadBtn.click());
 
 // =============================================
 //  DOWNLOAD (build reordered PDF via pdf-lib)
@@ -689,6 +717,12 @@ async function loadSessionFromDB(isManual = false) {
 
     hideStatus();
     toolToolbar.style.display = "";
+    if (reorderActionBar) {
+      reorderActionBar.style.display = "";
+      if (reorderActionSummaryText) {
+        reorderActionSummaryText.textContent = `${state.pageOrder.length} page${state.pageOrder.length === 1 ? "" : "s"} restored. Drag pages to reorder.`;
+      }
+    }
     hintBar.style.display = "";
 
     await renderAllThumbs();

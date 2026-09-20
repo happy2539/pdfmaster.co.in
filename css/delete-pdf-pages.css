@@ -1168,26 +1168,43 @@ ul {
 
 /* ===== ACTION BAR ===== */
 .action-bar {
+  position: sticky;
+  bottom: 20px;
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: center;
   flex-wrap: wrap;
-  gap: 16px;
-  padding: 18px 24px;
-  background: var(--surface-2);
+  gap: 10px 14px;
+  width: fit-content;
+  max-width: min(90%, 580px);
+  margin: 16px auto 0;
+  box-sizing: border-box;
+  text-align: center;
+  padding: 8px 16px;
+  background: var(--surface);
   border: 1px solid var(--border);
-  border-radius: var(--radius);
+  border-radius: 50px;
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.12);
+  z-index: 100;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+[data-theme="dark"] .action-bar {
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.45);
 }
 
 .action-bar__info {
-  font-size: 0.95rem;
+  font-size: 0.84rem;
   color: var(--text-2);
+  text-align: center;
 }
 
 .action-bar__btns {
   display: flex;
   align-items: center;
-  gap: 12px;
+  justify-content: center;
+  gap: 8px;
   flex-wrap: wrap;
 }
 
@@ -1197,10 +1214,10 @@ ul {
   gap: 8px;
   background: var(--delete-red);
   color: #fff;
-  padding: 13px 26px;
-  border-radius: var(--radius-full);
+  padding: 8px 18px;
+  border-radius: 30px;
   font-weight: 700;
-  font-size: 0.96rem;
+  font-size: 0.88rem;
   box-shadow: 0 4px 14px rgba(239, 68, 68, 0.35);
   transition:
     background var(--transition),
@@ -2272,15 +2289,31 @@ body.rendering-mode .pages-grid {
     gap: 10px;
   }
   .action-bar {
+    position: sticky;
+    bottom: 12px;
+    border-radius: 20px;
+    padding: 8px 12px;
     flex-direction: column;
     align-items: stretch;
     text-align: center;
+    gap: 6px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+    width: fit-content;
+    max-width: calc(100% - 24px);
+    margin: 12px auto 0;
+  }
+  .action-bar__info {
+    font-size: 0.8rem;
+    line-height: 1.25;
   }
   .action-bar__btns {
+    width: 100%;
     justify-content: center;
   }
   .btn-delete-main {
     width: 100%;
+    padding: 8px 14px;
+    font-size: 0.84rem;
     justify-content: center;
   }
   .footer__grid {

@@ -1286,29 +1286,47 @@ ul {
   bottom: 20px;
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: center;
   flex-wrap: wrap;
-  gap: 16px;
-  padding: 16px 24px;
+  gap: 10px 14px;
+  width: fit-content;
+  max-width: min(90%, 580px);
+  margin: 16px auto 0;
+  box-sizing: border-box;
+  text-align: center;
+  padding: 8px 16px;
   background: var(--surface);
   border: 1px solid var(--border);
-  border-radius: var(--radius-lg);
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
+  border-radius: 50px;
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.12);
   z-index: 100;
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
 }
 
+[data-theme="dark"] .action-bar {
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.45);
+}
+
 .action-bar__info {
-  font-size: 0.95rem;
+  font-size: 0.84rem;
   color: var(--text-2);
   font-weight: 500;
+  text-align: center;
 }
 
 .action-bar__btns {
   display: flex;
   align-items: center;
-  gap: 12px;
+  justify-content: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.action-bar .btn-rotate-main {
+  padding: 8px 18px;
+  font-size: 0.88rem;
+  border-radius: 30px;
 }
 
 /* ===== RESULTS / SUCCESS CARD ===== */
@@ -2223,17 +2241,20 @@ ul {
   .action-bar {
     position: sticky;
     bottom: 12px;
-    border-radius: var(--radius);
-    padding: 14px 18px;
+    border-radius: 20px;
+    padding: 8px 12px;
     flex-direction: column;
     align-items: stretch;
     text-align: center;
-    gap: 10px;
-    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.18);
+    gap: 6px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+    width: fit-content;
+    max-width: calc(100% - 24px);
+    margin: 12px auto 0;
   }
   .action-bar__info {
-    font-size: 0.9rem;
-    line-height: 1.35;
+    font-size: 0.8rem;
+    line-height: 1.25;
   }
   .action-bar__btns {
     width: 100%;
@@ -2241,6 +2262,8 @@ ul {
   }
   .btn-rotate-main {
     width: 100%;
+    padding: 8px 14px;
+    font-size: 0.84rem;
     justify-content: center;
   }
   .comp-table {
@@ -2439,16 +2462,16 @@ ul {
   .action-bar {
     position: sticky;
     bottom: 12px;
-    padding: 12px 14px;
+    padding: 6px 10px;
     flex-direction: column;
     align-items: stretch;
     text-align: center;
-    gap: 8px;
-    border-radius: var(--radius);
+    gap: 6px;
+    border-radius: 20px;
   }
   .action-bar__info {
-    font-size: 0.85rem;
-    line-height: 1.35;
+    font-size: 0.78rem;
+    line-height: 1.25;
   }
   .action-bar__btns {
     width: 100%;
@@ -2456,8 +2479,8 @@ ul {
   }
   .btn-rotate-main {
     width: 100%;
-    padding: 12px 16px;
-    font-size: 0.94rem;
+    padding: 7px 12px;
+    font-size: 0.82rem;
     justify-content: center;
   }
   .results-card {
@@ -2790,10 +2813,10 @@ ul {
     font-size: 1.48rem;
   }
   .action-bar {
-    padding: 10px 12px;
+    padding: 6px 8px;
   }
   .btn-rotate-main {
-    font-size: 0.88rem;
-    padding: 10px 14px;
+    font-size: 0.8rem;
+    padding: 6px 10px;
   }
 }

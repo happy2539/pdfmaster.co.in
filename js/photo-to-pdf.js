@@ -158,6 +158,7 @@ const downloadModal = document.getElementById("downloadModal");
 const downloadReadyBtn = document.getElementById("downloadReadyBtn");
 const downloadReadyBtnText = document.getElementById("downloadReadyBtnText");
 const convertBtnText = document.getElementById("convertBtnText");
+
 let generatedPdfBlob = null;
 let generatedFileName = "converted_document.pdf";
 let generatedPageCount = 1;

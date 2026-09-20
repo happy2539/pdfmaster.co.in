@@ -600,58 +600,6 @@
               page</label
             >
           </div>
-
-          <div class="btn-row">
-            <button class="btn-red" id="convertBtn" disabled>
-              <svg
-                width="15"
-                height="15"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2.5"
-              >
-                <path
-                  d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"
-                />
-                <polyline points="14 2 14 8 20 8" />
-              </svg>
-              <span id="convertBtnText">Convert to PDF</span>
-            </button>
-            <button
-              type="button"
-              class="btn-red btn-download-ready"
-              id="downloadReadyBtn"
-              style="display: none;"
-            >
-              <svg
-                width="15"
-                height="15"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2.5"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-              >
-                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-                <polyline points="7 10 12 15 17 10"></polyline>
-                <line x1="12" y1="15" x2="12" y2="3"></line>
-              </svg>
-              <span id="downloadReadyBtnText">Download PDF</span>
-            </button>
-            <button class="btn-outline" id="resetBtn" disabled>
-              Clear All
-            </button>
-          </div>
-
-          <div class="loading-wrap" id="loadingWrap">
-            <h4 id="loadingTitle">Creating your PDF…</h4>
-            <div class="progress-bar">
-              <div class="progress-fill" id="progressFill"></div>
-            </div>
-            <p class="status-text" id="statusText">Processing images…</p>
-          </div>
         </div>
         <!-- /tool-card -->
 
@@ -679,6 +627,76 @@
             </p>
           </div>
           <div class="preview-grid" id="previewGrid"></div>
+
+          <!-- Loading Wrap -->
+          <div class="loading-wrap" id="loadingWrap">
+            <h4 id="loadingTitle">Creating your PDF…</h4>
+            <div class="progress-bar">
+              <div class="progress-fill" id="progressFill"></div>
+            </div>
+            <p class="status-text" id="statusText">Processing images…</p>
+          </div>
+
+          <!-- Floating Action Bar for Previews -->
+          <div class="action-bar" id="previewActionBar">
+            <div class="action-bar__btns">
+              <button class="btn-outline" id="resetBtn" type="button" disabled>
+                <svg
+                  width="15"
+                  height="15"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2.5"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <polyline points="3 6 5 6 21 6" />
+                  <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6" />
+                  <path d="M10 11v6M14 11v6" />
+                </svg>
+                Clear All
+              </button>
+              <button class="btn-red" id="convertBtn" type="button" disabled>
+                <svg
+                  width="15"
+                  height="15"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2.5"
+                >
+                  <path
+                    d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"
+                  />
+                  <polyline points="14 2 14 8 20 8" />
+                </svg>
+                <span id="convertBtnText">Convert to PDF</span>
+              </button>
+              <button
+                type="button"
+                class="btn-red btn-download-ready"
+                id="downloadReadyBtn"
+                style="display: none;"
+              >
+                <svg
+                  width="15"
+                  height="15"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2.5"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                  <polyline points="7 10 12 15 17 10"></polyline>
+                  <line x1="12" y1="15" x2="12" y2="3"></line>
+                </svg>
+                <span id="downloadReadyBtnText">Download PDF</span>
+              </button>
+            </div>
+          </div>
         </div>
       </div>
     </section>

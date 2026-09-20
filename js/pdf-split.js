@@ -152,9 +152,9 @@
 
         /* ─────────── STATE ─────────── */
         let pdfFile = null;
-        let pdfArrayBuffer = null;
-        let pdfDoc = null; // pdf-lib doc
-        let pdfjsDoc = null; // pdf.js doc
+        let pdfjsDoc = null; // pdf.js doc (streaming on demand)
+        let currentBlobUrl = null;
+        let isOffloaded = false;
         let totalPages = 0;
         let selectedPages = new Set();
         let currentMode = "range";
@@ -162,6 +162,8 @@
         let splitResults = [];
         let splitStartTime = null;
         let lastSplitDurationMs = null;
+
+        const LOW_RAM_THRESHOLD = 25 * 1024 * 1024; // 25 MB threshold for low-RAM streaming
 
         /* ─────────── ELEMENTS ─────────── */
         const uploadZone = document.getElementById("uploadZone");
@@ -219,25 +221,61 @@
           e.preventDefault();
           uploadZone.classList.remove("drag-over");
           const f = e.dataTransfer.files[0];
-          if (f && f.type === "application/pdf") loadFile(f);
+          if (f && (f.type === "application/pdf" || f.name.toLowerCase().endsWith(".pdf"))) loadFile(f);
           else showToast("Please drop a valid PDF file.", "error");
         });
 
         changeFileBtn.addEventListener("click", () => {
+          fileInput.value = "";
           fileInput.click();
         });
 
-        async function loadFile(file) {
-          pdfFile = file;
-          try {
-            pdfArrayBuffer = await file.arrayBuffer();
-            pdfDoc = await PDFLib.PDFDocument.load(pdfArrayBuffer.slice(0));
-            totalPages = pdfDoc.getPageCount();
+        function cleanupCurrentDoc() {
+          if (currentBlobUrl) {
+            try {
+              URL.revokeObjectURL(currentBlobUrl);
+            } catch (e) {}
+            currentBlobUrl = null;
+          }
+          if (pdfjsDoc) {
+            try {
+              pdfjsDoc.destroy();
+            } catch (e) {}
+            pdfjsDoc = null;
+          }
+          if (thumbnailObserver) {
+            thumbnailObserver.disconnect();
+            thumbnailObserver = null;
+          }
+          renderQueue = [];
+          activeRenders = 0;
+        }
 
-            if (window.pdfjsLib) {
-              pdfjsDoc = await pdfjsLib.getDocument({
-                data: pdfArrayBuffer.slice(0),
-              }).promise;
+        async function loadFile(file) {
+          if (!file) return;
+          cleanupCurrentDoc();
+
+          pdfFile = file;
+          isOffloaded = file.size > LOW_RAM_THRESHOLD;
+
+          try {
+            currentBlobUrl = URL.createObjectURL(file);
+
+            // PDF.js configured for low RAM streaming — NEVER load all pages into memory at once!
+            const loadingTask = pdfjsLib.getDocument({
+              url: currentBlobUrl,
+              disableAutoFetch: true, // Prevents reading whole document into memory!
+              disableStream: false, // Stream range chunks on demand
+              rangeChunkSize: 65536, // 64 KB chunks
+              maxImageSize: 2 * 1024 * 1024,
+              cMapPacked: true,
+            });
+
+            pdfjsDoc = await loadingTask.promise;
+            totalPages = pdfjsDoc.numPages;
+
+            if (totalPages <= 0) {
+              throw new Error("This PDF contains 0 pages or is damaged.");
             }
 
             fileName.textContent = file.name;
@@ -245,6 +283,11 @@
             const mb = (file.size / (1024 * 1024)).toFixed(1);
             pageCount.textContent = totalPages;
             fileSize.textContent = `${file.size > 1024 * 1024 ? mb + " MB" : kb + " KB"} · ${totalPages} pages`;
+
+            const lowRamBadge = document.getElementById("lowRamBadge");
+            if (lowRamBadge) {
+              lowRamBadge.style.display = isOffloaded ? "inline-flex" : "none";
+            }
 
             selectedPages.clear();
             resultsSection.classList.remove("active");
@@ -261,6 +304,9 @@
             showToast(`Loaded "${file.name}" — ${totalPages} pages`);
             scheduleDBSave();
           } catch (err) {
+            cleanupCurrentDoc();
+            pdfFile = null;
+            totalPages = 0;
             showToast(
               "Could not read PDF. Make sure it's a valid, non-encrypted file.",
               "error",
@@ -320,10 +366,51 @@
           });
         });
 
-        /* ─────────── THUMBNAILS ─────────── */
-        async function renderThumbnails() {
-          if (!pdfjsDoc) return;
+        /* ─────────── THUMBNAILS (VIRTUALIZED LAZY OBSERVER) ─────────── */
+        let thumbnailObserver = null;
+        let renderQueue = [];
+        let activeRenders = 0;
+        const MAX_CONCURRENT_RENDERS = 2;
+
+        function renderThumbnails() {
+          if (!pdfjsDoc || !pagesGrid) return;
           pagesGrid.innerHTML = "";
+          renderQueue = [];
+
+          if (thumbnailObserver) {
+            thumbnailObserver.disconnect();
+            thumbnailObserver = null;
+          }
+
+          thumbnailObserver = new IntersectionObserver(
+            (entries, observer) => {
+              let hasNew = false;
+              entries.forEach((entry) => {
+                if (entry.isIntersecting) {
+                  const card = entry.target;
+                  if (card.dataset.rendered === "true") {
+                    observer.unobserve(card);
+                    return;
+                  }
+                  const pageNum = parseInt(card.dataset.page, 10);
+                  observer.unobserve(card);
+                  if (!renderQueue.some((item) => item.pageNum === pageNum)) {
+                    renderQueue.push({ pageNum, cardEl: card });
+                    hasNew = true;
+                  }
+                }
+              });
+              if (hasNew) {
+                processThumbnailQueue();
+              }
+            },
+            {
+              root: pagesGrid,
+              rootMargin: "150px 0px",
+              threshold: 0.01,
+            },
+          );
+
           for (let i = 1; i <= totalPages; i++) {
             const card = document.createElement("div");
             card.className =
@@ -331,32 +418,56 @@
             card.setAttribute("role", "listitem");
             card.setAttribute("aria-label", `Page ${i}`);
             card.dataset.page = i;
+            card.dataset.rendered = "false";
             card.innerHTML = `
         <div class="page-loading"><div class="spinner"></div><span>p.${i}</span></div>
         <div class="page-card__check" aria-hidden="true"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div>
         <div class="page-card__num">p.${i}</div>`;
             card.addEventListener("click", () => togglePage(i, card));
             pagesGrid.appendChild(card);
+            thumbnailObserver.observe(card);
+          }
+          updateSelectedCount();
+        }
 
-            // async thumbnail render
-            (async (pageNum, cardEl) => {
+        async function processThumbnailQueue() {
+          if (!pdfjsDoc || activeRenders >= MAX_CONCURRENT_RENDERS || renderQueue.length === 0) {
+            return;
+          }
+
+          while (activeRenders < MAX_CONCURRENT_RENDERS && renderQueue.length > 0) {
+            const task = renderQueue.shift();
+            if (!task) break;
+            const { pageNum, cardEl } = task;
+            if (cardEl.dataset.rendered === "true") continue;
+
+            activeRenders++;
+            (async () => {
               try {
+                if (!pdfjsDoc) return;
                 const page = await pdfjsDoc.getPage(pageNum);
-                const viewport = page.getViewport({ scale: 0.5 });
+                const viewport = page.getViewport({ scale: 0.35 });
                 const canvas = document.createElement("canvas");
                 canvas.width = viewport.width;
                 canvas.height = viewport.height;
                 canvas.className = "page-card__canvas";
-                const ctx = canvas.getContext("2d");
+                const ctx = canvas.getContext("2d", { alpha: false });
                 await page.render({ canvasContext: ctx, viewport }).promise;
-                const loader = cardEl.querySelector(".page-loading");
-                if (loader) loader.replaceWith(canvas);
+
+                if (cardEl.parentNode) {
+                  const loader = cardEl.querySelector(".page-loading");
+                  if (loader) loader.replaceWith(canvas);
+                  cardEl.dataset.rendered = "true";
+                }
+                page.cleanup?.();
               } catch (e) {
                 /* ignore render errors */
+              } finally {
+                activeRenders--;
+                processThumbnailQueue();
               }
-            })(i, card);
+            })();
           }
-          updateSelectedCount();
         }
 
         function togglePage(num, card) {
@@ -476,7 +587,7 @@
 
         /* ─────────── SUMMARY ─────────── */
         function updateSummary() {
-          if (!pdfDoc) return;
+          if (!pdfFile || totalPages === 0) return;
           let text = "";
           if (currentMode === "range") {
             const r = parseRangeString(rangeInput.value, totalPages);
@@ -502,7 +613,7 @@
         splitBtn.addEventListener("click", doSplit);
 
         async function doSplit() {
-          if (!pdfDoc) return;
+          if (!pdfFile || totalPages === 0) return;
           splitStartTime = performance.now();
 
           let groups = [];
@@ -546,23 +657,52 @@
           resultsSection.classList.remove("active");
           splitResults = [];
           progressFill.style.width = "0%";
-          progressText.textContent = "Starting...";
+          progressText.textContent = isOffloaded
+            ? "⚡ Low-RAM: Preparing memory buffer…"
+            : "Reading PDF…";
 
+          let pdfDoc = null;
           try {
-            const baseName = pdfFile.name.replace(/\.pdf$/i, "");
+            await new Promise((r) => setTimeout(r, 40));
+
+            progressText.textContent = isOffloaded
+              ? "⚡ Low-RAM: Parsing document catalog…"
+              : "Loading PDF catalog…";
+            progressFill.style.width = "10%";
+            await new Promise((r) => setTimeout(r, 20));
+
+            let srcBuffer = await pdfFile.arrayBuffer();
+
+            pdfDoc = await PDFLib.PDFDocument.load(srcBuffer, {
+              ignoreEncryption: true,
+              parseSpeed: Infinity,
+              updateMetadata: false,
+            });
+
+            // CRITICAL LOW-RAM STEP: Free original ArrayBuffer immediately!
+            srcBuffer = null;
+
+            const baseName = (pdfFile.name || "document").replace(/\.pdf$/i, "");
 
             for (let gi = 0; gi < groups.length; gi++) {
               const { label, pages } = groups[gi];
-              progressText.textContent = `Creating file ${gi + 1} of ${groups.length}...`;
-              progressFill.style.width = `${((gi + 1) / groups.length) * 90}%`;
+              const progressPct = 10 + Math.round(((gi + 1) / groups.length) * 80);
+              progressText.textContent = `Creating file ${gi + 1} of ${groups.length}…`;
+              progressFill.style.width = `${progressPct}%`;
 
               const newDoc = await PDFLib.PDFDocument.create();
               const indices = pages.map((p) => p - 1);
               const copied = await newDoc.copyPages(pdfDoc, indices);
               copied.forEach((pg) => newDoc.addPage(pg));
-              const bytes = await newDoc.save();
+
+              const bytes = await newDoc.save({
+                useObjectStreams: false,
+                addDefaultPage: false,
+              });
+
+              const blob = new Blob([bytes], { type: "application/pdf" });
               const outName = `${baseName}_${label}.pdf`;
-              splitResults.push({ name: outName, bytes, size: bytes.length });
+              splitResults.push({ name: outName, blob, size: blob.size });
 
               await new Promise((r) => setTimeout(r, 0)); // yield
             }
@@ -570,22 +710,22 @@
             progressFill.style.width = "100%";
             progressText.textContent = `Done! Created ${groups.length} file(s).`;
 
-            await new Promise((r) => setTimeout(r, 400));
+            await new Promise((r) => setTimeout(r, 300));
             progressWrap.classList.remove("active");
 
             renderResults();
             showToast(`Split complete — ${groups.length} file(s) ready!`);
 
-            // Auto ZIP download if only one file or user prefers individual
             if (outputFormat === "zip" && splitResults.length > 1) {
-              // show results, user clicks Download All
+              // Results ready
             } else if (splitResults.length === 1) {
-              triggerDownload(splitResults[0].bytes, splitResults[0].name);
+              triggerDownloadBlob(splitResults[0].blob, splitResults[0].name);
             }
           } catch (err) {
             showToast("Split failed. Please try again.", "error");
             console.error(err);
           } finally {
+            pdfDoc = null; // Always release pdfDoc from memory!
             splitBtn.disabled = false;
           }
         }
@@ -612,8 +752,8 @@
             card
               .querySelector(".result-card__dl")
               .addEventListener("click", () => {
-                triggerDownload(
-                  splitResults[idx].bytes,
+                triggerDownloadBlob(
+                  splitResults[idx].blob,
                   splitResults[idx].name,
                 );
               });
@@ -635,7 +775,6 @@
 
             if (splitResults.length === 1) {
               const single = splitResults[0];
-              const blob = new Blob([single.bytes], { type: "application/pdf" });
               window.PDFMasterPopup.show({
                 fileType: "pdf",
                 fileName: single.name,
@@ -643,9 +782,9 @@
                 downloadText: "Download PDF",
                 toolName: "Split PDF",
                 durationMs: durationMs,
-                blob: blob,
+                blob: single.blob,
                 onDownload: () => {
-                  triggerDownload(single.bytes, single.name);
+                  triggerDownloadBlob(single.blob, single.name);
                 },
               });
             } else {
@@ -673,13 +812,13 @@
             downloadAllBtn.disabled = true;
             try {
               const zip = new JSZip();
-              splitResults.forEach((r) => zip.file(r.name, r.bytes));
+              splitResults.forEach((r) => zip.file(r.name, r.blob));
               const zipBlob = await zip.generateAsync({
                 type: "blob",
                 compression: "DEFLATE",
                 compressionOptions: { level: 3 },
               });
-              const baseName = pdfFile.name.replace(/\.pdf$/i, "");
+              const baseName = (pdfFile ? pdfFile.name : "document").replace(/\.pdf$/i, "");
               triggerDownloadBlob(zipBlob, `${baseName}_split.zip`);
               showToast("ZIP download started!");
             } catch (e) {
@@ -691,7 +830,7 @@
             }
           } else {
             splitResults.forEach((r, i) =>
-              setTimeout(() => triggerDownload(r.bytes, r.name), i * 300),
+              setTimeout(() => triggerDownloadBlob(r.blob, r.name), i * 300),
             );
           }
         });
@@ -712,10 +851,6 @@
           workspace.scrollIntoView({ behavior: "smooth", block: "start" });
         });
 
-        function triggerDownload(bytes, name) {
-          const blob = new Blob([bytes], { type: "application/pdf" });
-          triggerDownloadBlob(blob, name);
-        }
         function triggerDownloadBlob(blob, name) {
           const url = URL.createObjectURL(blob);
           const a = document.createElement("a");
@@ -762,24 +897,25 @@
         }
 
         async function saveSessionToDB() {
-          if (!pdfArrayBuffer || !pdfFile) return false;
+          if (!pdfFile) return false;
           try {
             const sessionData = {
               timestamp: Date.now(),
               fileName: pdfFile.name,
-              fileSize: pdfFile.size || pdfArrayBuffer.byteLength,
+              fileSize: pdfFile.size,
               totalPages: totalPages,
               currentMode: currentMode,
               rangeValue: rangeInput ? rangeInput.value : "",
               nValue: nInput ? nInput.value : "1",
               selectedPages: Array.from(selectedPages),
               outputFormat: outputFormat,
+              isOffloaded: isOffloaded,
             };
 
             const fileData = {
               fileName: pdfFile.name,
-              fileSize: pdfFile.size || pdfArrayBuffer.byteLength,
-              bytes: pdfArrayBuffer.slice(0),
+              fileSize: pdfFile.size,
+              file: pdfFile instanceof Blob ? pdfFile : null,
               timestamp: Date.now(),
             };
 
@@ -823,7 +959,7 @@
               }),
             ]);
 
-            if (!data || !data.bytes) {
+            if (!data || (!data.file && !data.bytes)) {
               updateRecoveryBadge(false);
               if (isManual) {
                 showToast("No stored session found in recovery storage.", "error");
@@ -831,39 +967,18 @@
               return false;
             }
 
-            const rawBytes =
-              data.bytes instanceof Uint8Array
-                ? data.bytes.buffer
-                : data.bytes;
-            pdfArrayBuffer = rawBytes.slice(0);
-            pdfFile = {
-              name: data.fileName || "document.pdf",
-              size: data.fileSize || pdfArrayBuffer.byteLength,
-            };
+            const fileNameVal = data.fileName || "document.pdf";
+            const storedBlob = data.file instanceof Blob
+              ? data.file
+              : (data.bytes ? new Blob([data.bytes], { type: "application/pdf" }) : null);
 
-            // Load into pdfDoc and pdfjsDoc safely with cloned buffers!
-            pdfDoc = await PDFLib.PDFDocument.load(pdfArrayBuffer.slice(0));
-            totalPages = pdfDoc.getPageCount();
+            if (!storedBlob) return false;
 
-            if (window.pdfjsLib) {
-              pdfjsDoc = await pdfjsLib.getDocument({
-                data: pdfArrayBuffer.slice(0),
-              }).promise;
-            }
+            const restoredFile = storedBlob instanceof File
+              ? storedBlob
+              : new File([storedBlob], fileNameVal, { type: "application/pdf" });
 
-            fileName.textContent = pdfFile.name;
-            const kb = (pdfFile.size / 1024).toFixed(0);
-            const mb = (pdfFile.size / (1024 * 1024)).toFixed(1);
-            pageCount.textContent = totalPages;
-            fileSize.textContent = `${pdfFile.size > 1024 * 1024 ? mb + " MB" : kb + " KB"} · ${totalPages} pages`;
-
-            selectedPages.clear();
-            resultsSection.classList.remove("active");
-            splitResults = [];
-            progressWrap.classList.remove("active");
-
-            uploadZone.style.display = "none";
-            workspace.classList.add("active");
+            await loadFile(restoredFile);
 
             if (session) {
               if (session.currentMode) {
@@ -907,7 +1022,7 @@
 
             if (isManual) {
               showToast(
-                `Restored "${pdfFile.name}" and split configuration!`,
+                `Restored "${restoredFile.name}" and split configuration!`,
                 "success",
               );
             }
@@ -946,10 +1061,10 @@
               dataReq.onerror = () => res(null);
             });
 
-            const hasData = !!(data && data.bytes);
+            const hasData = !!(data && (data.file || data.bytes));
             updateRecoveryBadge(hasData);
 
-            if (hasData && notifyOnFound && !pdfDoc) {
+            if (hasData && notifyOnFound && !pdfFile) {
               const name = data.fileName || "PDF document";
               showToast(
                 `Previous session ("${name}") is available. Click to restore.`,

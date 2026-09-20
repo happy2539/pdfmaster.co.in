@@ -44,6 +44,7 @@ const pdfFileInput = document.getElementById("pdfFileInput");
 const fileInfo = document.getElementById("fileInfo");
 const fileNameEl = document.getElementById("fileName");
 const filePagesEl = document.getElementById("filePages");
+const actionRow = document.getElementById("actionRow");
 const convertBtn = document.getElementById("convertBtn");
 const resetBtn = document.getElementById("resetBtn");
 const progressBlock = document.getElementById("progressBlock");
@@ -265,6 +266,7 @@ function fmtSize(bytes) {
 
 function handleFileSelect(file) {
   pdfFile = file;
+  if (actionRow) actionRow.style.display = "";
   convertBtn.disabled = true;
   resetBtn.disabled = false;
   resultsSection.classList.remove("visible");
@@ -689,6 +691,7 @@ function resetForm() {
   fileInfo.classList.remove("show");
   fileNameEl.textContent = "No file selected";
   filePagesEl.textContent = "";
+  if (actionRow) actionRow.style.display = "none";
   convertBtn.disabled = true;
   resetBtn.disabled = true;
   progressBlock.classList.remove("visible");
@@ -813,6 +816,7 @@ async function loadSessionFromDB(isManual = false) {
 
     convertBtn.disabled = true;
     resetBtn.disabled = false;
+    if (actionRow) actionRow.style.display = "";
     resultsSection.classList.remove("visible");
     convertedImages = [];
 
