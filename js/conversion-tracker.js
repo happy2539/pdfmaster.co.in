@@ -187,19 +187,62 @@
       }
 
       const tool = resolveToolName(data.tool || data.toolName);
-      const fileName = data.fileName || "document.pdf";
-      const fileType =
-        data.fileType || (fileName.split(".").pop() || "pdf").toLowerCase();
+
+      // Extract file extension strictly for user privacy (e.g. PDF, JPG, PNG, DOCX, ZIP)
+      const rawExt =
+        data.fileExtension ||
+        data.fileType ||
+        (data.fileName ? data.fileName.split(".").pop() : "pdf");
+      const fileExtension =
+        String(rawExt || "pdf")
+          .replace(/[^a-zA-Z0-9]/g, "")
+          .toUpperCase() || "PDF";
+      const fileType = fileExtension.toLowerCase();
+
+      // Resolve page count and photo count for precise performance evaluation
+      let pageCount =
+        typeof data.pageCount === "number" && data.pageCount > 0
+          ? Math.round(data.pageCount)
+          : typeof data.totalPages === "number" && data.totalPages > 0
+            ? Math.round(data.totalPages)
+            : typeof data.numPages === "number" && data.numPages > 0
+              ? Math.round(data.numPages)
+              : null;
+
+      let photoCount =
+        typeof data.photoCount === "number" && data.photoCount > 0
+          ? Math.round(data.photoCount)
+          : typeof data.imageCount === "number" && data.imageCount > 0
+            ? Math.round(data.imageCount)
+            : typeof data.images === "number" && data.images > 0
+              ? Math.round(data.images)
+              : null;
+
+      // Fallback extraction from fileDetails if not explicitly provided
+      if (data.fileDetails && typeof data.fileDetails === "string") {
+        if (photoCount === null) {
+          const phMatch = data.fileDetails.match(/(\d+)\s*(?:photo|image|picture)s?/i);
+          if (phMatch) photoCount = parseInt(phMatch[1], 10);
+        }
+        if (pageCount === null) {
+          const pMatch = data.fileDetails.match(/(\d+)\s*page/i);
+          if (pMatch) pageCount = parseInt(pMatch[1], 10);
+        }
+      }
+
+      const tLower = (tool || "").toLowerCase();
+      if (tLower.includes("photo to pdf") && photoCount === null && pageCount !== null) {
+        photoCount = pageCount;
+      } else if (tLower.includes("pdf to photo") && pageCount === null && photoCount !== null) {
+        pageCount = photoCount;
+      }
 
       // Deduplication check: prevent recording duplicate calls within cooldown (25s)
       const now = Date.now();
       const normTool = (tool || "pdf-tool")
         .toLowerCase()
         .replace(/[^a-z0-9]/g, "");
-      const normFile = (fileName || "doc")
-        .toLowerCase()
-        .replace(/[^a-z0-9]/g, "");
-      const dedupeKey = `${normTool}:${normFile}`;
+      const dedupeKey = `${normTool}:${fileExtension}:${fileSize}`;
 
       if (recentEventKeys.has(dedupeKey)) {
         const lastTime = recentEventKeys.get(dedupeKey);
@@ -227,8 +270,10 @@
         tool: tool,
         durationMs: durationMs,
         fileSize: fileSize,
-        fileName: fileName,
+        fileExtension: fileExtension,
         fileType: fileType,
+        pageCount: pageCount,
+        photoCount: photoCount,
         fileDetails: data.fileDetails || null,
         url: window.location.href,
         path: window.location.pathname,
@@ -280,6 +325,17 @@
                   fileSize: sz,
                   fileName: options.fileName,
                   fileType: options.fileType,
+                  fileExtension: options.fileExtension,
+                  pageCount:
+                    options.pageCount ||
+                    options.totalPages ||
+                    options.numPages ||
+                    null,
+                  photoCount:
+                    options.photoCount ||
+                    options.imageCount ||
+                    options.images ||
+                    null,
                   fileDetails: options.fileDetails,
                   blob: options.blob,
                 });

@@ -751,12 +751,76 @@
 
       if (!isReDownload && !currentOptions.__trackedByTracker) {
         currentOptions.__trackedByTracker = true;
+        // Extract only file extension for user privacy (e.g. PDF, JPG, PNG)
+        const rawExt =
+          currentOptions.fileType ||
+          (currentOptions.fileName
+            ? currentOptions.fileName.split(".").pop()
+            : "pdf");
+        const fileExt =
+          String(rawExt || "pdf")
+            .replace(/[^a-zA-Z0-9]/g, "")
+            .toUpperCase() || "PDF";
+
+        // Resolve page count and photo count for analytics and performance evaluation
+        let pCount =
+          typeof currentOptions.pageCount === "number" &&
+          currentOptions.pageCount > 0
+            ? currentOptions.pageCount
+            : typeof currentOptions.totalPages === "number" &&
+                currentOptions.totalPages > 0
+              ? currentOptions.totalPages
+              : typeof currentOptions.numPages === "number" &&
+                  currentOptions.numPages > 0
+                ? currentOptions.numPages
+                : null;
+
+        let phCount =
+          typeof currentOptions.photoCount === "number" &&
+          currentOptions.photoCount > 0
+            ? currentOptions.photoCount
+            : typeof currentOptions.imageCount === "number" &&
+                currentOptions.imageCount > 0
+              ? currentOptions.imageCount
+              : typeof currentOptions.images === "number" &&
+                  currentOptions.images > 0
+                ? currentOptions.images
+                : null;
+
+        // If still missing, parse from fileDetails, desc, or title
+        const fullDesc = `${currentOptions.fileDetails || ""} ${currentOptions.desc || ""} ${currentOptions.downloadText || ""}`;
+        if (phCount === null) {
+          const phMatch = fullDesc.match(/(\d+)\s*(?:photo|image|picture)s?/i);
+          if (phMatch) phCount = parseInt(phMatch[1], 10);
+        }
+        if (pCount === null) {
+          const pMatch = fullDesc.match(/(\d+)\s*page/i);
+          if (pMatch) pCount = parseInt(pMatch[1], 10);
+        }
+
+        const tLower = String(currentOptions.toolName || "").toLowerCase();
+        if (
+          tLower.includes("photo to pdf") &&
+          phCount === null &&
+          pCount !== null
+        ) {
+          phCount = pCount;
+        } else if (
+          tLower.includes("pdf to photo") &&
+          pCount === null &&
+          phCount !== null
+        ) {
+          pCount = phCount;
+        }
+
         const conversionPayload = {
           tool: currentOptions.toolName || resolveVerb(),
           durationMs: elapsedMs,
           fileSize: sz,
-          fileName: currentOptions.fileName || "document.pdf",
-          fileType: currentOptions.fileType || "pdf",
+          fileExtension: fileExt,
+          fileType: fileExt.toLowerCase(),
+          pageCount: pCount,
+          photoCount: phCount,
           fileDetails: currentOptions.fileDetails || null,
           blob: currentOptions.blob || null,
         };
