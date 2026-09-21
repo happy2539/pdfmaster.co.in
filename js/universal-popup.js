@@ -813,6 +813,16 @@
           pCount = phCount;
         }
 
+        let memUsed = null;
+        if (
+          typeof window !== "undefined" &&
+          window.performance &&
+          window.performance.memory &&
+          typeof window.performance.memory.usedJSHeapSize === "number"
+        ) {
+          memUsed = Math.round(window.performance.memory.usedJSHeapSize);
+        }
+
         const conversionPayload = {
           tool: currentOptions.toolName || resolveVerb(),
           durationMs: elapsedMs,
@@ -821,6 +831,26 @@
           fileType: fileExt.toLowerCase(),
           pageCount: pCount,
           photoCount: phCount,
+          deviceMemory:
+            typeof currentOptions.deviceMemory === "number"
+              ? currentOptions.deviceMemory
+              : typeof navigator !== "undefined" &&
+                  typeof navigator.deviceMemory === "number"
+                ? navigator.deviceMemory
+                : null,
+          cpuCores:
+            typeof currentOptions.cpuCores === "number"
+              ? currentOptions.cpuCores
+              : typeof navigator !== "undefined" &&
+                  typeof navigator.hardwareConcurrency === "number"
+                ? navigator.hardwareConcurrency
+                : null,
+          memoryUsedBytes:
+            typeof currentOptions.memoryUsedBytes === "number"
+              ? currentOptions.memoryUsedBytes
+              : typeof currentOptions.heapUsed === "number"
+                ? currentOptions.heapUsed
+                : memUsed,
           fileDetails: currentOptions.fileDetails || null,
           blob: currentOptions.blob || null,
         };

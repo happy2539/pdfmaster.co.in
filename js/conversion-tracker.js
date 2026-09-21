@@ -81,6 +81,75 @@
     return "Other";
   }
 
+  // Cached storage estimate (non-blocking query)
+  let cachedStorageEstimate = null;
+  function updateStorageEstimate() {
+    if (
+      typeof navigator !== "undefined" &&
+      navigator.storage &&
+      typeof navigator.storage.estimate === "function"
+    ) {
+      navigator.storage
+        .estimate()
+        .then((est) => {
+          if (est) {
+            const quota = typeof est.quota === "number" ? est.quota : 0;
+            const usage = typeof est.usage === "number" ? est.usage : 0;
+            cachedStorageEstimate = {
+              quotaBytes: quota,
+              usageBytes: usage,
+              freeBytes: Math.max(0, quota - usage),
+            };
+          }
+        })
+        .catch(() => {});
+    }
+  }
+
+  try {
+    updateStorageEstimate();
+  } catch (_) {}
+
+  /**
+   * Hardware & Memory Telemetry (RAM, CPU Cores, Active Heap Memory, Storage)
+   */
+  function getHardwareInfo() {
+    const hw = {
+      deviceMemory: null,
+      cpuCores: null,
+      memoryUsedBytes: null,
+      storageQuotaBytes: null,
+      storageFreeBytes: null,
+    };
+
+    try {
+      if (typeof navigator !== "undefined") {
+        if (typeof navigator.deviceMemory === "number" && navigator.deviceMemory > 0) {
+          hw.deviceMemory = navigator.deviceMemory;
+        }
+        if (typeof navigator.hardwareConcurrency === "number" && navigator.hardwareConcurrency > 0) {
+          hw.cpuCores = navigator.hardwareConcurrency;
+        }
+      }
+
+      if (
+        typeof window !== "undefined" &&
+        window.performance &&
+        window.performance.memory &&
+        typeof window.performance.memory.usedJSHeapSize === "number"
+      ) {
+        hw.memoryUsedBytes = Math.round(window.performance.memory.usedJSHeapSize);
+      }
+
+      if (cachedStorageEstimate) {
+        hw.storageQuotaBytes = cachedStorageEstimate.quotaBytes;
+        hw.storageFreeBytes = cachedStorageEstimate.freeBytes;
+      }
+    } catch (_) {}
+
+    return hw;
+  }
+
   /**
    * Extract or normalize tool name
    */
@@ -262,6 +331,37 @@
       }
       recentEventKeys.set(dedupeKey, now);
 
+      // Resolve hardware & memory metrics for performance benchmarking
+      const hw = getHardwareInfo();
+      const deviceMemory =
+        typeof data.deviceMemory === "number" && data.deviceMemory > 0
+          ? data.deviceMemory
+          : hw.deviceMemory;
+
+      const cpuCores =
+        typeof data.cpuCores === "number" && data.cpuCores > 0
+          ? Math.round(data.cpuCores)
+          : hw.cpuCores;
+
+      const memoryUsedBytes =
+        typeof data.memoryUsedBytes === "number" && data.memoryUsedBytes > 0
+          ? Math.round(data.memoryUsedBytes)
+          : typeof data.memoryDeltaBytes === "number" && data.memoryDeltaBytes > 0
+            ? Math.round(data.memoryDeltaBytes)
+            : typeof data.heapUsed === "number" && data.heapUsed > 0
+              ? Math.round(data.heapUsed)
+              : hw.memoryUsedBytes;
+
+      const storageQuotaBytes =
+        typeof data.storageQuotaBytes === "number" && data.storageQuotaBytes > 0
+          ? Math.round(data.storageQuotaBytes)
+          : hw.storageQuotaBytes;
+
+      const storageFreeBytes =
+        typeof data.storageFreeBytes === "number" && data.storageFreeBytes > 0
+          ? Math.round(data.storageFreeBytes)
+          : hw.storageFreeBytes;
+
       const eventId = `c_${now}_${Math.random().toString(36).slice(2, 8)}`;
 
       const payload = {
@@ -274,6 +374,11 @@
         fileType: fileType,
         pageCount: pageCount,
         photoCount: photoCount,
+        deviceMemory: deviceMemory,
+        cpuCores: cpuCores,
+        memoryUsedBytes: memoryUsedBytes,
+        storageQuotaBytes: storageQuotaBytes,
+        storageFreeBytes: storageFreeBytes,
         fileDetails: data.fileDetails || null,
         url: window.location.href,
         path: window.location.pathname,
@@ -336,6 +441,12 @@
                     options.imageCount ||
                     options.images ||
                     null,
+                  deviceMemory: options.deviceMemory || null,
+                  cpuCores: options.cpuCores || null,
+                  memoryUsedBytes:
+                    options.memoryUsedBytes || options.heapUsed || null,
+                  storageQuotaBytes: options.storageQuotaBytes || null,
+                  storageFreeBytes: options.storageFreeBytes || null,
                   fileDetails: options.fileDetails,
                   blob: options.blob,
                 });
