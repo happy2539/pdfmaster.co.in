@@ -24,7 +24,7 @@
  * visit - see the activate handler below.
  */
 
-const CACHE_VERSION = "v52";
+const CACHE_VERSION = "v53";
 const CACHE_PREFIX = "pdfmaster-";
 
 const STATIC_CACHE = `${CACHE_PREFIX}static-${CACHE_VERSION}`;
