@@ -598,6 +598,7 @@ convertBtn.addEventListener("click", async () => {
             durationMs: lastConversionDurationMs,
             toolName: "Photo to PDF",
             isInApp: isInApp,
+            skipTracking: true,
           });
         }
       });

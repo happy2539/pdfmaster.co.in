@@ -37,6 +37,9 @@ let pdfFile = null,
 let downloadFormat = "same"; // track export format override
 let convertStartTime = null;
 let lastConvertDurationMs = null;
+let cachedZipBlob = null;
+let cachedSingleBlob = null;
+let cachedDownloadFormat = null;
 
 // ─── DOM refs ────────────────────────────────────────────────────────────
 const uploadZone = document.getElementById("uploadZone");
@@ -229,6 +232,9 @@ fmtBtns.querySelectorAll(".fmt-btn").forEach((btn) => {
       .forEach((b) => b.classList.remove("active"));
     btn.classList.add("active");
     downloadFormat = btn.dataset.fmt;
+    cachedZipBlob = null;
+    cachedSingleBlob = null;
+    cachedDownloadFormat = null;
     scheduleDBSave();
   });
 });
@@ -386,7 +392,7 @@ async function startConversion() {
 
   for (let i = 0; i < pages.length; i++) {
     const pageNum = pages[i];
-    const pct = Math.round((i / pages.length) * 100);
+    const pct = Math.round((i / pages.length) * 85);
 
     progressText.textContent = `Rendering page ${pageNum} (${i + 1} of ${pages.length})…`;
     progressPct.textContent = pct + "%";
@@ -407,6 +413,28 @@ async function startConversion() {
     }
 
     await new Promise((r) => setTimeout(r, 0)); // yield to UI
+  }
+
+  // Pre-package the files so download is instantaneous when clicked
+  if (convertedImages.length > 1) {
+    progressText.textContent = `Packaging ZIP (${convertedImages.length} photos)…`;
+    progressPct.textContent = "92%";
+    progressFill.style.width = "92%";
+    await new Promise((r) => setTimeout(r, 0));
+    try {
+      cachedZipBlob = await buildZipBlob();
+      cachedDownloadFormat = downloadFormat;
+    } catch (zipErr) {
+      console.warn("Pre-packaging ZIP error:", zipErr);
+      cachedZipBlob = null;
+    }
+  } else if (convertedImages.length === 1) {
+    const img = convertedImages[0];
+    const useFmt = downloadFormat === "same" ? img.fmt : downloadFormat;
+    cachedSingleBlob = await new Promise((res) => {
+      img.canvas.toBlob(res, "image/" + useFmt, qual);
+    });
+    cachedDownloadFormat = downloadFormat;
   }
 
   progressPct.textContent = "100%";
@@ -436,7 +464,7 @@ function renderResults() {
   const reopenBtn = document.getElementById("reopenPopupBtn");
   if (reopenBtn) {
     reopenBtn.style.display = "inline-block";
-    reopenBtn.onclick = showConversionPopup;
+    reopenBtn.onclick = () => showConversionPopup(true);
   }
 
   convertedImages.forEach(({ pageNum, dataUrl, fmt }) => {
@@ -488,13 +516,63 @@ function renderResults() {
   );
 }
 
+// ─── Fast ZIP packaging engine ───────────────────────────────────────────
+async function buildZipBlob() {
+  if (!jsZipReady) {
+    for (let wait = 0; wait < 30 && !jsZipReady; wait++) {
+      await new Promise((r) => setTimeout(r, 100));
+    }
+    if (!jsZipReady) {
+      throw new Error("ZIP library is not ready");
+    }
+  }
+
+  const zip = new JSZip();
+  const folder = zip.folder(baseName());
+  const qual = parseInt(qualitySlider.value) / 100;
+
+  for (let i = 0; i < convertedImages.length; i++) {
+    const img = convertedImages[i];
+    const fmtUse = downloadFormat === "same" ? img.fmt : downloadFormat;
+    let b64;
+    // Fast path: reuse already rendered base64 if format matches
+    if (img.dataUrl && (downloadFormat === "same" || downloadFormat === img.fmt)) {
+      const idx = img.dataUrl.indexOf(",");
+      b64 = idx !== -1 ? img.dataUrl.substring(idx + 1) : img.dataUrl;
+    } else {
+      const url = img.canvas.toDataURL("image/" + fmtUse, qual);
+      const idx = url.indexOf(",");
+      b64 = idx !== -1 ? url.substring(idx + 1) : url;
+    }
+    folder.file(`page${img.pageNum}.${getExt(fmtUse)}`, b64, {
+      base64: true,
+    });
+  }
+
+  // Use STORE compression because image files are already compressed.
+  // STORE finishes in ~20-50ms with zero CPU lag instead of 4-8 seconds with DEFLATE.
+  return await zip.generateAsync({
+    type: "blob",
+    compression: "STORE",
+  });
+}
+
 // ─── Show universal conversion popup ──────────────────────────────────────
-function showConversionPopup() {
+function showConversionPopup(skipTracking = false) {
   if (!window.PDFMasterPopup || convertedImages.length === 0) return;
   const durationMs = lastConvertDurationMs || (convertStartTime
     ? Math.max(1, Math.round(performance.now() - convertStartTime))
     : null);
   if (durationMs) lastConvertDurationMs = durationMs;
+
+  let totalEstimatedBytes = 0;
+  convertedImages.forEach((img) => {
+    if (img.dataUrl) {
+      const idx = img.dataUrl.indexOf(",");
+      const b64len = idx !== -1 ? img.dataUrl.length - idx - 1 : img.dataUrl.length;
+      totalEstimatedBytes += Math.round(b64len * 0.75);
+    }
+  });
 
   const count = convertedImages.length;
   if (count === 1) {
@@ -502,36 +580,38 @@ function showConversionPopup() {
     const useFmt = downloadFormat === "same" ? img.fmt : downloadFormat;
     const ext = getExt(useFmt);
     const fn = `${baseName()}_page${img.pageNum}.${ext}`;
+    const sz = cachedSingleBlob ? cachedSingleBlob.size : (totalEstimatedBytes || null);
+
     window.PDFMasterPopup.show({
       fileType: "image",
       fileName: fn,
-      fileSize: null,
+      fileSize: sz,
       fileDetails: `Ready to download • 1 photo (${ext.toUpperCase()}) • 100% Private`,
       downloadText: "Download Photo",
       secondaryText: "Done",
       toolName: "PDF to Photo",
       durationMs: durationMs,
-      onDownload: () => {
-        downloadSingleBtn.click();
-      },
+      skipTracking: skipTracking,
+      blob: cachedSingleBlob,
       onSecondary: () => {
         resultsSection.scrollIntoView({ behavior: "smooth", block: "start" });
       },
     });
   } else {
     const zipName = `${baseName()}_photos.zip`;
+    const sz = cachedZipBlob ? cachedZipBlob.size : (totalEstimatedBytes || null);
+
     window.PDFMasterPopup.show({
       fileType: "zip",
       fileName: zipName,
-      fileSize: null,
+      fileSize: sz,
       fileDetails: `Ready to download • ${count} photos • 100% Private`,
       downloadText: `Download All as ZIP (${count} photos)`,
       secondaryText: "View Photos",
       toolName: "PDF to Photo",
       durationMs: durationMs,
-      onDownload: () => {
-        downloadAllBtn.click();
-      },
+      skipTracking: skipTracking,
+      blob: cachedZipBlob,
       onSecondary: () => {
         resultsSection.scrollIntoView({ behavior: "smooth", block: "start" });
       },
@@ -540,38 +620,26 @@ function showConversionPopup() {
 }
 
 // Single-page shortcut
-downloadSingleBtn.addEventListener("click", () => {
+downloadSingleBtn.addEventListener("click", async () => {
   if (convertedImages.length !== 1) return;
   const img = convertedImages[0];
   const useFmt = downloadFormat === "same" ? img.fmt : downloadFormat;
-  const qual = parseInt(qualitySlider.value) / 100;
-  const url = img.canvas.toDataURL(
-    "image/" + useFmt,
-    qual,
-  );
   const ext = getExt(useFmt);
   const fn = `${baseName()}_page${img.pageNum}.${ext}`;
-  triggerDownload(url, fn);
-  showToast("Image downloaded!", "success");
 
-  if (window.PDFMasterPopup) {
-    window.PDFMasterPopup.show({
-      fileType: "image",
-      fileName: fn,
-      fileSize: null,
-      fileDetails: `Ready to download • 1 photo (${ext.toUpperCase()}) • 100% Private`,
-      downloadText: "Download Image Again",
-      secondaryText: "Done",
-      toolName: "PDF to Photo",
-      durationMs: lastConvertDurationMs,
-      onDownload: () => {
-        triggerDownload(url, fn);
-      },
-      onSecondary: () => {
-        resultsSection.scrollIntoView({ behavior: "smooth", block: "start" });
-      },
-    });
+  if (cachedSingleBlob && cachedDownloadFormat === downloadFormat) {
+    triggerDownload(URL.createObjectURL(cachedSingleBlob), fn);
+    showToast("Image downloaded!", "success");
+    return;
   }
+
+  const qual = parseInt(qualitySlider.value) / 100;
+  cachedSingleBlob = await new Promise((res) => {
+    img.canvas.toBlob(res, "image/" + useFmt, qual);
+  });
+  cachedDownloadFormat = downloadFormat;
+  triggerDownload(URL.createObjectURL(cachedSingleBlob), fn);
+  showToast("Image downloaded!", "success");
 });
 
 // ─── Download all as ZIP ──────────────────────────────────────────────────
@@ -583,72 +651,28 @@ downloadAllBtn.addEventListener("click", async () => {
   }
   if (convertedImages.length === 0) return;
 
+  const zipName = `${baseName()}_photos.zip`;
+
+  // Instant download if already cached for current format
+  if (cachedZipBlob && cachedDownloadFormat === downloadFormat) {
+    triggerDownload(URL.createObjectURL(cachedZipBlob), zipName);
+    showToast("ZIP downloaded!", "success");
+    return;
+  }
+
   downloadAllBtn.disabled = true;
   downloadAllBtn.textContent = "Zipping…";
   progressBlock.classList.add("visible");
   progressText.textContent = "Building ZIP…";
 
   try {
-    const zip = new JSZip();
-    const folder = zip.folder(baseName());
-    const useFmt =
-      downloadFormat === "same" ? convertedImages[0].fmt : downloadFormat;
-    const qual = parseInt(qualitySlider.value) / 100;
-
-    for (let i = 0; i < convertedImages.length; i++) {
-      const img = convertedImages[i];
-      const fmtUse = downloadFormat === "same" ? img.fmt : downloadFormat;
-      const url = img.canvas.toDataURL("image/" + fmtUse, qual);
-      const b64 = url.split(",")[1];
-      folder.file(`page${img.pageNum}.${getExt(fmtUse)}`, b64, {
-        base64: true,
-      });
-      const pct = Math.round(((i + 1) / convertedImages.length) * 70);
-      progressFill.style.width = pct + "%";
-      progressPct.textContent = pct + "%";
-      await new Promise((r) => setTimeout(r, 0));
-    }
-
-    progressText.textContent = "Compressing ZIP…";
-    const blob = await zip.generateAsync(
-      {
-        type: "blob",
-        compression: "DEFLATE",
-        compressionOptions: { level: 6 },
-      },
-      (meta) => {
-        const p = 70 + Math.round(meta.percent * 0.3);
-        progressFill.style.width = p + "%";
-        progressPct.textContent = p + "%";
-      },
-    );
-
+    cachedZipBlob = await buildZipBlob();
+    cachedDownloadFormat = downloadFormat;
     progressFill.style.width = "100%";
     progressPct.textContent = "100%";
     progressText.textContent = "Done!";
-    const zipName = `${baseName()}_photos.zip`;
-    triggerDownload(URL.createObjectURL(blob), zipName);
+    triggerDownload(URL.createObjectURL(cachedZipBlob), zipName);
     showToast("ZIP downloaded!", "success");
-
-    if (window.PDFMasterPopup) {
-      window.PDFMasterPopup.show({
-        fileType: "zip",
-        fileName: zipName,
-        fileSize: blob.size,
-        fileDetails: `Ready to download • ${convertedImages.length} photos • 100% Private`,
-        downloadText: "Download ZIP Again",
-        secondaryText: "Done",
-        toolName: "PDF to Photo",
-        blob: blob,
-        durationMs: lastConvertDurationMs,
-        onDownload: () => {
-          triggerDownload(URL.createObjectURL(blob), zipName);
-        },
-        onSecondary: () => {
-          resultsSection.scrollIntoView({ behavior: "smooth", block: "start" });
-        },
-      });
-    }
   } catch (err) {
     showToast("ZIP creation failed: " + err.message, "error");
     console.error(err);
@@ -682,6 +706,9 @@ function resetForm() {
   totalPages = 0;
   convertStartTime = null;
   lastConvertDurationMs = null;
+  cachedZipBlob = null;
+  cachedSingleBlob = null;
+  cachedDownloadFormat = null;
   const reopenBtn = document.getElementById("reopenPopupBtn");
   if (reopenBtn) reopenBtn.style.display = "none";
   pdfFileInput.value = "";

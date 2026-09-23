@@ -477,7 +477,31 @@
     }
 
     if (typeof currentOptions.onDownload === "function") {
-      currentOptions.onDownload();
+      try {
+        const res = currentOptions.onDownload();
+        if (res && typeof res.then === "function") {
+          const btn = document.getElementById("pdfmPopupDownloadBtn");
+          const btnText = document.getElementById("pdfmPopupDownloadBtnText");
+          const origText = btnText ? btnText.textContent : "";
+          if (btnText) btnText.textContent = "Downloading…";
+          if (btn) btn.disabled = true;
+
+          res
+            .then(() => {
+              updateDownloadSuccessState();
+            })
+            .catch((err) => {
+              console.error("PDFMasterPopup onDownload error:", err);
+              if (btnText) btnText.textContent = origText;
+            })
+            .finally(() => {
+              if (btn) btn.disabled = false;
+            });
+          return;
+        }
+      } catch (err) {
+        console.error("PDFMasterPopup onDownload sync error:", err);
+      }
       updateDownloadSuccessState();
       return;
     }
@@ -716,6 +740,135 @@
     modalOverlay.classList.add("show");
     document.body.style.overflow = "hidden";
     ensureTrustpilot();
+
+    // Notify Universal Conversion Tracker (only on actual conversion, ignore re-opens or download-again)
+    try {
+      const isReDownload =
+        currentOptions.skipTracking === true ||
+        (currentOptions.downloadText &&
+          /again/i.test(currentOptions.downloadText)) ||
+        (currentOptions.title && /download again/i.test(currentOptions.title));
+
+      if (!isReDownload && !currentOptions.__trackedByTracker) {
+        currentOptions.__trackedByTracker = true;
+        // Extract only file extension for user privacy (e.g. PDF, JPG, PNG)
+        const rawExt =
+          currentOptions.fileType ||
+          (currentOptions.fileName
+            ? currentOptions.fileName.split(".").pop()
+            : "pdf");
+        const fileExt =
+          String(rawExt || "pdf")
+            .replace(/[^a-zA-Z0-9]/g, "")
+            .toUpperCase() || "PDF";
+
+        // Resolve page count and photo count for analytics and performance evaluation
+        let pCount =
+          typeof currentOptions.pageCount === "number" &&
+          currentOptions.pageCount > 0
+            ? currentOptions.pageCount
+            : typeof currentOptions.totalPages === "number" &&
+                currentOptions.totalPages > 0
+              ? currentOptions.totalPages
+              : typeof currentOptions.numPages === "number" &&
+                  currentOptions.numPages > 0
+                ? currentOptions.numPages
+                : null;
+
+        let phCount =
+          typeof currentOptions.photoCount === "number" &&
+          currentOptions.photoCount > 0
+            ? currentOptions.photoCount
+            : typeof currentOptions.imageCount === "number" &&
+                currentOptions.imageCount > 0
+              ? currentOptions.imageCount
+              : typeof currentOptions.images === "number" &&
+                  currentOptions.images > 0
+                ? currentOptions.images
+                : null;
+
+        // If still missing, parse from fileDetails, desc, or title
+        const fullDesc = `${currentOptions.fileDetails || ""} ${currentOptions.desc || ""} ${currentOptions.downloadText || ""}`;
+        if (phCount === null) {
+          const phMatch = fullDesc.match(/(\d+)\s*(?:photo|image|picture)s?/i);
+          if (phMatch) phCount = parseInt(phMatch[1], 10);
+        }
+        if (pCount === null) {
+          const pMatch = fullDesc.match(/(\d+)\s*page/i);
+          if (pMatch) pCount = parseInt(pMatch[1], 10);
+        }
+
+        const tLower = String(currentOptions.toolName || "").toLowerCase();
+        if (
+          tLower.includes("photo to pdf") &&
+          phCount === null &&
+          pCount !== null
+        ) {
+          phCount = pCount;
+        } else if (
+          tLower.includes("pdf to photo") &&
+          pCount === null &&
+          phCount !== null
+        ) {
+          pCount = phCount;
+        }
+
+        let memUsed = null;
+        if (
+          typeof window !== "undefined" &&
+          window.performance &&
+          window.performance.memory &&
+          typeof window.performance.memory.usedJSHeapSize === "number"
+        ) {
+          memUsed = Math.round(window.performance.memory.usedJSHeapSize);
+        }
+
+        const conversionPayload = {
+          tool: currentOptions.toolName || resolveVerb(),
+          durationMs: elapsedMs,
+          fileSize: sz,
+          fileExtension: fileExt,
+          fileType: fileExt.toLowerCase(),
+          pageCount: pCount,
+          photoCount: phCount,
+          deviceMemory:
+            typeof currentOptions.deviceMemory === "number"
+              ? currentOptions.deviceMemory
+              : typeof navigator !== "undefined" &&
+                  typeof navigator.deviceMemory === "number"
+                ? navigator.deviceMemory
+                : null,
+          cpuCores:
+            typeof currentOptions.cpuCores === "number"
+              ? currentOptions.cpuCores
+              : typeof navigator !== "undefined" &&
+                  typeof navigator.hardwareConcurrency === "number"
+                ? navigator.hardwareConcurrency
+                : null,
+          memoryUsedBytes:
+            typeof currentOptions.memoryUsedBytes === "number"
+              ? currentOptions.memoryUsedBytes
+              : typeof currentOptions.heapUsed === "number"
+                ? currentOptions.heapUsed
+                : memUsed,
+          fileDetails: currentOptions.fileDetails || null,
+          blob: currentOptions.blob || null,
+        };
+
+        if (
+          window.PDFMasterTracker &&
+          typeof window.PDFMasterTracker.trackConversion === "function"
+        ) {
+          window.PDFMasterTracker.trackConversion(conversionPayload);
+        } else {
+          window.dispatchEvent(
+            new CustomEvent("pdfmaster:conversion-tracked", {
+              detail: conversionPayload,
+            }),
+          );
+        }
+      }
+    } catch (_) {}
 
     // Focus download button
     setTimeout(() => {

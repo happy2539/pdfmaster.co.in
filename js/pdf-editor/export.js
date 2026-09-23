@@ -349,8 +349,9 @@ function exportPdf() {
         fileType: "pdf",
         fileName: outputName,
         fileSize: cachedExportBlob.size,
-        downloadText: "Download Edited PDF",
+        downloadText: "Download Edited PDF Again",
         toolName: "PDF Editor",
+        skipTracking: true,
         durationMs: window._lastEditorExportDurationMs || null,
         blob: cachedExportBlob,
         onDownload: function () {

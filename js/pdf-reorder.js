@@ -465,8 +465,9 @@ downloadBtn.addEventListener("click", async () => {
         fileType: "pdf",
         fileName: outputFileName,
         fileSize: state.lastReorderedBlob.size,
-        downloadText: "Download PDF",
+        downloadText: "Download PDF Again",
         toolName: "PDF Reorder",
+        skipTracking: true,
         durationMs: state.lastReorderDurationMs || null,
         blob: state.lastReorderedBlob,
         onDownload: () => {

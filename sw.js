@@ -24,7 +24,7 @@
  * visit - see the activate handler below.
  */
 
-const CACHE_VERSION = "v51";
+const CACHE_VERSION = "v53";
 const CACHE_PREFIX = "pdfmaster-";
 
 const STATIC_CACHE = `${CACHE_PREFIX}static-${CACHE_VERSION}`;
@@ -113,6 +113,7 @@ const PRECACHE_URLS = [
   "/js/about.js",
   "/js/announcements.js",
   "/js/contact.js",
+  "/js/conversion-tracker.js",
   "/js/delete-pdf-pages.js",
   "/js/faq.js",
   "/js/happy-gupta-founder-of-pdfmaster.js",
