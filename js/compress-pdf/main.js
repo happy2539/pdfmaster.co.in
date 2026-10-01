@@ -21,7 +21,6 @@
   const workspace = document.getElementById("workspace");
   const fileNameEl = document.getElementById("fileName");
   const fileSizeEl = document.getElementById("fileSize");
-  const ramBadgeEl = document.getElementById("ramBadge");
   const compressPdfBtn = document.getElementById("compressPdfBtn");
   const resultsCard = document.getElementById("resultsCard");
   const downloadResultBtn = document.getElementById("downloadResultBtn");
@@ -35,7 +34,7 @@
   const dpiValBadge = document.getElementById("dpiValBadge");
   const qualitySlider = document.getElementById("qualitySlider");
   const qualityValBadge = document.getElementById("qualityValBadge");
-  const quickDpiBtns = document.querySelectorAll(".quick-dpi-btn");
+  const quickDpiBtns = document.querySelectorAll(".quick-dpi-btns button, .quick-dpi-btn");
   const grayscaleSwitch = document.getElementById("grayscaleSwitch");
   const pageRangeInput = document.getElementById("pageRangeInput");
   const applyTargetBtn = document.getElementById("applyTargetBtn");
@@ -103,9 +102,6 @@
       }
 
       state.hardwareConfig = device.detectHardwareCapabilities();
-      if (ramBadgeEl) {
-        ramBadgeEl.textContent = state.hardwareConfig.badgeText;
-      }
 
       // Show workspace, hide dropzone
       if (uploadZone) uploadZone.style.display = "none";
@@ -272,11 +268,13 @@
         const dpi = parseInt(btn.dataset.dpi, 10);
         if (dpi) {
           state.dpi = dpi;
+          state.activePreset = "custom";
           if (dpiSlider) dpiSlider.value = dpi;
           if (dpiValBadge) dpiValBadge.textContent = `${dpi} DPI`;
-          quickDpiBtns.forEach((b) => b.classList.remove("active"));
-          btn.classList.add("active");
-          ui.updateActionSummary();
+          quickDpiBtns.forEach((b) => {
+            b.classList.toggle("active", parseInt(b.dataset.dpi, 10) === dpi);
+          });
+          ui.syncUiFromState();
           preview.invalidateCompressedCache();
           if (storage) storage.scheduleDBSave();
         }

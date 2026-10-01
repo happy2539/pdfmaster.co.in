@@ -45,81 +45,8 @@
     };
   }
 
-  function updateHeapHudUi(
-    metrics,
-    activeWorkers,
-    speedPps,
-    completedPages,
-    totalPages,
-  ) {
-    const loadingHeapHud = document.getElementById("loadingHeapHud");
-    if (!loadingHeapHud) return;
-    loadingHeapHud.style.display = "block";
-
-    const loadingHeapHudSpeed = document.getElementById("loadingHeapHudSpeed");
-    if (loadingHeapHudSpeed) {
-      loadingHeapHudSpeed.textContent = `${speedPps} p/s (${activeWorkers}× Concurrent)`;
-    }
-
-    const loadingHeapHudFill = document.getElementById("loadingHeapHudFill");
-    if (loadingHeapHudFill) {
-      const usedPct = Math.min(100, Math.max(5, 100 - metrics.remainingPct));
-      loadingHeapHudFill.style.width = `${usedPct}%`;
-      loadingHeapHudFill.classList.toggle("is-critical", metrics.isCritical);
-      loadingHeapHudFill.classList.toggle("is-warning", metrics.isWarning);
-    }
-
-    const loadingHeapHudMemory = document.getElementById(
-      "loadingHeapHudMemory",
-    );
-    if (loadingHeapHudMemory) {
-      if (metrics.hasPerformanceMemory) {
-        loadingHeapHudMemory.textContent = `RAM: ${metrics.usedMb}MB / ${metrics.limitMb}MB (${metrics.remainingPct}% Free) · DB Disk Backed`;
-      } else {
-        loadingHeapHudMemory.textContent = `Health: ~${metrics.remainingPct}% Free · DB Disk Backed`;
-      }
-    }
-
-    const loadingHeapHudTitle = document.getElementById("loadingHeapHudTitle");
-    if (loadingHeapHudTitle) {
-      const cfg = state.hardwareConfig;
-      loadingHeapHudTitle.textContent = cfg
-        ? `🟢 ${cfg.profileName} (${cfg.estimatedRamGb}GB RAM)`
-        : "🟢 Hardware Adaptive Pipeline";
-    }
-
-    const loadingHeapHudStatus = document.getElementById(
-      "loadingHeapHudStatus",
-    );
-    if (loadingHeapHudStatus) {
-      const cfg = state.hardwareConfig || {
-        estimatedRamGb: 4,
-        profileName: "Fast Parallel",
-      };
-
-      if (metrics.isCritical) {
-        loadingHeapHudStatus.textContent = `⚠️ Memory Guard: Scaled to 1× Safe Mode`;
-        loadingHeapHudStatus.style.color = "#ef4444";
-      } else if (metrics.isWarning) {
-        loadingHeapHudStatus.textContent = `🟡 Adaptive Guard: ${activeWorkers}× Concurrency (RAM Caution)`;
-        loadingHeapHudStatus.style.color = "#f59e0b";
-      } else {
-        loadingHeapHudStatus.textContent = `🟢 Health Optimal: ${activeWorkers}× Parallel (${cfg.estimatedRamGb}GB Profile)`;
-        loadingHeapHudStatus.style.color = "var(--savings-green-dark, #059669)";
-      }
-    }
-
-    const loadingModeTag = document.getElementById("loadingModeTag");
-    if (loadingModeTag) {
-      loadingModeTag.style.display = "inline-block";
-      if (metrics.isCritical) {
-        loadingModeTag.textContent = `🛡️ Auto Memory Guard Active (Throttled to 1×)`;
-      } else {
-        const cfg = state.hardwareConfig;
-        const ramTag = cfg ? ` · ${cfg.estimatedRamGb}GB RAM` : "";
-        loadingModeTag.textContent = `⚡ Parallel Pipeline (${activeWorkers}× Concurrent Pages${ramTag})`;
-      }
-    }
+  function updateHeapHudUi() {
+    // HUD and technical tags removed per UI feedback; background memory headroom governor remains active
   }
 
   window.PDFCompressHealth = {

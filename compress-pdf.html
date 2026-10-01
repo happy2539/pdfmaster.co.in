@@ -57,7 +57,7 @@
     <link href="/assets/fonts/fonts.css" rel="stylesheet" />
 
     <!-- Stylesheet -->
-    <link rel="stylesheet" href="/css/compress-pdf.css?v=1" />
+    <link rel="stylesheet" href="/css/compress-pdf.css?v=3" />
 
     <meta name="mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -693,7 +693,6 @@
                   <span>0 KB</span> · <span>0 page(s)</span>
                 </div>
               </div>
-              <span class="badge-ram" id="ramBadge">⚡ Low-RAM Active</span>
             </div>
             <div class="file-info-bar__actions">
               <button
@@ -851,13 +850,13 @@
                 <span class="preset-badge preset-badge--lossless">No Loss</span>
               </div>
               <div class="preset-card__meta">
-                <span class="preset-savings">Vector Streams</span>
+                <span class="preset-savings preset-savings--lossless">100% Vector</span>
                 <span class="preset-sep">·</span>
-                <span class="preset-detail">Zero quality loss</span>
+                <span class="preset-detail preset-detail--prominent">Zero quality loss</span>
               </div>
             </div>
 
-            <!-- Preset 5: Custom Pro -->
+            <!-- Preset 5: Custom Advanced -->
             <div
               class="preset-card"
               data-preset="custom"
@@ -870,17 +869,17 @@
                   <div class="preset-card__radio"></div>
                   <span class="preset-card__name">Custom</span>
                 </div>
-                <span class="preset-badge preset-badge--custom">Pro</span>
+                <span class="preset-badge preset-badge--custom">Advanced</span>
               </div>
               <div class="preset-card__meta">
-                <span class="preset-savings">Manual sliders</span>
+                <span class="preset-savings preset-savings--custom">Custom</span>
                 <span class="preset-sep">·</span>
-                <span class="preset-detail">DPI &amp; Target</span>
+                <span class="preset-detail preset-detail--prominent">DPI &amp; Target</span>
               </div>
             </div>
           </div>
 
-          <!-- Custom Pro Controls Panel -->
+          <!-- Custom Advanced Controls Panel -->
           <div class="custom-panel" id="customPanel">
             <div class="custom-grid">
               <!-- DPI Slider -->
@@ -899,19 +898,19 @@
                   value="144"
                 />
                 <div class="quick-dpi-btns">
-                  <button type="button" class="btn-chip" data-dpi="72">
+                  <button type="button" class="btn-chip quick-dpi-btn" data-dpi="72">
                     72 DPI
                   </button>
-                  <button type="button" class="btn-chip" data-dpi="96">
+                  <button type="button" class="btn-chip quick-dpi-btn" data-dpi="96">
                     96 DPI
                   </button>
-                  <button type="button" class="btn-chip active" data-dpi="144">
+                  <button type="button" class="btn-chip quick-dpi-btn active" data-dpi="144">
                     144 DPI
                   </button>
-                  <button type="button" class="btn-chip" data-dpi="200">
+                  <button type="button" class="btn-chip quick-dpi-btn" data-dpi="200">
                     200 DPI
                   </button>
-                  <button type="button" class="btn-chip" data-dpi="300">
+                  <button type="button" class="btn-chip quick-dpi-btn" data-dpi="300">
                     300 DPI
                   </button>
                 </div>
@@ -1475,15 +1474,22 @@
       aria-labelledby="loadingModalTitle"
     >
       <div class="loading-modal">
+        <div class="loading-modal__brand" style="display: inline-flex; align-items: center; justify-content: center; gap: 10px; margin-bottom: 20px;">
+          <img
+            src="/assets/apple-touch-icon.png"
+            alt="PDFMaster"
+            width="38"
+            height="38"
+            style="width: 38px; height: 38px; border-radius: 9px; object-fit: contain; flex-shrink: 0; display: inline-block; vertical-align: middle;"
+          />
+          <span class="logo-text" style="font-size: 1.35rem; line-height: 1; display: inline-flex; align-items: center;">PDF<span>Master</span></span>
+        </div>
         <div class="loading-modal__icon">
           <div class="spinner"></div>
         </div>
         <h3 class="loading-modal__title" id="loadingModalTitle">
           Compressing PDF…
         </h3>
-        <p class="loading-modal__sub" id="loadingModalSub">
-          Initializing Low-RAM streaming pipeline…
-        </p>
         <div class="loading-bar-track">
           <div class="loading-bar-fill" id="loadingBarFill"></div>
         </div>
@@ -1491,30 +1497,12 @@
           <span id="loadingStatusText">Working…</span>
           <span id="loadingPct" style="font-weight: 700">0%</span>
         </div>
-        <span
-          class="loading-mode-tag"
-          id="loadingModeTag"
-          style="display: none"
-        ></span>
-        <!-- Real-time Health & Memory Governor HUD -->
-        <div class="loading-heap-hud" id="loadingHeapHud" style="display: none">
-          <div class="loading-heap-hud__header">
-            <span id="loadingHeapHudTitle">🟢 System Health: Optimal</span>
-            <span class="loading-heap-hud__stat" id="loadingHeapHudSpeed"
-              >0.0 p/s</span
-            >
-          </div>
-          <div class="loading-heap-hud__track">
-            <div
-              class="loading-heap-hud__fill"
-              id="loadingHeapHudFill"
-              style="width: 15%"
-            ></div>
-          </div>
-          <div class="loading-heap-hud__footer">
-            <span id="loadingHeapHudMemory">RAM: Checking…</span>
-            <span id="loadingHeapHudStatus">⚡ Parallel Pipeline Active</span>
-          </div>
+        <div class="loading-modal__watermark">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+            <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+          </svg>
+          <span>PDFMaster Secure Client-Side Engine</span>
         </div>
       </div>
     </div>

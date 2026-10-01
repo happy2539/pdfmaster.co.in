@@ -31,9 +31,8 @@
     ui.showLoadingModal(
       true,
       "Compressing PDF…",
-      `Initializing ${hwConfig.targetConcurrency}× Parallel Pipeline (${hwConfig.estimatedRamGb}GB RAM Profile)…`,
+      "Preparing document compression…",
       5,
-      `⚡ ${hwConfig.targetConcurrency}× Parallel Active (${hwConfig.estimatedRamGb}GB RAM)`,
     );
 
     try {
@@ -383,8 +382,6 @@
       if (storage && storage.clearRenderedPagesFromDB) {
         await storage.clearRenderedPagesFromDB();
       }
-      const loadingHeapHud = document.getElementById("loadingHeapHud");
-      if (loadingHeapHud) loadingHeapHud.style.display = "none";
     }
   }
 

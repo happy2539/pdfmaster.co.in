@@ -16,7 +16,7 @@
   const dpiValBadge = document.getElementById("dpiValBadge");
   const qualitySlider = document.getElementById("qualitySlider");
   const qualityValBadge = document.getElementById("qualityValBadge");
-  const quickDpiBtns = document.querySelectorAll(".quick-dpi-btn");
+  const quickDpiBtns = document.querySelectorAll(".quick-dpi-btns button, .quick-dpi-btn");
   const grayscaleSwitch = document.getElementById("grayscaleSwitch");
   const pageRangeInput = document.getElementById("pageRangeInput");
   const targetSizeInput = document.getElementById("targetSizeInput");
@@ -28,12 +28,9 @@
   const savingsPctStat = document.getElementById("savingsPctStat");
   const loadingModalOverlay = document.getElementById("loadingModalOverlay");
   const loadingModalTitle = document.getElementById("loadingModalTitle");
-  const loadingModalSub = document.getElementById("loadingModalSub");
   const loadingBarFill = document.getElementById("loadingBarFill");
   const loadingStatusText = document.getElementById("loadingStatusText");
   const loadingPct = document.getElementById("loadingPct");
-  const loadingModeTag = document.getElementById("loadingModeTag");
-  const loadingHeapHud = document.getElementById("loadingHeapHud");
 
   function syncUiFromState() {
     // Preset cards
@@ -224,28 +221,16 @@
     title = "Processing…",
     sub = "",
     pct = 0,
-    tag = "",
   ) {
     if (!loadingModalOverlay) return;
     if (show) {
-      if (loadingModalTitle) loadingModalTitle.textContent = title;
-      if (loadingModalSub) loadingModalSub.textContent = sub;
+      if (loadingModalTitle && title) loadingModalTitle.textContent = title;
       if (loadingBarFill) loadingBarFill.style.width = `${pct}%`;
       if (loadingPct) loadingPct.textContent = `${pct}%`;
-      if (loadingStatusText) loadingStatusText.textContent = sub;
-      if (loadingModeTag) {
-        if (tag) {
-          loadingModeTag.textContent = tag;
-          loadingModeTag.style.display = "inline-block";
-        } else {
-          loadingModeTag.style.display = "none";
-        }
-      }
-      if (loadingHeapHud) loadingHeapHud.style.display = "none";
+      if (loadingStatusText && sub) loadingStatusText.textContent = sub;
       loadingModalOverlay.classList.add("active");
     } else {
       loadingModalOverlay.classList.remove("active");
-      if (loadingHeapHud) loadingHeapHud.style.display = "none";
     }
   }
 
