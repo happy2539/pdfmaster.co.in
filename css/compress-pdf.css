@@ -908,7 +908,6 @@ ul {
   white-space: nowrap;
 }
 
-
 /* ===== CUSTOM CONTROLS PANEL ===== */
 .custom-panel {
   display: none;
@@ -1335,7 +1334,9 @@ ul {
   border-radius: 4px;
   background: #ffffff;
   cursor: zoom-in;
-  transition: transform 0.12s ease-out, margin 0.12s ease-out;
+  transition:
+    transform 0.12s ease-out,
+    margin 0.12s ease-out;
 }
 
 .pane-canvas-wrap canvas:hover {
@@ -1877,6 +1878,72 @@ body.comparison-fullscreen-active {
   border-radius: var(--radius-full);
   background: var(--savings-bg);
   color: var(--savings-green-dark);
+}
+
+/* ===== REAL-TIME HEALTH & HEAP MEMORY HUD ===== */
+.loading-heap-hud {
+  margin-top: 16px;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md, 10px);
+  padding: 10px 14px;
+  text-align: left;
+}
+
+.loading-heap-hud__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 0.76rem;
+  font-weight: 600;
+  color: var(--text-2);
+  margin-bottom: 6px;
+}
+
+.loading-heap-hud__stat {
+  font-family: var(--font-mono, monospace);
+  font-size: 0.75rem;
+  color: var(--compress-blue);
+  font-weight: 700;
+}
+
+.loading-heap-hud__track {
+  height: 6px;
+  background: var(--border);
+  border-radius: var(--radius-full);
+  overflow: hidden;
+  position: relative;
+}
+
+.loading-heap-hud__fill {
+  height: 100%;
+  border-radius: var(--radius-full);
+  background: var(--savings-green);
+  width: 20%;
+  transition:
+    width 0.2s ease,
+    background-color 0.2s ease;
+}
+
+.loading-heap-hud__fill.is-warning {
+  background: var(--amber-tag, #f59e0b);
+}
+
+.loading-heap-hud__fill.is-critical {
+  background: var(--accent, #e8372a);
+}
+
+.loading-heap-hud__footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 6px;
+  font-size: 0.72rem;
+  color: var(--text-3);
+}
+
+.loading-heap-hud__footer span:last-child {
+  font-weight: 600;
 }
 
 /* ===== TOAST ===== */

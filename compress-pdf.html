@@ -39,10 +39,7 @@
 
     <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image" />
-    <meta
-      name="twitter:title"
-      content="Compress PDF Online Free | PDFMaster"
-    />
+    <meta name="twitter:title" content="Compress PDF Online Free | PDFMaster" />
     <meta
       name="twitter:description"
       content="Dramatically reduce PDF file sizes online. Low-RAM architecture, live quality comparison, IndexedDB session recovery, 100% private, zero uploads."
@@ -632,7 +629,8 @@
           </div>
           <h2 class="upload-zone__title">Drop your PDF file here</h2>
           <p class="upload-zone__sub">
-            or click to browse from your device (paste with Ctrl+V also supported)
+            or click to browse from your device (paste with Ctrl+V also
+            supported)
           </p>
           <button
             class="btn-primary"
@@ -764,7 +762,11 @@
           </div>
 
           <!-- Presets Grid -->
-          <div class="presets-grid" role="radiogroup" aria-label="Compression Presets">
+          <div
+            class="presets-grid"
+            role="radiogroup"
+            aria-label="Compression Presets"
+          >
             <!-- Preset 1: Recommended -->
             <div
               class="preset-card active"
@@ -800,7 +802,9 @@
                   <div class="preset-card__radio"></div>
                   <span class="preset-card__name">Extreme</span>
                 </div>
-                <span class="preset-badge preset-badge--extreme">Max Shrink</span>
+                <span class="preset-badge preset-badge--extreme"
+                  >Max Shrink</span
+                >
               </div>
               <div class="preset-card__meta">
                 <span class="preset-savings">~85% smaller</span>
@@ -895,11 +899,21 @@
                   value="144"
                 />
                 <div class="quick-dpi-btns">
-                  <button type="button" class="btn-chip" data-dpi="72">72 DPI</button>
-                  <button type="button" class="btn-chip" data-dpi="96">96 DPI</button>
-                  <button type="button" class="btn-chip active" data-dpi="144">144 DPI</button>
-                  <button type="button" class="btn-chip" data-dpi="200">200 DPI</button>
-                  <button type="button" class="btn-chip" data-dpi="300">300 DPI</button>
+                  <button type="button" class="btn-chip" data-dpi="72">
+                    72 DPI
+                  </button>
+                  <button type="button" class="btn-chip" data-dpi="96">
+                    96 DPI
+                  </button>
+                  <button type="button" class="btn-chip active" data-dpi="144">
+                    144 DPI
+                  </button>
+                  <button type="button" class="btn-chip" data-dpi="200">
+                    200 DPI
+                  </button>
+                  <button type="button" class="btn-chip" data-dpi="300">
+                    300 DPI
+                  </button>
                 </div>
               </div>
 
@@ -918,7 +932,15 @@
                   step="5"
                   value="70"
                 />
-                <div style="display: flex; justify-content: space-between; font-size: 0.76rem; color: var(--text-3); margin-top: 4px;">
+                <div
+                  style="
+                    display: flex;
+                    justify-content: space-between;
+                    font-size: 0.76rem;
+                    color: var(--text-3);
+                    margin-top: 4px;
+                  "
+                >
                   <span>Smallest (15%)</span>
                   <span>Balanced (65%)</span>
                   <span>Max Clarity (95%)</span>
@@ -930,10 +952,20 @@
                 <label class="custom-label">
                   <span>Color Mode:</span>
                 </label>
-                <div class="switch-row" id="grayscaleSwitch" role="checkbox" aria-checked="false" tabindex="0">
+                <div
+                  class="switch-row"
+                  id="grayscaleSwitch"
+                  role="checkbox"
+                  aria-checked="false"
+                  tabindex="0"
+                >
                   <div class="switch-label">
-                    <span class="switch-title">Convert to Grayscale (B&amp;W)</span>
-                    <span class="switch-sub">Discards color channels for extra 30–40% reduction</span>
+                    <span class="switch-title"
+                      >Convert to Grayscale (B&amp;W)</span
+                    >
+                    <span class="switch-sub"
+                      >Discards color channels for extra 30–40% reduction</span
+                    >
                   </div>
                   <div class="switch-toggle"></div>
                 </div>
@@ -943,7 +975,9 @@
               <div class="custom-group">
                 <label class="custom-label" for="targetSizeInput">
                   <span>Target File Size Goal:</span>
-                  <span style="font-size: 0.76rem; color: var(--text-3);">Auto-calculates settings</span>
+                  <span style="font-size: 0.76rem; color: var(--text-3)"
+                    >Auto-calculates settings</span
+                  >
                 </label>
                 <div class="target-input-row">
                   <input
@@ -957,22 +991,28 @@
                   <select
                     id="targetUnitSelect"
                     class="target-input"
-                    style="flex: 0 0 85px; cursor: pointer;"
+                    style="flex: 0 0 85px; cursor: pointer"
                   >
                     <option value="KB" selected>KB</option>
                     <option value="MB">MB</option>
                   </select>
-                  <button type="button" class="btn-secondary" id="applyTargetBtn">
+                  <button
+                    type="button"
+                    class="btn-secondary"
+                    id="applyTargetBtn"
+                  >
                     Calculate
                   </button>
                 </div>
               </div>
 
               <!-- Page Range Selector -->
-              <div class="custom-group" style="grid-column: 1 / -1;">
+              <div class="custom-group" style="grid-column: 1 / -1">
                 <label class="custom-label" for="pageRangeInput">
                   <span>Pages to Compress:</span>
-                  <span style="font-size: 0.76rem; color: var(--text-3);">Leave blank for all pages</span>
+                  <span style="font-size: 0.76rem; color: var(--text-3)"
+                    >Leave blank for all pages</span
+                  >
                 </label>
                 <input
                   type="text"
@@ -1041,7 +1081,7 @@
                   id="zoomResetBtn"
                   title="Reset Zoom"
                   aria-label="Reset Zoom"
-                  style="font-size: 0.75rem; width: auto; padding: 0 6px;"
+                  style="font-size: 0.75rem; width: auto; padding: 0 6px"
                 >
                   100%
                 </button>
@@ -1056,15 +1096,45 @@
                 </button>
 
                 <!-- Fullscreen View Switcher Tabs -->
-                <div class="fs-view-tabs" id="fsViewTabs" role="tablist" aria-label="Fullscreen View Mode">
-                  <button type="button" class="fs-tab active" data-view="split" title="Side-by-Side Comparison">
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="12" y1="3" x2="12" y2="21"/></svg>
+                <div
+                  class="fs-view-tabs"
+                  id="fsViewTabs"
+                  role="tablist"
+                  aria-label="Fullscreen View Mode"
+                >
+                  <button
+                    type="button"
+                    class="fs-tab active"
+                    data-view="split"
+                    title="Side-by-Side Comparison"
+                  >
+                    <svg
+                      width="12"
+                      height="12"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                    >
+                      <rect x="3" y="3" width="18" height="18" rx="2" />
+                      <line x1="12" y1="3" x2="12" y2="21" />
+                    </svg>
                     Split
                   </button>
-                  <button type="button" class="fs-tab" data-view="orig" title="Original Page Only">
+                  <button
+                    type="button"
+                    class="fs-tab"
+                    data-view="orig"
+                    title="Original Page Only"
+                  >
                     Original
                   </button>
-                  <button type="button" class="fs-tab" data-view="comp" title="Compressed Preview Only">
+                  <button
+                    type="button"
+                    class="fs-tab"
+                    data-view="comp"
+                    title="Compressed Preview Only"
+                  >
                     Compressed
                   </button>
                 </div>
@@ -1102,7 +1172,7 @@
                     stroke-linecap="round"
                     stroke-linejoin="round"
                     class="fs-exit-icon"
-                    style="display: none;"
+                    style="display: none"
                   >
                     <path
                       d="M8 3v3a2 2 0 0 1-2 2H3m18 0h-3a2 2 0 0 1-2-2V3m0 18v-3a2 2 0 0 1 2-2h3M3 16h3a2 2 0 0 1 2 2v3"
@@ -1114,11 +1184,17 @@
 
             <!-- Side-by-Side Viewport -->
             <div class="comparison-viewport" id="comparisonViewport">
-              <div class="side-by-side-grid" id="comparisonGrid" data-view="split">
+              <div
+                class="side-by-side-grid"
+                id="comparisonGrid"
+                data-view="split"
+              >
                 <!-- Original Pane -->
                 <div class="comparison-pane" id="origPane">
                   <div class="pane-head">
-                    <span class="pane-label pane-label--orig">Original Page</span>
+                    <span class="pane-label pane-label--orig"
+                      >Original Page</span
+                    >
                     <button
                       type="button"
                       class="btn-pane-fs"
@@ -1126,22 +1202,43 @@
                       title="Full Screen Original (or click image)"
                       aria-label="Full Screen Original Preview"
                     >
-                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/>
+                      <svg
+                        width="12"
+                        height="12"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2.2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      >
+                        <path
+                          d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"
+                        />
                       </svg>
                       <span>Full Screen</span>
                     </button>
                   </div>
-                  <div class="pane-canvas-wrap" id="origCanvasWrap" title="Click image to view full screen">
-                    <span style="color: var(--text-3); font-size: 0.85rem;">Rendering original…</span>
+                  <div
+                    class="pane-canvas-wrap"
+                    id="origCanvasWrap"
+                    title="Click image to view full screen"
+                  >
+                    <span style="color: var(--text-3); font-size: 0.85rem"
+                      >Rendering original…</span
+                    >
                   </div>
-                  <div class="pane-metric" id="origMetricEl">Original: Calculating…</div>
+                  <div class="pane-metric" id="origMetricEl">
+                    Original: Calculating…
+                  </div>
                 </div>
 
                 <!-- Compressed Pane -->
                 <div class="comparison-pane" id="compPane">
                   <div class="pane-head">
-                    <span class="pane-label pane-label--comp">Compressed Preview</span>
+                    <span class="pane-label pane-label--comp"
+                      >Compressed Preview</span
+                    >
                     <button
                       type="button"
                       class="btn-pane-fs"
@@ -1149,13 +1246,28 @@
                       title="Full Screen Compressed (or click preview)"
                       aria-label="Full Screen Compressed Preview"
                     >
-                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/>
+                      <svg
+                        width="12"
+                        height="12"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2.2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      >
+                        <path
+                          d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"
+                        />
                       </svg>
                       <span>Full Screen</span>
                     </button>
                   </div>
-                  <div class="pane-canvas-wrap" id="compCanvasWrap" title="Click image to view full screen">
+                  <div
+                    class="pane-canvas-wrap"
+                    id="compCanvasWrap"
+                    title="Click image to view full screen"
+                  >
                     <div class="preview-placeholder" id="compPlaceholder">
                       <div class="placeholder-icon">
                         <svg
@@ -1174,16 +1286,29 @@
                           <line x1="3" y1="21" x2="10" y2="14"></line>
                         </svg>
                       </div>
-                      <p class="placeholder-text" id="placeholderText">Preview compression for Page 1</p>
-                      <button type="button" class="btn-preview" id="generatePreviewBtn">
-                        <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor">
+                      <p class="placeholder-text" id="placeholderText">
+                        Preview compression for Page 1
+                      </p>
+                      <button
+                        type="button"
+                        class="btn-preview"
+                        id="generatePreviewBtn"
+                      >
+                        <svg
+                          width="13"
+                          height="13"
+                          viewBox="0 0 24 24"
+                          fill="currentColor"
+                        >
                           <polygon points="5 3 19 12 5 21 5 3"></polygon>
                         </svg>
                         Show Preview
                       </button>
                     </div>
                   </div>
-                  <div class="pane-metric" id="compMetricEl">Click "Show Preview" to test settings on this page</div>
+                  <div class="pane-metric" id="compMetricEl">
+                    Click "Show Preview" to test settings on this page
+                  </div>
                 </div>
               </div>
 
@@ -1257,23 +1382,54 @@
             </div>
             <h3 class="results-title">PDF Compressed Successfully!</h3>
             <p class="results-sub">
-              Your document has been shrunk with high fidelity. 100% processed on
-              your device.
+              Your document has been shrunk with high fidelity. 100% processed
+              on your device.
             </p>
             <div class="results-stats">
               <div>
-                <span style="color: var(--text-3); font-size: 0.8rem; display: block;">Original Size:</span>
+                <span
+                  style="
+                    color: var(--text-3);
+                    font-size: 0.8rem;
+                    display: block;
+                  "
+                  >Original Size:</span
+                >
                 <span class="results-stat-val" id="origSizeStat">0 KB</span>
               </div>
               <div class="results-stat-divider"></div>
               <div>
-                <span style="color: var(--text-3); font-size: 0.8rem; display: block;">Compressed Size:</span>
-                <span class="results-stat-val" id="compressedSizeStat" style="color: var(--compress-blue);">0 KB</span>
+                <span
+                  style="
+                    color: var(--text-3);
+                    font-size: 0.8rem;
+                    display: block;
+                  "
+                  >Compressed Size:</span
+                >
+                <span
+                  class="results-stat-val"
+                  id="compressedSizeStat"
+                  style="color: var(--compress-blue)"
+                  >0 KB</span
+                >
               </div>
               <div class="results-stat-divider"></div>
               <div>
-                <span style="color: var(--text-3); font-size: 0.8rem; display: block;">Total Space Saved:</span>
-                <span class="results-stat-val" id="savingsPctStat" style="color: var(--savings-green);">0%</span>
+                <span
+                  style="
+                    color: var(--text-3);
+                    font-size: 0.8rem;
+                    display: block;
+                  "
+                  >Total Space Saved:</span
+                >
+                <span
+                  class="results-stat-val"
+                  id="savingsPctStat"
+                  style="color: var(--savings-green)"
+                  >0%</span
+                >
               </div>
             </div>
             <div class="results-actions">
@@ -1340,6 +1496,26 @@
           id="loadingModeTag"
           style="display: none"
         ></span>
+        <!-- Real-time Health & Memory Governor HUD -->
+        <div class="loading-heap-hud" id="loadingHeapHud" style="display: none">
+          <div class="loading-heap-hud__header">
+            <span id="loadingHeapHudTitle">🟢 System Health: Optimal</span>
+            <span class="loading-heap-hud__stat" id="loadingHeapHudSpeed"
+              >0.0 p/s</span
+            >
+          </div>
+          <div class="loading-heap-hud__track">
+            <div
+              class="loading-heap-hud__fill"
+              id="loadingHeapHudFill"
+              style="width: 15%"
+            ></div>
+          </div>
+          <div class="loading-heap-hud__footer">
+            <span id="loadingHeapHudMemory">RAM: Checking…</span>
+            <span id="loadingHeapHudStatus">⚡ Parallel Pipeline Active</span>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -1381,11 +1557,11 @@
               attachment or submit to portals with strict 200 KB or 1 MB limits.
             </p>
             <p>
-              A high-grade <strong>PDF compressor</strong> downsamples
-              excessive pixel density to practical target resolutions (such as
-              144 DPI for screen reading or 96 DPI for web uploads), optimizes
-              Discrete Cosine Transform (DCT) quantization tables, and repacks
-              document objects into unified Flate-compressed object streams.
+              A high-grade <strong>PDF compressor</strong> downsamples excessive
+              pixel density to practical target resolutions (such as 144 DPI for
+              screen reading or 96 DPI for web uploads), optimizes Discrete
+              Cosine Transform (DCT) quantization tables, and repacks document
+              objects into unified Flate-compressed object streams.
             </p>
             <p>
               With <strong>PDFMaster</strong>, all optimization occurs
@@ -1467,36 +1643,69 @@
                 <td><strong>Recommended (Balanced)</strong></td>
                 <td>144 DPI</td>
                 <td>68% DCT Quantization</td>
-                <td><span style="color: var(--savings-green); font-weight: 700;">65% – 80%</span></td>
-                <td>Daily sharing, emails, reports, eBooks &amp; presentations</td>
+                <td>
+                  <span style="color: var(--savings-green); font-weight: 700"
+                    >65% – 80%</span
+                  >
+                </td>
+                <td>
+                  Daily sharing, emails, reports, eBooks &amp; presentations
+                </td>
               </tr>
               <tr>
                 <td><strong>Extreme Compression</strong></td>
                 <td>96 DPI</td>
                 <td>48% DCT Quantization</td>
-                <td><span style="color: var(--savings-green); font-weight: 700;">80% – 92%</span></td>
-                <td>Government job portals, visa uploads, college forms, strict &lt;200KB limits</td>
+                <td>
+                  <span style="color: var(--savings-green); font-weight: 700"
+                    >80% – 92%</span
+                  >
+                </td>
+                <td>
+                  Government job portals, visa uploads, college forms, strict
+                  &lt;200KB limits
+                </td>
               </tr>
               <tr>
                 <td><strong>Mild (High Quality)</strong></td>
                 <td>200 DPI</td>
                 <td>82% DCT Quantization</td>
-                <td><span style="color: var(--savings-green); font-weight: 700;">30% – 50%</span></td>
-                <td>Professional printing, graphic portfolios, photography &amp; blueprints</td>
+                <td>
+                  <span style="color: var(--savings-green); font-weight: 700"
+                    >30% – 50%</span
+                  >
+                </td>
+                <td>
+                  Professional printing, graphic portfolios, photography &amp;
+                  blueprints
+                </td>
               </tr>
               <tr>
                 <td><strong>Lossless Vector</strong></td>
                 <td>Native Vectors</td>
                 <td>100% (No Resampling)</td>
-                <td><span style="color: var(--savings-green); font-weight: 700;">10% – 30%</span></td>
-                <td>LaTeX, Word exports, legal contracts with selectable vector text</td>
+                <td>
+                  <span style="color: var(--savings-green); font-weight: 700"
+                    >10% – 30%</span
+                  >
+                </td>
+                <td>
+                  LaTeX, Word exports, legal contracts with selectable vector
+                  text
+                </td>
               </tr>
               <tr>
                 <td><strong>Custom (Pro)</strong></td>
                 <td>50 to 300 DPI</td>
                 <td>15% to 95% + Grayscale</td>
-                <td><span style="color: var(--savings-green); font-weight: 700;">User Defined</span></td>
-                <td>Exact target file size constraints (e.g. strict 100 KB limit)</td>
+                <td>
+                  <span style="color: var(--savings-green); font-weight: 700"
+                    >User Defined</span
+                  >
+                </td>
+                <td>
+                  Exact target file size constraints (e.g. strict 100 KB limit)
+                </td>
               </tr>
             </tbody>
           </table>
@@ -1518,13 +1727,18 @@
               stroke-width="2.5"
             >
               <polyline points="9 11 12 14 22 4"></polyline>
-              <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path>
+              <path
+                d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"
+              ></path>
             </svg>
             Tutorial
           </div>
-          <h2 class="section__title">How to Compress a PDF Online (Step-by-Step)</h2>
+          <h2 class="section__title">
+            How to Compress a PDF Online (Step-by-Step)
+          </h2>
           <p class="section__sub">
-            Follow these 4 simple steps to compress your PDF files quickly and privately.
+            Follow these 4 simple steps to compress your PDF files quickly and
+            privately.
           </p>
         </div>
         <div class="steps-grid">
@@ -1532,9 +1746,9 @@
             <div class="step-number">1</div>
             <h3>Upload PDF File</h3>
             <p>
-              Drag and drop your document into the upload box or click Choose PDF
-              File. You can also paste files directly from your clipboard with
-              Ctrl+V.
+              Drag and drop your document into the upload box or click Choose
+              PDF File. You can also paste files directly from your clipboard
+              with Ctrl+V.
             </p>
           </div>
           <div class="step-card">
@@ -1585,7 +1799,9 @@
             </svg>
             Portal Guidance
           </div>
-          <h2 class="section__title">Target Size Limits for Common Applications</h2>
+          <h2 class="section__title">
+            Target Size Limits for Common Applications
+          </h2>
           <p class="section__sub">
             Use this quick reference to configure PDFMaster for strict upload
             requirements on government, academic, and corporate portals.
@@ -1594,7 +1810,14 @@
         <div class="features-grid">
           <div class="feat-card">
             <div class="feat-card__icon">
-              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <svg
+                width="22"
+                height="22"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
                 <rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect>
                 <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path>
               </svg>
@@ -1602,29 +1825,49 @@
             <h3>100 KB – 200 KB Portals</h3>
             <p>
               Common for UPSC, SSC, state PSC job applications, university ID
-              cards, and passport renewals. Use <strong>Extreme Preset</strong>
-              with <strong>Grayscale</strong> enabled to meet these strict limits
+              cards, and passport renewals. Use
+              <strong>Extreme Preset</strong> with
+              <strong>Grayscale</strong> enabled to meet these strict limits
               reliably.
             </p>
           </div>
           <div class="feat-card">
             <div class="feat-card__icon">
-              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path>
+              <svg
+                width="22"
+                height="22"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <path
+                  d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"
+                ></path>
               </svg>
             </div>
             <h3>500 KB – 1 MB Portals</h3>
             <p>
               Standard for visa application portals (Schengen, US DS-160, UK
-              Visas) and college admissions. The <strong>Recommended Preset</strong>
+              Visas) and college admissions. The
+              <strong>Recommended Preset</strong>
               consistently achieves this range while preserving color stamps and
               signatures.
             </p>
           </div>
           <div class="feat-card">
             <div class="feat-card__icon">
-              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+              <svg
+                width="22"
+                height="22"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <path
+                  d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"
+                ></path>
                 <polyline points="22,6 12,13 2,6"></polyline>
               </svg>
             </div>
@@ -1652,11 +1895,15 @@
               stroke="currentColor"
               stroke-width="2.5"
             >
-              <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+              <polygon
+                points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"
+              ></polygon>
             </svg>
             Performance Engine
           </div>
-          <h2 class="section__title">Why PDFMaster's Low-RAM Engine Never Crashes</h2>
+          <h2 class="section__title">
+            Why PDFMaster's Low-RAM Engine Never Crashes
+          </h2>
           <p class="section__sub">
             Built from the ground up to prevent browser memory spikes and tab
             crashes, even when compressing 200+ page documents.
@@ -1665,20 +1912,36 @@
         <div class="features-grid">
           <div class="feat-card">
             <div class="feat-card__icon">
-              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+              <svg
+                width="22"
+                height="22"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <path
+                  d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"
+                ></path>
               </svg>
             </div>
             <h3>Sequential Page Streaming</h3>
             <p>
               Rather than decoding all document pages simultaneously, PDFMaster
-              streams one page at a time through a single reused offscreen canvas,
-              immediately recycling GPU memory buffers.
+              streams one page at a time through a single reused offscreen
+              canvas, immediately recycling GPU memory buffers.
             </p>
           </div>
           <div class="feat-card">
             <div class="feat-card__icon">
-              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <svg
+                width="22"
+                height="22"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
                 <ellipse cx="12" cy="5" rx="9" ry="3"></ellipse>
                 <path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"></path>
                 <path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"></path>
@@ -1687,13 +1950,20 @@
             <h3>IndexedDB Disk Caching</h3>
             <p>
               When processing large documents (>25 MB), raw source buffers are
-              safely stored in your browser's private IndexedDB disk cache, freeing
-              active JavaScript heap memory for rendering.
+              safely stored in your browser's private IndexedDB disk cache,
+              freeing active JavaScript heap memory for rendering.
             </p>
           </div>
           <div class="feat-card">
             <div class="feat-card__icon">
-              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <svg
+                width="22"
+                height="22"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
                 <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
               </svg>
             </div>
@@ -1729,31 +1999,55 @@
           </div>
           <h2 class="section__title">Frequently Asked Questions</h2>
           <p class="section__sub">
-            Answers to common questions about compressing PDF documents with PDFMaster.
+            Answers to common questions about compressing PDF documents with
+            PDFMaster.
           </p>
         </div>
         <div class="faq-list">
           <div class="faq-item active">
             <button class="faq-question" type="button">
-              <span>How does PDFMaster compress PDF files without uploading to a server?</span>
-              <svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+              <span
+                >How does PDFMaster compress PDF files without uploading to a
+                server?</span
+              >
+              <svg
+                class="faq-chevron"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <polyline points="6 9 12 15 18 9" />
+              </svg>
             </button>
             <div class="faq-answer">
               <p>
                 PDFMaster executes client-side WebAssembly and modern JavaScript
                 directly inside your browser. It uses PDF.js to render document
-                pages into an optimized canvas buffer at your chosen DPI, applies
-                progressive JPEG downsampling and luminance quantization, and
-                repacks the output using pdf-lib with Flate-compressed object
-                streams. Not a single byte ever leaves your computer or phone.
+                pages into an optimized canvas buffer at your chosen DPI,
+                applies progressive JPEG downsampling and luminance
+                quantization, and repacks the output using pdf-lib with
+                Flate-compressed object streams. Not a single byte ever leaves
+                your computer or phone.
               </p>
             </div>
           </div>
 
           <div class="faq-item">
             <button class="faq-question" type="button">
-              <span>How can I compress a PDF to 100 KB or 200 KB for government portals?</span>
-              <svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+              <span
+                >How can I compress a PDF to 100 KB or 200 KB for government
+                portals?</span
+              >
+              <svg
+                class="faq-chevron"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <polyline points="6 9 12 15 18 9" />
+              </svg>
             </button>
             <div class="faq-answer">
               <p>
@@ -1769,60 +2063,103 @@
 
           <div class="faq-item">
             <button class="faq-question" type="button">
-              <span>Will compressing my PDF blur the text or make it unreadable?</span>
-              <svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+              <span
+                >Will compressing my PDF blur the text or make it
+                unreadable?</span
+              >
+              <svg
+                class="faq-chevron"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <polyline points="6 9 12 15 18 9" />
+              </svg>
             </button>
             <div class="faq-answer">
               <p>
-                No. Our Recommended preset renders at 144 DPI (2x standard screen
-                resolution) with high-fidelity color quantization, ensuring text
-                remains sharp and perfectly legible. You can also inspect the
-                document prior to downloading using our built-in Live
-                Before/After Quality Comparison tool.
+                No. Our Recommended preset renders at 144 DPI (2x standard
+                screen resolution) with high-fidelity color quantization,
+                ensuring text remains sharp and perfectly legible. You can also
+                inspect the document prior to downloading using our built-in
+                Live Before/After Quality Comparison tool.
               </p>
             </div>
           </div>
 
           <div class="faq-item">
             <button class="faq-question" type="button">
-              <span>What is the difference between Recommended, Extreme, and Lossless?</span>
-              <svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+              <span
+                >What is the difference between Recommended, Extreme, and
+                Lossless?</span
+              >
+              <svg
+                class="faq-chevron"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <polyline points="6 9 12 15 18 9" />
+              </svg>
             </button>
             <div class="faq-answer">
               <p>
                 <strong>Recommended</strong> is the sweet spot for most
-                documents, balancing sharp 144 DPI text with 65–80% size savings.
-                <strong>Extreme</strong> uses 96 DPI and aggressive DCT
+                documents, balancing sharp 144 DPI text with 65–80% size
+                savings. <strong>Extreme</strong> uses 96 DPI and aggressive DCT
                 quantization for 80–92% reduction, ideal for strict email or
                 upload limits. <strong>Lossless</strong> preserves 100% of
-                original vector text and forms while stripping metadata bloat and
-                repacking internal object streams.
+                original vector text and forms while stripping metadata bloat
+                and repacking internal object streams.
               </p>
             </div>
           </div>
 
           <div class="faq-item">
             <button class="faq-question" type="button">
-              <span>Why does PDFMaster handle large files without browser crashes?</span>
-              <svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+              <span
+                >Why does PDFMaster handle large files without browser
+                crashes?</span
+              >
+              <svg
+                class="faq-chevron"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <polyline points="6 9 12 15 18 9" />
+              </svg>
             </button>
             <div class="faq-answer">
               <p>
                 Traditional browser tools attempt to hold all decoded bitmaps in
-                active RAM simultaneously, causing memory spikes and tab crashes.
-                PDFMaster implements a Tiered Low-RAM Sequential Streaming
-                Architecture. It processes one page at a time using a single
-                recycled canvas context, yields microtasks to trigger garbage
-                collection, and caches large source buffers in IndexedDB disk
-                storage.
+                active RAM simultaneously, causing memory spikes and tab
+                crashes. PDFMaster implements a Tiered Low-RAM Sequential
+                Streaming Architecture. It processes one page at a time using a
+                single recycled canvas context, yields microtasks to trigger
+                garbage collection, and caches large source buffers in IndexedDB
+                disk storage.
               </p>
             </div>
           </div>
 
           <div class="faq-item">
             <button class="faq-question" type="button">
-              <span>Can I recover my session if I accidentally close my tab?</span>
-              <svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+              <span
+                >Can I recover my session if I accidentally close my tab?</span
+              >
+              <svg
+                class="faq-chevron"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <polyline points="6 9 12 15 18 9" />
+              </svg>
             </button>
             <div class="faq-answer">
               <p>
@@ -1838,27 +2175,47 @@
           <div class="faq-item">
             <button class="faq-question" type="button">
               <span>Does converting to Grayscale save extra file size?</span>
-              <svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+              <svg
+                class="faq-chevron"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <polyline points="6 9 12 15 18 9" />
+              </svg>
             </button>
             <div class="faq-answer">
               <p>
-                Yes! Converting documents to Grayscale (black and white) discards
-                chroma color channels (Cb and Cr), resulting in an additional 30%
-                to 45% reduction in image payload. This is ideal for scanned
-                documents, receipts, bank statements, and legal agreements.
+                Yes! Converting documents to Grayscale (black and white)
+                discards chroma color channels (Cb and Cr), resulting in an
+                additional 30% to 45% reduction in image payload. This is ideal
+                for scanned documents, receipts, bank statements, and legal
+                agreements.
               </p>
             </div>
           </div>
 
           <div class="faq-item">
             <button class="faq-question" type="button">
-              <span>Is there any file size limit or daily usage restriction?</span>
-              <svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+              <span
+                >Is there any file size limit or daily usage restriction?</span
+              >
+              <svg
+                class="faq-chevron"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <polyline points="6 9 12 15 18 9" />
+              </svg>
             </button>
             <div class="faq-answer">
               <p>
                 No! PDFMaster is 100% free with no file size limits, no daily
-                caps, no watermark stamps, and no account registrations required.
+                caps, no watermark stamps, and no account registrations
+                required.
               </p>
             </div>
           </div>
@@ -1908,8 +2265,8 @@
             </div>
             <h3>Rotate PDF Pages</h3>
             <p>
-              Permanently rotate upside-down or sideways pages 90°, 180°, or 270°
-              with low-RAM speed.
+              Permanently rotate upside-down or sideways pages 90°, 180°, or
+              270° with low-RAM speed.
             </p>
             <span class="tool-card__arrow">Use tool →</span>
           </a>
@@ -2253,7 +2610,20 @@
     <script src="/js/universal-popup.js"></script>
     <!-- Conversion Analytics Tracker -->
     <script src="/js/conversion-tracker.js" defer></script>
-    <!-- Tool Controller -->
+    <!-- Tool Controller Modules -->
+    <script src="/js/compress-pdf/state.js"></script>
+    <script src="/js/compress-pdf/storage.js"></script>
+    <script src="/js/compress-pdf/canvas-pool.js"></script>
+    <script src="/js/compress-pdf/device-profiles/profile-2gb.js"></script>
+    <script src="/js/compress-pdf/device-profiles/profile-4gb.js"></script>
+    <script src="/js/compress-pdf/device-profiles/profile-8gb.js"></script>
+    <script src="/js/compress-pdf/device-profiles/profile-16gb.js"></script>
+    <script src="/js/compress-pdf/device-profiles/device-detector.js"></script>
+    <script src="/js/compress-pdf/health-monitor.js"></script>
+    <script src="/js/compress-pdf/preview.js"></script>
+    <script src="/js/compress-pdf/ui.js"></script>
+    <script src="/js/compress-pdf/pipeline.js"></script>
+    <script src="/js/compress-pdf/main.js"></script>
     <script src="/js/compress-pdf.js"></script>
   </body>
 </html>
