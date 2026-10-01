@@ -57,17 +57,12 @@
       // Fallback default
       matchedProfile = {
         tier: "4GB",
-        profileName: "Fast Parallel",
         targetConcurrency: 10,
         maxPendingBuffer: 12,
         maxPoolCapacity: 12,
         maxCanvasDimension: 2200,
         workerCleanupInterval: 5,
         interPageYieldDelayMs: 5,
-        getBadgeText: (c) =>
-          `🚀 4GB RAM · Fast 10× Parallel Pipeline (${c} Cores)`,
-        getDescription: (c) =>
-          `4GB RAM Profile (10 Parallel Pages · ${c} Cores)`,
       };
     }
 
@@ -76,15 +71,12 @@
       rawCores,
       heapLimitMb,
       tier: matchedProfile.tier,
-      profileName: matchedProfile.profileName,
       targetConcurrency: matchedProfile.targetConcurrency,
       maxPendingBuffer: matchedProfile.maxPendingBuffer,
       maxPoolCapacity: matchedProfile.maxPoolCapacity,
       maxCanvasDimension: matchedProfile.maxCanvasDimension || 2400,
       workerCleanupInterval: matchedProfile.workerCleanupInterval || 5,
       interPageYieldDelayMs: matchedProfile.interPageYieldDelayMs || 0,
-      badgeText: matchedProfile.getBadgeText(rawCores),
-      tierDescription: matchedProfile.getDescription(rawCores),
     };
   }
 

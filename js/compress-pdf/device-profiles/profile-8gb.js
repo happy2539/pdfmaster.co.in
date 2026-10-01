@@ -9,18 +9,11 @@
 
   window.PDFCompressProfiles["8GB"] = {
     tier: "8GB",
-    profileName: "High Performance",
     targetConcurrency: 20,
     maxPendingBuffer: 22,
     maxPoolCapacity: 22,
     maxCanvasDimension: 3200,
     workerCleanupInterval: 8,
     interPageYieldDelayMs: 0,
-    getBadgeText: function (cores) {
-      return `🚀 8GB RAM · Fast 10× Parallel Pipeline (${cores} Cores)`;
-    },
-    getDescription: function (cores) {
-      return `8GB RAM Profile (10 Parallel Pages · ${cores} Cores)`;
-    },
   };
 })();

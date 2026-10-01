@@ -9,7 +9,6 @@
 
   window.PDFCompressProfiles["2GB"] = {
     tier: "2GB",
-    profileName: "Safe / Battery Saver",
     targetConcurrency: 2,
     maxPendingBuffer: 3,
     maxPoolCapacity: 3,
@@ -18,11 +17,5 @@
     // Flush PDF.js Web Worker cache every 3 pages
     workerCleanupInterval: 3,
     interPageYieldDelayMs: 25,
-    getBadgeText: function (cores) {
-      return `⚡ 2GB RAM · Safe 2× Parallel Pipeline (${cores} Cores)`;
-    },
-    getDescription: function (cores) {
-      return `2GB RAM Profile (2 Parallel Pages · ${cores} Cores)`;
-    },
   };
 })();

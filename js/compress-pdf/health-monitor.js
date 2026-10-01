@@ -45,12 +45,7 @@
     };
   }
 
-  function updateHeapHudUi() {
-    // HUD and technical tags removed per UI feedback; background memory headroom governor remains active
-  }
-
   window.PDFCompressHealth = {
     sampleHealthMetrics,
-    updateHeapHudUi,
   };
 })();

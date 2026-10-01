@@ -697,22 +697,6 @@ ul {
   color: var(--text-3);
 }
 
-.badge-ram {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  background: var(--savings-bg);
-  border: 1px solid var(--savings-border);
-  color: var(--savings-green-dark);
-  font-size: 0.75rem;
-  font-weight: 700;
-  padding: 3px 8px;
-  border-radius: var(--radius-full);
-}
-
-[data-theme="dark"] .badge-ram {
-  color: #34d399;
-}
 
 .file-info-bar__actions {
   display: flex;

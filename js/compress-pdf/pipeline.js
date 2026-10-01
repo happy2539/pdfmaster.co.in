@@ -280,19 +280,6 @@
             }
           }
 
-          // 4. Update Health HUD
-          const elapsedSec = (performance.now() - startTime) / 1000;
-          const speedPps =
-            elapsedSec > 0
-              ? (pagesProcessedCount / elapsedSec).toFixed(1)
-              : "0.0";
-          health.updateHeapHudUi(
-            metrics,
-            Math.max(1, inFlightRenders.size),
-            speedPps,
-            pagesProcessedCount,
-            total,
-          );
 
           // 5. Cooperative event-loop yielding to guarantee UI responsiveness
           const now = performance.now();
