@@ -169,19 +169,21 @@
 
         // Sliding window pipeline execution
         while (nextPageToEmbed <= total) {
-          // 1. Health check & adaptive governor
+          // 1. Health check & adaptive governor (Memory Headroom)
           const metrics = health.sampleHealthMetrics();
 
           if (metrics.isCritical) {
             // Critical memory pressure (<20% free): drop to 1 to guarantee zero crashes
             currentConcurrency = 1;
             canvasPool.purgeCanvasSlotPool();
+            await new Promise((r) => setTimeout(r, 40));
           } else if (metrics.isWarning) {
             // Moderate memory pressure (20% - 35% free): scale down safely (half capacity)
             currentConcurrency = Math.max(
-              1,
+              2,
               Math.floor(targetMaxConcurrency / 2),
             );
+            await new Promise((r) => setTimeout(r, 15));
           } else {
             // Memory healthy: run at full hardware tier concurrency
             currentConcurrency = targetMaxConcurrency;

@@ -57,17 +57,17 @@
       // Fallback default
       matchedProfile = {
         tier: "4GB",
-        profileName: "Balanced Turbo",
-        targetConcurrency: 5,
-        maxPendingBuffer: 6,
-        maxPoolCapacity: 6,
+        profileName: "Fast Parallel",
+        targetConcurrency: 10,
+        maxPendingBuffer: 12,
+        maxPoolCapacity: 12,
         maxCanvasDimension: 2200,
         workerCleanupInterval: 5,
-        interPageYieldDelayMs: 10,
+        interPageYieldDelayMs: 5,
         getBadgeText: (c) =>
-          `🚀 4GB RAM · Balanced 5× Parallel Pipeline (${c} Cores)`,
+          `🚀 4GB RAM · Fast 10× Parallel Pipeline (${c} Cores)`,
         getDescription: (c) =>
-          `4GB RAM Profile (5 Parallel Pages · ${c} Cores)`,
+          `4GB RAM Profile (10 Parallel Pages · ${c} Cores)`,
       };
     }
 

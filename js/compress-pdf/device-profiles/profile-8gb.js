@@ -10,9 +10,9 @@
   window.PDFCompressProfiles["8GB"] = {
     tier: "8GB",
     profileName: "High Performance",
-    targetConcurrency: 10,
-    maxPendingBuffer: 12,
-    maxPoolCapacity: 12,
+    targetConcurrency: 20,
+    maxPendingBuffer: 22,
+    maxPoolCapacity: 22,
     maxCanvasDimension: 3200,
     workerCleanupInterval: 8,
     interPageYieldDelayMs: 0,

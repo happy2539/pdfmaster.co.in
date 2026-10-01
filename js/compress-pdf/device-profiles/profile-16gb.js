@@ -10,9 +10,9 @@
   window.PDFCompressProfiles["16GB"] = {
     tier: "16GB",
     profileName: "Extreme Workstation",
-    targetConcurrency: 14,
-    maxPendingBuffer: 18,
-    maxPoolCapacity: 18,
+    targetConcurrency: 34,
+    maxPendingBuffer: 36,
+    maxPoolCapacity: 36,
     maxCanvasDimension: 4096,
     workerCleanupInterval: 12,
     interPageYieldDelayMs: 0,

@@ -1,6 +1,6 @@
 /**
- * PDFMaster - System Health & Heap Monitor
- * Tracks real-time memory headroom, detects memory pressure thresholds, and updates HUD indicators.
+ * PDFMaster - System Health & Heap Memory Monitor
+ * Tracks real-time JavaScript heap memory headroom and system health metrics to prevent browser tab crashes.
  */
 (function () {
   "use strict";
@@ -31,8 +31,8 @@
     }
 
     const remainingPct = Math.round(headroomFraction * 100);
-    const isCritical = headroomFraction <= 0.2; // 20% or less memory remaining
-    const isWarning = headroomFraction <= 0.35 && !isCritical; // 20% - 35% memory remaining
+    const isCritical = headroomFraction <= 0.2; // <= 20% free RAM
+    const isWarning = headroomFraction <= 0.35 && !isCritical; // 20% - 35% free RAM
 
     return {
       usedMb,
@@ -94,8 +94,9 @@
     if (loadingHeapHudStatus) {
       const cfg = state.hardwareConfig || {
         estimatedRamGb: 4,
-        profileName: "Standard Turbo",
+        profileName: "Fast Parallel",
       };
+
       if (metrics.isCritical) {
         loadingHeapHudStatus.textContent = `⚠️ Memory Guard: Scaled to 1× Safe Mode`;
         loadingHeapHudStatus.style.color = "#ef4444";
