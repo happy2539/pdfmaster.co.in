@@ -57,7 +57,7 @@
     <link href="/assets/fonts/fonts.css" rel="stylesheet" />
 
     <!-- Stylesheet -->
-    <link rel="stylesheet" href="/css/compress-pdf.css?v=3" />
+    <link rel="stylesheet" href="/css/compress-pdf.css?v=5" />
 
     <meta name="mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -881,144 +881,212 @@
 
           <!-- Custom Advanced Controls Panel -->
           <div class="custom-panel" id="customPanel">
+            <div class="custom-panel__header">
+              <div class="custom-panel__title-wrap">
+                <span class="custom-panel__badge">Manual Controls</span>
+                <h3 class="custom-panel__title">Advanced Compression Settings</h3>
+              </div>
+              <p class="custom-panel__desc">
+                Fine-tune rendering resolution, image quality, color channels, and target file size limits.
+              </p>
+            </div>
+
             <div class="custom-grid">
-              <!-- DPI Slider -->
-              <div class="custom-group">
-                <label class="custom-label" for="dpiSlider">
-                  <span>Resolution (DPI):</span>
-                  <span class="custom-val-badge" id="dpiValBadge">144 DPI</span>
-                </label>
-                <input
-                  type="range"
-                  class="range-slider"
-                  id="dpiSlider"
-                  min="50"
-                  max="300"
-                  step="10"
-                  value="144"
-                />
-                <div class="quick-dpi-btns">
-                  <button type="button" class="btn-chip quick-dpi-btn" data-dpi="72">
-                    72 DPI
-                  </button>
-                  <button type="button" class="btn-chip quick-dpi-btn" data-dpi="96">
-                    96 DPI
-                  </button>
-                  <button type="button" class="btn-chip quick-dpi-btn active" data-dpi="144">
-                    144 DPI
-                  </button>
-                  <button type="button" class="btn-chip quick-dpi-btn" data-dpi="200">
-                    200 DPI
-                  </button>
-                  <button type="button" class="btn-chip quick-dpi-btn" data-dpi="300">
-                    300 DPI
-                  </button>
-                </div>
-              </div>
-
-              <!-- JPEG Quality Slider -->
-              <div class="custom-group">
-                <label class="custom-label" for="qualitySlider">
-                  <span>Image Quality:</span>
-                  <span class="custom-val-badge" id="qualityValBadge">70%</span>
-                </label>
-                <input
-                  type="range"
-                  class="range-slider"
-                  id="qualitySlider"
-                  min="15"
-                  max="95"
-                  step="5"
-                  value="70"
-                />
-                <div
-                  style="
-                    display: flex;
-                    justify-content: space-between;
-                    font-size: 0.76rem;
-                    color: var(--text-3);
-                    margin-top: 4px;
-                  "
-                >
-                  <span>Smallest (15%)</span>
-                  <span>Balanced (65%)</span>
-                  <span>Max Clarity (95%)</span>
-                </div>
-              </div>
-
-              <!-- Grayscale Toggle -->
-              <div class="custom-group">
-                <label class="custom-label">
-                  <span>Color Mode:</span>
-                </label>
-                <div
-                  class="switch-row"
-                  id="grayscaleSwitch"
-                  role="checkbox"
-                  aria-checked="false"
-                  tabindex="0"
-                >
-                  <div class="switch-label">
-                    <span class="switch-title"
-                      >Convert to Grayscale (B&amp;W)</span
-                    >
-                    <span class="switch-sub"
-                      >Discards color channels for extra 30–40% reduction</span
-                    >
+              <!-- Card 1: Resolution (DPI) -->
+              <div class="custom-group custom-card">
+                <div class="custom-card__header">
+                  <div class="custom-card__title-wrap">
+                    <div class="custom-card__icon-wrap" aria-hidden="true">
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
+                        <line x1="8" y1="21" x2="16" y2="21"></line>
+                        <line x1="12" y1="17" x2="12" y2="21"></line>
+                      </svg>
+                    </div>
+                    <div>
+                      <label class="custom-card__title" for="dpiSlider">Resolution (DPI)</label>
+                      <div class="custom-card__desc">Rendering density &amp; sharpness</div>
+                    </div>
                   </div>
-                  <div class="switch-toggle"></div>
+                  <span class="custom-val-badge" id="dpiValBadge">144 DPI</span>
+                </div>
+                <div class="custom-card__body">
+                  <div class="custom-slider-wrap">
+                    <input
+                      type="range"
+                      class="range-slider"
+                      id="dpiSlider"
+                      min="50"
+                      max="300"
+                      step="10"
+                      value="144"
+                    />
+                  </div>
+                  <div class="quick-dpi-btns">
+                    <button type="button" class="btn-chip quick-dpi-btn" data-dpi="72">
+                      72 DPI
+                    </button>
+                    <button type="button" class="btn-chip quick-dpi-btn" data-dpi="96">
+                      96 DPI
+                    </button>
+                    <button type="button" class="btn-chip quick-dpi-btn active" data-dpi="144">
+                      144 DPI
+                    </button>
+                    <button type="button" class="btn-chip quick-dpi-btn" data-dpi="200">
+                      200 DPI
+                    </button>
+                    <button type="button" class="btn-chip quick-dpi-btn" data-dpi="300">
+                      300 DPI
+                    </button>
+                  </div>
                 </div>
               </div>
 
-              <!-- Target File Size Goal Calculator -->
-              <div class="custom-group">
-                <label class="custom-label" for="targetSizeInput">
-                  <span>Target File Size Goal:</span>
-                  <span style="font-size: 0.76rem; color: var(--text-3)"
-                    >Auto-calculates settings</span
+              <!-- Card 2: Image Quality -->
+              <div class="custom-group custom-card">
+                <div class="custom-card__header">
+                  <div class="custom-card__title-wrap">
+                    <div class="custom-card__icon-wrap" aria-hidden="true">
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                        <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                        <polyline points="21 15 16 10 5 21"></polyline>
+                      </svg>
+                    </div>
+                    <div>
+                      <label class="custom-card__title" for="qualitySlider">Image Quality</label>
+                      <div class="custom-card__desc">JPEG compression &amp; fidelity</div>
+                    </div>
+                  </div>
+                  <span class="custom-val-badge" id="qualityValBadge">70%</span>
+                </div>
+                <div class="custom-card__body">
+                  <div class="custom-slider-wrap">
+                    <input
+                      type="range"
+                      class="range-slider"
+                      id="qualitySlider"
+                      min="15"
+                      max="95"
+                      step="5"
+                      value="70"
+                    />
+                  </div>
+                  <div class="slider-ticks-row">
+                    <span>Smallest (15%)</span>
+                    <span>Balanced (65%)</span>
+                    <span>Max Clarity (95%)</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Card 3: Color Mode Toggle -->
+              <div class="custom-group custom-card">
+                <div class="custom-card__header">
+                  <div class="custom-card__title-wrap">
+                    <div class="custom-card__icon-wrap" aria-hidden="true">
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <path d="M12 2a10 10 0 0 1 0 20z" fill="currentColor"></path>
+                      </svg>
+                    </div>
+                    <div>
+                      <div class="custom-card__title">Color Mode</div>
+                      <div class="custom-card__desc">Grayscale channel reduction</div>
+                    </div>
+                  </div>
+                </div>
+                <div class="custom-card__body">
+                  <div
+                    class="switch-row"
+                    id="grayscaleSwitch"
+                    role="checkbox"
+                    aria-checked="false"
+                    tabindex="0"
                   >
-                </label>
-                <div class="target-input-row">
+                    <div class="switch-label">
+                      <span class="switch-title">Convert to Grayscale (B&amp;W)</span>
+                      <span class="switch-sub">Discards RGB channels for extra 30–40% reduction</span>
+                    </div>
+                    <div class="switch-toggle"></div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Card 4: Target File Size Goal -->
+              <div class="custom-group custom-card">
+                <div class="custom-card__header">
+                  <div class="custom-card__title-wrap">
+                    <div class="custom-card__icon-wrap" aria-hidden="true">
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <circle cx="12" cy="12" r="6"></circle>
+                        <circle cx="12" cy="12" r="2"></circle>
+                      </svg>
+                    </div>
+                    <div>
+                      <label class="custom-card__title" for="targetSizeInput">Target File Size Goal</label>
+                      <div class="custom-card__desc">Auto-adjusts sliders to reach target</div>
+                    </div>
+                  </div>
+                </div>
+                <div class="custom-card__body">
+                  <div class="target-input-row">
+                    <input
+                      type="number"
+                      class="target-input"
+                      id="targetSizeInput"
+                      placeholder="e.g. 200"
+                      min="10"
+                      max="10000"
+                    />
+                    <select
+                      id="targetUnitSelect"
+                      class="target-input"
+                      style="flex: 0 0 85px; cursor: pointer"
+                    >
+                      <option value="KB" selected>KB</option>
+                      <option value="MB">MB</option>
+                    </select>
+                    <button
+                      type="button"
+                      class="btn-apply-target"
+                      id="applyTargetBtn"
+                    >
+                      Calculate
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Card 5: Page Range Selector (Full Width) -->
+              <div class="custom-group custom-card custom-card--full">
+                <div class="custom-card__header">
+                  <div class="custom-card__title-wrap">
+                    <div class="custom-card__icon-wrap" aria-hidden="true">
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                        <polyline points="14 2 14 8 20 8"></polyline>
+                        <line x1="16" y1="13" x2="8" y2="13"></line>
+                        <line x1="16" y1="17" x2="8" y2="17"></line>
+                        <polyline points="10 9 9 9 8 9"></polyline>
+                      </svg>
+                    </div>
+                    <div>
+                      <label class="custom-card__title" for="pageRangeInput">Pages to Compress</label>
+                      <div class="custom-card__desc">Specify individual pages or page ranges (leave blank to compress all)</div>
+                    </div>
+                  </div>
+                  <span class="custom-card__hint-badge">Optional</span>
+                </div>
+                <div class="custom-card__body">
                   <input
-                    type="number"
+                    type="text"
                     class="target-input"
-                    id="targetSizeInput"
-                    placeholder="e.g. 200"
-                    min="10"
-                    max="10000"
+                    id="pageRangeInput"
+                    placeholder="e.g. 1-4, 7, 9-12 (All pages by default)"
                   />
-                  <select
-                    id="targetUnitSelect"
-                    class="target-input"
-                    style="flex: 0 0 85px; cursor: pointer"
-                  >
-                    <option value="KB" selected>KB</option>
-                    <option value="MB">MB</option>
-                  </select>
-                  <button
-                    type="button"
-                    class="btn-secondary"
-                    id="applyTargetBtn"
-                  >
-                    Calculate
-                  </button>
                 </div>
-              </div>
-
-              <!-- Page Range Selector -->
-              <div class="custom-group" style="grid-column: 1 / -1">
-                <label class="custom-label" for="pageRangeInput">
-                  <span>Pages to Compress:</span>
-                  <span style="font-size: 0.76rem; color: var(--text-3)"
-                    >Leave blank for all pages</span
-                  >
-                </label>
-                <input
-                  type="text"
-                  class="target-input"
-                  id="pageRangeInput"
-                  placeholder="e.g. 1-4, 7, 9-12 (Optional)"
-                />
               </div>
             </div>
           </div>
