@@ -60,6 +60,14 @@
 /rotate-pages-from-pdf /rotate-pdf       301!
 /pdf-rotator           /rotate-pdf       301!
 /rotate-pdf-online     /rotate-pdf       301!
+/compress-pdf.html     /compress-pdf     301!
+/pdf-compress.html     /compress-pdf     301!
+/pdf-compress          /compress-pdf     301!
+/pdf-compressor.html   /compress-pdf     301!
+/pdf-compressor        /compress-pdf     301!
+/compress-pdf-online   /compress-pdf     301!
+/reduce-pdf-size       /compress-pdf     301!
+/shrink-pdf            /compress-pdf     301!
 
 
 

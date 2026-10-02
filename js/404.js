@@ -68,8 +68,8 @@ const toolMap = [
   { kw: ["png"], url: "/png-to-pdf", label: "PNG to PDF" },
   {
     kw: ["compress", "reduce", "shrink", "smaller"],
-    url: "/pdf-compressor",
-    label: "PDF Compressor",
+    url: "/compress-pdf",
+    label: "Compress PDF",
   },
   {
     kw: ["split", "separate", "divide", "extract page"],
