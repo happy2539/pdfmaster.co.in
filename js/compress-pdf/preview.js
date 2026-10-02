@@ -13,9 +13,9 @@
   const comparisonGrid = document.getElementById("comparisonGrid");
   const origCanvasWrap = document.getElementById("origCanvasWrap");
   const compCanvasWrap = document.getElementById("compCanvasWrap");
-  const origMetricEl = document.getElementById("origMetric");
-  const compMetricEl = document.getElementById("compMetric");
-  const pageCounterEl = document.getElementById("pageCounter");
+  const origMetricEl = document.getElementById("origMetricEl");
+  const compMetricEl = document.getElementById("compMetricEl");
+  const pageCounterEl = document.getElementById("pageCounterEl");
   const prevPageBtn = document.getElementById("prevPageBtn");
   const nextPageBtn = document.getElementById("nextPageBtn");
   const fsPrevBtn = document.getElementById("fsPrevBtn");
