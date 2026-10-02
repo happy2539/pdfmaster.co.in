@@ -16,13 +16,23 @@ function applyTheme(theme) {
   }
 }
 
-const saved = localStorage.getItem("pdfmaster-theme") || "light";
+const saved =
+  localStorage.getItem("pdfmaster-theme") ||
+  (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
 applyTheme(saved);
 
 btn.addEventListener("click", () => {
   const next = root.getAttribute("data-theme") === "dark" ? "light" : "dark";
   applyTheme(next);
 });
+
+window
+  .matchMedia("(prefers-color-scheme: dark)")
+  .addEventListener("change", (e) => {
+    if (!localStorage.getItem("pdfmaster-theme")) {
+      applyTheme(e.matches ? "dark" : "light");
+    }
+  });
 
 /* Hamburger dropdown */
 const hamburgerBtn = document.getElementById("hamburgerBtn");

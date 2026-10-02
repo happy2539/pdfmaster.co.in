@@ -2,18 +2,35 @@
 <html lang="en" data-theme="light">
   <head>
     <meta charset="UTF-8" />
+    <script>
+      (function () {
+        try {
+          var t = localStorage.getItem("pdfmaster-theme");
+          if (!t) {
+            t = window.matchMedia("(prefers-color-scheme: dark)").matches
+              ? "dark"
+              : "light";
+          }
+          document.documentElement.setAttribute("data-theme", t);
+        } catch (e) {
+          document.documentElement.setAttribute("data-theme", "light");
+        }
+      })();
+    </script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <title>Privacy Policy | No Upload PDF Tools – PDFMaster</title>
+    <title>
+      Privacy Policy | 100% On-Device &amp; Zero Upload PDF Tools – PDFMaster
+    </title>
 
     <meta
       name="description"
-      content="Read PDFMaster's privacy policy. All files are processed locally in your browser with no uploads, no tracking, and no data collection. 100% private PDF tools."
+      content="Read PDFMaster's official Privacy Policy. Discover how our 100% on-device, zero-upload architecture, client-side session disaster recovery, and operational telemetry protect your privacy."
     />
 
     <meta
       name="keywords"
-      content="PDF privacy policy, no upload PDF converter, client side PDF tools, secure PDF tools, private PDF processing, browser PDF tools"
+      content="PDF privacy policy, zero upload PDF tools, client side PDF converter, private PDF processing, browser PDF tools, PDFMaster telemetry policy, secure PDF processing"
     />
 
     <meta name="robots" content="index, follow" />
@@ -31,7 +48,7 @@
     <meta property="og:title" content="Privacy Policy – PDFMaster" />
     <meta
       property="og:description"
-      content="No uploads. No tracking. No data collection. Learn how PDFMaster keeps your files private."
+      content="100% on-device processing. Zero document uploads. Radical privacy by design. Learn how PDFMaster keeps your documents safe."
     />
     <meta property="og:url" content="https://pdfmaster.co.in/privacy" />
     <meta property="og:type" content="website" />
@@ -49,7 +66,7 @@
     <meta name="twitter:title" content="PDFMaster Privacy Policy" />
     <meta
       name="twitter:description"
-      content="100% private PDF tools with no uploads. Your data stays on your device."
+      content="100% private PDF tools with zero document uploads. Your files never leave your device."
     />
     <meta
       name="twitter:image"
@@ -128,7 +145,9 @@
         },
         "name": "Privacy Policy – PDFMaster",
         "url": "https://pdfmaster.co.in/privacy",
-        "description": "Privacy policy explaining how PDFMaster processes files locally with no uploads or tracking.",
+        "description": "Comprehensive privacy policy detailing PDFMaster's zero-upload on-device processing, client-side session disaster recovery, and operational performance telemetry.",
+        "datePublished": "2024-05-15",
+        "dateModified": "2026-10-02",
         "publisher": {
           "@type": "Organization",
           "name": "PDFMaster",
@@ -176,6 +195,7 @@
       ></iframe
     ></noscript>
     <!-- End Google Tag Manager (noscript) -->
+
     <!-- ═══════════════ NAVBAR ═══════════════ -->
     <header>
       <nav class="main-nav">
@@ -271,25 +291,37 @@
         aria-label="Page sections"
       >
         <a href="#overview"
-          ><span class="dd-dot" aria-hidden="true"></span> What is it</a
+          ><span class="dd-dot" aria-hidden="true"></span> Overview</a
         >
-        <a href="#data-collection"
-          ><span class="dd-dot" aria-hidden="true"></span> Data Collection</a
+        <a href="#data-classification"
+          ><span class="dd-dot" aria-hidden="true"></span> Data
+          Classification</a
         >
         <a href="#on-device"
           ><span class="dd-dot" aria-hidden="true"></span> On-Device
           Processing</a
         >
+        <a href="#telemetry"
+          ><span class="dd-dot" aria-hidden="true"></span> Telemetry &amp;
+          Performance</a
+        >
+        <a href="#voluntary-forms"
+          ><span class="dd-dot" aria-hidden="true"></span> Forms &amp;
+          Communications</a
+        >
         <a href="#cookies"
-          ><span class="dd-dot" aria-hidden="true"></span> Cookies</a
+          ><span class="dd-dot" aria-hidden="true"></span> Cookies &amp; Ads</a
         >
         <a href="#third-party"
-          ><span class="dd-dot" aria-hidden="true"></span> Third Party</a
+          ><span class="dd-dot" aria-hidden="true"></span> Infrastructure</a
         >
         <a href="#your-rights"
           ><span class="dd-dot" aria-hidden="true"></span> Your Rights</a
         >
-        <a href="#contact"
+        <a href="#data-security"
+          ><span class="dd-dot" aria-hidden="true"></span> Security</a
+        >
+        <a href="#contact-us"
           ><span class="dd-dot" aria-hidden="true"></span> Contact Us</a
         >
         <a href="/subscribe"
@@ -325,13 +357,14 @@
         <div class="page-hero-inner">
           <div class="page-hero-badge">
             <span class="badge-dot"></span>
-            100% Private · No Uploads · No Tracking
+            100% On-Device · Zero Document Uploads · Privacy by Design
           </div>
           <h1>Your Privacy is Our<br /><em>Top Priority</em></h1>
           <p>
-            We built PDFMaster from the ground up with a single rule: your files
-            never leave your device. This policy explains exactly what we
-            collect, what we don't, and why.
+            We built PDFMaster with a non-negotiable rule: your files never
+            leave your device. This policy provides complete transparency on
+            what we process, what technical metrics we collect, and how our
+            architecture guarantees total document confidentiality.
           </p>
           <div class="page-hero-meta">
             <div class="meta-item">
@@ -353,7 +386,7 @@
                 <line x1="8" y1="2" x2="8" y2="6"></line>
                 <line x1="3" y1="10" x2="21" y2="10"></line>
               </svg>
-              Last updated: 17 August, 2026
+              Last updated: 02 October, 2026
             </div>
             <div class="meta-item">
               <svg
@@ -411,7 +444,7 @@
           <div class="sec-head rv" style="text-align: center">
             <div class="sec-label">Privacy at a Glance</div>
             <h2>The Short Version</h2>
-            <p>Three things that define how PDFMaster handles your data</p>
+            <p>Three core commitments that define PDFMaster's data handling</p>
           </div>
           <div class="highlights-grid rv">
             <div class="hcard">
@@ -430,11 +463,11 @@
               >
                 <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
               </svg>
-              <h3>Zero File Uploads</h3>
+              <h3>Zero Document Uploads</h3>
               <p>
-                Every PDF and image you process stays 100% on your device. We
-                have no servers that receive, store, or analyse your files —
-                ever.
+                Every PDF, photo, drawing, or document you process stays 100% on
+                your device. We operate zero servers or backend endpoints
+                capable of receiving, viewing, or storing your files — ever.
               </p>
             </div>
             <div class="hcard">
@@ -455,11 +488,11 @@
                 <line x1="12" y1="20" x2="12" y2="4"></line>
                 <line x1="6" y1="20" x2="6" y2="14"></line>
               </svg>
-              <h3>Minimal Data Collection</h3>
+              <h3>Minimal Operational Telemetry</h3>
               <p>
-                We only collect basic, anonymised analytics (page views,
-                country-level traffic) to improve the service. No personal
-                identifiers are stored.
+                We capture anonymous execution metrics (processing duration,
+                file size in bytes, device memory tier, country) strictly to
+                optimize tool stability and prevent browser crashes.
               </p>
             </div>
             <div class="hcard">
@@ -481,8 +514,9 @@
               </svg>
               <h3>No Selling, Ever</h3>
               <p>
-                We do not sell, rent, share, or trade any user data to third
-                parties for advertising or any other purpose. Full stop.
+                We never sell, rent, broker, or trade any user data, telemetry,
+                or contact details to third parties for advertising or tracking
+                purposes. Full stop.
               </p>
             </div>
           </div>
@@ -497,16 +531,28 @@
             <aside class="toc-sidebar rv">
               <div class="toc-title">Contents</div>
               <ul class="toc-list">
-                <li><a href="#overview" class="active">1. Overview</a></li>
-                <li><a href="#data-collection">2. Data We Collect</a></li>
+                <li>
+                  <a href="#overview" class="active"
+                    >1. Overview &amp; Architecture</a
+                  >
+                </li>
+                <li>
+                  <a href="#data-classification">2. Data Classification</a>
+                </li>
                 <li><a href="#on-device">3. On-Device Processing</a></li>
-                <li><a href="#cookies">4. Cookies & Analytics</a></li>
-                <li><a href="#third-party">5. Third-Party Services</a></li>
-                <li><a href="#your-rights">6. Your Rights</a></li>
-                <li><a href="#data-security">7. Data Security</a></li>
-                <li><a href="#childrens-privacy">8. Children's Privacy</a></li>
-                <li><a href="#policy-changes">9. Policy Changes</a></li>
-                <li><a href="#contact-us">10. Contact Us</a></li>
+                <li><a href="#telemetry">4. Operational Telemetry</a></li>
+                <li>
+                  <a href="#voluntary-forms">5. Forms &amp; Communications</a>
+                </li>
+                <li><a href="#cookies">6. Cookies &amp; Advertising</a></li>
+                <li>
+                  <a href="#third-party">7. Third-Party Infrastructure</a>
+                </li>
+                <li><a href="#your-rights">8. Global Privacy Rights</a></li>
+                <li><a href="#data-security">9. Data Security</a></li>
+                <li><a href="#childrens-privacy">10. Children's Privacy</a></li>
+                <li><a href="#policy-changes">11. Policy Changes</a></li>
+                <li><a href="#contact-us">12. Contact &amp; Grievance</a></li>
               </ul>
             </aside>
 
@@ -532,27 +578,82 @@
                     <circle cx="11" cy="11" r="8"></circle>
                     <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
                   </svg>
-                  Overview &amp; Scope
+                  Overview &amp; Architectural Principles
                 </h2>
                 <p>
                   Welcome to PDFMaster (<strong>pdfmaster.co.in</strong>). This
-                  Privacy Policy explains how we collect, use, and protect any
-                  information when you visit our website or use our suite of PDF and
-                  image tools. By using PDFMaster, you agree to the
-                  practices described in this policy.
+                  Privacy Policy explains our uncompromising commitment to user
+                  privacy and provides complete technical disclosure regarding
+                  how data is handled across our platform. By accessing
+                  PDFMaster, using any of our tools, or subscribing to our
+                  updates, you acknowledge the terms outlined in this document.
                 </p>
                 <p>
-                  PDFMaster provides a complete suite of browser-based document utilities including
-                  <strong>PDF Editor &amp; Annotator</strong>, <strong>Photo to PDF</strong>,
-                  <strong>PDF to Photo</strong>, <strong>Split PDF</strong>, <strong>PDF Page Reorder</strong>,
-                  <strong>PDF Compiler (Merge)</strong>, <strong>PDF Metadata Editor &amp; Viewer</strong>,
-                  and <strong>Watermark PDF</strong>.
-                  The fundamental architectural principle of our service is that
+                  PDFMaster provides a complete suite of browser-based document
+                  utilities including:
+                </p>
+                <ul>
+                  <li>
+                    <a href="/pdf-editor">PDF Editor &amp; Annotator</a> — Draw,
+                    type, highlight, erase, sign, and edit PDFs directly in your
+                    browser.
+                  </li>
+                  <li>
+                    <a href="/pdf-viewer">PDF Viewer</a> — High-performance
+                    client-side document reading and navigation.
+                  </li>
+                  <li>
+                    <a href="/compress-pdf">Compress PDF</a> — Multi-tier
+                    document compression optimized for memory-constrained
+                    devices.
+                  </li>
+                  <li>
+                    <a href="/photo-to-pdf">Photo to PDF</a> — Convert single or
+                    multi-image galleries into unified PDF documents.
+                  </li>
+                  <li>
+                    <a href="/pdf-to-photo">PDF to Photo (JPG/PNG)</a> — Extract
+                    high-resolution images from PDF pages.
+                  </li>
+                  <li>
+                    <a href="/split-pdf">Split PDF</a> — Extract custom page
+                    ranges or separate individual pages into independent files.
+                  </li>
+                  <li>
+                    <a href="/merge-pdf">PDF Compiler (Merge PDF)</a> — Combine
+                    multiple PDF documents into a single consolidated file.
+                  </li>
+                  <li>
+                    <a href="/delete-pdf-pages">Delete PDF Pages</a> — Remove
+                    unwanted pages cleanly from existing documents.
+                  </li>
+                  <li>
+                    <a href="/rotate-pdf">Rotate PDF</a> — Correct document
+                    orientation page-by-page or globally.
+                  </li>
+                  <li>
+                    <a href="/pdf-reorder">PDF Page Reorder</a> — Rearrange page
+                    order interactively with drag-and-drop ease.
+                  </li>
+                  <li>
+                    <a href="/pdf-metadata"
+                      >PDF Metadata Viewer &amp; Remover</a
+                    >
+                    — Inspect and sanitize document metadata (author, title,
+                    creation date, software).
+                  </li>
+                  <li>
+                    <a href="/watermark-pdf-add">Watermark PDF</a> — Add custom
+                    text watermarks with opacity and rotation controls.
+                  </li>
+                </ul>
+                <p>
+                  The fundamental architectural principle of PDFMaster is that
                   <strong
-                    >all file processing, conversions, manipulations, and session caching take place 100% locally within your
-                    browser</strong
-                  >. No document bytes, text, images, or metadata are ever transmitted
-                  to our servers.
+                    >all file operations, rendering, parsing, and mutations
+                    execute 100% locally within your client browser</strong
+                  >. Your documents, photos, forms, and signatures never leave
+                  your device.
                 </p>
                 <div class="highlight-box">
                   <svg
@@ -569,27 +670,21 @@
                     aria-hidden="true"
                   >
                     <path
-                      d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1.3.5 2.6 1.5 3.5.8.8 1.3 1.5 1.5 2.5"
+                      d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"
                     ></path>
-                    <path d="M9 18h6"></path>
-                    <path d="M10 22h4"></path>
                   </svg>
                   <p>
-                    PDFMaster's zero-upload architecture means we are technically
-                    incapable of accessing, viewing, intercepting, or storing your documents —
-                    not simply because of a policy promise, but because our
-                    infrastructure is designed without server-side file reception capabilities.
+                    <strong>Architectural Guarantee:</strong> PDFMaster is
+                    technically incapable of accessing, viewing, intercepting,
+                    or storing your documents — not merely because of a legal
+                    promise, but because our web application possesses no
+                    server-side document upload endpoints whatsoever.
                   </p>
                 </div>
-                <p>
-                  This policy applies to all visitors and users of pdfmaster.co.in
-                  globally. If you have any questions, please
-                  <a href="/contact">contact us</a> before using our tools.
-                </p>
               </div>
 
-              <!-- 2. Data Collection -->
-              <div class="policy-section rv" id="data-collection">
+              <!-- 2. Data Classification -->
+              <div class="policy-section rv" id="data-classification">
                 <h2>
                   <span class="section-num">2</span>
                   <svg
@@ -610,51 +705,171 @@
                     ></path>
                     <rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect>
                   </svg>
-                  Information We Collect &amp; Store
+                  Data Classification: What We Collect vs. What We NEVER Collect
                 </h2>
                 <p>
-                  We believe in radical transparency and collecting only the bare minimum technical data required to operate and maintain the website:
+                  To make data boundaries transparent, the table below provides
+                  a comprehensive classification of all data types encountered
+                  on PDFMaster:
                 </p>
 
-                <p><strong>1. Technical data collected automatically:</strong></p>
-                <ul>
-                  <li>
-                    Browser type and rendering engine (e.g., Chrome, Firefox, Safari) — used to optimize WebAssembly and canvas rendering compatibility
-                  </li>
-                  <li>
-                    Operating system (Windows, macOS, Linux, Android, iOS) — used to verify cross-platform responsive styling
-                  </li>
-                  <li>
-                    Approximate regional location derived from IP (country/city level only) — used for aggregate performance and traffic insights
-                  </li>
-                  <li>
-                    Page visits, bounce rates, and referring URLs — used to measure which tools are most helpful
-                  </li>
-                </ul>
+                <div class="table-responsive">
+                  <table class="policy-table">
+                    <thead>
+                      <tr>
+                        <th>Data Category</th>
+                        <th>Specific Examples</th>
+                        <th>Storage Location</th>
+                        <th>Privacy Classification</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td><strong>Document Files &amp; Content</strong></td>
+                        <td>
+                          PDF pages, text, scans, photos, digital signatures,
+                          vector strokes, form entries
+                        </td>
+                        <td>In-Memory (Device RAM only)</td>
+                        <td>
+                          <span class="badge-tag tag-never"
+                            >100% Private (Never Uploaded)</span
+                          >
+                        </td>
+                      </tr>
+                      <tr>
+                        <td><strong>Disaster Session Recovery</strong></td>
+                        <td>
+                          Temporary draft canvas states, active split
+                          configurations, document snapshot buffers
+                        </td>
+                        <td>Sandboxed Browser IndexedDB</td>
+                        <td>
+                          <span class="badge-tag tag-local"
+                            >Local Device Only (Sandboxed)</span
+                          >
+                        </td>
+                      </tr>
+                      <tr>
+                        <td><strong>Operational Telemetry</strong></td>
+                        <td>
+                          Tool name, execution duration, approximate file size range, sanitized
+                          extension (e.g. PDF), page count
+                        </td>
+                        <td>Secure Edge Infrastructure</td>
+                        <td>
+                          <span class="badge-tag tag-telemetry"
+                            >Anonymized Technical Metrics</span
+                          >
+                        </td>
+                      </tr>
+                      <tr>
+                        <td><strong>Hardware Diagnostics</strong></td>
+                        <td>
+                          Approximate device capability tier and general memory availability
+                        </td>
+                        <td>Secure Edge Infrastructure</td>
+                        <td>
+                          <span class="badge-tag tag-telemetry"
+                            >Performance Optimization Only</span
+                          >
+                        </td>
+                      </tr>
+                      <tr>
+                        <td><strong>Edge Geolocation &amp; IP</strong></td>
+                        <td>
+                          Approximate country/region, masked IP address
+                        </td>
+                        <td>Network Edge (Transient)</td>
+                        <td>
+                          <span class="badge-tag tag-telemetry"
+                            >Abuse Prevention &amp; Regional Routing</span
+                          >
+                        </td>
+                      </tr>
+                      <tr>
+                        <td><strong>Voluntary Newsletter Form</strong></td>
+                        <td>
+                          First name, optional last name, email address,
+                          optional mobile number, use case
+                        </td>
+                        <td>Encrypted Application Storage</td>
+                        <td>
+                          <span class="badge-tag tag-local"
+                            >Voluntary / Opt-in Communications</span
+                          >
+                        </td>
+                      </tr>
+                      <tr>
+                        <td><strong>Voluntary Support Inquiries</strong></td>
+                        <td>
+                          Sender name, email address, subject, inquiry text
+                        </td>
+                        <td>Encrypted Support Processor</td>
+                        <td>
+                          <span class="badge-tag tag-local"
+                            >Customer Support Assistance Only</span
+                          >
+                        </td>
+                      </tr>
+                      <tr>
+                        <td><strong>User Interface Preferences</strong></td>
+                        <td>
+                          Dark / Light mode selection
+                          (<code>pdfmaster-theme</code>)
+                        </td>
+                        <td>Browser localStorage</td>
+                        <td>
+                          <span class="badge-tag tag-local"
+                            >Local Device Preference Only</span
+                          >
+                        </td>
+                      </tr>
+                      <tr>
+                        <td><strong>Advertising &amp; Analytics</strong></td>
+                        <td>
+                          Google Tag Manager identifiers, Google AdSense
+                          ad-serving cookies
+                        </td>
+                        <td>Third-party Cookies</td>
+                        <td>
+                          <span class="badge-tag tag-telemetry"
+                            >Third-Party Opt-Out Supported</span
+                          >
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
 
-                <p><strong>2. Client-Side Browser Storage (On Your Device Only):</strong></p>
-                <ul>
+                <h3>Information We NEVER Collect, View, or Store</h3>
+                <ul class="negative-list">
                   <li>
-                    <strong>IndexedDB Session Recovery Stores</strong> — To prevent accidental loss of work from browser crashes, reloads, or closed tabs, tools such as PDF Editor, Split PDF, Photo to PDF, PDF to Photo, PDF Reorder, and PDF Metadata save draft configurations and file buffers locally to your browser's private IndexedDB storage. <em>This data never leaves your computer or phone, is inaccessible to third parties or PDFMaster servers, and can be cleared instantly at any time by clicking the reset/clear button or clearing your browser site data.</em>
+                    <strong>Document contents:</strong> We never inspect, read,
+                    copy, or transmit the text, images, drawings, or vector
+                    paths contained inside your files.
                   </li>
                   <li>
-                    <strong>localStorage Theme Preference</strong> — Stores your light or dark mode theme selection (<code>pdfmaster-theme</code>) across visits. Contains no personal or tracking data.
-                  </li>
-                </ul>
-
-                <p><strong>Information we NEVER collect or receive:</strong></p>
-                <ul>
-                  <li>
-                    The contents, file names, text, images, or metadata of any documents processed on the site
+                    <strong>Original file names or paths:</strong> We strip all
+                    original file names (e.g., <code>tax_return_2026.pdf</code>)
+                    before sending operational metrics, retaining strictly the
+                    file extension (e.g., <code>PDF</code>) for format
+                    analytics.
                   </li>
                   <li>
-                    Personal identifiers such as your real name, physical address, or phone number
+                    <strong>User account credentials:</strong> There are no user
+                    accounts, passwords, or login walls on PDFMaster.
                   </li>
                   <li>
-                    Payment information, credit card numbers, or billing accounts (PDFMaster is 100% free)
+                    <strong>Financial or payment information:</strong> PDFMaster
+                    is completely free. We never request credit cards, bank
+                    accounts, or billing information.
                   </li>
-                  <li>User account passwords or login credentials (no accounts exist on PDFMaster)</li>
-                  <li>Precise GPS location data</li>
+                  <li>
+                    <strong>Precise GPS coordinates:</strong> We do not request
+                    or access browser device geolocation coordinates (GPS/Wi-Fi
+                    positioning).
+                  </li>
                 </ul>
               </div>
 
@@ -686,15 +901,176 @@
                     <line x1="8" y1="21" x2="16" y2="21"></line>
                     <line x1="12" y1="17" x2="12" y2="21"></line>
                   </svg>
-                  On-Device File Processing &amp; Session Recovery
+                  100% On-Device File Processing &amp; Session Recovery
                 </h2>
                 <p>
-                  Every tool on PDFMaster operates entirely within your
-                  web browser utilizing
-                  <strong
-                    >client-side JavaScript, WebAssembly (Wasm), HTML5 Canvas, and modern Web APIs</strong
-                  >.
+                  Every single tool on PDFMaster is engineered to operate
+                  exclusively inside your web browser using modern Web APIs,
+                  client-side JavaScript, WebAssembly (WASM), HTML5 Canvas, and
+                  Web Workers.
                 </p>
+
+                <h3>How In-Browser Execution Protects You</h3>
+                <p>
+                  When you select or drag-and-drop a document into PDFMaster,
+                  the file is read directly into your device's local memory
+                  (RAM) via standard browser <code>FileReader</code> or
+                  <code>ArrayBuffer</code> APIs. When you merge, compress,
+                  split, annotate, or convert documents, your own CPU and GPU
+                  perform the mathematical calculations. The resulting output
+                  file is synthesized directly in memory as a binary
+                  <code>Blob</code> and passed directly to your browser's
+                  download manager. No remote server is ever involved in
+                  opening, processing, or saving your files.
+                </p>
+
+                <h3>Client-Side Disaster Session Recovery (IndexedDB)</h3>
+                <p>
+                  Accidental browser tab closures, power outages, system
+                  restarts, or memory crashes shouldn't cost you hours of work.
+                  To provide resiliency:
+                </p>
+                <ul>
+                  <li>
+                    All tools on PDFMaster such as <strong>PDF Editor</strong>,
+                    <strong>Split PDF</strong>, <strong>Photo to PDF</strong>,
+                    and <strong>Compress PDF</strong> automatically maintain a
+                    temporary working snapshot buffer inside your browser's
+                    local <strong>IndexedDB storage</strong>.
+                  </li>
+                  <li>
+                    If your session is interrupted, returning to the tool offers
+                    an instantaneous one-click restoration option.
+                  </li>
+                  <li>
+                    <strong>Sandbox Isolation:</strong> IndexedDB is an
+                    isolated, sandboxed database built directly into your web
+                    browser. Under modern web security models (Same-Origin
+                    Policy), this storage is strictly inaccessible to
+                    third-party domains and cannot be queried by remote servers.
+                  </li>
+                  <li>
+                    <strong>Complete User Control:</strong> You can purge all
+                    session recovery records at any moment by clicking the
+                    "Clear" or "Reset" button inside the tool, by clearing site
+                    cookies and storage in your browser settings, or by using
+                    Incognito / Private browsing mode (which deletes all
+                    IndexedDB databases automatically when the window is
+                    closed).
+                  </li>
+                </ul>
+
+                <h3>Complete Offline Functionality</h3>
+                <p>
+                  Because all processing engines, stylesheets, fonts, and
+                  scripts are locally hosted and cached via Service Worker
+                  caching, PDFMaster tools continue to operate
+                  flawlessly even when your device is completely disconnected
+                  from the internet.
+                </p>
+              </div>
+
+              <!-- 4. Operational Telemetry -->
+              <div class="policy-section rv" id="telemetry">
+                <h2>
+                  <span class="section-num">4</span>
+                  <svg
+                    class="section-icon"
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    aria-hidden="true"
+                  >
+                    <line x1="18" y1="20" x2="18" y2="10"></line>
+                    <line x1="12" y1="20" x2="12" y2="4"></line>
+                    <line x1="6" y1="20" x2="6" y2="14"></line>
+                  </svg>
+                  Operational Telemetry &amp; Performance Analytics
+                </h2>
+                <p>
+                  Executing computationally intensive tasks (such as PDF
+                  compression, high-resolution rendering, and multi-document
+                  compilation) entirely within client browser memory requires
+                  continuous monitoring to prevent browser slowdowns and crashes,
+                  particularly on low-memory mobile devices.
+                </p>
+                <p>
+                  To maintain service reliability and optimize tool speed,
+                  PDFMaster collects high-level, anonymous operational metrics
+                  upon successful tool execution.
+                </p>
+
+                <h3>What Operational Telemetry Includes</h3>
+                <p>
+                  Telemetry events are non-blocking, lightweight, and strictly
+                  restricted to aggregate performance indicators:
+                </p>
+                <ul>
+                  <li>
+                    <strong>Tool Name:</strong> The specific utility executed (e.g.
+                    Compress PDF, Merge PDF, Photo to PDF).
+                  </li>
+                  <li>
+                    <strong>Processing Duration:</strong> Elapsed calculation
+                    time to monitor conversion speed across software updates.
+                  </li>
+                  <li>
+                    <strong>Processed File Size Category:</strong> General file
+                    size metrics to benchmark algorithmic efficiency and memory thresholds.
+                  </li>
+                  <li>
+                    <strong>Sanitized File Format:</strong> File extension type
+                    (e.g. PDF, JPG, PNG). Original document names and directory
+                    paths are never transmitted.
+                  </li>
+                  <li>
+                    <strong>Page / Image Count:</strong> Numerical count of pages
+                    or images processed during the session.
+                  </li>
+                  <li>
+                    <strong>Hardware Tier:</strong> Generalized, non-unique device
+                    capabilities (such as approximate memory tier and CPU category)
+                    to help our client-side pipelines prevent out-of-memory errors on
+                    resource-constrained devices.
+                  </li>
+                  <li>
+                    <strong>General Client Environment:</strong> High-level
+                    browser family, operating system family, device category
+                    (Desktop, Mobile, or Tablet), and preferred language.
+                  </li>
+                </ul>
+
+                <h3>Network Edge Protection &amp; IP Anonymization</h3>
+                <ul>
+                  <li>
+                    <strong>Regional Distribution:</strong> Network edge routing
+                    determines approximate, broad regional traffic patterns (such
+                    as country or general geographic zone) to ensure edge caching
+                    performance.
+                  </li>
+                  <li>
+                    <strong>Abuse Prevention &amp; Rate Limiting:</strong> Network
+                    traffic is evaluated at the edge to protect against automated
+                    flooding, scraping, and denial-of-service abuse.
+                  </li>
+                  <li>
+                    <strong>IP Masking &amp; Anonymization:</strong> Client IP
+                    addresses are processed transiently at the network perimeter
+                    and are masked or discarded. IP addresses are never linked to
+                    document operations or stored in accessible analytical reports.
+                  </li>
+                  <li>
+                    <strong>Zero Personal Linkage:</strong> All operational metrics
+                    are stored in aggregate, anonymous form and cannot be linked to
+                    individual users or specific personal identities.
+                  </li>
+                </ul>
                 <div class="highlight-box">
                   <svg
                     class="hb-icon"
@@ -714,39 +1090,108 @@
                     ></path>
                   </svg>
                   <p>
-                    <strong>Your files never leave your device.</strong> When
-                    you open a document, image, or PDF, it is loaded into your local browser's
-                    memory (RAM) and processed on your own CPU/GPU. The output file is synthesized directly in memory and saved to your device storage. No server transmission occurs.
+                    <strong>Telemetry Guarantee:</strong> Operational telemetry
+                    NEVER contains document text, document imagery, binary file bytes,
+                    passwords, or personal identifiers. If telemetry is blocked by your
+                    browser, privacy extension, or network firewall, all PDFMaster
+                    tools continue to function normally without restriction.
                   </p>
                 </div>
-                <p><strong>How the Disaster Recovery / Session Recovery System Works:</strong></p>
+              </div>
+
+              <!-- 5. Voluntary Forms -->
+              <div class="policy-section rv" id="voluntary-forms">
+                <h2>
+                  <span class="section-num">5</span>
+                  <svg
+                    class="section-icon"
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    aria-hidden="true"
+                  >
+                    <path
+                      d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"
+                    ></path>
+                    <polyline points="22,6 12,13 2,6"></polyline>
+                  </svg>
+                  Voluntary Communications &amp; Form Submissions
+                </h2>
                 <p>
-                  We understand how frustrating it is to lose in-progress edits or complex split configurations due to an accidental tab closure, power outage, or browser crash. To protect your work:
+                  While using our document tools requires zero personal
+                  information, you may voluntarily submit data through two
+                  specific communication channels:
+                </p>
+
+                <h3>1. Newsletter &amp; Product Updates (subscribe)</h3>
+                <p>
+                  Users who wish to receive PDF productivity tips, feature
+                  announcements, and new tool alerts can subscribe through our
+                  voluntary form.
                 </p>
                 <ul>
                   <li>
-                    Our tools utilize client-side <strong>IndexedDB</strong> to save temporary snapshot buffers of your active session directly on your device.
+                    <strong>Information Collected:</strong> First Name
+                    (required), Last Name (optional), Email Address (required),
+                    Mobile Number (optional), and PDF Use Case category
+                    (optional).
                   </li>
                   <li>
-                    When you return to the tool, a recovery prompt or pulsing recovery icon lets you restore your document and configurations with a single click.
+                    <strong>Processing &amp; Storage:</strong> Data is encrypted
+                    in transit and transmitted via secure TLS endpoints to our
+                    protected subscription application storage.
                   </li>
                   <li>
-                    <strong>Zero Server Exposure:</strong> IndexedDB is a sandboxed, client-only database built into your browser. We have zero network endpoints capable of reading your IndexedDB records.
+                    <strong>Strict Purpose Limitation:</strong> Subscriber
+                    details are used exclusively to deliver PDFMaster
+                    newsletters, tool guides, and major announcements. We will
+                    never sell, rent, or distribute our subscriber list to
+                    advertisers or third parties.
                   </li>
                   <li>
-                    <strong>User Control:</strong> You can wipe recovery records at any moment by clicking the clear recovery button in the tool or by clearing site cookies/storage in your browser settings.
+                    <strong>Opt-Out &amp; Unsubscribe:</strong> You can
+                    unsubscribe at any time by clicking the unsubscribe link
+                    present in every newsletter issue or by sending an email
+                    with the subject "Unsubscribe" to
+                    <a href="mailto:support@pdfmaster.co.in"
+                      >support@pdfmaster.co.in</a
+                    >.
                   </li>
                 </ul>
-                <p><strong>Offline Availability:</strong></p>
+
+                <h3>2. Support &amp; Contact Inquiries (contact)</h3>
                 <p>
-                  Because all processing scripts, stylesheets, fonts, and WebAssembly bundles are locally hosted and cached via our Service Worker, PDFMaster tools function seamlessly even without an active internet connection once loaded.
+                  When you submit an inquiry, bug report, or feedback via our
+                  contact page:
                 </p>
+                <ul>
+                  <li>
+                    <strong>Information Collected:</strong> Your name, email
+                    address, inquiry subject, and message text.
+                  </li>
+                  <li>
+                    <strong>Processing:</strong> Form submissions are handled
+                    securely through an encrypted transit processor under
+                    industry-standard TLS encryption.
+                  </li>
+                  <li>
+                    <strong>Usage:</strong> Contact information is utilized
+                    strictly to communicate with you and resolve your support
+                    request.
+                  </li>
+                </ul>
               </div>
 
-              <!-- 4. Cookies -->
+              <!-- 6. Cookies -->
               <div class="policy-section rv" id="cookies">
                 <h2>
-                  <span class="section-num">4</span>
+                  <span class="section-num">6</span>
                   <svg
                     class="section-icon"
                     xmlns="http://www.w3.org/2000/svg"
@@ -768,57 +1213,98 @@
                     <path d="M12 17v.01"></path>
                     <path d="M11 12v.01"></path>
                   </svg>
-                  Cookies, Storage &amp; Analytics
+                  Cookies, Local Storage &amp; Advertising
                 </h2>
                 <p>
-                  PDFMaster uses minimal, privacy-respecting storage for
-                  functionality, performance analytics, and advertising.
+                  PDFMaster utilizes minimal, privacy-respecting client-side
+                  storage mechanisms and industry-standard advertising cookies:
                 </p>
-                <p><strong>Storage mechanisms used:</strong></p>
+
+                <h3>Browser Storage Mechanisms</h3>
                 <ul>
                   <li>
-                    <strong>localStorage (Theme &amp; Preferences)</strong> — Stores your
-                    light/dark mode toggle selection so it persists between sessions without tracking your identity.
+                    <strong>localStorage (UI Preferences):</strong> Stores your
+                    dark or light mode preference (<code>pdfmaster-theme</code>)
+                    across page loads. It contains no tracking identifiers, user
+                    IDs, or personal data.
                   </li>
                   <li>
-                    <strong>IndexedDB (Session Recovery)</strong> — Sandboxed local browser storage used solely to retain active document drafts on your device.
+                    <strong>IndexedDB (Session Recovery):</strong> Stores
+                    transient working drafts locally on your machine to prevent
+                    data loss. Kept 100% on-device.
                   </li>
                   <li>
-                    <strong>Analytics session identifiers</strong> — Anonymized
-                    session metrics used to evaluate website uptime and page performance without identifying individuals.
+                    <strong>Cache Storage (Service Worker):</strong> Locally
+                    caches application assets (HTML, CSS, JS, fonts, WASM) to
+                    enable instant loading and offline tool operation.
+                  </li>
+                </ul>
+
+                <h3>Third-Party Analytics &amp; Advertising Cookies</h3>
+                <ul>
+                  <li>
+                    <strong>Google Tag Manager:</strong> Used to
+                    coordinate non-blocking site scripts. Configured with
+                    deferred loading on user interaction to eliminate
+                    performance and Total Blocking Time (TBT) overhead.
                   </li>
                   <li>
-                    <strong
-                      >Google AdSense &amp; Third-Party Advertising
-                      Cookies</strong
-                    >
-                    — Third-party vendors, including Google, use cookies to serve ads based on prior visits to this or other websites. Users may opt
-                    out of personalized advertising at any time by visiting
+                    <strong>Google AdSense:</strong>
+                    Third-party advertising vendors, including Google, use
+                    cookies to serve advertisements based on a user's prior
+                    visits to our website or other websites on the internet.
+                    Google's use of advertising cookies enables it and its
+                    partners to serve ads to users based on their browsing
+                    history.
+                  </li>
+                </ul>
+
+                <h3>Managing Your Cookie &amp; Advertising Preferences</h3>
+                <p>
+                  You have full autonomy over advertising cookies. You can opt
+                  out of personalized advertising by visiting:
+                </p>
+                <ul>
+                  <li>
                     <a
                       href="https://www.google.com/settings/ads"
                       target="_blank"
                       rel="noopener"
                       >Google Ads Settings</a
                     >
-                    or
+                    — manage Google personalized ad preferences.
+                  </li>
+                  <li>
                     <a
-                      href="https://www.aboutads.info"
+                      href="https://www.aboutads.info/choices"
                       target="_blank"
                       rel="noopener"
-                      >aboutads.info</a
-                    >.
+                      >Digital Advertising Alliance (DAA) WebChoices</a
+                    >
+                    — opt out of participating ad networks.
+                  </li>
+                  <li>
+                    <a
+                      href="https://optout.networkadvertising.org"
+                      target="_blank"
+                      rel="noopener"
+                      >Network Advertising Initiative (NAI) Opt-Out</a
+                    >
+                    — manage third-party interest-based ads.
                   </li>
                 </ul>
                 <p>
-                  You can disable cookies and clear site storage at any time via your browser settings.
-                  Disabling cookies will not prevent you from using any core PDFMaster tool.
+                  You can also configure your browser to block third-party
+                  cookies or wipe storage at any time. Blocking cookies will not
+                  restrict your access to any PDFMaster document processing
+                  tool.
                 </p>
               </div>
 
-              <!-- 5. Third Party -->
+              <!-- 7. Third-Party Infrastructure -->
               <div class="policy-section rv" id="third-party">
                 <h2>
-                  <span class="section-num">5</span>
+                  <span class="section-num">7</span>
                   <svg
                     class="section-icon"
                     xmlns="http://www.w3.org/2000/svg"
@@ -839,36 +1325,38 @@
                       d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"
                     ></path>
                   </svg>
-                  Third-Party Services &amp; Self-Hosted Libraries
+                  Third-Party Infrastructure &amp; Self-Hosted Assets
                 </h2>
                 <p>
-                  We prioritize self-hosting all critical code to eliminate external network calls and data sharing:
+                  To eliminate passive third-party tracking, PDFMaster is built
+                  with a self-hosting-first philosophy:
                 </p>
                 <ul>
                   <li>
-                    <strong>Self-Hosted Fonts</strong> — The Sora and
-                    DM Sans typefaces are hosted locally on our infrastructure, ensuring no font requests or IP addresses are shared with external font servers.
+                    <strong>Self-Hosted Typography:</strong> The primary
+                    typefaces used across PDFMaster (Sora and DM Sans) are
+                    hosted locally on our own domain. When you browse PDFMaster, no
+                    requests or IP addresses are sent to external font servers.
                   </li>
                   <li>
-                    <strong>Self-Hosted Client-Side Libraries</strong> — All
-                    open-source PDF manipulation engines (including pdf-lib, PDF.js, JSZip, Sortable, jsPDF, and DOMPurify) are packaged locally on our domain, removing dependencies on third-party CDNs.
+                    <strong>Self-Hosted Document Processing Engines:</strong>
+                    Open-source PDF and image libraries (PDF.js, pdf-lib, JSZip,
+                    Sortable, jsPDF) are packaged and served directly from our
+                    own domain. We do not load tool processing scripts from
+                    external third-party CDNs during file operations.
                   </li>
+                  
                   <li>
-                    <strong>Cloudflare Infrastructure</strong> — Cloudflare provides
-                    DNS routing, DDoS mitigation, and global edge caching for initial static assets. Cloudflare processes basic connection metadata only, with zero access to your in-browser document processing.
+                    <strong>Formspree:</strong> Delivers contact form messages
+                    under GDPR-compliant contractual data processing terms.
                   </li>
                 </ul>
-                <p>
-                  If we introduce any new third-party service that affects user
-                  data, we will update this policy and announce the change on
-                  our website.
-                </p>
               </div>
 
-              <!-- 6. Your Rights -->
+              <!-- 8. Your Rights -->
               <div class="policy-section rv" id="your-rights">
                 <h2>
-                  <span class="section-num">6</span>
+                  <span class="section-num">8</span>
                   <svg
                     class="section-icon"
                     xmlns="http://www.w3.org/2000/svg"
@@ -887,57 +1375,131 @@
                     <path d="M6 7l-3 7c0 1.66 1.34 3 3 3s3-1.34 3-3Z" />
                     <path d="M18 7l-3 7c0 1.66 1.34 3 3 3s3-1.34 3-3Z" />
                   </svg>
-                  Your Privacy Rights
+                  Global Privacy Rights (GDPR, CCPA/CPRA, India DPDP Act)
                 </h2>
                 <p>
-                  Regardless of your location, we respect your right to
-                  understand and control any data associated with your use of
-                  PDFMaster. Depending on your jurisdiction (including the EU
-                  under GDPR, California under CCPA, and others), you may have
-                  the following rights:
+                  Regardless of your country of residence, we uphold your legal
+                  rights to understand, access, and control any data associated
+                  with your interaction with PDFMaster:
+                </p>
+
+                <h3>1. European Union &amp; UK Residents (GDPR / UK GDPR)</h3>
+                <p>
+                  Under the General Data Protection Regulation, EU and UK data
+                  subjects have the right to:
                 </p>
                 <ul>
                   <li>
-                    <strong>Right to access</strong> — request a copy of any
-                    data we hold about you
+                    <strong>Right of Access (Art. 15):</strong> Request
+                    confirmation and access to personal data processed.
                   </li>
                   <li>
-                    <strong>Right to deletion</strong> — request erasure of any
-                    data we hold about you
+                    <strong>Right to Rectification (Art. 16):</strong> Request
+                    correction of inaccurate personal data.
                   </li>
                   <li>
-                    <strong>Right to portability</strong> — receive your data in
-                    a machine-readable format
+                    <strong>Right to Erasure (Art. 17):</strong> Request
+                    deletion of your data ("Right to be Forgotten").
                   </li>
                   <li>
-                    <strong>Right to object</strong> — opt out of any data
-                    processing you consider unnecessary
+                    <strong>Right to Restriction (Art. 18):</strong> Restrict
+                    processing under specific circumstances.
                   </li>
                   <li>
-                    <strong>Right to correction</strong> — request correction of
-                    inaccurate data
+                    <strong>Right to Data Portability (Art. 20):</strong>
+                    Receive your personal data in a structured, machine-readable
+                    format.
+                  </li>
+                  <li>
+                    <strong>Right to Object (Art. 21):</strong> Object to
+                    processing based on legitimate interests.
                   </li>
                 </ul>
                 <p>
-                  Because we collect only anonymised, non-identifiable analytics
-                  data, we are typically unable to locate records specifically
-                  attributable to you. However, if you believe we may hold
-                  identifiable data and would like to exercise any of the above
-                  rights, please <a href="/contact">contact us</a> and we will
-                  respond within 30 days.
+                  <strong>Legal Bases for Processing:</strong> We process
+                  anonymous operational telemetry under the legal basis of
+                  <em>Legitimate Interests</em> (maintaining platform
+                  performance and defending against abuse). For newsletter
+                  communications, our legal basis is your
+                  <em>Freely Given, Explicit Consent</em>.
                 </p>
+
+                <h3>2. California Residents (CCPA / CPRA)</h3>
                 <p>
-                  EU/EEA residents: PDFMaster operates under a legitimate
-                  interest legal basis for the minimal analytics described
-                  above. You have the right to object to this processing and we
-                  will honour such requests.
+                  Under the California Consumer Privacy Act as amended by the
+                  CPRA:
+                </p>
+                <ul>
+                  <li>
+                    <strong>Right to Know &amp; Access:</strong> You may request
+                    the categories and specific pieces of personal information
+                    collected.
+                  </li>
+                  <li>
+                    <strong>Right to Delete:</strong> You may request erasure of
+                    personal information collected from you.
+                  </li>
+                  <li>
+                    <strong
+                      >Do Not Sell or Share My Personal Information:</strong
+                    >
+                    PDFMaster does NOT sell, rent, or share personal information
+                    with third parties for cross-context behavioral advertising
+                    or monetary consideration.
+                  </li>
+                  <li>
+                    <strong>Non-Discrimination:</strong> We will never deny
+                    services, charge different prices, or provide a different
+                    quality of service for exercising your privacy rights.
+                  </li>
+                </ul>
+
+                <h3>
+                  3. India Residents (Digital Personal Data Protection Act,
+                  2023)
+                </h3>
+                <p>
+                  Under the DPDP Act 2023 and the Information Technology Act,
+                  2000:
+                </p>
+                <ul>
+                  <li>
+                    <strong>Right to Access Information:</strong> Obtain a
+                    summary of personal data being processed.
+                  </li>
+                  <li>
+                    <strong>Right to Correction &amp; Erasure:</strong> Request
+                    updating or deletion of personal data no longer required for
+                    the purpose for which it was collected.
+                  </li>
+                  <li>
+                    <strong>Right of Grievance Redressal:</strong> Access to a
+                    readily available Grievance Officer (contact details
+                    provided in Section 12).
+                  </li>
+                  <li>
+                    <strong>Right to Nominate:</strong> Nominate an individual
+                    to exercise your data rights in the event of incapacity or
+                    death.
+                  </li>
+                </ul>
+
+                <p>
+                  <strong>Exercising Your Rights:</strong> Because our document
+                  tools run client-side with no user accounts, we possess zero
+                  records or documents attributable to individual tool users.
+                  For newsletter subscriptions or contact form submissions, you
+                  can exercise any of these rights by emailing
+                  <a href="mailto:support@pdfmaster.co.in"
+                    >support@pdfmaster.co.in</a
+                  >.
                 </p>
               </div>
 
-              <!-- 7. Security -->
+              <!-- 9. Data Security -->
               <div class="policy-section rv" id="data-security">
                 <h2>
-                  <span class="section-num">7</span>
+                  <span class="section-num">9</span>
                   <svg
                     class="section-icon"
                     xmlns="http://www.w3.org/2000/svg"
@@ -961,47 +1523,48 @@
                     ></rect>
                     <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
                   </svg>
-                  Data Security
+                  Data Security &amp; Infrastructure Protection
                 </h2>
                 <p>
-                  Security is embedded into PDFMaster's architecture at every
-                  level. Because we do not transmit or store your files, the
-                  primary attack vectors that affect other online document tools
-                  simply do not apply to us.
+                  Security is the foundational design pillar of PDFMaster. By
+                  eliminating server-side file uploads, we remove the primary
+                  attack vector that exposes documents on other online PDF
+                  platforms:
                 </p>
                 <ul>
                   <li>
-                    All pages are served exclusively over
-                    <strong>HTTPS</strong> with TLS encryption
+                    <strong>HTTPS / TLS 1.3 by Default:</strong> All
+                    communication between your browser and PDFMaster is
+                    encrypted using strict modern TLS protocols.
                   </li>
                   <li>
-                    Our website is protected by industry-standard DDoS
-                    mitigation and web application firewall (WAF) technologies
+                    <strong>Absence of Central File Storage:</strong> Because
+                    files never touch our servers, there is no central document
+                    database that can be hacked, ransomed, or leaked.
                   </li>
                   <li>
-                    No user account databases exist — there are no credentials
-                    to steal or leak
+                    <strong>Edge DDoS Mitigation &amp; WAF:</strong> Cloudflare
+                    edge security filters malicious traffic, automated scrapers,
+                    and volumetric attacks.
                   </li>
                   <li>
-                    File processing libraries (PDF.js, PDF-Lib, etc.) are loaded
-                    from reputable, integrity-checked CDN sources
+                    <strong>Browser Sandbox Protections:</strong> Tools operate
+                    inside the browser's standard security sandbox, ensuring
+                    that document data cannot leak between browser tabs or
+                    processes.
                   </li>
                   <li>
-                    We regularly review our codebase and dependencies for known
-                    security vulnerabilities
+                    <strong>Dependency Auditing:</strong> We routinely audit
+                    open-source engines (PDF.js, pdf-lib, etc.) and vendor
+                    scripts for security advisories and vulnerabilities.
                   </li>
                 </ul>
-                <p>
-                  While no internet service can guarantee absolute security, our
-                  on-device architecture means your files are protected by your
-                  own device's security — not a shared cloud environment.
-                </p>
               </div>
 
-              <!-- 8. Children -->
+              <!-- 10. Children's Privacy -->
               <div class="policy-section rv" id="childrens-privacy">
                 <h2>
-                  <span class="section-num">8</span>
+                  <span class="section-num">10</span>
                   <svg
                     class="section-icon"
                     xmlns="http://www.w3.org/2000/svg"
@@ -1023,25 +1586,29 @@
                   Children's Privacy
                 </h2>
                 <p>
-                  PDFMaster is a general-purpose document tool intended for use
-                  by individuals aged 13 and older. We do not knowingly collect
-                  any personal information from children under the age of 13 (or
-                  under 16 where applicable under GDPR).
+                  PDFMaster is a general-purpose productivity utility intended
+                  for users aged 13 and older (or 16 and older where required by
+                  local legislation such as the EU GDPR). We do not knowingly
+                  collect, solicit, or maintain personal information from
+                  children under 13.
                 </p>
                 <p>
-                  Since we do not collect personal information from any user, we
-                  are not knowingly collecting information from minors either.
-                  If you are a parent or guardian and believe a child has
-                  provided us with personal information, please
-                  <a href="/contact">contact us</a> immediately and we will
-                  investigate and remove any such data within 48 hours.
+                  Because our tools run entirely client-side without
+                  registration, children using the tools process their documents
+                  locally without transmitting personal data. If a parent or
+                  legal guardian discovers that a child has submitted personal
+                  details through our newsletter or contact form without
+                  parental consent, please contact us at
+                  <a href="mailto:support@pdfmaster.co.in"
+                    >support@pdfmaster.co.in</a
+                  >, and we will promptly delete the data within 48 hours.
                 </p>
               </div>
 
-              <!-- 9. Changes -->
+              <!-- 11. Policy Changes -->
               <div class="policy-section rv" id="policy-changes">
                 <h2>
-                  <span class="section-num">9</span>
+                  <span class="section-num">11</span>
                   <svg
                     class="section-icon"
                     xmlns="http://www.w3.org/2000/svg"
@@ -1062,42 +1629,42 @@
                       d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"
                     ></path>
                   </svg>
-                  Changes to This Policy
+                  Changes to This Privacy Policy
                 </h2>
                 <p>
-                  We may update this Privacy Policy from time to time to reflect
-                  changes in our practices, technology, legal requirements, or
-                  for other operational reasons. When we make material changes,
-                  we will:
+                  We may periodically revise this Privacy Policy to reflect
+                  additions of new browser tools, enhancements to operational
+                  telemetry, or changes in legal standards. When modifications
+                  occur:
                 </p>
                 <ol>
                   <li>
-                    Update the "Last updated" date at the top of this page
+                    We will update the "Last updated" date displayed at the top
+                    of this document.
                   </li>
                   <li>
-                    Post a notice on our homepage for 30 days after the change
+                    We will post a notification on our
+                    <a href="/announcements">Announcements page</a> summarizing
+                    significant architectural or legal revisions.
                   </li>
                   <li>
-                    Where required by law, obtain your consent before changes
-                    take effect
+                    If any material change alters the handling of voluntarily
+                    submitted personal data, we will provide prominent notice on
+                    our homepage before the change takes effect.
                   </li>
                 </ol>
                 <p>
-                  We encourage you to review this page periodically. Continued
-                  use of PDFMaster after any changes constitutes acceptance of
-                  the updated policy. If you do not agree with the updated
-                  terms, please discontinue use of the service.
-                </p>
-                <p>
-                  Previous versions of this policy are available on request via
-                  our <a href="/contact">contact page</a>.
+                  We recommend reviewing this policy regularly. Continued use of
+                  PDFMaster constitutes your agreement to the updated Privacy
+                  Policy. Previous iterations of this policy can be requested
+                  through our contact page.
                 </p>
               </div>
 
-              <!-- 10. Contact -->
+              <!-- 12. Contact -->
               <div class="policy-section rv" id="contact-us">
                 <h2>
-                  <span class="section-num">10</span>
+                  <span class="section-num">12</span>
                   <svg
                     class="section-icon"
                     xmlns="http://www.w3.org/2000/svg"
@@ -1116,33 +1683,44 @@
                     ></path>
                     <polyline points="22,6 12,13 2,6"></polyline>
                   </svg>
-                  Contact Us
+                  Contact Information &amp; Grievance Redressal
                 </h2>
                 <p>
-                  If you have any questions, concerns, or requests regarding
-                  this Privacy Policy or the way PDFMaster handles your data, we
-                  are here to help. We take all privacy inquiries seriously and
-                  aim to respond within 48 hours on business days.
+                  If you have questions, feedback, or formal privacy inquiries
+                  regarding this Privacy Policy or our operational practices,
+                  our dedicated team is here to assist:
                 </p>
-                <p>You can reach us for any of the following:</p>
                 <ul>
                   <li>
-                    Questions about what data we collect or how it is used
+                    <strong>Data Fiduciary / Platform Operator:</strong>
+                    PDFMaster (pdfmaster.co.in)
                   </li>
                   <li>
-                    Requests to access, correct, or delete data associated with
-                    your use
+                    <strong>Founder:</strong> Happy
+                    Gupta
                   </li>
-                  <li>Reporting a suspected privacy or security issue</li>
-                  <li>General feedback about our privacy practices</li>
+                  <li><strong>Legal Jurisdiction:</strong> Bihar, India</li>
+                  <li>
+                    <strong>Official Email:</strong>
+                    <a href="mailto:support@pdfmaster.co.in"
+                      >support@pdfmaster.co.in</a
+                    >
+                  </li>
+                  <li>
+                    <strong>Web Help Center:</strong>
+                    <a href="/contact">https://pdfmaster.co.in/contact</a>
+                  </li>
+                  <li>
+                    <strong>Turnaround Commitment:</strong> We acknowledge all
+                    privacy and compliance communications within 24 hours and
+                    resolve inquiries within 48 business hours.
+                  </li>
                 </ul>
+
                 <div class="contact-card">
                   <div class="contact-card-text">
-                    <h4>Get in Touch</h4>
-                    <p>
-                      Our team typically responds within 48 hours on business
-                      days.
-                    </p>
+                    <h4>Have a Privacy Inquiry?</h4>
+                    <p>Our team responds directly within 48 business hours.</p>
                   </div>
                   <a href="/contact" class="btn-white"> Contact Us → </a>
                 </div>
@@ -1219,11 +1797,16 @@
               <ul>
                 <li><a href="/pdf-editor">PDF Editor</a></li>
                 <li><a href="/pdf-viewer">PDF Viewer</a></li>
+                <li><a href="/compress-pdf">Compress PDF</a></li>
                 <li><a href="/photo-to-pdf">Photo to PDF</a></li>
                 <li><a href="/pdf-to-photo">PDF to Photo</a></li>
                 <li><a href="/split-pdf">Split PDF</a></li>
                 <li><a href="/delete-pdf-pages">Delete PDF Pages</a></li>
+<<<<<<< Updated upstream
               <li><a href="/rotate-pdf">Rotate PDF</a></li>
+=======
+                <li><a href="/rotate-pdf">Rotate PDF</a></li>
+>>>>>>> Stashed changes
                 <li><a href="/pdf-reorder">PDF Reorder</a></li>
                 <li><a href="/merge-pdf">PDF Compiler</a></li>
                 <li><a href="/pdf-metadata">PDF Metadata</a></li>

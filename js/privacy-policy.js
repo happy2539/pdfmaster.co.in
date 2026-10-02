@@ -16,13 +16,23 @@ function applyTheme(theme) {
   }
 }
 
-const saved = localStorage.getItem("pdfmaster-theme") || "light";
+const saved =
+  localStorage.getItem("pdfmaster-theme") ||
+  (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
 applyTheme(saved);
 
 btn.addEventListener("click", () => {
   const next = root.getAttribute("data-theme") === "dark" ? "light" : "dark";
   applyTheme(next);
 });
+
+window
+  .matchMedia("(prefers-color-scheme: dark)")
+  .addEventListener("change", (e) => {
+    if (!localStorage.getItem("pdfmaster-theme")) {
+      applyTheme(e.matches ? "dark" : "light");
+    }
+  });
 
 /* ═══════════ Hamburger Menu ═══════════ */
 const hamburgerBtn = document.getElementById("hamburgerBtn");
@@ -80,3 +90,17 @@ const tocObserver = new IntersectionObserver(
   { rootMargin: "-30% 0px -60% 0px" },
 );
 sections.forEach((s) => tocObserver.observe(s));
+
+/* ═══════════ Smooth Scroll for Anchor Links ═══════════ */
+document.querySelectorAll('a[href^="#"]').forEach((a) => {
+  a.addEventListener("click", (e) => {
+    const href = a.getAttribute("href");
+    if (href === "#") return;
+    const target = document.querySelector(href);
+    if (target) {
+      e.preventDefault();
+      target.scrollIntoView({ behavior: "smooth" });
+    }
+  });
+});
+

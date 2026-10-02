@@ -895,18 +895,29 @@
           <div
             class="faq-item"
             data-cat="privacy"
-            data-q="cookies localStorage data storage browser"
+            data-q="cookies localStorage data storage browser adsense"
           >
             <button class="faq-q" type="button" aria-expanded="false">
               Does PDFMaster use cookies?<span class="faq-arrow" aria-hidden="true">▾</span>
             </button>
             <div class="faq-a">
               <div class="faq-a-inner">
-                PDFMaster uses <strong>localStorage</strong> (not cookies) only
-                to remember your dark/light mode preference. This stores no
-                personal data. Third-party CDN providers used to load
-                open-source libraries may set their own minimal technical
-                cookies in line with their own policies.
+                For core site features, PDFMaster uses <strong>localStorage</strong> (to remember your dark/light theme) and <strong>IndexedDB</strong> (to temporarily store working drafts on your device for Session Recovery). All processing engines and fonts are self-hosted locally on our domain with no third-party CDN tracking. Third-party advertising partners (Google AdSense) use cookies to serve advertisements based on prior visits. You can opt out of personalized ad cookies anytime via <a href="https://www.google.com/settings/ads" target="_blank" rel="noopener">Google Ads Settings</a> or <a href="https://www.aboutads.info" target="_blank" rel="noopener">aboutads.info</a>.
+              </div>
+            </div>
+          </div>
+
+          <div
+            class="faq-item"
+            data-cat="privacy"
+            data-q="telemetry data collection analytics metrics speed duration file size"
+          >
+            <button class="faq-q" type="button" aria-expanded="false">
+              What technical data or telemetry does PDFMaster collect?<span class="faq-arrow" aria-hidden="true">▾</span>
+            </button>
+            <div class="faq-a">
+              <div class="faq-a-inner">
+                Your document files are processed <strong>100% on your device with zero uploads</strong>. To optimize tool speed, improve reliability, and prevent browser crashes on resource-constrained devices, PDFMaster collects minimal, anonymous operational telemetry upon successful tool completions. This includes high-level performance indicators (such as elapsed calculation duration, approximate file size range, sanitized file format extension, and general hardware tier). Telemetry is transmitted over encrypted HTTPS, and IP addresses are masked and utilized strictly at the network edge for security and abuse prevention. Telemetry <em>never</em> contains document contents, filenames, text, images, or personal identities. See our <a href="/privacy#telemetry">Privacy Policy</a>.
               </div>
             </div>
           </div>
@@ -1294,13 +1305,17 @@
               <div class="faq-a-inner">
                 PDFMaster offers a complete suite of browser-based PDF tools including:
                 <strong>PDF Editor &amp; Annotator</strong>,
+                <strong>PDF Viewer</strong>,
+                <strong>Compress PDF</strong>,
                 <strong>Photo to PDF</strong>,
-                <strong>PDF to Photo</strong>,
-                <strong>PDF Compiler (Merge)</strong>,
+                <strong>PDF to Photo (JPG/PNG)</strong>,
                 <strong>Split PDF</strong>,
+                <strong>Delete PDF Pages</strong>,
+                <strong>Rotate PDF</strong>,
                 <strong>PDF Page Reorder</strong>,
+                <strong>PDF Compiler (Merge PDF)</strong>,
                 <strong>PDF Metadata Editor &amp; Remover</strong>, and
-                <strong>Watermark PDF</strong>. All tools run 100% locally in your browser. Check the
+                <strong>Watermark PDF</strong>. All tools run 100% locally in your browser with zero document uploads. Check the
                 <a href="/#tools">homepage tools section</a> for the full list of available tools.
               </div>
             </div>
@@ -1740,6 +1755,7 @@
         </div>
       </div>
     </section>
+    </main>
 
     <!-- ═══════════════ FOOTER ═══════════════ -->
     <footer>

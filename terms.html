@@ -2,20 +2,35 @@
 <html lang="en" data-theme="light">
   <head>
     <meta charset="UTF-8" />
+    <script>
+      (function () {
+        try {
+          var t = localStorage.getItem("pdfmaster-theme");
+          if (!t) {
+            t = window.matchMedia("(prefers-color-scheme: dark)").matches
+              ? "dark"
+              : "light";
+          }
+          document.documentElement.setAttribute("data-theme", t);
+        } catch (e) {
+          document.documentElement.setAttribute("data-theme", "light");
+        }
+      })();
+    </script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
     <title>
-      Terms of Service & Usage Policy | Secure PDF Tools – PDFMaster
+      Terms of Service &amp; Usage Policy | 100% On-Device PDF Tools – PDFMaster
     </title>
 
     <meta
       name="description"
-      content="Read the Terms of Service for PDFMaster. Free, private, and secure browser-based PDF tools including Photo to PDF, PDF to JPG, Merge, and Split. No uploads required."
+      content="Read the official Terms of Service for PDFMaster. Free, private, and secure browser-based document tools including Compress PDF, PDF Editor, Merge, Split, and Photo to PDF with 100% on-device processing."
     />
 
     <meta
       name="keywords"
-      content="PDF terms of service, PDFMaster policy, secure PDF tools, browser-based PDF converter, no upload PDF tools, private PDF processing, PDF to JPG terms, Photo to PDF legal"
+      content="PDF terms of service, PDFMaster usage policy, secure PDF tools, browser-based PDF converter, no upload PDF tools, private PDF processing, Compress PDF terms, PDF Editor legal"
     />
 
     <meta name="robots" content="index, follow" />
@@ -30,10 +45,13 @@
     <link rel="apple-touch-icon" href="/assets/apple-touch-icon.png" />
 
     <!-- Open Graph -->
-    <meta property="og:title" content="Terms of Service & Policy – PDFMaster" />
+    <meta
+      property="og:title"
+      content="Terms of Service &amp; Policy – PDFMaster"
+    />
     <meta
       property="og:description"
-      content="Free, private PDF tools. Read our terms for using PDFMaster with 100% on-device processing and no data collection."
+      content="Free, private document tools. Read our terms for using PDFMaster with 100% on-device processing and zero document uploads."
     />
     <meta property="og:url" content="https://pdfmaster.co.in/terms" />
     <meta property="og:type" content="website" />
@@ -51,7 +69,7 @@
     <meta name="twitter:title" content="PDFMaster Terms of Service" />
     <meta
       name="twitter:description"
-      content="No uploads. No accounts. Professional PDF tools that respect your privacy. Read our terms."
+      content="Zero document uploads. No mandatory accounts. Professional PDF utilities that respect your privacy. Read our terms."
     />
     <meta
       name="twitter:image"
@@ -129,7 +147,9 @@
             "@id": "https://pdfmaster.co.in/terms",
             "url": "https://pdfmaster.co.in/terms",
             "name": "Terms of Service – PDFMaster",
-            "description": "Terms of Service and Legal Usage Policy for using PDFMaster's free, private, browser-based PDF tools.",
+            "description": "Terms of Service and Legal Usage Policy for using PDFMaster's free, private, browser-based document tools.",
+            "datePublished": "2024-05-15",
+            "dateModified": "2026-10-02",
             "publisher": {
               "@type": "Organization",
               "name": "PDFMaster",
@@ -179,6 +199,7 @@
       ></iframe
     ></noscript>
     <!-- End Google Tag Manager (noscript) -->
+
     <!-- ═══════════════ NAVBAR ═══════════════ -->
     <header>
       <nav class="main-nav">
@@ -280,21 +301,33 @@
         <a href="#use-of-service"
           ><span class="dd-dot" aria-hidden="true"></span> Use of Service</a
         >
+        <a href="#prohibited-uses"
+          ><span class="dd-dot" aria-hidden="true"></span> Prohibitions</a
+        >
         <a href="#intellectual-property"
-          ><span class="dd-dot" aria-hidden="true"></span> Intellectual
-          Property</a
+          ><span class="dd-dot" aria-hidden="true"></span> IP Rights</a
         >
         <a href="#disclaimers"
           ><span class="dd-dot" aria-hidden="true"></span> Disclaimers</a
         >
         <a href="#limitations"
-          ><span class="dd-dot" aria-hidden="true"></span> Limitations</a
+          ><span class="dd-dot" aria-hidden="true"></span> Liability</a
         >
         <a href="#privacy"
           ><span class="dd-dot" aria-hidden="true"></span> Privacy</a
         >
+        <a href="#telemetry"
+          ><span class="dd-dot" aria-hidden="true"></span> Telemetry &amp; Fair
+          Use</a
+        >
+        <a href="#third-party"
+          ><span class="dd-dot" aria-hidden="true"></span> Third-Party</a
+        >
         <a href="#termination"
           ><span class="dd-dot" aria-hidden="true"></span> Termination</a
+        >
+        <a href="#governing-law"
+          ><span class="dd-dot" aria-hidden="true"></span> Governing Law</a
         >
         <a href="#changes"
           ><span class="dd-dot" aria-hidden="true"></span> Changes</a
@@ -305,8 +338,8 @@
         <a href="/subscribe"
           ><span class="dd-dot" aria-hidden="true"></span> Subscribe</a
         >
-        <a href="/"
-          ><svg
+        <a href="/">
+          <svg
             xmlns="http://www.w3.org/2000/svg"
             width="14"
             height="14"
@@ -321,8 +354,8 @@
             <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
             <polyline points="9 22 9 12 15 12 15 22"></polyline>
           </svg>
-          Home</a
-        >
+          Home
+        </a>
       </div>
     </div>
 
@@ -370,14 +403,14 @@
         <div class="page-hero-inner">
           <div class="page-hero-badge">
             <span class="badge-dot"></span>
-            Secure · Private · On-Device Processing
+            Secure · 100% On-Device · Zero Document Uploads
           </div>
           <h1>Terms of <em>Service</em></h1>
           <p>
             Please read these Terms of Service carefully before using
             PDFMaster's free online
             <strong>PDF and image conversion tools</strong>. By accessing our
-            service, you agree to be bound by these terms.
+            website or using our tools, you agree to be bound by these terms.
           </p>
           <div class="page-hero-meta">
             <div class="meta-item">
@@ -399,7 +432,7 @@
                 <line x1="8" y1="2" x2="8" y2="6"></line>
                 <line x1="3" y1="10" x2="21" y2="10"></line>
               </svg>
-              Last updated: 30 May, 2026
+              Last updated: 02 October, 2026
             </div>
             <div class="meta-item">
               <svg
@@ -458,8 +491,7 @@
             <div class="sec-label">Terms at a Glance</div>
             <h2>The Short Version</h2>
             <p>
-              The three most important things you need to know before using
-              PDFMaster
+              The three core principles you should know when using PDFMaster
             </p>
           </div>
           <div class="highlights-grid rv">
@@ -482,11 +514,11 @@
                 ></path>
                 <line x1="7" y1="7" x2="7.01" y2="7"></line>
               </svg>
-              <h3>Free, Forever</h3>
+              <h3>Free, No Subscription Walls</h3>
               <p>
                 PDFMaster is completely <strong>free to use</strong> with no
-                hidden fees, subscriptions, or paywalls. We will never charge
-                you for core browser-based tools.
+                hidden fees, subscriptions, or paywalls for core document
+                conversion, compression, and editing.
               </p>
             </div>
             <div class="hcard">
@@ -507,9 +539,9 @@
               </svg>
               <h3>Your Files, Your Device</h3>
               <p>
-                All <strong>PDF and image processing</strong> happens entirely
-                in your browser. We never receive, store, or access any files
-                you work with on PDFMaster.
+                All <strong>document manipulation</strong> executes locally in
+                your browser. We never receive, inspect, or retain your files,
+                drawings, text, or forms.
               </p>
             </div>
             <div class="hcard">
@@ -531,11 +563,11 @@
                 <path d="M6 7l-3 7c0 1.66 1.34 3 3 3s3-1.34 3-3Z" />
                 <path d="M18 7l-3 7c0 1.66 1.34 3 3 3s3-1.34 3-3Z" />
               </svg>
-              <h3>Fair Use Required</h3>
+              <h3>Lawful &amp; Fair Use Required</h3>
               <p>
                 You may use PDFMaster for <strong>lawful purposes</strong> only.
-                You must not use our service to process illegal content or
-                attempt to harm the platform.
+                Automated bot flooding, scraping, or attempting to overload our
+                serverless infrastructure is prohibited.
               </p>
             </div>
           </div>
@@ -586,36 +618,43 @@
                   >
                 </li>
                 <li>
-                  <a href="#privacy"><span class="toc-num">8</span> Privacy</a>
+                  <a href="#privacy"
+                    ><span class="toc-num">8</span> Privacy &amp; Data</a
+                  >
+                </li>
+                <li>
+                  <a href="#telemetry"
+                    ><span class="toc-num">9</span> Telemetry &amp; Fair Use</a
+                  >
                 </li>
                 <li>
                   <a href="#third-party"
-                    ><span class="toc-num">9</span> Third-Party Links</a
+                    ><span class="toc-num">10</span> Third-Party Resources</a
                   >
                 </li>
                 <li>
                   <a href="#termination"
-                    ><span class="toc-num">10</span> Termination</a
+                    ><span class="toc-num">11</span> Termination &amp; Blocks</a
                   >
                 </li>
                 <li>
                   <a href="#governing-law"
-                    ><span class="toc-num">11</span> Governing Law</a
+                    ><span class="toc-num">12</span> Governing Law</a
                   >
                 </li>
                 <li>
                   <a href="#changes"
-                    ><span class="toc-num">12</span> Changes to Terms</a
+                    ><span class="toc-num">13</span> Changes to Terms</a
                   >
                 </li>
                 <li>
                   <a href="#contact-us"
-                    ><span class="toc-num">13</span> Contact Us</a
+                    ><span class="toc-num">14</span> Contact Us</a
                   >
                 </li>
               </ul>
               <div class="toc-footer">
-                Have a question? <a href="/contact">Contact us →</a><br />
+                Have a legal question? <a href="/contact">Contact us →</a><br />
                 Also read: <a href="/privacy">Privacy Policy</a>
               </div>
             </aside>
@@ -644,29 +683,73 @@
                     ></path>
                     <rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect>
                   </svg>
-                  Overview
+                  Overview &amp; Service Scope
                 </h2>
                 <p>
                   Welcome to <strong>PDFMaster</strong> ("we", "us", "our"), a
-                  free online toolkit for PDF and image conversion available at
-                  <strong>pdfmaster.co.in</strong>. PDFMaster offers a suite of
-                  21+ browser-based tools including
-                  <a href="/pdf-to-photo">PDF to JPG</a> conversion,
-                  <a href="/photo-to-pdf">Photo to PDF</a>,
-                  <a href="/merge-pdf">PDF merging</a>,
-                  <a href="/split-pdf">PDF splitting</a>,
-                  <a href="/delete-pdf-pages">deleting PDF pages</a>,
-                  <a href="/pdf-reorder">PDF reordering</a>,
-                  <a href="/pdf-metadata">metadata removal</a>, and more — all
-                  processed entirely on your device.
+                  free online productivity platform available at
+                  <strong>pdfmaster.co.in</strong>. PDFMaster delivers a
+                  comprehensive suite of 12+ browser-based tools including:
                 </p>
+                <ul>
+                  <li>
+                    <a href="/pdf-editor">PDF Editor &amp; Annotator</a> — Draw,
+                    type, erase, highlight, and sign PDF pages locally.
+                  </li>
+                  <li>
+                    <a href="/pdf-viewer">PDF Viewer</a> — Fast, responsive
+                    document reading.
+                  </li>
+                  <li>
+                    <a href="/compress-pdf">Compress PDF</a> — Memory-adaptive
+                    document compression.
+                  </li>
+                  <li>
+                    <a href="/photo-to-pdf">Photo to PDF</a> — Multi-image
+                    conversion into unified PDFs.
+                  </li>
+                  <li>
+                    <a href="/pdf-to-photo">PDF to Photo (JPG/PNG)</a> — Page
+                    rasterization and image extraction.
+                  </li>
+                  <li>
+                    <a href="/split-pdf">Split PDF</a> — Extract custom page
+                    ranges or separate pages.
+                  </li>
+                  <li>
+                    <a href="/merge-pdf">PDF Compiler (Merge PDF)</a> — Combine
+                    multiple PDF files into one.
+                  </li>
+                  <li>
+                    <a href="/delete-pdf-pages">Delete PDF Pages</a> — Remove
+                    unwanted pages selectively.
+                  </li>
+                  <li>
+                    <a href="/rotate-pdf">Rotate PDF</a> — Adjust page
+                    orientation clockwise or counter-clockwise.
+                  </li>
+                  <li>
+                    <a href="/pdf-reorder">PDF Page Reorder</a> — Rearrange page
+                    order interactively.
+                  </li>
+                  <li>
+                    <a href="/pdf-metadata"
+                      >PDF Metadata Viewer &amp; Remover</a
+                    >
+                    — Inspect and sanitize embedded metadata.
+                  </li>
+                  <li>
+                    <a href="/watermark-pdf-add">Watermark PDF</a> — Apply
+                    customizable text watermarks.
+                  </li>
+                </ul>
                 <p>
                   These Terms of Service ("Terms") govern your access to and use
-                  of PDFMaster's website and services. By visiting
-                  <strong>pdfmaster.co.in</strong>
-                  or using any of our tools, you agree to be bound by these
-                  Terms in their entirety. If you do not agree with any part of
-                  these Terms, you must not use our service.
+                  of PDFMaster's website, tools, APIs, and associated features.
+                  By accessing <strong>pdfmaster.co.in</strong> or utilizing any
+                  tool, you agree to be bound by these Terms in their entirety.
+                  If you do not agree with any provision, you must discontinue
+                  use immediately.
                 </p>
                 <div class="policy-alert">
                   <svg
@@ -689,9 +772,10 @@
                     <path d="M10 22h4"></path>
                   </svg>
                   <p>
-                    <strong>In plain English:</strong> PDFMaster is a free tool.
-                    Use it responsibly and for lawful purposes. Your files are
-                    processed 100% on your device and never sent to our servers.
+                    <strong>In plain English:</strong> PDFMaster is a 100% free
+                    tool. Your files are processed entirely inside your own
+                    browser and never uploaded to our servers. Use our tools
+                    lawfully and responsibly.
                   </p>
                 </div>
               </div>
@@ -716,26 +800,26 @@
                     <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
                     <polyline points="22 4 12 14.01 9 11.01"></polyline>
                   </svg>
-                  Acceptance of Terms
+                  Acceptance of Terms &amp; Eligibility
                 </h2>
                 <p>
-                  By accessing or using PDFMaster (the "Service"), you confirm
+                  By accessing or using PDFMaster, you represent and warrant
                   that you are at least <strong>13 years of age</strong> (or 16
-                  where required under applicable law), and that you have read,
-                  understood, and agree to be bound by these Terms of Service
-                  and our <a href="/privacy">Privacy Policy</a>, which is
-                  incorporated herein by reference.
+                  years of age where required by local data protection
+                  legislation, including the EU GDPR), and that you possess the
+                  legal capacity to enter into these binding Terms.
                 </p>
                 <p>
-                  These Terms apply to all visitors, users, and others who
-                  access or use the Service, regardless of whether they create
-                  an account (note: PDFMaster does not require account
-                  creation).
+                  These Terms apply to all visitors and users globally,
+                  regardless of whether you access tools anonymously, subscribe
+                  to our newsletter, or submit inquiries through our contact
+                  channels.
                 </p>
                 <p>
-                  Your continued use of PDFMaster after any amendments to these
-                  Terms constitutes your acceptance of the revised Terms. We
-                  recommend bookmarking this page and checking it periodically.
+                  Our <a href="/privacy">Privacy Policy</a> is expressly
+                  incorporated into these Terms. By using the Service, you
+                  confirm that you have read and understood how we process data
+                  and technical operational metrics.
                 </p>
               </div>
 
@@ -761,57 +845,57 @@
                       d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"
                     ></path>
                   </svg>
-                  Use of Service
+                  Use of Service &amp; Client-Side Execution
                 </h2>
                 <p>
-                  PDFMaster grants you a limited, non-exclusive,
-                  non-transferable, revocable licence to access and use the
-                  Service strictly in accordance with these Terms. The Service
-                  is provided free of charge for
-                  <strong>personal and commercial use</strong> subject to the
-                  conditions below.
+                  PDFMaster grants you a personal, non-exclusive,
+                  non-transferable, revocable licence to access and use our
+                  website and tools strictly in accordance with these Terms. The
+                  Service is provided free of charge for both
+                  <strong>personal and commercial use</strong>.
                 </p>
+
                 <h3>Permitted Uses</h3>
                 <ul>
                   <li>
-                    Converting, compressing, merging, splitting, reordering, or
-                    otherwise processing PDF and image files for personal or
-                    business purposes
+                    Processing, converting, editing, compressing, merging,
+                    splitting, reordering, and annotating documents owned or
+                    licensed by you.
                   </li>
                   <li>
-                    Using any and all tools made available on pdfmaster.co.in,
-                    including all current and future tools marked as "Live"
+                    Using PDFMaster within commercial, educational, non-profit,
+                    or government business document workflows.
                   </li>
                   <li>
-                    Accessing the Service from any device, browser, or operating
-                    system without restriction
-                  </li>
-                  <li>
-                    Using PDFMaster for
-                    <strong>commercial document workflows</strong>, provided the
-                    content processed is legally owned or licensed by you
-                  </li>
-                  <li>
-                    Sharing or recommending PDFMaster to others for their own
-                    use
+                    Utilizing the offline capabilities of Service Worker caching
+                    on supported web browsers without requiring an active
+                    network connection.
                   </li>
                 </ul>
-                <h3>Service Availability</h3>
+
+                <h3>Device Hardware &amp; Client Execution Constraints</h3>
                 <p>
-                  We strive to keep PDFMaster available 24/7, but we do not
-                  guarantee uninterrupted access. The Service may be temporarily
-                  unavailable due to maintenance, updates, or factors outside
-                  our control. We will endeavour to provide advance notice of
-                  planned downtime on our
-                  <a href="/announcements">Announcement Page</a>.
+                  Because all processing takes place in your browser via
+                  JavaScript and WebAssembly:
                 </p>
-                <p>
-                  Because PDFMaster processes files entirely on your device
-                  using
-                  <strong>browser-based JavaScript</strong>, the availability of
-                  individual tool features may depend on your browser's
-                  capabilities and the version of your operating system.
-                </p>
+                <ul>
+                  <li>
+                    <strong>Client RAM &amp; CPU Dependency:</strong> Processing
+                    speed, maximum file sizes, and memory ceilings are governed
+                    by your device's hardware (e.g. CPU cores, available RAM,
+                    and browser tab memory allocations). While PDFMaster
+                    includes multi-tier memory optimizations for 2GB–16GB+
+                    profiles, attempting to process extremely large documents
+                    (e.g. 500MB+ or thousands of pages) on low-spec devices may
+                    cause browser tab throttling or crashes.
+                  </li>
+                  <li>
+                    <strong>Local Storage (IndexedDB):</strong> Features such as
+                    Disaster Session Recovery rely on your browser's local
+                    IndexedDB sandbox. You are responsible for ensuring your
+                    browser allows local site storage.
+                  </li>
+                </ul>
               </div>
 
               <!-- 4. Prohibited Uses -->
@@ -834,56 +918,46 @@
                     <circle cx="12" cy="12" r="10"></circle>
                     <line x1="4.93" y1="4.93" x2="19.07" y2="19.07"></line>
                   </svg>
-                  Prohibited Uses
+                  Prohibited Uses &amp; Abuse Prevention
                 </h2>
                 <p>
-                  You agree that you will not use PDFMaster for any purpose that
-                  is unlawful, harmful, or prohibited by these Terms.
-                  Specifically, you must not:
+                  You agree to use PDFMaster in full compliance with all
+                  applicable local, national, and international laws. You must
+                  NOT:
                 </p>
                 <ul>
                   <li>
-                    Use the Service to process, distribute, or facilitate access
-                    to content that is illegal, defamatory, obscene, or
-                    fraudulent
+                    Use the Service to process, produce, or distribute content
+                    that is unlawful, defamatory, fraudulent, child sexual abuse
+                    material (CSAM), or infringing upon third-party intellectual
+                    property.
                   </li>
                   <li>
-                    Attempt to <strong>reverse-engineer</strong>, decompile,
-                    disassemble, or derive the source code of any software
-                    underlying the Service
+                    Deploy automated scripts, bots, scrapers, or headless
+                    browsers to flood the Service, probe endpoints, or bypass
+                    Cloudflare rate-limiting protections.
                   </li>
                   <li>
-                    Use automated bots, scrapers, crawlers, or scripts to access
-                    the Service in a manner that places excessive load on our
-                    infrastructure
+                    Attempt to reverse-engineer, decompile, or tamper with our
+                    server infrastructure, APIs, or software code, or inject
+                    fraudulent requests or telemetry.
                   </li>
                   <li>
-                    Attempt to circumvent, disable, or interfere with any
-                    security features, access controls, or technical protections
-                    of the Service
+                    Circumvent, disable, or tamper with any edge security
+                    measures, CORS protections, or rate limits deployed across
+                    the platform.
                   </li>
                   <li>
-                    Impersonate any person, entity, or organisation, or falsely
-                    claim affiliation with PDFMaster
+                    Impersonate PDFMaster, its founder Happy Gupta, or falsely
+                    imply official endorsement or sponsorship.
                   </li>
                   <li>
-                    Use the Service in any manner that could damage, disable, or
-                    impair the functionality of the website or other users'
-                    access
+                    Resell, white-label, or redistribute access to PDFMaster
+                    without explicit written authorization.
                   </li>
                   <li>
-                    Reproduce, copy, resell, or commercially exploit any part of
-                    the Service without our express written permission
-                  </li>
-                  <li>
-                    Upload, transmit, or link to malware, viruses, or other
-                    malicious code through any mechanism connected to the
-                    Service
-                  </li>
-                  <li>
-                    Use the Service to infringe any
-                    <strong>intellectual property rights</strong>, privacy
-                    rights, or contractual obligations of any third party
+                    Transmit viruses, worms, malware, or destructive code
+                    through any communication channel on the website.
                   </li>
                 </ul>
                 <div class="policy-alert">
@@ -907,10 +981,8 @@
                     <line x1="12" y1="17" x2="12.01" y2="17"></line>
                   </svg>
                   <p>
-                    <strong>Important:</strong> Violation of these prohibited
-                    use policies may result in immediate termination of your
-                    access to PDFMaster and, where required by law, notification
-                    to relevant authorities.
+                    <strong>Enforcement:</strong> Abuse or attempts to
+                    compromise service availability will result in legal consiquences.
                   </p>
                 </div>
               </div>
@@ -935,46 +1007,38 @@
                     <circle cx="12" cy="12" r="10"></circle>
                     <path d="M14.83 14.83a4 4 0 1 1 0-5.66"></path>
                   </svg>
-                  Intellectual Property
+                  Intellectual Property Rights
                 </h2>
-                <h3>PDFMaster's IP</h3>
+
+                <h3>Your Documents &amp; Content</h3>
                 <p>
-                  The PDFMaster website, its design, layout, source code, tool
-                  logic, branding, graphics, text, and all other original
-                  content are the intellectual property of PDFMaster and are
-                  protected by applicable <strong>copyright, trademark</strong>,
-                  and other intellectual property laws. All rights are reserved.
+                  You retain
+                  <strong>100% full, unencumbered ownership</strong> of all
+                  files, documents, drawings, text, and images you process using
+                  PDFMaster. Because all processing occurs locally within your
+                  browser and no document files are transmitted to our servers,
+                  you do NOT grant PDFMaster any licence, rights, or claims over
+                  your content.
                 </p>
+
+                <h3>PDFMaster's Intellectual Property</h3>
                 <p>
-                  The name "PDFMaster", the PDFMaster logo, and all related
-                  trademarks and service marks are owned by PDFMaster. You must
-                  not use these marks without our prior written consent, except
-                  to accurately refer to and link to our Service in a
-                  non-misleading manner.
+                  The PDFMaster website, user interfaces, branding, custom
+                  icons, graphics, HTML, CSS, client-side conversion logic, and
+                  serverless worker code are the intellectual property of
+                  PDFMaster and are protected by applicable copyright,
+                  trademark, and unfair competition laws. You may not reproduce,
+                  copy, or redistribute our platform codebase without prior
+                  written consent.
                 </p>
-                <h3>Your Content</h3>
+
+                <h3>Open-Source Dependencies</h3>
                 <p>
-                  You retain <strong>full ownership</strong> of all files,
-                  documents, and content that you process using PDFMaster.
-                  Because all processing occurs entirely on your device and no
-                  files are transmitted to our servers, you do not grant
-                  PDFMaster any licence over your content by using the Service.
-                </p>
-                <p>
-                  You represent and warrant that you own or have the necessary
-                  rights and licences to use any content you process through
-                  PDFMaster, and that such use does not infringe the rights of
-                  any third party.
-                </p>
-                <h3>Open-Source Libraries</h3>
-                <p>
-                  PDFMaster's tools rely on open-source libraries including
-                  <strong>PDF.js</strong> (Apache 2.0),
-                  <strong>pdf-lib</strong> (MIT), and
-                  <strong>jsPDF</strong> (MIT), among others. These libraries
-                  retain their original licences. Our use of these libraries
-                  does not grant you any additional rights over them beyond what
-                  is already provided by their respective licences.
+                  PDFMaster proudly incorporates established open-source
+                  libraries including PDF.js (Apache 2.0), pdf-lib (MIT), jsPDF
+                  (MIT), JSZip (MIT), and Sortable (MIT). These libraries remain
+                  under their respective open-source licenses and are
+                  self-hosted locally on our domain.
                 </p>
               </div>
 
@@ -1001,49 +1065,43 @@
                     <line x1="12" y1="9" x2="12" y2="13"></line>
                     <line x1="12" y1="17" x2="12.01" y2="17"></line>
                   </svg>
-                  Disclaimers
+                  Disclaimers &amp; Operational Warranties
                 </h2>
                 <p>
-                  The Service is provided on an <strong>"as is"</strong> and
-                  <strong>"as available"</strong> basis, without warranty of any
-                  kind, express or implied. To the fullest extent permitted by
-                  applicable law, PDFMaster disclaims all warranties, including
-                  but not limited to:
+                  The Service is provided strictly on an
+                  <strong>"AS IS"</strong> and
+                  <strong>"AS AVAILABLE"</strong> basis without warranties of
+                  any kind, whether express, implied, statutory, or otherwise.
+                  To the maximum extent permitted by applicable law, PDFMaster
+                  disclaims all warranties, including:
                 </p>
                 <ul>
                   <li>
-                    <strong>Accuracy:</strong> We do not guarantee that tool
-                    outputs — converted PDFs, extracted images, or other
-                    processed files — will be error-free, pixel-perfect, or
-                    suitable for every intended purpose
+                    <strong>Output Accuracy:</strong> While our tools utilize
+                    industry-standard rendering and compilation engines, we do
+                    not warrant that output PDFs, extracted images, or
+                    compression results will be 100% pixel-perfect or suitable
+                    for every legal, industrial, or regulatory standard.
                   </li>
                   <li>
-                    <strong>Uninterrupted Service:</strong> We do not warrant
-                    that the Service will be continuously available, secure, or
-                    free from errors or defects
+                    <strong>Uninterrupted Uptime:</strong> We do not guarantee
+                    continuous, bug-free, or uninterrupted website access.
+                    Scheduled maintenance or edge routing changes may cause
+                    transient unavailability.
                   </li>
                   <li>
-                    <strong>Fitness for Purpose:</strong> We make no warranty
-                    that the Service will meet your specific requirements or
-                    produce results to your exact specifications
+                    <strong>Device Compatibility:</strong> Because tool
+                    execution depends on client-side browser JavaScript
+                    implementations, results and memory handling may vary across
+                    older or non-standard mobile browsers.
                   </li>
                   <li>
-                    <strong>Browser Compatibility:</strong> While we support all
-                    major browsers, we cannot guarantee identical results across
-                    every browser version, device, or operating system
-                    combination
-                  </li>
-                  <li>
-                    <strong>Data Integrity:</strong> Although files are
-                    processed on-device and never uploaded, we recommend keeping
-                    backups of important documents before processing
+                    <strong>Backup Recommendation:</strong> You are strongly
+                    advised to keep independent backups of all vital documents
+                    before performing operations such as page deletion,
+                    compression, or metadata sanitization.
                   </li>
                 </ul>
-                <p>
-                  Nothing in these disclaimers shall exclude or limit any
-                  warranty implied by law that it would be unlawful to exclude
-                  or limit.
-                </p>
               </div>
 
               <!-- 7. Limitation of Liability -->
@@ -1070,40 +1128,40 @@
                   Limitation of Liability
                 </h2>
                 <p>
-                  To the maximum extent permitted by applicable law, PDFMaster,
-                  its owners, developers, employees, and affiliates shall not be
-                  liable for any indirect, incidental, special, consequential,
-                  or punitive damages, including but not limited to:
+                  To the maximum extent permitted by applicable law, in no event
+                  shall PDFMaster, its founder Happy Gupta, developers, or
+                  affiliates be liable for any indirect, punitive, incidental,
+                  special, consequential, or exemplary damages, including but
+                  not limited to damages for loss of profits, goodwill, data, or
+                  other intangible losses arising out of or relating to:
                 </p>
                 <ul>
-                  <li>Loss of data, profits, revenue, goodwill, or business</li>
                   <li>
-                    Damage caused by reliance on outputs generated by the
-                    Service
+                    Your access to, use of, or inability to access or use the
+                    Service.
                   </li>
                   <li>
-                    Damage resulting from unauthorised access to or alteration
-                    of your content, where such access occurs outside the scope
-                    of our Service
+                    Any browser memory crash, tab reload, device freeze, or
+                    local hardware interruption occurring during client-side
+                    document processing.
                   </li>
                   <li>
-                    Any matter beyond our reasonable control, including browser
-                    failures, device crashes, or network interruptions during
-                    on-device processing
+                    Any reliance placed on converted, compressed, or edited
+                    document outputs.
+                  </li>
+                  <li>
+                    Unauthorized alteration, interception, or loss of data
+                    occurring on your local device or network outside the
+                    control of PDFMaster.
                   </li>
                 </ul>
                 <p>
-                  In jurisdictions where limitation of liability for
-                  consequential or incidental damages is not permitted, our
-                  liability shall be limited to the maximum extent permitted by
-                  law.
-                </p>
-                <p>
-                  Because PDFMaster is provided entirely
-                  <strong>free of charge</strong>, our total aggregate liability
-                  to you for any claim arising out of or related to these Terms
-                  or your use of the Service shall not exceed INR 50 (Fifty
-                  Rupees Indian Only).
+                  Because PDFMaster is provided
+                  <strong>100% free of charge</strong>, our total aggregate
+                  liability for any claims arising out of or related to these
+                  Terms or the Service shall not exceed
+                  <strong>INR 50 (Fifty Indian Rupees)</strong> or the minimum
+                  statutory limit permitted by law.
                 </p>
               </div>
 
@@ -1134,43 +1192,79 @@
                     ></rect>
                     <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
                   </svg>
-                  Privacy &amp; Data Processing
+                  Privacy &amp; Data Protection
                 </h2>
                 <p>
-                  Your privacy is fundamental to how PDFMaster works, not an
-                  afterthought. All file processing —
-                  <strong
-                    >PDF conversion, image transformation, metadata
-                    removal</strong
-                  >, and every other tool function — happens entirely inside
-                  your browser using client-side JavaScript. At no point are
-                  your files transmitted to, processed by, or stored on any
-                  PDFMaster server.
+                  Your privacy is an architectural guarantee at PDFMaster. All
+                  document conversions, page extractions, compression runs, and
+                  annotations take place 100% on your device. We have no servers
+                  capable of accessing, viewing, or saving your files.
                 </p>
                 <p>
-                  We do not require you to create an account, provide your email
-                  address, or supply any personal information to use any tool on
-                  PDFMaster. Your use of the Service is
-                  <strong>anonymous by design</strong>.
-                </p>
-                <p>
-                  We may collect minimal,
-                  <strong>anonymised usage analytics</strong> (e.g. page views,
-                  general device type) through trusted third-party services.
-                  These analytics do not identify individual users and do not
-                  include any file content or names.
-                </p>
-                <p>
-                  For full details, please read our
-                  <a href="/privacy">Privacy Policy</a>, which forms part of
-                  these Terms.
+                  For complete details on our data handling, client-side session
+                  recovery in IndexedDB, and transparent operational telemetry,
+                  please review our comprehensive
+                  <a href="/privacy">Privacy Policy</a>, which forms an integral
+                  part of these Terms.
                 </p>
               </div>
 
-              <!-- 9. Third-Party Links -->
-              <div class="policy-section rv" id="third-party">
+              <!-- 9. Telemetry & Fair Use -->
+              <div class="policy-section rv" id="telemetry">
                 <h2>
                   <span class="section-num">9</span>
+                  <svg
+                    class="section-icon"
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    aria-hidden="true"
+                  >
+                    <line x1="18" y1="20" x2="18" y2="10"></line>
+                    <line x1="12" y1="20" x2="12" y2="4"></line>
+                    <line x1="6" y1="20" x2="6" y2="14"></line>
+                  </svg>
+                  Operational Telemetry, Rate Limiting &amp; Fair Use
+                </h2>
+                <p>
+                  To optimize tool stability and prevent memory exhaustion
+                  across diverse mobile and desktop devices:
+                </p>
+                <ul>
+                  <li>
+                    <strong>Operational Metrics:</strong> When a tool completes
+                    an operation, an asynchronous, non-blocking telemetry event
+                    transmits high-level performance benchmarks (such as elapsed
+                    calculation duration, general file size category, sanitized
+                    format extension, and general hardware tier) to our secure
+                    infrastructure.
+                  </li>
+                  <li>
+                    <strong>Zero File Exposure:</strong> Telemetry payloads
+                    contain zero file bytes, text, imagery, or personal
+                    identities. Original file names are stripped to prevent
+                    metadata leakage.
+                  </li>
+                  <li>
+                    <strong>Fair Use &amp; Abuse Prevention:</strong> Service
+                    requests and telemetry ingestion are protected by dynamic
+                    edge rate limiting and automated security defenses.
+                    Attempting to flood endpoints or launch automated abuse will
+                    trigger automatic security blocks.
+                  </li>
+                </ul>
+              </div>
+
+              <!-- 10. Third-Party Resources -->
+              <div class="policy-section rv" id="third-party">
+                <h2>
+                  <span class="section-num">10</span>
                   <svg
                     class="section-icon"
                     xmlns="http://www.w3.org/2000/svg"
@@ -1194,35 +1288,25 @@
                   Third-Party Links &amp; Resources
                 </h2>
                 <p>
-                  PDFMaster may contain links to third-party websites, services,
-                  or resources (for example, CDN-hosted libraries, documentation
-                  sites, or external references). These links are provided for
-                  convenience only and do not imply endorsement or affiliation.
+                  PDFMaster may contain links to external third-party sites,
+                  references, or open-source documentation. These links are
+                  provided for informational convenience only. We have no
+                  control over the content, terms, or privacy practices of
+                  external websites and accept no liability for any loss or
+                  damage arising from your interaction with third-party sites.
                 </p>
                 <p>
-                  We have no control over the content, privacy practices, or
-                  policies of any third-party websites. We strongly encourage
-                  you to review the terms and privacy policies of any
-                  third-party sites you visit via links from PDFMaster. We
-                  accept no responsibility or liability for any content,
-                  practices, or damage arising from your interaction with
-                  third-party services.
-                </p>
-                <p>
-                  To maximize user privacy and enable complete offline
-                  functionality, all core open-source libraries (such as
-                  pdf-lib, pdf.js, JSZip, Sortable, and jsPDF) are hosted
-                  locally and served directly from our assets folder. We do not
-                  load tool processing libraries from external CDNs, ensuring no
-                  third-party networks track your library requests or set
-                  cookies during tool operations.
+                  To protect your privacy during document workflows, all primary
+                  fonts and open-source JavaScript libraries (pdf-lib, PDF.js,
+                  jsPDF, JSZip) are hosted locally on our own domain,
+                  eliminating third-party CDN tracking.
                 </p>
               </div>
 
-              <!-- 10. Termination -->
+              <!-- 11. Termination -->
               <div class="policy-section rv" id="termination">
                 <h2>
-                  <span class="section-num">10</span>
+                  <span class="section-num">11</span>
                   <svg
                     class="section-icon"
                     xmlns="http://www.w3.org/2000/svg"
@@ -1240,39 +1324,27 @@
                     <polyline points="16 17 21 12 16 7"></polyline>
                     <line x1="21" y1="12" x2="9" y2="12"></line>
                   </svg>
-                  Termination
+                  Termination &amp; Access Controls
                 </h2>
                 <p>
-                  PDFMaster reserves the right to restrict, suspend, or
-                  terminate access to the Service — in whole or in part — at our
-                  sole discretion, at any time and without prior notice, if we
-                  believe you have violated these Terms or applicable law, or if
-                  your usage materially impacts the performance or availability
-                  of the Service for other users.
+                  PDFMaster reserves the right to restrict, suspend, or block
+                  access to the website or its backend worker APIs — without
+                  prior notice — if we detect abuse, automated scraping,
+                  violation of these Terms, or security threats directed at our
+                  infrastructure.
                 </p>
                 <p>
-                  Because PDFMaster does not require user accounts,
-                  "termination" in practical terms means
-                  <strong>blocking access</strong> from specific IP addresses,
-                  networks, or user agents where abuse has been detected.
-                </p>
-                <p>
-                  You may stop using the Service at any time. Because we collect
-                  no personal data and store no files, there is nothing to
-                  delete or close upon discontinuing use.
-                </p>
-                <p>
-                  Provisions of these Terms that by their nature should survive
-                  termination — including intellectual property, disclaimers,
-                  limitations of liability, and governing law — shall remain in
-                  full force after any termination.
+                  Because PDFMaster does not mandate user accounts, termination
+                  takes the practical form of edge-level IP, subnet, or
+                  user-agent blocking. You may cease using PDFMaster at any
+                  time.
                 </p>
               </div>
 
-              <!-- 11. Governing Law -->
+              <!-- 12. Governing Law -->
               <div class="policy-section rv" id="governing-law">
                 <h2>
-                  <span class="section-num">11</span>
+                  <span class="section-num">12</span>
                   <svg
                     class="section-icon"
                     xmlns="http://www.w3.org/2000/svg"
@@ -1294,33 +1366,27 @@
                   Governing Law &amp; Jurisdiction
                 </h2>
                 <p>
-                  These Terms of Service shall be governed by and construed in
-                  accordance with the <strong>laws of India</strong>,
-                  specifically the relevant provisions of the Information
-                  Technology Act, 2000 (as amended), the Indian Contract Act,
-                  1872, and other applicable Indian legislation, without regard
-                  to conflict-of-law provisions.
+                  These Terms of Service, and any dispute arising out of or
+                  related to them, shall be governed by and construed in
+                  accordance with the <strong>laws of India</strong>, including
+                  the Information Technology Act, 2000, the Digital Personal
+                  Data Protection Act, 2023, and the Indian Contract Act, 1872,
+                  without giving effect to conflict-of-law principles.
                 </p>
                 <p>
-                  Any dispute arising out of or in connection with these Terms,
-                  including any question regarding their existence, validity, or
-                  termination, shall be subject to the
-                  <strong>exclusive jurisdiction</strong> of the courts located
-                  in <strong>Bihar, India only.</strong>.
-                </p>
-                <p>
-                  If you are accessing PDFMaster from outside India, you do so
-                  on your own initiative and are responsible for compliance with
-                  any local laws applicable to your use of the Service. Nothing
-                  in these Terms limits your statutory consumer rights under the
-                  laws of your country.
+                  Any legal dispute or proceeding arising under or in connection
+                  with these Terms shall be subject to the
+                  <strong
+                    >exclusive jurisdiction of the courts located in Bihar,
+                    India</strong
+                  >.
                 </p>
               </div>
 
-              <!-- 12. Changes -->
+              <!-- 13. Changes to Terms -->
               <div class="policy-section rv" id="changes">
                 <h2>
-                  <span class="section-num">12</span>
+                  <span class="section-num">13</span>
                   <svg
                     class="section-icon"
                     xmlns="http://www.w3.org/2000/svg"
@@ -1344,40 +1410,31 @@
                   Changes to These Terms
                 </h2>
                 <p>
-                  We reserve the right to modify or update these Terms at any
-                  time. When we make material changes, we will:
+                  We may revise these Terms from time to time to accommodate new
+                  tools, changes in our serverless architecture, or legal
+                  updates. When changes occur:
                 </p>
                 <ol>
                   <li>
-                    Update the "Last updated" date shown at the top of this page
+                    We will update the "Last updated" date at the top of this
+                    document.
                   </li>
                   <li>
-                    Post a prominent notice on the PDFMaster
-                    <a href="/announcements">Announcement page</a>
-                    for at least 30 days following the change
-                  </li>
-                  <li>
-                    Where required by applicable law, seek your express consent
-                    before the new Terms take effect
+                    We will post a summary notice on our
+                    <a href="/announcements">Announcements page</a> for material
+                    updates.
                   </li>
                 </ol>
                 <p>
-                  Your continued use of PDFMaster after the effective date of
-                  any revised Terms constitutes your acceptance of the changes.
-                  If you disagree with any updated Terms, please discontinue use
-                  of the Service.
-                </p>
-                <p>
-                  Previous versions of these Terms are available on request —
-                  please use our <a href="/contact">contact page</a> to obtain a
-                  copy.
+                  Your continued use of PDFMaster following the effective date
+                  of updated Terms constitutes your agreement to the revisions.
                 </p>
               </div>
 
-              <!-- 13. Contact -->
+              <!-- 14. Contact Us -->
               <div class="policy-section rv" id="contact-us">
                 <h2>
-                  <span class="section-num">13</span>
+                  <span class="section-num">14</span>
                   <svg
                     class="section-icon"
                     xmlns="http://www.w3.org/2000/svg"
@@ -1396,31 +1453,38 @@
                     ></path>
                     <polyline points="22,6 12,13 2,6"></polyline>
                   </svg>
-                  Contact Us
+                  Contact Us &amp; Legal Inquiries
                 </h2>
                 <p>
-                  If you have any questions, concerns, or requests regarding
-                  these Terms of Service, we are happy to help. We aim to
-                  respond to all enquiries within
-                  <strong>48 business hours</strong>.
+                  If you have questions, licensing inquiries, or legal concerns
+                  regarding these Terms of Service, we are pleased to assist:
                 </p>
-                <p>You may reach us regarding:</p>
                 <ul>
-                  <li>Questions about any clause in these Terms</li>
                   <li>
-                    Reporting a suspected violation or abuse of the Service
+                    <strong>Service Operator:</strong> PDFMaster
+                    (pdfmaster.co.in)
                   </li>
-                  <li>Intellectual property or copyright concerns</li>
-                  <li>Partnership, licensing, or commercial enquiries</li>
-                  <li>General legal or compliance questions</li>
+                  <li><strong>Founder:</strong> Happy Gupta</li>
+                  <li>
+                    <strong>Official Email:</strong>
+                    <a href="mailto:support@pdfmaster.co.in"
+                      >support@pdfmaster.co.in</a
+                    >
+                  </li>
+                  <li>
+                    <strong>Web Help Center:</strong>
+                    <a href="/contact">https://pdfmaster.co.in/contact</a>
+                  </li>
+                  <li>
+                    <strong>Response Standard:</strong> We reply to all
+                    inquiries within <strong>48 business hours</strong>.
+                  </li>
                 </ul>
+
                 <div class="contact-card">
                   <div class="contact-card-text">
-                    <h4>Get in Touch</h4>
-                    <p>
-                      Our team typically responds within 48 hours on business
-                      days.
-                    </p>
+                    <h4>Have Questions About Our Terms?</h4>
+                    <p>Our team typically responds within 48 business hours.</p>
                   </div>
                   <a href="/contact" class="btn-white">Contact Us →</a>
                 </div>
@@ -1499,11 +1563,16 @@
               <ul>
                 <li><a href="/pdf-editor">PDF Editor</a></li>
                 <li><a href="/pdf-viewer">PDF Viewer</a></li>
+                <li><a href="/compress-pdf">Compress PDF</a></li>
                 <li><a href="/photo-to-pdf">Photo to PDF</a></li>
                 <li><a href="/pdf-to-photo">PDF to Photo</a></li>
                 <li><a href="/split-pdf">Split PDF</a></li>
                 <li><a href="/delete-pdf-pages">Delete PDF Pages</a></li>
+<<<<<<< Updated upstream
               <li><a href="/rotate-pdf">Rotate PDF</a></li>
+=======
+                <li><a href="/rotate-pdf">Rotate PDF</a></li>
+>>>>>>> Stashed changes
                 <li><a href="/pdf-reorder">PDF Reorder</a></li>
                 <li><a href="/merge-pdf">PDF Compiler</a></li>
                 <li><a href="/pdf-metadata">PDF Metadata</a></li>
