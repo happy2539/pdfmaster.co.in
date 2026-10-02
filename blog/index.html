@@ -50,12 +50,8 @@
       rel="apple-touch-icon"
       href="https://pdfmaster.co.in/assets/apple-touch-icon.png"
     />
-    
-    
-    <link
-      href="../assets/fonts/fonts.css"
-      rel="stylesheet"
-    />
+
+    <link href="../assets/fonts/fonts.css" rel="stylesheet" />
 
     <script type="application/ld+json">
       {
@@ -101,7 +97,7 @@
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="default" />
     <script src="/js/sw-register.js" defer></script>
-    
+
     <!-- Google Tag Manager (Delayed) -->
     <script>
       (function () {
@@ -134,7 +130,6 @@
         window.addEventListener("mousemove", loadGTM, { passive: true });
         window.addEventListener("touchstart", loadGTM, { passive: true });
         window.addEventListener("click", loadGTM, { passive: true });
-
       })();
     </script>
   </head>
@@ -151,7 +146,7 @@
       ></iframe
     ></noscript>
     <!-- End Google Tag Manager (noscript) -->
-    
+
     <nav class="navbar" role="navigation" aria-label="Main navigation">
       <div class="nav-inner">
         <a
@@ -165,7 +160,7 @@
             width="32"
             height="32"
           />
-          PDF<b>Master</b>
+          <span>PDF<b>Master</b></span>
         </a>
         <div class="nav-links">
           <a href="https://pdfmaster.co.in">Home</a>
@@ -181,7 +176,12 @@
             class="theme-btn"
             aria-label="Subscribe"
             title="Subscribe"
-            style="margin-right: 8px; display: flex; align-items: center; justify-content: center;"
+            style="
+              margin-right: 8px;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+            "
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -228,27 +228,184 @@
       </div>
     </nav>
 
-    
     <div class="drawer" id="drawer" aria-hidden="true">
-      <a href="https://pdfmaster.co.in"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-bottom: 2px"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg> Home</a>
-      <a href="https://pdfmaster.co.in/#tools"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"></path></svg> All Tools</a>
-      <a href="https://pdfmaster.co.in/blog"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg> Blog</a>
-      <a href="https://pdfmaster.co.in/about"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg> About Us</a>
-      <a href="https://pdfmaster.co.in/faq"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><line x1="12" y1="17" x2="12.01" y2="17"></line></svg> FAQ</a>
-      <a href="https://pdfmaster.co.in/privacy"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg> Privacy Policy</a>
-      <a href="https://pdfmaster.co.in/terms"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg> Terms of Service</a>
-      <a href="https://pdfmaster.co.in/contact"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg> Contact</a>
-      <a href="/subscribe"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="8" width="18" height="12" rx="2" ry="2"></rect><line x1="4" y1="10" x2="12" y2="14"></line><line x1="20" y1="10" x2="12" y2="14"></line></svg> Subscribe</a>
+      <a href="https://pdfmaster.co.in"
+        ><svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="14"
+          height="14"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          style="margin-bottom: 2px"
+        >
+          <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+          <polyline points="9 22 9 12 15 12 15 22"></polyline>
+        </svg>
+        Home</a
+      >
+      <a href="https://pdfmaster.co.in/#tools"
+        ><svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="14"
+          height="14"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <path
+            d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"
+          ></path>
+        </svg>
+        All Tools</a
+      >
+      <a href="https://pdfmaster.co.in/blog"
+        ><svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="14"
+          height="14"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <path
+            d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"
+          ></path>
+          <polyline points="14 2 14 8 20 8"></polyline>
+          <line x1="16" y1="13" x2="8" y2="13"></line>
+          <line x1="16" y1="17" x2="8" y2="17"></line>
+          <polyline points="10 9 9 9 8 9"></polyline>
+        </svg>
+        Blog</a
+      >
+      <a href="https://pdfmaster.co.in/about"
+        ><svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="14"
+          height="14"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <circle cx="12" cy="12" r="10"></circle>
+          <line x1="12" y1="16" x2="12" y2="12"></line>
+          <line x1="12" y1="8" x2="12.01" y2="8"></line>
+        </svg>
+        About Us</a
+      >
+      <a href="https://pdfmaster.co.in/faq"
+        ><svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="14"
+          height="14"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <circle cx="12" cy="12" r="10"></circle>
+          <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path>
+          <line x1="12" y1="17" x2="12.01" y2="17"></line>
+        </svg>
+        FAQ</a
+      >
+      <a href="https://pdfmaster.co.in/privacy"
+        ><svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="14"
+          height="14"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+        </svg>
+        Privacy Policy</a
+      >
+      <a href="https://pdfmaster.co.in/terms"
+        ><svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="14"
+          height="14"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <path
+            d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"
+          ></path>
+          <polyline points="14 2 14 8 20 8"></polyline>
+          <line x1="16" y1="13" x2="8" y2="13"></line>
+          <line x1="16" y1="17" x2="8" y2="17"></line>
+          <polyline points="10 9 9 9 8 9"></polyline>
+        </svg>
+        Terms of Service</a
+      >
+      <a href="https://pdfmaster.co.in/contact"
+        ><svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="14"
+          height="14"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <path
+            d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"
+          ></path>
+          <polyline points="22,6 12,13 2,6"></polyline>
+        </svg>
+        Contact</a
+      >
+      <a href="/subscribe"
+        ><svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="14"
+          height="14"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <rect x="3" y="8" width="18" height="12" rx="2" ry="2"></rect>
+          <line x1="4" y1="10" x2="12" y2="14"></line>
+          <line x1="20" y1="10" x2="12" y2="14"></line>
+        </svg>
+        Subscribe</a
+      >
     </div>
 
-    
     <nav aria-label="Breadcrumb" class="breadcrumb">
       <a href="https://pdfmaster.co.in">Home</a>
       <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6" /></svg>
       <span aria-current="page">Blog</span>
     </nav>
 
-    
     <header class="hero">
       <div class="hero-bg" aria-hidden="true"></div>
       <div class="hero-inner">
@@ -271,22 +428,32 @@
             role="tab"
             aria-selected="true"
           >
-            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 6px;"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"></path></svg> Tool Guides
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="14"
+              height="14"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              style="margin-right: 6px"
+            >
+              <path
+                d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"
+              ></path>
+            </svg>
+            Tool Guides
           </button>
-          
         </div>
       </div>
     </header>
 
-    
     <main class="main" id="main">
-      
       <section id="sec-tools" aria-labelledby="tools-heading">
         <div class="sec-hdr rev">
-          <h2 class="sec-title" id="tools-heading">
-            Tool Blog Pages
-            <span class="badge">PER TOOL</span>
-          </h2>
+          <h2 class="sec-title" id="tools-heading">Tool Blog Pages</h2>
         </div>
         <p class="sec-desc rev">
           Each tool has its own dedicated blog page with in-depth articles,
@@ -295,10 +462,6 @@
         </p>
 
         <div class="tool-grid">
-          
-          
-
-                    
           <article class="tool-card rev">
             <div class="tc-banner blue">
               <div class="tc-icon-wrap">
@@ -322,7 +485,7 @@
                 Guides for converting JPG, PNG, WEBP, and other images to PDF —
                 from quick how-tos to in-depth format comparisons.
               </p>
-              
+
               <div class="tc-footer">
                 <span class="tc-count">2 articles published</span>
                 <a href="/blog/photo-to-pdf" class="tc-cta"
@@ -335,7 +498,6 @@
             </div>
           </article>
 
-          
           <article class="tool-card rev">
             <div class="tc-banner green">
               <div class="tc-icon-wrap">
@@ -362,7 +524,7 @@
                 Everything about extracting high-resolution images from PDF
                 pages — for presentations, sharing, or archiving.
               </p>
-              
+
               <div class="tc-footer">
                 <span class="tc-count">2 articles published</span>
                 <a href="/blog/pdf-to-photo" class="tc-cta"
@@ -395,10 +557,10 @@
                 </svg>
               </div>
               <p class="tc-desc">
-                Master document privacy. Learn how to scrub hidden data, edit 
+                Master document privacy. Learn how to scrub hidden data, edit
                 file properties, and share PDFs securely.
               </p>
-              
+
               <div class="tc-footer">
                 <span class="tc-count">1 article published</span>
                 <a href="/blog/pdf-metadata" class="tc-cta"
@@ -410,34 +572,37 @@
               </div>
             </div>
           </article>
-
+        </div>
       </section>
 
       <hr class="sec-divider" />
-        <div class="general-grid">
+      <div class="general-grid"></div>
+      <div class="nl rev" aria-label="Newsletter signup">
+        <div class="nl-text">
+          <h2>Get PDF Tips in Your Inbox</h2>
+          <p>New guides and tool updates monthly — no spam, ever.</p>
         </div>
-        <div class="nl rev" aria-label="Newsletter signup">
-          <div class="nl-text">
-            <h2>Get PDF Tips in Your Inbox</h2>
-            <p>New guides and tool updates monthly — no spam, ever.</p>
-          </div>
-          <div class="nl-cta">
-            <a href="/subscribe" class="nl-btn">Subscribe Free →</a>
-          </div>
+        <div class="nl-cta">
+          <a href="/subscribe" class="nl-btn">Subscribe Free →</a>
         </div>
-      </section>
+      </div>
     </main>
     <footer class="footer" aria-label="Site footer">
       <div class="footer-inner">
         <div class="f-brand">
-          <a href="" class="f-logo"
-            ><img
+          <a
+            href="https://pdfmaster.co.in"
+            class="f-logo"
+            aria-label="PDFMaster Home"
+          >
+            <img
               src="https://pdfmaster.co.in/assets/apple-touch-icon.png"
               alt="PDFMaster"
               width="29"
               height="29"
-            />PDF<b>Master</b></a
-          >
+            />
+            <span>PDF<b>Master</b></span>
+          </a>
           <p>
             Free, private, browser-based PDF tools. Your files never leave your
             device.
@@ -467,16 +632,31 @@
         <div class="f-col">
           <h4>Tools</h4>
           <ul>
-            <li><a href="https://pdfmaster.co.in/merge-pdf">PDF Compiler</a></li>
+            <li>
+              <a href="https://pdfmaster.co.in/merge-pdf">PDF Compiler</a>
+            </li>
             <li><a href="https://pdfmaster.co.in/pdf-editor">PDF Editor</a></li>
             <li><a href="https://pdfmaster.co.in/pdf-viewer">PDF Viewer</a></li>
-            <li><a href="https://pdfmaster.co.in/photo-to-pdf">Photo to PDF</a></li>
-            <li><a href="https://pdfmaster.co.in/pdf-to-photo">PDF to Photo</a></li>
-            <li><a href="https://pdfmaster.co.in/pdf-metadata">Metadata Remover</a></li>
+            <li>
+              <a href="https://pdfmaster.co.in/photo-to-pdf">Photo to PDF</a>
+            </li>
+            <li>
+              <a href="https://pdfmaster.co.in/pdf-to-photo">PDF to Photo</a>
+            </li>
+            <li>
+              <a href="https://pdfmaster.co.in/pdf-metadata"
+                >Metadata Remover</a
+              >
+            </li>
             <li><a href="https://pdfmaster.co.in/split-pdf">Split PDF</a></li>
-            <li><a href="https://pdfmaster.co.in/delete-pdf-pages">Delete PDF Pages</a></li>
-            <li><a href="https://pdfmaster.co.in/pdf-reorder">PDF Reorder</a></li>
-            
+            <li>
+              <a href="https://pdfmaster.co.in/delete-pdf-pages"
+                >Delete PDF Pages</a
+              >
+            </li>
+            <li>
+              <a href="https://pdfmaster.co.in/pdf-reorder">PDF Reorder</a>
+            </li>
           </ul>
         </div>
         <div class="f-col">
@@ -484,7 +664,11 @@
           <ul>
             <li><a href="https://pdfmaster.co.in">Home</a></li>
             <li><a href="https://pdfmaster.co.in/about">About Us</a></li>
-            <li><a href="https://pdfmaster.co.in/happy-gupta-founder-of-pdfmaster">About Happy Gupta</a></li>
+            <li>
+              <a href="https://pdfmaster.co.in/happy-gupta-founder-of-pdfmaster"
+                >About Happy Gupta</a
+              >
+            </li>
             <li><a href="https://pdfmaster.co.in/blog">Blogs</a></li>
             <li><a href="/subscribe">Subscribe</a></li>
           </ul>
@@ -493,8 +677,12 @@
           <h4>Support</h4>
           <ul>
             <li><a href="https://pdfmaster.co.in/contact">Help Center</a></li>
-            <li><a href="https://pdfmaster.co.in/privacy">Privacy Policy</a></li>
-            <li><a href="https://pdfmaster.co.in/terms">Terms of Service</a></li>
+            <li>
+              <a href="https://pdfmaster.co.in/privacy">Privacy Policy</a>
+            </li>
+            <li>
+              <a href="https://pdfmaster.co.in/terms">Terms of Service</a>
+            </li>
             <li><a href="https://pdfmaster.co.in/faq">FAQ</a></li>
           </ul>
         </div>
@@ -509,23 +697,25 @@
       </div>
     </footer>
 
-    
     <button class="btt" id="btt" aria-label="Back to top">
       <svg viewBox="0 0 24 24"><polyline points="18 15 12 9 6 15" /></svg>
     </button>
 
-    
-<div class="pm-overlay" id="pmOverlay" role="dialog" aria-modal="true" aria-labelledby="pmTitle" hidden>
-  <div class="pm-modal">
-    <div class="pm-icon-wrap" id="pmIconWrap">
-      
+    <div
+      class="pm-overlay"
+      id="pmOverlay"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="pmTitle"
+      hidden
+    >
+      <div class="pm-modal">
+        <div class="pm-icon-wrap" id="pmIconWrap"></div>
+        <h3 class="pm-title" id="pmTitle"></h3>
+        <p class="pm-msg" id="pmMsg"></p>
+        <button class="pm-btn" id="pmBtn">OK</button>
+      </div>
     </div>
-    <h3 class="pm-title" id="pmTitle"></h3>
-    <p  class="pm-msg"   id="pmMsg"></p>
-    <button class="pm-btn" id="pmBtn">OK</button>
-  </div>
-</div>
-
 
     <script src="script.js" defer></script>
   </body>

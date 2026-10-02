@@ -112,6 +112,10 @@ button {
   height: 32px;
   border-radius: 8px;
 }
+.nav-logo span {
+  display: inline-flex;
+  align-items: center;
+}
 .nav-logo b {
   color: var(--accent);
   font-weight: 800;
@@ -1031,6 +1035,10 @@ button {
   width: 29px;
   height: 29px;
   border-radius: 7px;
+}
+.f-logo span {
+  display: inline-flex;
+  align-items: center;
 }
 .f-logo b {
   color: var(--accent);
