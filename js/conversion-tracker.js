@@ -362,10 +362,50 @@
           ? Math.round(data.storageFreeBytes)
           : hw.storageFreeBytes;
 
+      // Bot & Automation Detection: Suppress conversion telemetry from automated scrapers / headless drivers
+      const isBot = Boolean(
+        (typeof navigator !== "undefined" && navigator.webdriver) ||
+        (typeof window !== "undefined" && (window.__nightmare || window._phantom || window.callPhantom))
+      );
+      if (isBot) {
+        log("Automated bot/crawler environment detected. Conversion telemetry suppressed.");
+        return null;
+      }
+
+      // Funnel Attribution: Link conversion event to the active tab pageview session
+      let pageviewSessionId = null;
+      let sessionDurationBeforeConversionMs = null;
+      try {
+        if (
+          window.PDFMasterPageviewTracker &&
+          typeof window.PDFMasterPageviewTracker.getSessionId === "function"
+        ) {
+          pageviewSessionId = window.PDFMasterPageviewTracker.getSessionId();
+          if (
+            typeof window.PDFMasterPageviewTracker.getCurrentDurationMs ===
+            "function"
+          ) {
+            sessionDurationBeforeConversionMs =
+              window.PDFMasterPageviewTracker.getCurrentDurationMs();
+          }
+        } else if (typeof sessionStorage !== "undefined") {
+          pageviewSessionId = sessionStorage.getItem("pdfmaster_tab_session_id");
+          const storedStart = sessionStorage.getItem("pdfmaster_tab_session_start");
+          if (storedStart) {
+            sessionDurationBeforeConversionMs = Math.max(
+              0,
+              Date.now() - parseInt(storedStart, 10),
+            );
+          }
+        }
+      } catch (_) {}
+
       const eventId = `c_${now}_${Math.random().toString(36).slice(2, 8)}`;
 
       const payload = {
         eventId: eventId,
+        sessionId: pageviewSessionId,
+        sessionDurationMs: sessionDurationBeforeConversionMs,
         timestamp: new Date().toISOString(),
         tool: tool,
         durationMs: durationMs,
@@ -547,4 +587,23 @@
   // Second pass in case universal-popup.js was loaded deferred
   setTimeout(initTracker, 500);
   setTimeout(initTracker, 1500);
+
+  // Automatic Heartbeat Pageview Telemetry loader
+  function initHeartbeatTracking() {
+    if (typeof window !== "undefined" && !window.__PDFMasterPageviewTrackerInitialized) {
+      if (document.querySelector('script[src*="pageview-tracker.js"]')) return;
+      var s = document.createElement("script");
+      s.src = "/js/pageview-tracker.js";
+      s.defer = true;
+      document.head.appendChild(s);
+    }
+  }
+
+  try {
+    if (document.readyState === "loading") {
+      document.addEventListener("DOMContentLoaded", initHeartbeatTracking);
+    } else {
+      initHeartbeatTracking();
+    }
+  } catch (_) {}
 })();
