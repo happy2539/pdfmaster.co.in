@@ -1347,6 +1347,90 @@
                     />
                   </div>
                 </div>
+
+                <!-- Background Pill Feature -->
+                <div class="form-group pill-bg-group" style="margin-top: 14px">
+                  <div class="pill-toggle-row">
+                    <label class="toggle-label" for="pillBgCheckbox">
+                      <svg
+                        width="15"
+                        height="15"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2.5"
+                      >
+                        <rect x="2" y="6" width="20" height="12" rx="6" />
+                        <circle cx="8" cy="12" r="2.5" />
+                      </svg>
+                      <span>Pill Background</span>
+                    </label>
+                    <label class="switch">
+                      <input
+                        type="checkbox"
+                        id="pillBgCheckbox"
+                        aria-label="Toggle pill background color for all pages"
+                      />
+                      <span class="slider-switch"></span>
+                    </label>
+                  </div>
+
+                  <!-- Pill Background Colors -->
+                  <div
+                    class="pill-color-picker-wrap"
+                    id="pillColorGroup"
+                    style="display: none"
+                  >
+                    <label class="form-label" style="margin-bottom: 6px"
+                      >Background Color</label
+                    >
+                    <div class="color-picker-row" id="pillBgColorRow">
+                      <div
+                        class="pill-color-swatch active"
+                        data-color="#ffffff"
+                        style="background: #ffffff; border: 1px solid #cbd5e1"
+                        title="Pure White"
+                      ></div>
+                      <div
+                        class="pill-color-swatch"
+                        data-color="#f1f5f9"
+                        style="background: #f1f5f9; border: 1px solid #cbd5e1"
+                        title="Light Slate"
+                      ></div>
+                      <div
+                        class="pill-color-swatch"
+                        data-color="#1e293b"
+                        style="background: #1e293b"
+                        title="Dark Slate"
+                      ></div>
+                      <div
+                        class="pill-color-swatch"
+                        data-color="#000000"
+                        style="background: #000000"
+                        title="Pure Black"
+                      ></div>
+                      <div
+                        class="pill-color-swatch"
+                        data-color="#fef3c7"
+                        style="background: #fef3c7; border: 1px solid #fde68a"
+                        title="Soft Yellow"
+                      ></div>
+                      <div
+                        class="pill-color-swatch"
+                        data-color="#e8372a"
+                        style="background: #e8372a"
+                        title="Brand Red"
+                      ></div>
+                      <input
+                        type="color"
+                        id="customPillColorPicker"
+                        class="custom-color-input"
+                        value="#ffffff"
+                        title="Custom background color picker"
+                      />
+                    </div>
+                  </div>
+                </div>
               </div>
 
               <!-- History & Reset Controls -->

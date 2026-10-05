@@ -51,6 +51,8 @@
       rangeStr: "",
       fontSize: 11,
       fontColor: "#1e293b",
+      pillBgEnabled: false,
+      pillBgColor: "#ffffff",
     },
 
     // History for Undo/Redo
@@ -106,6 +108,10 @@
   const fontSizeBox = document.getElementById("fontSizeBox");
   const colorSwatches = document.querySelectorAll(".color-swatch");
   const customColorPicker = document.getElementById("customColorPicker");
+  const pillBgCheckbox = document.getElementById("pillBgCheckbox");
+  const pillColorGroup = document.getElementById("pillColorGroup");
+  const pillColorSwatches = document.querySelectorAll(".pill-color-swatch");
+  const customPillColorPicker = document.getElementById("customPillColorPicker");
 
   // History & Actions
   const undoBtn = document.getElementById("undoBtn");
@@ -663,6 +669,23 @@
       );
     });
     if (customColorPicker) customColorPicker.value = state.settings.fontColor;
+
+    // Pill Background (applies to all pages)
+    const isPill = Boolean(state.settings.pillBgEnabled);
+    if (pillBgCheckbox) pillBgCheckbox.checked = isPill;
+    if (pillColorGroup) {
+      pillColorGroup.style.display = isPill ? "flex" : "none";
+    }
+    const currentPillCol = (state.settings.pillBgColor || "#ffffff").toLowerCase();
+    pillColorSwatches.forEach((swatch) => {
+      swatch.classList.toggle(
+        "active",
+        (swatch.getAttribute("data-color") || "").toLowerCase() === currentPillCol,
+      );
+    });
+    if (customPillColorPicker) {
+      customPillColorPicker.value = state.settings.pillBgColor || "#ffffff";
+    }
   }
 
   // =============================================
@@ -892,7 +915,9 @@
       colorSwatches.forEach((s) => s.classList.remove("active"));
       swatch.classList.add("active");
       if (customColorPicker) customColorPicker.value = col;
+      if (pillLiveBadgePreview) pillLiveBadgePreview.style.color = col;
       updateCurrentStampOverlayOnly();
+      scheduleSessionSave();
     });
   });
 
@@ -901,6 +926,53 @@
       state.settings.fontColor = e.target.value;
       colorSwatches.forEach((s) => s.classList.remove("active"));
       updateCurrentStampOverlayOnly();
+      scheduleSessionSave();
+    });
+  }
+
+  // Pill Background Toggle & Color Pickers (applies to all pages)
+  function togglePillBg(enable) {
+    pushStateToHistory();
+    state.settings.pillBgEnabled = enable;
+    syncControlsFromState();
+    updateCurrentStampOverlayOnly();
+    updateSummaryStats();
+    scheduleSessionSave();
+    showToast(
+      enable
+        ? "Pill background enabled for all pages."
+        : "Pill background disabled.",
+      "info",
+      1500,
+    );
+  }
+
+  if (pillBgCheckbox) {
+    pillBgCheckbox.addEventListener("change", (e) => {
+      togglePillBg(e.target.checked);
+    });
+  }
+
+  pillColorSwatches.forEach((swatch) => {
+    swatch.addEventListener("click", () => {
+      pushStateToHistory();
+      const col = swatch.getAttribute("data-color");
+      state.settings.pillBgColor = col;
+      pillColorSwatches.forEach((s) => s.classList.remove("active"));
+      swatch.classList.add("active");
+      if (customPillColorPicker) customPillColorPicker.value = col;
+      updateCurrentStampOverlayOnly();
+      updateSummaryStats();
+      scheduleSessionSave();
+    });
+  });
+
+  if (customPillColorPicker) {
+    customPillColorPicker.addEventListener("input", (e) => {
+      state.settings.pillBgColor = e.target.value;
+      pillColorSwatches.forEach((s) => s.classList.remove("active"));
+      updateCurrentStampOverlayOnly();
+      updateSummaryStats();
       scheduleSessionSave();
     });
   }
@@ -921,6 +993,8 @@
         rangeStr: "",
         fontSize: 11,
         fontColor: "#1e293b",
+        pillBgEnabled: false,
+        pillBgColor: "#ffffff",
       };
       state.excludedPages.clear();
       syncControlsFromState();
@@ -1073,12 +1147,26 @@
     if (numberedCountEl) numberedCountEl.textContent = numberedCount;
     if (excludedCountEl)
       excludedCountEl.textContent = state.totalPages - numberedCount;
+    const sampleLabel = getPageLabelString(
+      state.settings.startNumber,
+      totalToUse,
+      state.settings,
+    );
     if (formatPreviewSample) {
-      formatPreviewSample.textContent = getPageLabelString(
-        state.settings.startNumber,
-        totalToUse,
-        state.settings,
-      );
+      formatPreviewSample.textContent = sampleLabel;
+      if (state.settings.pillBgEnabled) {
+        formatPreviewSample.style.backgroundColor = state.settings.pillBgColor || "#ffffff";
+        formatPreviewSample.style.color = state.settings.fontColor;
+        formatPreviewSample.style.padding = "2px 8px";
+        formatPreviewSample.style.borderRadius = "9999px";
+        formatPreviewSample.style.border = "1px solid rgba(0,0,0,0.12)";
+      } else {
+        formatPreviewSample.style.backgroundColor = "";
+        formatPreviewSample.style.color = "";
+        formatPreviewSample.style.padding = "";
+        formatPreviewSample.style.borderRadius = "";
+        formatPreviewSample.style.border = "";
+      }
     }
 
     // Action Bar Summary Text
@@ -1089,7 +1177,8 @@
         if (numberPdfBtn) numberPdfBtn.disabled = true;
         if (sidebarNumberPdfBtn) sidebarNumberPdfBtn.disabled = true;
       } else {
-        actionSummaryText.textContent = `Ready to stamp ${numberedCount} of ${state.totalPages} page(s) starting from #${state.settings.startNumber} • ${state.settings.position.replace("-", " ")}`;
+        const pillTag = state.settings.pillBgEnabled ? " (with pill background on all pages)" : "";
+        actionSummaryText.textContent = `Ready to stamp ${numberedCount} of ${state.totalPages} page(s)${pillTag} starting from #${state.settings.startNumber} • ${state.settings.position.replace("-", " ")}`;
         if (numberPdfBtn) numberPdfBtn.disabled = false;
         if (sidebarNumberPdfBtn) sidebarNumberPdfBtn.disabled = false;
       }
@@ -1241,6 +1330,19 @@
 
     singlePageStampOverlay.style.fontSize = `${fontSizePx}px`;
     singlePageStampOverlay.style.color = state.settings.fontColor;
+
+    if (state.settings.pillBgEnabled) {
+      singlePageStampOverlay.classList.add("has-pill-bg");
+      const padXPx = Math.max(7, Math.round(8 * S));
+      const padYPx = Math.max(3, Math.round(4 * S));
+      singlePageStampOverlay.style.padding = `${padYPx}px ${padXPx}px`;
+      singlePageStampOverlay.style.backgroundColor =
+        state.settings.pillBgColor || "#ffffff";
+    } else {
+      singlePageStampOverlay.classList.remove("has-pill-bg");
+      singlePageStampOverlay.style.padding = "0";
+      singlePageStampOverlay.style.backgroundColor = "transparent";
+    }
 
     // Calculate effective position with Duplex/Facing Pages awareness
     const effPos = getEffectivePosition(
@@ -1456,6 +1558,29 @@
         isNaN(b) ? 0.2 : b,
       );
 
+      const pillBgEnabled = Boolean(state.settings.pillBgEnabled);
+      const pillBgHex = state.settings.pillBgColor || "#ffffff";
+      const pR = parseInt(pillBgHex.slice(1, 3), 16) / 255;
+      const pG = parseInt(pillBgHex.slice(3, 5), 16) / 255;
+      const pB = parseInt(pillBgHex.slice(5, 7), 16) / 255;
+      const pillBgColor = rgb(
+        isNaN(pR) ? 1 : pR,
+        isNaN(pG) ? 1 : pG,
+        isNaN(pB) ? 1 : pB,
+      );
+      const pLuminance =
+        0.299 * (isNaN(pR) ? 1 : pR) +
+        0.587 * (isNaN(pG) ? 1 : pG) +
+        0.114 * (isNaN(pB) ? 1 : pB);
+      const pillBorderColor =
+        pLuminance > 0.85
+          ? rgb(0.82, 0.85, 0.88)
+          : rgb(
+              Math.max(0, (isNaN(pR) ? 1 : pR) * 0.75),
+              Math.max(0, (isNaN(pG) ? 1 : pG) * 0.75),
+              Math.max(0, (isNaN(pB) ? 1 : pB) * 0.75),
+            );
+
       const pages = pdfDoc.getPages();
       const totalDocPages = pages.length;
 
@@ -1519,6 +1644,28 @@
             textWidth,
             textHeight,
           );
+
+          if (pillBgEnabled) {
+            const padX = Math.max(8, fontSize * 0.65);
+            const padY = Math.max(4, fontSize * 0.35);
+            const rawW = textWidth + 2 * padX;
+            const H = textHeight + 2 * padY;
+            const W = Math.max(rawW, H);
+            const R = H / 2;
+            const minX = -padX - (W - rawW) / 2;
+            const minY = -(textHeight * 0.78 + padY);
+
+            const pillPath = `M ${minX + R} ${minY} L ${minX + W - R} ${minY} A ${R} ${R} 0 0 1 ${minX + W - R} ${minY + H} L ${minX + R} ${minY + H} A ${R} ${R} 0 0 1 ${minX + R} ${minY} Z`;
+
+            page.drawSvgPath(pillPath, {
+              x: textX,
+              y: textY,
+              color: pillBgColor,
+              borderColor: pillBorderColor,
+              borderWidth: 0.75,
+              rotate: degrees(textAngle),
+            });
+          }
 
           // Draw genuine vector text into PDF stream
           page.drawText(label, {

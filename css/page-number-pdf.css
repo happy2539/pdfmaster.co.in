@@ -1006,6 +1006,72 @@ input:checked + .slider-switch:before {
   background: transparent;
 }
 
+/* Pill Background Control */
+.pill-toggle-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 4px 0;
+}
+
+.pill-toggle-row .toggle-label {
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: var(--text);
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  cursor: pointer;
+  letter-spacing: -0.01em;
+}
+
+.pill-toggle-row .toggle-label svg {
+  color: var(--accent);
+}
+
+.pill-color-picker-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 10px 12px;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  margin-top: 8px;
+  animation: fadeInDown 0.2s ease;
+}
+
+.pill-color-swatch {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  border: 2px solid var(--border);
+  cursor: pointer;
+  transition: transform var(--transition);
+}
+
+.pill-color-swatch:hover {
+  transform: scale(1.15);
+}
+
+.pill-color-swatch.active {
+  border-color: var(--accent);
+  box-shadow:
+    0 0 0 2px var(--surface),
+    0 0 0 4px var(--accent);
+}
+
+@keyframes fadeInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 /* Range & Slider Controls */
 .slider-group {
   display: flex;
@@ -1280,6 +1346,21 @@ input:checked + .slider-switch:before {
   font-weight: 500;
   transition: all 0.15s ease;
   user-select: none;
+}
+
+.page-number-stamp-overlay.has-pill-bg {
+  border-radius: var(--radius-full);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.18);
+  border: 1px solid rgba(0, 0, 0, 0.14);
+  line-height: 1.1;
+}
+
+[data-theme="dark"] .page-number-stamp-overlay.has-pill-bg {
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.4);
 }
 
 /* Excluded Overlay for Single Page Preview */
