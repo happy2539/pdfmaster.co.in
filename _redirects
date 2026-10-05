@@ -68,6 +68,17 @@
 /compress-pdf-online   /compress-pdf     301!
 /reduce-pdf-size       /compress-pdf     301!
 /shrink-pdf            /compress-pdf     301!
+/page-number-pdf.html     /page-number-pdf     301!
+/pdf-page-number.html     /page-number-pdf     301!
+/pdf-page-number          /page-number-pdf     301!
+/pdf-page-numbering       /page-number-pdf     301!
+/add-page-numbers-to-pdf.html /page-number-pdf 301!
+/add-page-numbers-to-pdf  /page-number-pdf     301!
+/add-page-numbers         /page-number-pdf     301!
+/number-pdf.html          /page-number-pdf     301!
+/number-pdf               /page-number-pdf     301!
+/number-pdf-pages         /page-number-pdf     301!
+/pdf-number-pages         /page-number-pdf     301!
 
 
 
