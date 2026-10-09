@@ -37,7 +37,9 @@ const changeFileBtn = document.getElementById("changeFileBtn");
 const resetOrderBtn = document.getElementById("resetOrderBtn");
 const reverseBtn = document.getElementById("reverseBtn");
 const reorderActionBar = document.getElementById("reorderActionBar");
-const reorderActionSummaryText = document.getElementById("reorderActionSummaryText");
+const reorderActionSummaryText = document.getElementById(
+  "reorderActionSummaryText",
+);
 const bottomResetBtn = document.getElementById("bottomResetBtn");
 const bottomReverseBtn = document.getElementById("bottomReverseBtn");
 const bottomDownloadBtn = document.getElementById("bottomDownloadBtn");
@@ -338,10 +340,10 @@ function initSortable() {
     delay: 200, // Hold down for 200ms on touch devices to start dragging
     delayOnTouchOnly: true, // Instantly drag with mouse, delay only on touch
     touchStartThreshold: 5, // Allows page scroll if finger drifts slightly before delay ends
-    scroll: window,            // Force scrolling of window directly to bypass parent overflow:hidden
-    scrollSensitivity: 120,    // Starts scrolling 120px from viewport edge
-    scrollSpeed: 50,           // Fast, highly responsive scroll speed (px per interval)
-    bubble: true,              // Enables parent container autoscrolling
+    scroll: window, // Force scrolling of window directly to bypass parent overflow:hidden
+    scrollSensitivity: 120, // Starts scrolling 120px from viewport edge
+    scrollSpeed: 50, // Fast, highly responsive scroll speed (px per interval)
+    bubble: true, // Enables parent container autoscrolling
     forceFallback: true, // Uses fallback element for cross-browser smoothness
     fallbackTolerance: 3, // Prevents accidental drags on small taps
     onEnd() {
@@ -447,7 +449,9 @@ downloadBtn.addEventListener("click", async () => {
   if (!state.pdfBytes || state.pageOrder.length === 0) return;
   const reorderStartTime = performance.now();
 
-  const nameWithout = state.fileName ? state.fileName.replace(/\.pdf$/i, "") : "document";
+  const nameWithout = state.fileName
+    ? state.fileName.replace(/\.pdf$/i, "")
+    : "document";
   const outputFileName = `${nameWithout}-reordered.pdf`;
 
   if (state.lastReorderedBlob) {
@@ -519,7 +523,10 @@ downloadBtn.addEventListener("click", async () => {
     setTimeout(() => URL.revokeObjectURL(url), 5000);
     showToast("PDF downloaded successfully!", "success");
 
-    state.lastReorderDurationMs = Math.max(1, Math.round(performance.now() - reorderStartTime));
+    state.lastReorderDurationMs = Math.max(
+      1,
+      Math.round(performance.now() - reorderStartTime),
+    );
 
     if (window.PDFMasterPopup) {
       window.PDFMasterPopup.show({
@@ -556,7 +563,13 @@ downloadBtn.addEventListener("click", async () => {
 // =============================================
 //  TOAST NOTIFICATIONS
 // =============================================
-function showToast(msg, type = "info", dur = 3500, onClick = null, actionText = null) {
+function showToast(
+  msg,
+  type = "info",
+  dur = 3500,
+  onClick = null,
+  actionText = null,
+) {
   const tc = document.getElementById("toastContainer");
   if (!tc) return;
   const toast = document.createElement("div");
@@ -689,11 +702,17 @@ async function loadSessionFromDB(isManual = false) {
     }
 
     state.fileName = data.fileName || "document.pdf";
-    const rawBytes = data.bytes instanceof Uint8Array ? data.bytes : new Uint8Array(data.bytes);
+    const rawBytes =
+      data.bytes instanceof Uint8Array
+        ? data.bytes
+        : new Uint8Array(data.bytes);
     state.pdfBytes = new Uint8Array(rawBytes.slice().buffer);
-    state.pageOrder = (session && Array.isArray(session.pageOrder) && session.pageOrder.length > 0)
-      ? session.pageOrder
-      : (data.pageOrder || []);
+    state.pageOrder =
+      session &&
+      Array.isArray(session.pageOrder) &&
+      session.pageOrder.length > 0
+        ? session.pageOrder
+        : data.pageOrder || [];
 
     // Show workspace
     uploadZone.style.display = "none";
@@ -731,7 +750,11 @@ async function loadSessionFromDB(isManual = false) {
     updateRecoveryBadge(true);
 
     if (isManual) {
-      showToast(`Restored '${state.fileName}' and your custom page order!`, "success", 4000);
+      showToast(
+        `Restored '${state.fileName}' and your custom page order!`,
+        "success",
+        4000,
+      );
     }
     return true;
   } catch (err) {
@@ -775,7 +798,7 @@ async function checkStoredSessionAvailable(notifyOnFound = false) {
         "info",
         8000,
         () => loadSessionFromDB(true),
-        "Restore"
+        "Restore",
       );
     }
     return hasData;
