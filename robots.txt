@@ -9,7 +9,7 @@ Disallow: /CNAME
 Disallow: /thank-you.html
 Disallow: /_redirects
 
-# Block AI Bots
+# Allow AI Crawlers
 User-agent: GPTBot
 Allow: /
 
