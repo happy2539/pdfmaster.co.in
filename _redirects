@@ -79,6 +79,16 @@
 /number-pdf               /page-number-pdf     301!
 /number-pdf-pages         /page-number-pdf     301!
 /pdf-number-pages         /page-number-pdf     301!
+/insert-blank-page-pdf.html   /insert-blank-page-pdf   301!
+/insert-blank-page.html       /insert-blank-page-pdf   301!
+/insert-blank-page            /insert-blank-page-pdf   301!
+/add-blank-page-pdf.html      /insert-blank-page-pdf   301!
+/add-blank-page-pdf           /insert-blank-page-pdf   301!
+/add-blank-page-to-pdf.html   /insert-blank-page-pdf   301!
+/add-blank-page-to-pdf        /insert-blank-page-pdf   301!
+/add-blank-page               /insert-blank-page-pdf   301!
+/insert-blank-pages-into-pdf  /insert-blank-page-pdf   301!
+/pdf-blank-page-inserter      /insert-blank-page-pdf   301!
 
 
 
