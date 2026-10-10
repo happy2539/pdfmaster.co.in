@@ -89,6 +89,17 @@
 /add-blank-page               /insert-blank-page-pdf   301!
 /insert-blank-pages-into-pdf  /insert-blank-page-pdf   301!
 /pdf-blank-page-inserter      /insert-blank-page-pdf   301!
+/protect-pdf.html             /protect-pdf             301!
+/lock-pdf.html                /protect-pdf             301!
+/lock-pdf                     /protect-pdf             301!
+/pdf-locker.html              /protect-pdf             301!
+/pdf-locker                   /protect-pdf             301!
+/password-protect-pdf.html    /protect-pdf             301!
+/password-protect-pdf         /protect-pdf             301!
+/encrypt-pdf.html             /protect-pdf             301!
+/encrypt-pdf                  /protect-pdf             301!
+/pdf-protect                  /protect-pdf             301!
+/lock-pdf-with-password       /protect-pdf             301!
 
 
 

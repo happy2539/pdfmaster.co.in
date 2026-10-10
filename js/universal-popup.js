@@ -135,6 +135,12 @@
       const tn = currentOptions.toolName.toLowerCase();
       if (tn.includes("merge") || tn.includes("compiler")) return "Merged";
       if (tn.includes("split")) return "Split";
+      if (
+        tn.includes("protect") ||
+        tn.includes("encrypt") ||
+        tn.includes("lock")
+      )
+        return "Locked";
       if (tn.includes("delete") || tn.includes("remove pages"))
         return "Processed";
       if (tn.includes("reorder")) return "Reordered";
@@ -147,6 +153,12 @@
 
     if (currentOptions.downloadText) {
       const dt = currentOptions.downloadText.toLowerCase();
+      if (
+        dt.includes("protect") ||
+        dt.includes("lock") ||
+        dt.includes("encrypt")
+      )
+        return "Locked";
       if (dt.includes("merge")) return "Merged";
       if (dt.includes("split")) return "Split";
       if (dt.includes("clean")) return "Cleaned";
@@ -156,6 +168,12 @@
     }
 
     const path = (window.location.pathname || "").toLowerCase();
+    if (
+      path.includes("protect") ||
+      path.includes("encrypt") ||
+      path.includes("lock")
+    )
+      return "Locked";
     if (path.includes("merge")) return "Merged";
     if (path.includes("split")) return "Split";
     if (path.includes("delete")) return "Processed";
@@ -271,6 +289,8 @@
               <span id="pdfmPopupFileSize" style="display:none;"></span>
             </div>
           </div>
+
+          <div class="pdfm-popup-notice" id="pdfmPopupNotice" style="display: none;"></div>
 
           <div class="pdfm-results-actions" id="pdfmPopupBtns">
             <button type="button" class="pdfm-btn-primary" id="pdfmPopupDownloadBtn">
@@ -732,6 +752,18 @@
       secBtn.style.display = currentOptions.showSecondary
         ? "inline-flex"
         : "none";
+    }
+
+    // Notice / Important warning banner
+    const noticeEl = document.getElementById("pdfmPopupNotice");
+    if (noticeEl) {
+      if (currentOptions.notice) {
+        noticeEl.innerHTML = currentOptions.notice;
+        noticeEl.style.display = "block";
+      } else {
+        noticeEl.innerHTML = "";
+        noticeEl.style.display = "none";
+      }
     }
 
     // Show modal
