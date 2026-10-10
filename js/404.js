@@ -62,7 +62,7 @@ const toolMap = [
   },
   {
     kw: ["merge", "combine", "compiler", "join", "pdf compiler"],
-    url: "/pdf-compiler",
+    url: "/merge-pdf",
     label: "PDF Compiler",
   },
   { kw: ["png"], url: "/png-to-pdf", label: "PNG to PDF" },
@@ -73,7 +73,7 @@ const toolMap = [
   },
   {
     kw: ["split", "separate", "divide", "extract page"],
-    url: "/pdf-splitter",
+    url: "/split-pdf",
     label: "PDF Splitter",
   },
   {
