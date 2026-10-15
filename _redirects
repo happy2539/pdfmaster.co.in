@@ -30,76 +30,249 @@
 # -----------------------------
 
 /pdf-editor.html     /pdf-editor     301!
+
+
 /pdf-viewer.html     /pdf-viewer     301!
+
+
 /merge-pdf.html      /merge-pdf      301!
+
+
 /pdf-metadata.html   /pdf-metadata   301!
+
+
 /pdf-to-photo.html   /pdf-to-photo   301!
+
+
 /photo-to-pdf.html   /photo-to-pdf   301!
+
+
 /split-pdf.html      /split-pdf      301!
+
+
+/pdf-split      /split-pdf      301!
+
+
 /pdf-split.html      /split-pdf      301!
+
+
 /pdf-reorder.html    /pdf-reorder    301!
+
+
 /reorder-pdf         /pdf-reorder    301!
+
+
 /reorganize-pdf      /pdf-reorder    301!
+
+
 /watermark-pdf-add.html /watermark-pdf-add 301!
+
+
 /watermark-pdf.html     /watermark-pdf-add 301!
+
+
 /watermark-pdf         /watermark-pdf-add 301!
+
+
 /add-watermark-pdf     /watermark-pdf-add 301!
+
+
 /pdf-watermark         /watermark-pdf-add 301!
+
+
 /delete-pdf-pages.html /delete-pdf-pages 301!
+
+
 /pdf-delete-pages.html /delete-pdf-pages 301!
+
+
 /pdf-delete-pages      /delete-pdf-pages 301!
+
+
 /delete-pages-from-pdf /delete-pdf-pages 301!
+
+
 /remove-pdf-pages      /delete-pdf-pages 301!
+
+
 /remove-pages-from-pdf /delete-pdf-pages 301!
+
+
 /delete-pdf-page       /delete-pdf-pages 301!
+
+
 /rotate-pdf.html       /rotate-pdf       301!
+
+
 /pdf-rotate.html       /rotate-pdf       301!
+
+
 /pdf-rotate            /rotate-pdf       301!
+
+
 /rotate-pdf-pages.html /rotate-pdf       301!
+
+
 /rotate-pdf-pages      /rotate-pdf       301!
+
+
 /rotate-pages-from-pdf /rotate-pdf       301!
+
+
 /pdf-rotator           /rotate-pdf       301!
+
+
 /rotate-pdf-online     /rotate-pdf       301!
+
+
 /compress-pdf.html     /compress-pdf     301!
+
+
 /pdf-compress.html     /compress-pdf     301!
+
+
 /pdf-compress          /compress-pdf     301!
+
+
 /pdf-compressor.html   /compress-pdf     301!
+
+
 /pdf-compressor        /compress-pdf     301!
+
+
 /compress-pdf-online   /compress-pdf     301!
+
+
 /reduce-pdf-size       /compress-pdf     301!
+
+
 /shrink-pdf            /compress-pdf     301!
+
+
 /page-number-pdf.html     /page-number-pdf     301!
+
+
 /pdf-page-number.html     /page-number-pdf     301!
+
+
 /pdf-page-number          /page-number-pdf     301!
+
+
 /pdf-page-numbering       /page-number-pdf     301!
+
+
 /add-page-numbers-to-pdf.html /page-number-pdf 301!
+
+
 /add-page-numbers-to-pdf  /page-number-pdf     301!
+
+
 /add-page-numbers         /page-number-pdf     301!
+
+
 /number-pdf.html          /page-number-pdf     301!
+
+
 /number-pdf               /page-number-pdf     301!
+
+
 /number-pdf-pages         /page-number-pdf     301!
+
+
 /pdf-number-pages         /page-number-pdf     301!
+
+
 /insert-blank-page-pdf.html   /insert-blank-page-pdf   301!
+
+
 /insert-blank-page.html       /insert-blank-page-pdf   301!
+
+
 /insert-blank-page            /insert-blank-page-pdf   301!
+
+
 /add-blank-page-pdf.html      /insert-blank-page-pdf   301!
+
+
 /add-blank-page-pdf           /insert-blank-page-pdf   301!
+
+
 /add-blank-page-to-pdf.html   /insert-blank-page-pdf   301!
+
+
 /add-blank-page-to-pdf        /insert-blank-page-pdf   301!
+
+
 /add-blank-page               /insert-blank-page-pdf   301!
+
+
 /insert-blank-pages-into-pdf  /insert-blank-page-pdf   301!
+
+
 /pdf-blank-page-inserter      /insert-blank-page-pdf   301!
+
+
 /protect-pdf.html             /protect-pdf             301!
+
+
 /lock-pdf.html                /protect-pdf             301!
+
+
 /lock-pdf                     /protect-pdf             301!
+
+
 /pdf-locker.html              /protect-pdf             301!
+
+
 /pdf-locker                   /protect-pdf             301!
+
+
 /password-protect-pdf.html    /protect-pdf             301!
+
+
 /password-protect-pdf         /protect-pdf             301!
+
+
 /encrypt-pdf.html             /protect-pdf             301!
+
+
 /encrypt-pdf                  /protect-pdf             301!
+
+
 /pdf-protect                  /protect-pdf             301!
+
+
 /lock-pdf-with-password       /protect-pdf             301!
+
+
+/extract-photos-from-pdf.html   /extract-photos-from-pdf   301!
+
+
+/extract-images-from-pdf.html   /extract-photos-from-pdf   301!
+
+
+/extract-images-from-pdf        /extract-photos-from-pdf   301!
+
+
+/extract-pdf-images             /extract-photos-from-pdf   301!
+
+
+/extract-photo-from-pdf         /extract-photos-from-pdf   301!
+
+
+/pdf-photo-extractor            /extract-photos-from-pdf   301!
+
+
+/pdf-image-extractor            /extract-photos-from-pdf   301!
+
+
+/photo-from-pdf-extractor       /extract-photos-from-pdf   301!
+
+
+/extract-photos                 /extract-photos-from-pdf   301!
+
+
+/extract-images                 /extract-photos-from-pdf   301!
 
 
 
