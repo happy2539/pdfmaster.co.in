@@ -275,6 +275,36 @@
 /extract-images                 /extract-photos-from-pdf   301!
 
 
+/sign-pdf.html                  /sign-pdf                  301!
+
+
+/sign-document.html             /sign-pdf                  301!
+
+
+/sign-document                  /sign-pdf                  301!
+
+
+/add-signature-to-pdf.html      /sign-pdf                  301!
+
+
+/add-signature-to-pdf           /sign-pdf                  301!
+
+
+/signature-pdf.html             /sign-pdf                  301!
+
+
+/signature-pdf                  /sign-pdf                  301!
+
+
+/pdf-signer.html                /sign-pdf                  301!
+
+
+/pdf-signer                     /sign-pdf                  301!
+
+
+/sign-pdf-online                /sign-pdf                  301!
+
+
 
 
 

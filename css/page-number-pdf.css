@@ -2097,6 +2097,17 @@ input:checked + .slider-switch:before {
   font-size: 0.86rem;
 }
 
+.comparison-table th.highlight-col {
+  color: var(--text);
+  font-family: var(--font-heading);
+  font-weight: 800;
+  letter-spacing: -0.01em;
+}
+
+.comparison-table th.highlight-col span {
+  color: var(--accent);
+}
+
 .comparison-table tr:last-child td {
   border-bottom: none;
 }

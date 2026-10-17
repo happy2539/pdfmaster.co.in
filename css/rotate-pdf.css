@@ -1903,6 +1903,18 @@ ul {
   font-weight: 700;
 }
 
+th.comp-highlight {
+  color: var(--text) !important;
+  font-family: var(--font-heading);
+  font-weight: 800;
+  font-size: 1.05rem;
+  letter-spacing: -0.01em;
+}
+
+th.comp-highlight span {
+  color: var(--accent) !important;
+}
+
 /* FAQ Accordion */
 .faq-list {
   max-width: 820px;

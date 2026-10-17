@@ -235,6 +235,7 @@
         ]
       }
     </script>
+    <link rel="stylesheet" href="/css/categorized-footer.css" />
   </head>
 
   <body>
@@ -1908,21 +1909,20 @@
     </section>
 
     <!-- ════════════════════════ FOOTER ════════════════════════ -->
-    <footer class="site-footer">
-      <div class="container footer__container">
+    <footer class="site-footer" id="contact">
+      <div class="container">
         <div class="footer__grid">
-          <!-- Col 1: Brand & Socials -->
-          <div class="footer__col footer__col--brand">
-            <a href="/" class="footer__logo" aria-label="PDFMaster Home">
+          <div class="footer__brand">
+            <a href="/" class="nav-logo">
               <img
                 src="/assets/apple-touch-icon.png"
                 alt="PDFMaster Logo"
-                width="32"
-                height="32"
+                width="36"
+                height="36"
               />
               <span class="logo-text">PDF<span>Master</span></span>
             </a>
-            <p class="footer__brand-desc">
+            <p>
               Free, private, client-side PDF manipulation tools. No file size
               limits, no tracking, and zero server uploads.
             </p>
@@ -1947,30 +1947,48 @@
               </a>
             </div>
           </div>
-
-          <!-- Col 2: Tools -->
-          <div class="footer__col">
+          <div class="footer__col footer__col--tools">
             <h4>Tools</h4>
-            <ul>
-              <li><a href="/sign-pdf">Sign PDF</a></li>
-              <li><a href="/extract-photos-from-pdf">Extract Photos from PDF</a></li>
-              <li><a href="/protect-pdf">Protect PDF</a></li>
-              <li><a href="/insert-blank-page-pdf">Insert Blank Page</a></li>
-              <li><a href="/page-number-pdf">Page Number PDF</a></li>
-              <li><a href="/compress-pdf">Compress PDF</a></li>
-              <li><a href="/merge-pdf">PDF Compiler</a></li>
-              <li><a href="/split-pdf">Split PDF</a></li>
-              <li><a href="/rotate-pdf">Rotate PDF</a></li>
-              <li><a href="/delete-pdf-pages">Delete PDF Pages</a></li>
-              <li><a href="/pdf-reorder">PDF Reorder</a></li>
-              <li><a href="/pdf-editor">PDF Editor</a></li>
-              <li><a href="/photo-to-pdf">Photo to PDF</a></li>
-              <li><a href="/pdf-to-photo">PDF to Photo</a></li>
-              <li><a href="/pdf-metadata">PDF Metadata</a></li>
+            <ul class="footer__tools-list">
+              <li class="footer__cat-group">
+                <span class="footer__cat-header">Organize PDF</span>
+                <ul class="footer__cat-items">
+                  <li><a href="/merge-pdf">PDF Compiler</a></li>
+                  <li><a href="/split-pdf">Split PDF</a></li>
+                  <li><a href="/pdf-reorder">PDF Reorder</a></li>
+                  <li><a href="/rotate-pdf">Rotate PDF</a></li>
+                  <li><a href="/delete-pdf-pages">Delete PDF Pages</a></li>
+                  <li><a href="/insert-blank-page-pdf">Insert Blank Page</a></li>
+                </ul>
+              </li>
+              <li class="footer__cat-group">
+                <span class="footer__cat-header">Edit &amp; View</span>
+                <ul class="footer__cat-items">
+                  <li><a href="/pdf-editor">PDF Editor</a></li>
+                  <li><a href="/pdf-viewer">PDF Viewer</a></li>
+                  <li><a href="/page-number-pdf">Page Number PDF</a></li>
+                  <li><a href="/watermark-pdf-add">Watermark PDF</a></li>
+                </ul>
+              </li>
+              <li class="footer__cat-group">
+                <span class="footer__cat-header">Convert &amp; Extract</span>
+                <ul class="footer__cat-items">
+                  <li><a href="/photo-to-pdf">Photo to PDF</a></li>
+                  <li><a href="/pdf-to-photo">PDF to Photo</a></li>
+                  <li><a href="/extract-photos-from-pdf">Extract Photos</a></li>
+                </ul>
+              </li>
+              <li class="footer__cat-group">
+                <span class="footer__cat-header">Security &amp; Optimize</span>
+                <ul class="footer__cat-items">
+                  <li><a href="/sign-pdf">Sign PDF</a></li>
+                  <li><a href="/protect-pdf">Protect PDF</a></li>
+                  <li><a href="/compress-pdf">Compress PDF</a></li>
+                  <li><a href="/pdf-metadata">Metadata Remover</a></li>
+                </ul>
+              </li>
             </ul>
           </div>
-
-          <!-- Col 3: Resources -->
           <div class="footer__col">
             <h4>Resources</h4>
             <ul>
@@ -1985,29 +2003,20 @@
               <li><a href="/#tools">All Tools</a></li>
             </ul>
           </div>
-
-          <!-- Col 4: Support & Legal -->
           <div class="footer__col">
             <h4>Support</h4>
             <ul>
               <li><a href="/contact">Help Center</a></li>
               <li><a href="/privacy">Privacy Policy</a></li>
               <li><a href="/terms">Terms of Service</a></li>
+              <li><a href="/faq">FAQ</a></li>
             </ul>
           </div>
         </div>
-
         <div class="footer__bottom">
-          <p>
-            &copy; 2026 PDFMaster. Free, client-side PDF tools for everyone.
+          <p class="footer__copy">
+            © 2026 <a href="/">PDFMaster All right reserved</a>
           </p>
-          <div class="footer__bottom-links">
-            <a href="/privacy">Privacy</a>
-            <span class="sep">&middot;</span>
-            <a href="/terms">Terms</a>
-            <span class="sep">&middot;</span>
-            <a href="/contact">Contact</a>
-          </div>
         </div>
       </div>
     </footer>

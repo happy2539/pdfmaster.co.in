@@ -1,0 +1,236 @@
+/* ==========================================================================
+   Categorized Footer Styles - PDFMaster
+   ========================================================================== */
+
+/* Design tokens matching sign-pdf.html */
+.site-footer {
+  --footer-accent: #e8372a;
+  --footer-accent-light: rgba(232, 55, 42, 0.08);
+  --footer-surface: #ffffff;
+  --footer-surface-2: #f2f1ef;
+  --footer-border: #e4e2de;
+  --footer-text: #1a1917;
+  --footer-text-2: #4a4845;
+  --footer-text-3: #7a7875;
+  --footer-font-heading: "Sora", "Plus Jakarta Sans", sans-serif;
+  --footer-font-body: "DM Sans", sans-serif;
+}
+
+[data-theme="dark"] .site-footer,
+html[data-theme="dark"] .site-footer {
+  --footer-accent: #e8372a;
+  --footer-accent-light: rgba(232, 55, 42, 0.12);
+  --footer-surface: #1c1b1a;
+  --footer-surface-2: #252422;
+  --footer-border: #333230;
+  --footer-text: #f0ede8;
+  --footer-text-2: #b5b0a8;
+  --footer-text-3: #7a7875;
+}
+
+/* Footer Container */
+footer.site-footer,
+.site-footer {
+  background: var(--footer-surface) !important;
+  border-top: 1px solid var(--footer-border) !important;
+  padding: 64px 0 32px !important;
+  margin-top: 48px !important;
+  font-family: var(--footer-font-body) !important;
+  color: var(--footer-text-2) !important;
+}
+
+.site-footer .container {
+  max-width: 1240px !important;
+  margin: 0 auto !important;
+  padding: 0 24px !important;
+}
+
+/* Footer Grid */
+.site-footer .footer__grid {
+  display: grid !important;
+  grid-template-columns: 1.4fr 2fr 1fr 1fr !important;
+  gap: 40px !important;
+  margin-bottom: 48px !important;
+}
+
+/* Brand Column */
+.site-footer .footer__brand .nav-logo {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 10px !important;
+  text-decoration: none !important;
+}
+
+.site-footer .footer__brand .nav-logo img {
+  width: 36px !important;
+  height: 36px !important;
+  border-radius: 9px !important;
+  object-fit: contain !important;
+}
+
+.site-footer .footer__brand .logo-text {
+  font-family: var(--footer-font-heading) !important;
+  font-size: 1.25rem !important;
+  font-weight: 800 !important;
+  color: var(--footer-text) !important;
+  letter-spacing: -0.02em !important;
+}
+
+.site-footer .footer__brand .logo-text span {
+  color: var(--footer-accent) !important;
+}
+
+.site-footer .footer__brand p {
+  font-size: 0.9rem !important;
+  color: var(--footer-text-2) !important;
+  margin: 14px 0 20px !important;
+  max-width: 300px !important;
+  line-height: 1.6 !important;
+}
+
+.site-footer .footer__socials {
+  display: flex !important;
+  gap: 12px !important;
+}
+
+.site-footer .footer__social-link {
+  width: 36px !important;
+  height: 36px !important;
+  border-radius: 50% !important;
+  background: var(--footer-surface-2) !important;
+  color: var(--footer-text-2) !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  transition: all 0.2s ease !important;
+  text-decoration: none !important;
+}
+
+.site-footer .footer__social-link:hover {
+  background: var(--footer-accent-light) !important;
+  color: var(--footer-accent) !important;
+}
+
+/* Footer Columns */
+.site-footer .footer__col h4 {
+  font-family: var(--footer-font-heading) !important;
+  font-size: 0.95rem !important;
+  font-weight: 700 !important;
+  margin-bottom: 16px !important;
+  color: var(--footer-text) !important;
+  text-transform: none !important;
+  letter-spacing: normal !important;
+}
+
+.site-footer .footer__col ul {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 10px !important;
+  list-style: none !important;
+  padding: 0 !important;
+  margin: 0 !important;
+}
+
+.site-footer .footer__col a {
+  font-size: 0.88rem !important;
+  color: var(--footer-text-2) !important;
+  transition: color 0.15s ease !important;
+  text-decoration: none !important;
+}
+
+.site-footer .footer__col a:hover {
+  color: var(--footer-accent) !important;
+}
+
+/* Tools Column 2-Column Grid */
+.site-footer .footer__col ul.footer__tools-list {
+  display: grid !important;
+  grid-template-columns: repeat(2, 1fr) !important;
+  gap: 22px 32px !important;
+  list-style: none !important;
+  padding: 0 !important;
+  margin: 0 !important;
+}
+
+.site-footer .footer__cat-group {
+  display: flex !important;
+  flex-direction: column !important;
+  list-style: none !important;
+  padding: 0 !important;
+  margin: 0 !important;
+}
+
+.site-footer .footer__cat-header {
+  font-family: var(--footer-font-heading) !important;
+  font-size: 0.75rem !important;
+  font-weight: 700 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.08em !important;
+  color: var(--footer-accent) !important;
+  margin-bottom: 12px !important;
+  display: block !important;
+  user-select: none !important;
+}
+
+.site-footer .footer__col ul.footer__cat-items {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 10px !important;
+  list-style: none !important;
+  padding: 0 !important;
+  margin: 0 !important;
+}
+
+.site-footer .footer__cat-items li {
+  list-style: none !important;
+}
+
+/* Footer Bottom Row */
+.site-footer .footer__bottom {
+  border-top: 1px solid var(--footer-border) !important;
+  padding-top: 24px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  text-align: center !important;
+}
+
+.site-footer .footer__copy {
+  font-size: 0.85rem !important;
+  color: var(--footer-text-3) !important;
+  margin: 0 !important;
+  text-align: center !important;
+}
+
+.site-footer .footer__copy a {
+  font-weight: 600 !important;
+  color: var(--footer-text-2) !important;
+  text-decoration: none !important;
+}
+
+/* Responsive Media Queries */
+@media (max-width: 1024px) {
+  .site-footer .footer__grid {
+    grid-template-columns: 1fr 1fr !important;
+    gap: 32px !important;
+  }
+}
+
+@media (max-width: 768px) {
+  .site-footer .footer__grid {
+    grid-template-columns: 1fr !important;
+    gap: 28px !important;
+  }
+  .site-footer .footer__bottom {
+    flex-direction: column !important;
+    text-align: center !important;
+    gap: 12px !important;
+  }
+}
+
+@media (max-width: 540px) {
+  .site-footer .footer__col ul.footer__tools-list {
+    grid-template-columns: 1fr !important;
+    gap: 20px !important;
+  }
+}

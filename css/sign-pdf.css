@@ -2407,7 +2407,19 @@ input:checked + .slider:before {
   color: var(--text);
 }
 
-.comparison-table th.highlight-col,
+.comparison-table th.highlight-col {
+  background: var(--accent-light);
+  color: var(--text);
+  font-family: var(--font-heading);
+  font-weight: 800;
+  font-size: 1.05rem;
+  letter-spacing: -0.01em;
+}
+
+.comparison-table th.highlight-col span {
+  color: var(--accent);
+}
+
 .comparison-table td.highlight-col {
   background: var(--accent-light);
   font-weight: 600;
@@ -2588,7 +2600,7 @@ input:checked + .slider:before {
 
 .footer__grid {
   display: grid;
-  grid-template-columns: 2fr repeat(3, 1fr);
+  grid-template-columns: 1.4fr 2fr 1fr 1fr;
   gap: 40px;
   margin-bottom: 48px;
 }
@@ -2645,45 +2657,52 @@ input:checked + .slider:before {
   color: var(--accent);
 }
 
+.footer__col ul.footer__tools-list {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 22px 32px;
+}
+
+.footer__cat-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.footer__cat-header {
+  font-family: var(--font-heading);
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--accent);
+  margin-bottom: 12px;
+  display: block;
+}
+
+.footer__col ul.footer__cat-items {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
 .footer__bottom {
   border-top: 1px solid var(--border);
   padding-top: 24px;
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  gap: 16px;
+  justify-content: center;
+  text-align: center;
 }
 
 .footer__copy {
   font-size: 0.85rem;
   color: var(--text-3);
+  text-align: center;
 }
 
 .footer__copy a {
   font-weight: 600;
   color: var(--text-2);
-}
-
-.footer__badges {
-  display: flex;
-  gap: 10px;
-}
-
-.footer__badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
-  font-size: 0.75rem;
-  padding: 4px 10px;
-  border-radius: var(--radius-full);
-  background: var(--surface-2);
-  color: var(--text-2);
-  font-weight: 600;
-}
-
-.footer__badge svg {
-  color: var(--accent);
 }
 
 /* Back to top */
@@ -2811,5 +2830,12 @@ input:checked + .slider:before {
   .toolbar-right {
     width: 100%;
     justify-content: space-between;
+  }
+}
+
+@media (max-width: 540px) {
+  .footer__col ul.footer__tools-list {
+    grid-template-columns: 1fr;
+    gap: 20px;
   }
 }

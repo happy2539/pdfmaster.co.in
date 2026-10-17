@@ -1851,10 +1851,22 @@ button {
   color: var(--text);
 }
 
-.comparison-table th.highlight,
 .comparison-table td.highlight {
   background: rgba(232, 55, 42, 0.04);
   font-weight: 600;
+  color: var(--accent);
+}
+
+.comparison-table th.highlight {
+  background: rgba(232, 55, 42, 0.04);
+  color: var(--text);
+  font-family: var(--font-heading);
+  font-weight: 800;
+  font-size: 1.05rem;
+  letter-spacing: -0.01em;
+}
+
+.comparison-table th.highlight span {
   color: var(--accent);
 }
 

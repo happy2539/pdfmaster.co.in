@@ -1840,6 +1840,18 @@ body.rendering-mode .pages-grid {
   font-weight: 700;
 }
 
+.comparison-table th.highlight {
+  color: var(--text);
+  font-family: var(--font-heading);
+  font-weight: 800;
+  font-size: 1.05rem;
+  letter-spacing: -0.01em;
+}
+
+.comparison-table th.highlight span {
+  color: var(--accent);
+}
+
 .tag-check {
   display: inline-flex;
   align-items: center;
