@@ -41,9 +41,10 @@
   var currentScript = document.currentScript;
   var scriptUrl =
     currentScript && currentScript.src ? new URL(currentScript.src) : null;
-  var DEFAULT_ENDPOINT = scriptUrl
-    ? scriptUrl.origin + "/api/heartbeat"
-    : "https://tracking.guptamrhappy.workers.dev/api/heartbeat";
+  var DEFAULT_ENDPOINT =
+    scriptUrl && scriptUrl.hostname.includes("workers.dev")
+      ? scriptUrl.origin + "/api/heartbeat"
+      : "https://tracking.guptamrhappy.workers.dev/api/heartbeat";
 
   var userConfig =
     (window.PDFMASTER_TRACKER_CONFIG &&
