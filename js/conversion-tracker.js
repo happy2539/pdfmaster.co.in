@@ -162,6 +162,7 @@
       return explicitTool.trim();
     }
     const path = (window.location.pathname || "").toLowerCase();
+    if (path.includes("sign")) return "Sign PDF";
     if (path.includes("merge")) return "Merge PDF";
     if (path.includes("split")) return "Split PDF";
     if (path.includes("rotate")) return "Rotate PDF";
@@ -176,6 +177,7 @@
 
     // Try document title
     const title = document.title || "";
+    if (title.includes("Sign")) return "Sign PDF";
     if (title.includes("Merge")) return "Merge PDF";
     if (title.includes("Split")) return "Split PDF";
     if (title.includes("Rotate")) return "Rotate PDF";
@@ -306,6 +308,32 @@
         pageCount = photoCount;
       }
 
+      // Resolve signedPageCount and non-sensitive settings (e.g. for Sign PDF)
+      let signedPageCount =
+        typeof data.signedPageCount === "number" && data.signedPageCount > 0
+          ? Math.round(data.signedPageCount)
+          : null;
+
+      if (signedPageCount === null && data.fileDetails && typeof data.fileDetails === "string") {
+        const signMatch = data.fileDetails.match(/(\d+)\s*signed/i);
+        if (signMatch) signedPageCount = parseInt(signMatch[1], 10);
+      }
+
+      // Sanitize settings: Ensure it's an object, strictly non-sensitive (strip any images/text)
+      let settings = null;
+      if (data.settings && typeof data.settings === "object") {
+        const clean = { ...data.settings };
+        delete clean.dataUrl;
+        delete clean.image;
+        delete clean.imageData;
+        delete clean.text;
+        delete clean.typedText;
+        delete clean.name;
+        delete clean.fileName;
+        delete clean.strokes;
+        settings = clean;
+      }
+
       // Deduplication check: prevent recording duplicate calls within cooldown (25s)
       const now = Date.now();
       const normTool = (tool || "pdf-tool")
@@ -414,6 +442,8 @@
         fileType: fileType,
         pageCount: pageCount,
         photoCount: photoCount,
+        signedPageCount: signedPageCount,
+        settings: settings,
         deviceMemory: deviceMemory,
         cpuCores: cpuCores,
         memoryUsedBytes: memoryUsedBytes,
@@ -476,6 +506,8 @@
                     options.totalPages ||
                     options.numPages ||
                     null,
+                  signedPageCount: options.signedPageCount || null,
+                  settings: options.settings || null,
                   photoCount:
                     options.photoCount ||
                     options.imageCount ||
@@ -513,6 +545,7 @@
         "#mergeBtn",
         "#splitBtn",
         "#rotateBtn",
+        "#signPdfPrimaryBtn",
         "#applyWatermarkBtn",
         "#cleanMetaBtn",
         "[data-action='convert']",
@@ -542,6 +575,7 @@
   // Export public API
   const TrackerAPI = {
     trackConversion: trackConversion,
+    recordConversion: trackConversion,
     setEndpoint: function (url) {
       if (url && typeof url === "string") {
         config.endpoint = url.trim();

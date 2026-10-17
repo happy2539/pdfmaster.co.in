@@ -466,7 +466,6 @@ button {
   font-style: normal;
   color: var(--accent);
   background: linear-gradient(135deg, var(--accent) 0%, #ff6b5e 100%);
-  -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 

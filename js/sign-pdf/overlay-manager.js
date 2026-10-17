@@ -289,6 +289,7 @@
   };
 
   PDFSign.applyItemToAllPages = function (item) {
+    item.appliedToAllPages = true;
     const origPage = item.pageNum;
     let addedCount = 0;
     for (let p = 1; p <= state.totalPages; p++) {
@@ -297,6 +298,7 @@
           ...item,
           id: PDFSign.getUniqueId(item.type),
           pageNum: p,
+          appliedToAllPages: true,
         });
         addedCount++;
       }
@@ -328,6 +330,10 @@
       id: PDFSign.getUniqueId(options.type || "sig"),
       pageNum: state.currentPage,
       type: options.type || "signature",
+      source: options.source || state.studio.activeTab || "draw",
+      font: options.font || null,
+      inkColor: options.inkColor || null,
+      removeBg: options.removeBg !== undefined ? options.removeBg : false,
       dataUrl: options.dataUrl || null,
       text: options.text || "",
       color: options.color || "#111827",
@@ -352,12 +358,18 @@
     dataUrl,
     type = "signature",
     aspectRatio = 2.5,
+    meta = {},
   ) {
     PDFSign.placeNewItem({
       type,
       dataUrl,
       aspectRatio,
       widthPercent: type === "initials" ? 0.12 : 0.24,
+      source: meta.source || state.studio.activeTab || "draw",
+      font: meta.font || (state.studio.activeTab === "type" ? state.studio.selectedFont : null),
+      inkColor: meta.inkColor || state.studio.inkColor || null,
+      removeBg: meta.removeBg !== undefined ? meta.removeBg : Boolean(state.studio.removeBg),
+      color: meta.color || state.studio.penColor || "#111827",
     });
   };
 

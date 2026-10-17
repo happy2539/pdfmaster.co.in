@@ -271,6 +271,45 @@
         resultsCard.scrollIntoView({ behavior: "smooth", block: "nearest" });
       }
 
+      const signedPages = Array.from(itemsByPage.keys()).sort((a, b) => a - b);
+      const signedPageCount = itemsByPage.size;
+      const totalPages = state.totalPages || 1;
+      const totalSignatures = state.items.length;
+
+      // Extract sanitized settings (strictly non-sensitive operational telemetry)
+      const modesSet = new Set();
+      const fontsSet = new Set();
+      const colorsSet = new Set();
+      let hasBgRemoved = false;
+      let wasAppliedToAll = false;
+
+      for (const item of state.items) {
+        if (item.source) modesSet.add(item.source);
+        else if (item.type) modesSet.add(item.type);
+        if (item.font) fontsSet.add(item.font);
+        if (item.color) colorsSet.add(item.color);
+        if (item.removeBg) hasBgRemoved = true;
+        if (item.appliedToAllPages) wasAppliedToAll = true;
+      }
+
+      if (totalPages > 1 && signedPageCount === totalPages) {
+        wasAppliedToAll = true;
+      }
+
+      const signSettings = {
+        signedPageCount: signedPageCount,
+        totalPages: totalPages,
+        signedPages: signedPages,
+        totalSignatures: totalSignatures,
+        modes: Array.from(modesSet),
+        fonts: Array.from(fontsSet),
+        colors: Array.from(colorsSet),
+        bgRemoved: hasBgRemoved,
+        appliedToAllPages: wasAppliedToAll,
+      };
+
+      const signDetails = `${totalPages} pages (${signedPageCount} signed) • ${totalSignatures} signature(s) • ${PDFSign.fmtBytes(outBlob.size)} • 100% Private`;
+
       // Universal Popup Integration
       if (
         window.PDFMasterPopup &&
@@ -278,27 +317,40 @@
       ) {
         window.PDFMasterPopup.show({
           title: "Thank You for Using PDF<span>Master</span>!",
-          desc: `Your PDF was signed privately on your device. Stamped <strong>${state.items.length} signature(s)</strong> across <strong>${itemsByPage.size} page(s)</strong> with zero data leakage.`,
+          desc: `Your PDF was signed privately on your device. Stamped <strong>${totalSignatures} signature(s)</strong> across <strong>${signedPageCount} page(s)</strong> with zero data leakage.`,
           fileName: PDFSign.lastGeneratedName,
           fileType: "pdf",
-          fileDetails: `${state.totalPages} pages • ${PDFSign.fmtBytes(outBlob.size)} • 100% Private`,
+          fileDetails: signDetails,
           downloadText: "Download Signed PDF",
           toolName: "Sign PDF",
           durationMs: Math.max(1, Math.round(performance.now() - startTime)),
           blob: outBlob,
+          pageCount: totalPages,
+          signedPageCount: signedPageCount,
+          settings: signSettings,
         });
       }
 
       // Conversion Tracker
       if (
         window.PDFMasterTracker &&
-        typeof window.PDFMasterTracker.recordConversion === "function"
+        (typeof window.PDFMasterTracker.trackConversion === "function" ||
+          typeof window.PDFMasterTracker.recordConversion === "function")
       ) {
-        window.PDFMasterTracker.recordConversion({
+        const trackerFn =
+          window.PDFMasterTracker.trackConversion ||
+          window.PDFMasterTracker.recordConversion;
+        trackerFn({
+          tool: "Sign PDF",
           toolName: "Sign PDF",
           inputFileSize: state.fileSize,
-          outputFileSize: outBlob.size,
+          fileSize: outBlob.size,
           durationMs: Math.round(performance.now() - startTime),
+          pageCount: totalPages,
+          signedPageCount: signedPageCount,
+          settings: signSettings,
+          fileDetails: signDetails,
+          blob: outBlob,
         });
       }
 

@@ -142,10 +142,20 @@
         if (saveForLaterCheckbox && saveForLaterCheckbox.checked) {
           PDFSign.saveSignatureToLibrary(res.dataUrl, state.studio.mode);
         }
+
+        const meta = {
+          source: tab,
+          font: tab === "type" ? state.studio.selectedFont : null,
+          inkColor: tab === "upload" ? state.studio.inkColor : tab === "draw" ? state.studio.penColor : state.studio.typeColor,
+          removeBg: tab === "upload" ? Boolean(state.studio.removeBg) : false,
+          color: tab === "draw" ? state.studio.penColor : tab === "type" ? state.studio.typeColor : null,
+        };
+
         PDFSign.useSignatureData(
           res.dataUrl,
           state.studio.mode,
           res.aspectRatio,
+          meta,
         );
         PDFSign.closeStudioModal();
       }
