@@ -24,7 +24,7 @@
  * visit - see the activate handler below.
  */
 
-const CACHE_VERSION = "v57";
+const CACHE_VERSION = "v58";
 const CACHE_PREFIX = "pdfmaster-";
 
 const STATIC_CACHE = `${CACHE_PREFIX}static-${CACHE_VERSION}`;
@@ -58,6 +58,8 @@ const PRECACHE_URLS = [
   "/assets/vendor/pdf-lib-1.17.1.min.js",
   "/assets/vendor/pdf-lib.min.js",
   "/assets/vendor/pdf-encrypt.min.js",
+  "/assets/vendor/qpdf.js",
+  "/assets/vendor/qpdf.wasm",
   "/assets/vendor/pdf.min.js",
   "/assets/vendor/pdf.worker-3.4.120.min.js",
   "/assets/vendor/pdf.worker-3.11.174.min.js",

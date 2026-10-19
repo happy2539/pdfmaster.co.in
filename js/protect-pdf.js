@@ -181,9 +181,9 @@
           err.name === "PasswordException" ||
           (err.message && err.message.toLowerCase().includes("password"))
         ) {
-          alert(
-            "⚠️ This PDF is already locked with a password!\n\nPlease unlock or decrypt the document first before adding new protection.",
-          );
+          if (confirm("⚠️ This PDF is already locked with a password!\n\nWould you like to open our Unlock PDF tool to decrypt and remove the password?")) {
+            window.location.href = "/unlock-pdf";
+          }
           return;
         }
         throw err;
