@@ -41,7 +41,6 @@
     generatedBlobs: {
       pdf: null,
       txt: null,
-      doc: null,
     },
   };
 
@@ -136,7 +135,6 @@
 
     DOM.downloadPdfBtn = document.getElementById("downloadPdfBtn");
     DOM.downloadTxtBtn = document.getElementById("downloadTxtBtn");
-    DOM.downloadDocBtn = document.getElementById("downloadDocBtn");
     DOM.copyAllBtn = document.getElementById("copyAllBtn");
     DOM.ocrAnotherBtn = document.getElementById("ocrAnotherBtn");
   }
@@ -498,7 +496,7 @@
     Object.values(state.generatedBlobs).forEach((blobUrl) => {
       if (blobUrl) URL.revokeObjectURL(blobUrl);
     });
-    state.generatedBlobs = { pdf: null, txt: null, doc: null };
+    state.generatedBlobs = { pdf: null, txt: null };
 
     state.pageResults.forEach((page) => {
       if (page.thumbUrl) URL.revokeObjectURL(page.thumbUrl);
@@ -1204,38 +1202,7 @@
     const txtBlob = new Blob([fullText], { type: "text/plain;charset=utf-8" });
     state.generatedBlobs.txt = URL.createObjectURL(txtBlob);
 
-    // 2. Formatted Word Document (.doc) HTML
-    let docHtml = `<!DOCTYPE html>
-<html>
-<head>
-<meta charset="utf-8">
-<title>${escapeHtml(state.fileName)} - OCR Extracted Text</title>
-<style>
-body { font-family: Calibri, Arial, sans-serif; font-size: 11pt; line-height: 1.5; color: #222; margin: 40px; }
-h1 { font-size: 18pt; color: #e8372a; margin-bottom: 5px; }
-.meta { font-size: 9pt; color: #666; margin-bottom: 25px; border-bottom: 1px solid #ccc; padding-bottom: 10px; }
-.page-break { page-break-before: always; margin-top: 30px; border-top: 2px dashed #999; padding-top: 15px; }
-.page-title { font-size: 12pt; font-weight: bold; color: #333; margin-bottom: 12px; }
-p { margin-bottom: 10px; white-space: pre-wrap; }
-</style>
-</head>
-<body>
-<h1>${escapeHtml(state.fileName)}</h1>
-<div class="meta">Extracted with PDFMaster OCR · ${state.pageResults.length} pages recognized · 100% Client-Side</div>
-`;
-    state.pageResults.forEach((page, idx) => {
-      if (idx > 0) docHtml += `<div class="page-break"></div>\n`;
-      docHtml += `<div class="page-title">Page ${page.pageNum} of ${state.totalPages} (OCR Confidence: ${page.confidence}%)</div>\n`;
-      docHtml += `<p>${escapeHtml(page.text)}</p>\n`;
-    });
-    docHtml += `</body></html>`;
-
-    const docBlob = new Blob(["\ufeff" + docHtml], {
-      type: "application/msword;charset=utf-8",
-    });
-    state.generatedBlobs.doc = URL.createObjectURL(docBlob);
-
-    // 3. Searchable PDF (Sandwich / Invisible Selectable Text Layer)
+    // 2. Searchable PDF (Sandwich / Invisible Selectable Text Layer)
     if (state.options.generatePdf) {
       await generateSearchablePdfBlob();
     }
@@ -1619,7 +1586,6 @@ p { margin-bottom: 10px; white-space: pre-wrap; }
     // Downloads
     DOM.downloadPdfBtn.onclick = () => triggerDownload("pdf");
     DOM.downloadTxtBtn.onclick = () => triggerDownload("txt");
-    DOM.downloadDocBtn.onclick = () => triggerDownload("doc");
   }
 
   async function copyCurrentText() {
@@ -1689,9 +1655,7 @@ p { margin-bottom: 10px; white-space: pre-wrap; }
     const downloadFileName =
       format === "pdf"
         ? `${baseName}_searchable.pdf`
-        : format === "txt"
-          ? `${baseName}_text.txt`
-          : `${baseName}_document.doc`;
+        : `${baseName}_text.txt`;
 
     const a = document.createElement("a");
     a.href = blobUrl;

@@ -56,7 +56,7 @@
     />
     <meta
       name="twitter:description"
-      content="Recognize characters in scanned PDF documents with on-device AI. Download searchable PDF, text, and Word files. Zero uploads."
+      content="Recognize characters in scanned PDF documents with on-device AI. Download searchable PDF and formatted plain text. Zero uploads."
     />
     <meta
       name="twitter:image"
@@ -123,7 +123,7 @@
             "operatingSystem": "Any",
             "browserRequirements": "Requires JavaScript. Requires HTML5 WebAssembly.",
             "url": "https://pdfmaster.co.in/ocr-pdf",
-            "description": "Free online PDF tool to perform Optical Character Recognition (OCR) on scanned PDF documents. Generates true searchable sandwich PDFs with invisible selectable text layers and exports editable text and Word documents.",
+            "description": "Free online PDF tool to perform Optical Character Recognition (OCR) on scanned PDF documents. Generates true searchable sandwich PDFs with invisible selectable text layers and exports editable plain text.",
             "offers": {
               "@type": "Offer",
               "price": "0",
@@ -134,7 +134,7 @@
               "100+ Document Languages with Neural LSTM Recognition",
               "Tiered Low-RAM Streaming Architecture (Sequential Page Destruction)",
               "Adaptive Scan Binarization and Paper Grain Clean Filter",
-              "Multi-Format Export: Searchable PDF, Plain Text (.txt), and Word (.doc)",
+              "Multi-Format Export: Searchable PDF and Plain Text (.txt)",
               "Interactive OCR Results Studio with Word Bounding Box Inspector",
               "100% In-Browser Privacy (Zero Server Uploads Guaranteed)"
             ]
@@ -166,7 +166,7 @@
                 "@type": "HowToStep",
                 "position": 4,
                 "name": "Inspect & Download",
-                "text": "Review recognized text in the interactive studio, inspect word bounding boxes, and download a Searchable PDF, Word document, or Plain Text."
+                "text": "Review recognized text in the interactive studio, inspect word bounding boxes, and download a Searchable PDF or Plain Text."
               }
             ]
           },
@@ -226,7 +226,7 @@
                 "name": "What export formats are available?",
                 "acceptedAnswer": {
                   "@type": "Answer",
-                  "text": "You can download a true Searchable PDF (.pdf) with an embedded invisible selectable text layer, formatted Plain Text (.txt) with page dividers, rich Word Document (.doc), or copy all text to your clipboard in 1 click."
+                  "text": "You can download a true Searchable PDF (.pdf) with an embedded invisible selectable text layer, formatted Plain Text (.txt) with page dividers, or copy all text to your clipboard in 1 click."
                 }
               },
               {
@@ -242,7 +242,7 @@
                 "name": "Can I OCR a permission-protected or copy-restricted PDF?",
                 "acceptedAnswer": {
                   "@type": "Answer",
-                  "text": "Yes! If your PDF is permission-protected (e.g. copying, selecting text, or printing is restricted with an owner password, but requires no open password), PDFMaster can process it completely without asking for a password. Our client-side rendering pipeline visualizes the document and extracts all text with Tesseract OCR, allowing you to download a 100% unlocked, searchable PDF, Plain Text, or Word document."
+                  "text": "Yes! If your PDF is permission-protected (e.g. copying, selecting text, or printing is restricted with an owner password, but requires no open password), PDFMaster can process it completely without asking for a password. Our client-side rendering pipeline visualizes the document and extracts all text with Tesseract OCR, allowing you to download a 100% unlocked, searchable PDF or Plain Text."
                 }
               },
               {
@@ -1488,24 +1488,6 @@
                   </svg>
                   Download Text (.txt)
                 </button>
-
-                <button type="button" class="btn-secondary" id="downloadDocBtn">
-                  <svg
-                    width="16"
-                    height="16"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="2"
-                  >
-                    <path
-                      d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"
-                    ></path>
-                    <line x1="16" y1="13" x2="8" y2="13"></line>
-                    <line x1="16" y1="17" x2="8" y2="17"></line>
-                  </svg>
-                  Download Word (.doc)
-                </button>
               </div>
 
               <div class="studio-actions-group">
@@ -1665,7 +1647,7 @@
             <h3>Inspect &amp; Download</h3>
             <p>
               Preview recognized words in the interactive studio and download a
-              Searchable PDF, Plain Text (.txt), or Word Document (.doc).
+              Searchable PDF or Plain Text (.txt).
             </p>
           </div>
         </div>
@@ -1816,7 +1798,7 @@
             <h3>Multi-Format Export &amp; Studio</h3>
             <p>
               Inspect word bounding boxes in real time. Download Searchable PDF,
-              Plain Text (.txt), Word (.doc), or copy to clipboard with 1 click.
+              Plain Text (.txt), or copy to clipboard with 1 click.
             </p>
           </div>
         </div>
@@ -2187,8 +2169,7 @@
               <p>
                 You can download a true Searchable PDF (.pdf) with an invisible
                 selectable text layer, formatted Plain Text (.txt) with page
-                dividers, rich Word Document (.doc), or copy all text to your
-                clipboard in 1 click.
+                dividers, or copy all text to your clipboard in 1 click.
               </p>
             </div>
           </details>
@@ -2245,7 +2226,7 @@
                 seamlessly without asking for any password. Our client-side
                 rendering pipeline visualizes each page and extracts all text
                 with Tesseract OCR, allowing you to download a 100% unlocked,
-                searchable PDF, Plain Text, or Word document.
+                searchable PDF or Plain Text.
               </p>
             </div>
           </details>
@@ -2578,6 +2559,6 @@
     <script src="/js/sw-register.js" defer></script>
     <script src="/js/universal-popup.js"></script>
     <script src="/js/conversion-tracker.js" defer></script>
-    <script src="/js/ocr-pdf.js?v=1.1"></script>
+    <script src="/js/ocr-pdf.js?v=1.2"></script>
   </body>
 </html>
