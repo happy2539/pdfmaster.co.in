@@ -148,6 +148,7 @@
       if (tn.includes("metadata")) return "Cleaned";
       if (tn.includes("editor")) return "Exported";
       if (tn.includes("photo") || tn.includes("image")) return "Converted";
+      if (tn.includes("ocr")) return "Recognized";
       return "Processed";
     }
 
@@ -182,6 +183,7 @@
     if (path.includes("metadata")) return "Cleaned";
     if (path.includes("editor")) return "Exported";
     if (path.includes("photo")) return "Converted";
+    if (path.includes("ocr")) return "Recognized";
     return "Converted";
   }
 

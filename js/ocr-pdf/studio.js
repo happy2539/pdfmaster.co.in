@@ -56,6 +56,41 @@
     renderStudioPagePreview(0);
     switchStudioPage("all");
     initStudioInteractions();
+
+    // Trigger Universal Popup Banner
+    if (window.PDFMasterPopup && typeof window.PDFMasterPopup.show === "function") {
+      const baseName = state.fileName.replace(/\.[^/.]+$/, "") || "document";
+      const isPdfExport = state.options.generatePdf !== false;
+      const downloadFileName = isPdfExport
+        ? `${baseName}_searchable.pdf`
+        : `${baseName}_text.txt`;
+      const elapsedMs = Math.max(1, Math.round(performance.now() - (state.startTime || performance.now())));
+
+      window.PDFMasterPopup.show({
+        title: "Thank You for Using PDF<span>Master</span>!",
+        desc: `Your scanned document was recognized privately on your device. Extracted <strong>${totalWords.toLocaleString()} words</strong> across <strong>${state.pageResults.length} page(s)</strong> with <strong>${avgConfidence}% confidence</strong>. Zero server uploads.`,
+        fileName: downloadFileName,
+        fileType: isPdfExport ? "pdf" : "txt",
+        fileDetails: `${state.pageResults.length} page${state.pageResults.length > 1 ? "s" : ""} · ${totalWords.toLocaleString()} words · ${avgConfidence}% conf`,
+        downloadText: isPdfExport ? "Download Searchable PDF" : "Download Extracted Text",
+        secondaryText: "Inspect in Studio",
+        showSecondary: true,
+        toolName: "OCR PDF",
+        verb: "Recognized",
+        durationMs: elapsedMs,
+        blob: state.generatedPdfBlob,
+        onDownload: () => {
+          if (OCR.triggerDownload) {
+            return OCR.triggerDownload(isPdfExport ? "pdf" : "txt");
+          }
+        },
+        onSecondary: () => {
+          if (DOM.ocrStudio) {
+            DOM.ocrStudio.scrollIntoView({ behavior: "smooth", block: "start" });
+          }
+        },
+      });
+    }
   }
 
   function switchStudioPage(target) {

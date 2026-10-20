@@ -146,6 +146,7 @@
         type: "application/pdf",
       });
       state.generatedBlobs.pdf = URL.createObjectURL(pdfBlob);
+      state.generatedPdfBlob = pdfBlob;
       return state.generatedBlobs.pdf;
     } catch (pdfErr) {
       console.warn("Could not compile searchable PDF layer:", pdfErr);

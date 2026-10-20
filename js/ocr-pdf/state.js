@@ -54,6 +54,7 @@
       pdf: null,
       txt: null,
     },
+    generatedPdfBlob: null,
   };
 
   // DOM Elements Store (populated in initDOM)
@@ -196,6 +197,7 @@
       if (blobUrl) URL.revokeObjectURL(blobUrl);
     });
     state.generatedBlobs = { pdf: null, txt: null };
+    state.generatedPdfBlob = null;
 
     state.pageResults.forEach((page) => {
       if (page.thumbUrl) URL.revokeObjectURL(page.thumbUrl);
