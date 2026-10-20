@@ -43,6 +43,9 @@
     },
     pageTextStatus: {}, // pageNum -> { hasText: boolean, charCount: number }
     documentHasDigitalText: false,
+    pageRangeMode: "all",
+    pageRangeCustom: "",
+    hasPersistedBlob: false,
     generatedBlobs: {
       pdf: null,
       txt: null,
@@ -142,6 +145,12 @@
     DOM.downloadTxtBtn = document.getElementById("downloadTxtBtn");
     DOM.copyAllBtn = document.getElementById("copyAllBtn");
     DOM.ocrAnotherBtn = document.getElementById("ocrAnotherBtn");
+
+    DOM.recoveryBtn = document.getElementById("recoveryBtn");
+    DOM.recoveryBadge = document.getElementById("recoveryBadge");
+    DOM.toast = document.getElementById("toast");
+    DOM.toastIcon = document.getElementById("toastIcon");
+    DOM.toastMsg = document.getElementById("toastMsg");
   }
 
   /* ==========================================================================
@@ -312,7 +321,7 @@
     return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + " " + sizes[i];
   }
 
-  async function handleFileSelected(file) {
+  async function handleFileSelected(file, shouldPersist = true) {
     if (!file) return;
 
     const isPdf =
@@ -458,6 +467,11 @@
       updateSelectedPages();
       DOM.actionBarStatus.textContent = "Ready to recognize text from document";
       DOM.startOcrBtn.disabled = false;
+
+      if (shouldPersist) {
+        persistBlobToDB(file, state.fileName);
+        scheduleDBSave();
+      }
     } catch (err) {
       console.error("PDF loading error:", err);
       showErrorPopup(
@@ -468,7 +482,7 @@
     }
   }
 
-  function resetSession() {
+  function resetSession(clearDB = true) {
     if (state.isProcessing) {
       state.cancelRequested = true;
     }
@@ -487,6 +501,11 @@
     state.documentHasDigitalText = false;
     state.isProcessing = false;
     state.cancelRequested = false;
+    state.hasPersistedBlob = false;
+
+    if (clearDB) {
+      clearSessionFromDB();
+    }
 
     if (DOM.detectedLayerBadge) DOM.detectedLayerBadge.style.display = "none";
     if (DOM.specDocType) DOM.specDocType.textContent = "Scanning…";
@@ -524,6 +543,7 @@
         const selectedText = e.target.options[e.target.selectedIndex].text;
         if (DOM.specLang) DOM.specLang.textContent = selectedText.split(" ")[0];
         prewarmTesseractEngine(state.options.lang, state.options.mode);
+        scheduleDBSave();
       });
     }
 
@@ -536,6 +556,7 @@
         if (DOM.specMode) DOM.specMode.textContent = "Fast Stream (SIMD)";
         if (DOM.specRam) DOM.specRam.textContent = "< 35 MB (Single-buffer)";
         prewarmTesseractEngine(state.options.lang, "fast");
+        scheduleDBSave();
       });
 
       DOM.modeAccurate.addEventListener("change", () => {
@@ -545,6 +566,7 @@
         if (DOM.specMode) DOM.specMode.textContent = "High Definition (300 DPI)";
         if (DOM.specRam) DOM.specRam.textContent = "< 50 MB (Single-buffer)";
         prewarmTesseractEngine(state.options.lang, "accurate");
+        scheduleDBSave();
       });
     }
 
@@ -552,6 +574,7 @@
     if (DOM.enhanceScanCheck) {
       DOM.enhanceScanCheck.addEventListener("change", (e) => {
         state.options.enhance = e.target.checked;
+        scheduleDBSave();
       });
     }
 
@@ -567,6 +590,7 @@
             ? "var(--shield-green)"
             : "var(--text-3)";
         }
+        scheduleDBSave();
       });
     }
 
@@ -576,12 +600,14 @@
         state.options.layerMode = "smart";
         if (DOM.radioCardSmartLayer) DOM.radioCardSmartLayer.classList.add("is-active");
         if (DOM.radioCardReplaceLayer) DOM.radioCardReplaceLayer.classList.remove("is-active");
+        scheduleDBSave();
       });
 
       DOM.layerModeReplace.addEventListener("change", () => {
         state.options.layerMode = "replace";
         if (DOM.radioCardReplaceLayer) DOM.radioCardReplaceLayer.classList.add("is-active");
         if (DOM.radioCardSmartLayer) DOM.radioCardSmartLayer.classList.remove("is-active");
+        scheduleDBSave();
       });
     }
 
@@ -600,7 +626,9 @@
 
     if (DOM.customRangeInput) {
       DOM.customRangeInput.addEventListener("input", () => {
+        state.pageRangeCustom = DOM.customRangeInput.value;
         updateSelectedPages();
+        scheduleDBSave();
       });
     }
 
@@ -622,6 +650,7 @@
   }
 
   function setRangeTab(tab) {
+    state.pageRangeMode = tab;
     [DOM.rangeAllBtn, DOM.rangeFirstBtn, DOM.rangeCustomBtn].forEach((btn) => {
       btn.classList.remove("is-active");
     });
@@ -639,6 +668,7 @@
     }
 
     updateSelectedPages();
+    scheduleDBSave();
   }
 
   function parsePageRange(rangeStr, maxPages) {
@@ -920,6 +950,8 @@
     state.activeWorkerModel = null;
   }
 
+  let pendingPoolPromise = null;
+
   async function ensureTesseractPool(lang, mode, workerCount = 1) {
     const targetModel = mode === "accurate" ? "standard" : "fast";
     if (
@@ -931,57 +963,79 @@
       return state.tesseractPool;
     }
 
-    await terminateWorkerPool();
-
-    if (!window.Tesseract) {
-      throw new Error(
-        "Tesseract OCR library not found. Please check your internet connection.",
-      );
+    if (pendingPoolPromise) {
+      try {
+        await pendingPoolPromise;
+      } catch (_) {}
+      if (
+        state.tesseractPool &&
+        state.tesseractPool.length >= workerCount &&
+        state.activeWorkerLang === lang &&
+        state.activeWorkerModel === targetModel
+      ) {
+        return state.tesseractPool;
+      }
     }
 
-    const langPath =
-      targetModel === "fast"
-        ? "https://tessdata.projectnaptha.com/4.0.0_fast"
-        : "https://tessdata.projectnaptha.com/4.0.0";
+    pendingPoolPromise = (async () => {
+      await terminateWorkerPool();
 
-    const workerOptions = {
-      // Pointing to directory enables automatic WebAssembly SIMD (-simd-lstm) selection!
-      corePath: "https://cdn.jsdelivr.net/npm/tesseract.js-core@5.1.0",
-      workerPath:
-        "https://cdn.jsdelivr.net/npm/tesseract.js@5.1.1/dist/worker.min.js",
-      langPath: langPath,
-    };
+      if (!window.Tesseract) {
+        throw new Error(
+          "Tesseract OCR library not found. Please check your internet connection.",
+        );
+      }
 
-    DOM.progressStatusTxt.textContent = `Initializing SIMD neural engine (${targetModel === "fast" ? "Fast 8-bit Quantized" : "High Definition 300 DPI"})…`;
+      const langPath =
+        targetModel === "fast"
+          ? "https://tessdata.projectnaptha.com/4.0.0_fast"
+          : "https://tessdata.projectnaptha.com/4.0.0";
 
-    const pool = [];
-    for (let i = 0; i < workerCount; i++) {
-      const worker = await window.Tesseract.createWorker(lang, 1, {
-        ...workerOptions,
-        logger: (m) => {
-          if (m.status === "recognizing text" && m.progress > 0) {
-            const currentStage = Math.round(m.progress * 100);
-            DOM.progressStatusTxt.textContent = `Recognizing text (${currentStage}%)…`;
-          }
-        },
-      });
+      const workerOptions = {
+        corePath:
+          "https://cdn.jsdelivr.net/npm/tesseract.js-core@5.1.0/tesseract-core-simd-lstm.wasm.js",
+        workerPath:
+          "https://cdn.jsdelivr.net/npm/tesseract.js@5.1.1/dist/worker.min.js",
+        langPath: langPath,
+      };
 
-      const autoPsm =
-        window.Tesseract && window.Tesseract.PSM
-          ? window.Tesseract.PSM.AUTO
-          : "3";
-      await worker.setParameters({
-        tessedit_pageseg_mode: autoPsm,
-        user_defined_dpi: "300",
-        preserve_interword_spaces: "1",
-      });
-      pool.push(worker);
+      DOM.progressStatusTxt.textContent = `Initializing SIMD neural engine (${targetModel === "fast" ? "Fast 8-bit Quantized" : "High Definition 300 DPI"})…`;
+
+      const pool = [];
+      for (let i = 0; i < workerCount; i++) {
+        const worker = await window.Tesseract.createWorker(lang, 1, {
+          ...workerOptions,
+          logger: (m) => {
+            if (m.status === "recognizing text" && m.progress > 0) {
+              const currentStage = Math.round(m.progress * 100);
+              DOM.progressStatusTxt.textContent = `Recognizing text (${currentStage}%)…`;
+            }
+          },
+        });
+
+        const autoPsm =
+          window.Tesseract && window.Tesseract.PSM
+            ? window.Tesseract.PSM.AUTO
+            : "3";
+        await worker.setParameters({
+          tessedit_pageseg_mode: autoPsm,
+          user_defined_dpi: "300",
+          preserve_interword_spaces: "1",
+        });
+        pool.push(worker);
+      }
+
+      state.tesseractPool = pool;
+      state.activeWorkerLang = lang;
+      state.activeWorkerModel = targetModel;
+      return pool;
+    })();
+
+    try {
+      return await pendingPoolPromise;
+    } finally {
+      pendingPoolPromise = null;
     }
-
-    state.tesseractPool = pool;
-    state.activeWorkerLang = lang;
-    state.activeWorkerModel = targetModel;
-    return pool;
   }
 
   async function ensureTesseractWorker(lang) {
@@ -1797,6 +1851,10 @@
     a.click();
     document.body.removeChild(a);
 
+    // Delete the file and session from local recovery immediately after file download!
+    await clearSessionFromDB();
+    showToast(`Downloaded ${downloadFileName}.`, "success", 4000);
+
     // Track conversion event if tracking script loaded
     if (window.trackConversion) {
       window.trackConversion("ocr_pdf_download", { format });
@@ -1819,6 +1877,336 @@
       alert(msg);
       if (onAction) onAction();
     }
+  }
+
+  /* ==========================================================================
+     TOAST NOTIFICATION SYSTEM
+     ========================================================================== */
+  let toastTimer = null;
+  function showToast(
+    msg,
+    type = "info",
+    dur = 3500,
+    onClick = null,
+    actionText = null,
+  ) {
+    if (!DOM.toast) return;
+    clearTimeout(toastTimer);
+    if (DOM.toastMsg) DOM.toastMsg.textContent = msg;
+
+    if (DOM.toastIcon) {
+      if (type === "success") {
+        DOM.toastIcon.innerHTML = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>`;
+      } else if (type === "error") {
+        DOM.toastIcon.innerHTML = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg>`;
+      } else if (type === "warning") {
+        DOM.toastIcon.innerHTML = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>`;
+      } else {
+        DOM.toastIcon.innerHTML = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>`;
+      }
+    }
+
+    const existingBtn = DOM.toast.querySelector(".toast-btn");
+    if (existingBtn) existingBtn.remove();
+
+    if (actionText && typeof onClick === "function") {
+      const btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "toast-btn";
+      btn.textContent = actionText;
+      btn.onclick = (e) => {
+        e.stopPropagation();
+        DOM.toast.classList.remove("show");
+        onClick();
+      };
+      DOM.toast.appendChild(btn);
+    }
+
+    DOM.toast.className = `toast ${type}`;
+    void DOM.toast.offsetWidth;
+    DOM.toast.classList.add("show");
+    toastTimer = setTimeout(() => {
+      if (DOM.toast) DOM.toast.classList.remove("show");
+    }, dur);
+  }
+
+  /* ==========================================================================
+     INDEXEDDB RECOVERY MODE LOGIC
+     ========================================================================== */
+  const DB_NAME = "pdfmaster_ocr_db";
+  const DB_VERSION = 1;
+  let dbPromise = null;
+  let dbSaveTimer = null;
+
+  function openDB() {
+    if (dbPromise) return dbPromise;
+    dbPromise = new Promise((resolve, reject) => {
+      const req = indexedDB.open(DB_NAME, DB_VERSION);
+      req.onupgradeneeded = (e) => {
+        const db = e.target.result;
+        if (!db.objectStoreNames.contains("settings")) {
+          db.createObjectStore("settings");
+        }
+        if (!db.objectStoreNames.contains("ocr_data")) {
+          db.createObjectStore("ocr_data");
+        }
+      };
+      req.onsuccess = (e) => resolve(e.target.result);
+      req.onerror = (e) => reject(e.target.error);
+    });
+    return dbPromise;
+  }
+
+  // Persists the raw File/Blob into IndexedDB disk storage
+  async function persistBlobToDB(blob, name) {
+    try {
+      const db = await openDB();
+      const tx = db.transaction(["ocr_data"], "readwrite");
+      tx.objectStore("ocr_data").put(
+        {
+          fileName: name,
+          fileSize: blob.size,
+          blob: blob,
+          timestamp: Date.now(),
+        },
+        "file",
+      );
+      await new Promise((res, rej) => {
+        tx.oncomplete = () => res();
+        tx.onerror = () => rej(tx.error);
+        tx.onabort = () => rej(tx.error);
+      });
+      state.hasPersistedBlob = true;
+      updateRecoveryBadge(true);
+      return true;
+    } catch (err) {
+      console.warn("IndexedDB blob persist error:", err);
+      return false;
+    }
+  }
+
+  function scheduleDBSave() {
+    if (dbSaveTimer) clearTimeout(dbSaveTimer);
+    dbSaveTimer = setTimeout(() => {
+      saveSessionToDB();
+    }, 300);
+  }
+
+  // Saves lightweight session metadata without rewriting the heavy blob
+  async function saveSessionToDB() {
+    if (!state.fileName || (!state.file && !state.hasPersistedBlob)) return false;
+    try {
+      const db = await openDB();
+      const tx = db.transaction(["settings"], "readwrite");
+      const settingsStore = tx.objectStore("settings");
+
+      const sessionData = {
+        timestamp: Date.now(),
+        fileName: state.fileName,
+        fileSize: state.fileSize,
+        totalPages: state.totalPages,
+        lang: state.options.lang,
+        mode: state.options.mode,
+        pageRangeMode: state.pageRangeMode,
+        pageRangeCustom: state.pageRangeCustom,
+        enhance: state.options.enhance,
+        layerMode: state.options.layerMode,
+      };
+      settingsStore.put(sessionData, "session");
+
+      await new Promise((res, rej) => {
+        tx.oncomplete = () => res();
+        tx.onerror = () => rej(tx.error);
+        tx.onabort = () => rej(tx.error);
+      });
+
+      updateRecoveryBadge(true);
+      return true;
+    } catch (err) {
+      console.warn("IndexedDB save failed:", err);
+      return false;
+    }
+  }
+
+  async function loadSessionFromDB(isManual = false) {
+    try {
+      const db = await openDB();
+      const tx = db.transaction(["settings", "ocr_data"], "readonly");
+      const settingsReq = tx.objectStore("settings").get("session");
+      const dataReq = tx.objectStore("ocr_data").get("file");
+
+      const [session, data] = await Promise.all([
+        new Promise((res) => {
+          settingsReq.onsuccess = () => res(settingsReq.result);
+          settingsReq.onerror = () => res(null);
+        }),
+        new Promise((res) => {
+          dataReq.onsuccess = () => res(dataReq.result);
+          dataReq.onerror = () => res(null);
+        }),
+      ]);
+
+      if (!data || (!data.blob && !data.bytes)) {
+        updateRecoveryBadge(false);
+        if (isManual) {
+          showToast("No stored session found in recovery storage.", "error");
+        }
+        return false;
+      }
+
+      const blob =
+        data.blob ||
+        (data.bytes
+          ? new Blob([data.bytes], { type: "application/pdf" })
+          : null);
+      if (!blob) return false;
+
+      const fileObj = new File([blob], data.fileName || "document.pdf", {
+        type: "application/pdf",
+        lastModified: data.timestamp || Date.now(),
+      });
+
+      // Restore UI settings if present
+      if (session) {
+        if (session.lang && DOM.ocrLangSelect) {
+          DOM.ocrLangSelect.value = session.lang;
+          state.options.lang = session.lang;
+          const selectedText = DOM.ocrLangSelect.options[DOM.ocrLangSelect.selectedIndex]?.text;
+          if (DOM.specLang && selectedText) DOM.specLang.textContent = selectedText.split(" ")[0];
+        }
+        if (session.mode) {
+          state.options.mode = session.mode;
+          if (session.mode === "accurate") {
+            if (DOM.modeAccurate) DOM.modeAccurate.checked = true;
+            DOM.radioCardFast?.classList.remove("is-active");
+            DOM.radioCardAccurate?.classList.add("is-active");
+          } else {
+            if (DOM.modeFast) DOM.modeFast.checked = true;
+            DOM.radioCardFast?.classList.add("is-active");
+            DOM.radioCardAccurate?.classList.remove("is-active");
+          }
+        }
+        if (session.enhance !== undefined && DOM.enhanceScanCheck) {
+          DOM.enhanceScanCheck.checked = !!session.enhance;
+          state.options.enhance = !!session.enhance;
+        }
+        if (session.pageRangeMode) {
+          state.pageRangeMode = session.pageRangeMode;
+          if (session.pageRangeMode === "first") {
+            setRangeTab("first");
+          } else if (session.pageRangeMode === "custom") {
+            setRangeTab("custom");
+            if (DOM.customRangeInput) DOM.customRangeInput.value = session.pageRangeCustom || "";
+            state.pageRangeCustom = session.pageRangeCustom || "";
+            updateSelectedPages();
+          } else {
+            setRangeTab("all");
+          }
+        }
+        if (session.layerMode) {
+          state.options.layerMode = session.layerMode;
+          if (session.layerMode === "replace") {
+            if (DOM.layerModeReplace) DOM.layerModeReplace.checked = true;
+            DOM.radioCardReplaceLayer?.classList.add("is-active");
+            DOM.radioCardSmartLayer?.classList.remove("is-active");
+          } else {
+            if (DOM.layerModeSmart) DOM.layerModeSmart.checked = true;
+            DOM.radioCardSmartLayer?.classList.add("is-active");
+            DOM.radioCardReplaceLayer?.classList.remove("is-active");
+          }
+        }
+      }
+
+      await handleFileSelected(fileObj, false); // false = do not re-persist blob unnecessarily
+      state.hasPersistedBlob = true;
+      updateRecoveryBadge(true);
+
+      if (isManual) {
+        showToast(
+          `Restored "${data.fileName || "document.pdf"}" from local recovery!`,
+          "success",
+        );
+      }
+      return true;
+    } catch (err) {
+      console.error("IndexedDB restore error:", err);
+      if (isManual) {
+        showToast("Failed to restore session: " + err.message, "error");
+      }
+      return false;
+    }
+  }
+
+  // Deletes all session files from IndexedDB storage
+  async function clearSessionFromDB() {
+    try {
+      const db = await openDB();
+      const tx = db.transaction(["settings", "ocr_data"], "readwrite");
+      tx.objectStore("settings").clear();
+      tx.objectStore("ocr_data").clear();
+      state.hasPersistedBlob = false;
+      updateRecoveryBadge(false);
+    } catch (err) {
+      console.warn("IndexedDB clear failed:", err);
+    }
+  }
+
+  async function checkStoredSessionAvailable(notifyOnFound = false) {
+    try {
+      const db = await openDB();
+      const tx = db.transaction(["ocr_data"], "readonly");
+      const req = tx.objectStore("ocr_data").get("file");
+      const data = await new Promise((res) => {
+        req.onsuccess = () => res(req.result);
+        req.onerror = () => res(null);
+      });
+
+      const hasData = !!(data && (data.blob || data.bytes));
+      updateRecoveryBadge(hasData);
+
+      if (hasData && notifyOnFound && !state.pdfDoc) {
+        const name = data.fileName || "PDF document";
+        showToast(
+          `Previous session ("${truncateFilename(name, 22)}") is available.`,
+          "info",
+          8000,
+          () => loadSessionFromDB(true),
+          "Restore",
+        );
+      }
+      return hasData;
+    } catch {
+      updateRecoveryBadge(false);
+      return false;
+    }
+  }
+
+  function updateRecoveryBadge(hasData) {
+    if (DOM.recoveryBadge) {
+      DOM.recoveryBadge.style.display = hasData ? "block" : "none";
+    }
+  }
+
+  function truncateFilename(str, n = 22) {
+    if (!str || str.length <= n) return str;
+    const extIdx = str.lastIndexOf(".");
+    const ext = extIdx > -1 ? str.slice(extIdx) : "";
+    const base = extIdx > -1 ? str.slice(0, extIdx) : str;
+    const keepLen = n - ext.length - 3;
+    if (keepLen <= 2) return str.slice(0, n - 3) + "…";
+    return base.slice(0, keepLen) + "…" + ext;
+  }
+
+  function initRecovery() {
+    if (DOM.recoveryBtn) {
+      DOM.recoveryBtn.addEventListener("click", () => {
+        loadSessionFromDB(true);
+      });
+    }
+
+    setTimeout(() => {
+      checkStoredSessionAvailable(true);
+    }, 450);
   }
 
   /* ==========================================================================
@@ -1846,6 +2234,7 @@
     initUploadHandlers();
     initControlHandlers();
     initBackToTop();
+    initRecovery();
   }
 
   if (document.readyState === "loading") {
@@ -1853,4 +2242,16 @@
   } else {
     boot();
   }
+
+  // Expose for testing & diagnostic verification
+  window.PDFMasterOCR = {
+    state,
+    DOM,
+    triggerDownload,
+    generateSearchablePdfBlob,
+    loadSessionFromDB,
+    clearSessionFromDB,
+    checkStoredSessionAvailable,
+    saveSessionToDB
+  };
 })();

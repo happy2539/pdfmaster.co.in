@@ -214,6 +214,33 @@ button {
   pointer-events: none;
 }
 
+.recovery-badge {
+  position: absolute;
+  top: 7px;
+  right: 7px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--accent);
+  border: 2px solid var(--bg);
+  animation: pulse-badge 2s infinite ease-in-out;
+}
+
+@keyframes pulse-badge {
+  0% {
+    transform: scale(0.9);
+    box-shadow: 0 0 0 0 rgba(232, 55, 42, 0.6);
+  }
+  70% {
+    transform: scale(1.1);
+    box-shadow: 0 0 0 6px rgba(232, 55, 42, 0);
+  }
+  100% {
+    transform: scale(0.9);
+    box-shadow: 0 0 0 0 rgba(232, 55, 42, 0);
+  }
+}
+
 .hamburger-btn {
   display: flex;
   flex-direction: column;
@@ -1862,3 +1889,92 @@ button {
     height: 40px;
   }
 }
+
+/* ===== TOAST NOTIFICATIONS ===== */
+.toast {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  z-index: 3000;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 13px 20px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-lg);
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--text);
+  max-width: 420px;
+  transform: translateY(30px);
+  opacity: 0;
+  pointer-events: none;
+  transition:
+    transform 0.25s ease,
+    opacity 0.25s ease;
+}
+
+.toast.show {
+  transform: translateY(0);
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.toast.success {
+  border-left: 4px solid var(--shield-green);
+}
+
+.toast.error {
+  border-left: 4px solid var(--danger-red);
+}
+
+.toast.info {
+  border-left: 4px solid var(--accent);
+}
+
+.toast.warning {
+  border-left: 4px solid var(--warning-orange);
+}
+
+.toast-icon {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+}
+
+.toast.success .toast-icon {
+  color: var(--shield-green);
+}
+
+.toast.error .toast-icon {
+  color: var(--danger-red);
+}
+
+.toast.info .toast-icon {
+  color: var(--accent);
+}
+
+.toast.warning .toast-icon {
+  color: var(--warning-orange);
+}
+
+.toast-btn {
+  padding: 5px 12px;
+  background: var(--accent);
+  color: #fff;
+  border-radius: var(--radius-sm);
+  font-size: 0.78rem;
+  font-weight: 700;
+  margin-left: auto;
+  flex-shrink: 0;
+  border: none;
+  cursor: pointer;
+  transition: background var(--transition);
+}
+
+.toast-btn:hover {
+  background: var(--accent-dark);
+}
+
