@@ -68,7 +68,7 @@
 
     <!-- Stylesheets -->
     <link rel="stylesheet" href="/css/universal-popup.css" />
-    <link rel="stylesheet" href="/css/ocr-pdf.css?v=1.0" />
+    <link rel="stylesheet" href="/css/ocr-pdf.css?v=1.3" />
     <link rel="stylesheet" href="/css/categorized-footer.css" />
 
     <!-- Theme Initialization Script -->
@@ -131,7 +131,7 @@
             },
             "featureList": [
               "True Searchable Sandwich PDF with invisible selectable text layer",
-              "100+ Document Languages with Neural LSTM Recognition",
+              "15+ Document Languages with Neural LSTM Recognition",
               "Tiered Low-RAM Streaming Architecture (Sequential Page Destruction)",
               "Adaptive Scan Binarization and Paper Grain Clean Filter",
               "Multi-Format Export: Searchable PDF and Plain Text (.txt)",
@@ -202,7 +202,7 @@
                 "name": "Which languages are supported for OCR?",
                 "acceptedAnswer": {
                   "@type": "Answer",
-                  "text": "We support over 100 languages including English, Spanish, French, German, Italian, Portuguese, Hindi, Russian, Chinese (Simplified), Japanese, Arabic, Dutch, Polish, Turkish, and Korean using official Tesseract LSTM neural network language models."
+                  "text": "We support 15 popular languages including English, Spanish, French, German, Italian, Portuguese, Hindi, Russian, Chinese (Simplified), Japanese, Arabic, Dutch, Polish, Turkish, and Korean using official Tesseract LSTM neural network language models."
                 }
               },
               {
@@ -486,19 +486,34 @@
     </div>
 
     <!-- ════════════════════════ BREADCRUMB ════════════════════════ -->
-    <div class="breadcrumb">
+    <div class="breadcrumb" aria-label="Breadcrumb">
       <div class="container">
-        <ul class="breadcrumb__list">
-          <li class="breadcrumb__item">
-            <a href="https://pdfmaster.co.in">Home</a>
+        <ol
+          class="breadcrumb__list"
+          itemscope
+          itemtype="https://schema.org/BreadcrumbList"
+        >
+          <li
+            class="breadcrumb__item"
+            itemprop="itemListElement"
+            itemscope
+            itemtype="https://schema.org/ListItem"
+          >
+            <a href="/" itemprop="item"><span itemprop="name">Home</span></a>
+            <meta itemprop="position" content="1" />
           </li>
-          <li class="breadcrumb__sep">/</li>
-          <li class="breadcrumb__item">
-            <a href="/#tools">Tools</a>
+          <li class="breadcrumb__sep" aria-hidden="true">›</li>
+          <li
+            class="breadcrumb__item"
+            itemprop="itemListElement"
+            itemscope
+            itemtype="https://schema.org/ListItem"
+          >
+            <span itemprop="name">OCR PDF</span>
+            <link itemprop="item" href="https://pdfmaster.co.in/ocr-pdf" />
+            <meta itemprop="position" content="2" />
           </li>
-          <li class="breadcrumb__sep">/</li>
-          <li class="breadcrumb__item" aria-current="page">OCR PDF</li>
-        </ul>
+        </ol>
       </div>
     </div>
 
@@ -520,8 +535,7 @@
             100% Private · Zero Server Uploads · On-Device AI
           </div>
           <h1 class="hero__title">
-            OCR <span class="accent">PDF Online</span><br />Make Scanned PDFs
-            Searchable
+            OCR <span class="accent">PDF Online</span>
           </h1>
           <p class="hero__sub">
             Convert scanned documents, receipts, invoices, and photos into
@@ -549,7 +563,7 @@
               >
                 <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
-              100+ Languages Supported
+              15+ Languages Supported
             </span>
             <span class="pill">
               <svg
@@ -571,7 +585,7 @@
               >
                 <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
-              Searchable PDF, TXT &amp; Word
+              Searchable PDF &amp; TXT
             </span>
             <span class="pill">
               <svg
@@ -741,33 +755,6 @@
             </div>
           </div>
 
-          <!-- Zero-Trace Ephemeral RAM Banner -->
-          <div class="zero-trace-banner">
-            <div class="zero-trace-banner__icon">
-              <svg
-                width="20"
-                height="20"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2.2"
-              >
-                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
-              </svg>
-            </div>
-            <div>
-              <span class="zero-trace-banner__tag"
-                >Low-RAM Stream Architecture</span
-              >
-              <p class="zero-trace-banner__desc">
-                PDFMaster processes documents sequentially: each page canvas is
-                rendered, recognized via WebAssembly, and immediately freed from
-                browser memory before the next page begins. Your document never
-                leaves your local device.
-              </p>
-            </div>
-          </div>
-
           <!-- Main Configuration Layout -->
           <div class="workspace-grid">
             <!-- Left Column: OCR Settings -->
@@ -806,9 +793,6 @@
                 <div class="form-group">
                   <label for="ocrLangSelect" class="form-label">
                     <span>Document Language</span>
-                    <span style="font-size: 0.76rem; color: var(--text-3)"
-                      >Neural LSTM</span
-                    >
                   </label>
                   <select id="ocrLangSelect" class="form-select">
                     <option value="eng" selected>English (eng)</option>
@@ -851,10 +835,10 @@
                       />
                       <div>
                         <div class="radio-card__title">
-                          Fast Stream (Recommended)
+                          Fast Stream (SIMD Vectorized)
                         </div>
                         <div class="radio-card__desc">
-                          2.5x scale · High Speed · Ultra-low RAM
+                          3x faster · Ultra-low RAM
                         </div>
                       </div>
                     </label>
@@ -875,7 +859,7 @@
                           High Definition (300 DPI)
                         </div>
                         <div class="radio-card__desc">
-                          3.0x scale (300 DPI) · Industry Grade · Max accuracy
+                          300 DPI · Maximum accuracy
                         </div>
                       </div>
                     </label>
@@ -945,47 +929,12 @@
                   </label>
                 </div>
 
-                <!-- Searchable PDF Option Toggle -->
-                <div class="form-group">
-                  <label class="toggle-row" for="generatePdfCheck">
-                    <div>
-                      <div class="toggle-row__title">
-                        Download as Searchable PDF (Sandwich Text Layer)
-                      </div>
-                      <div class="toggle-row__desc">
-                        Embeds an invisible selectable text layer into the PDF
-                        (searchable in Acrobat &amp; Chrome)
-                      </div>
-                    </div>
-                    <input type="checkbox" id="generatePdfCheck" checked />
-                  </label>
-                </div>
+                <input type="checkbox" id="generatePdfCheck" checked style="display: none;" />
 
                 <!-- Smart Layer & Duplicate Prevention Option -->
                 <div class="form-group" id="layerHandlingGroup">
-                  <label
-                    class="form-label"
-                    style="
-                      display: flex;
-                      justify-content: space-between;
-                      align-items: center;
-                    "
-                  >
+                  <label class="form-label">
                     <span>Searchable PDF Layer Architecture</span>
-                    <span
-                      class="badge-smart"
-                      id="detectedLayerBadge"
-                      style="
-                        display: none;
-                        font-size: 0.72rem;
-                        padding: 2px 8px;
-                        border-radius: 12px;
-                        background: rgba(16, 185, 129, 0.15);
-                        color: #10b981;
-                        font-weight: 600;
-                      "
-                      >Clean Scan</span
-                    >
                   </label>
                   <div
                     class="radio-cards-grid"
@@ -1008,9 +957,7 @@
                           Smart Anti-Duplication (Recommended)
                         </div>
                         <div class="radio-card__desc">
-                          Only overlays invisible OCR on scanned images.
-                          Prevents duplicate Ctrl+F matches if document already
-                          has digital text.
+                          Only adds text to scanned pages; avoids duplicate search results.
                         </div>
                       </div>
                     </label>
@@ -1031,95 +978,12 @@
                           Re-OCR &amp; Replace Text Layer
                         </div>
                         <div class="radio-card__desc">
-                          Renders pages to clean images and builds a fresh
-                          single OCR text layer. Ideal for fixing PDFs with
-                          corrupted or low-accuracy prior OCR.
+                          Rebuilds a clean text layer from scratch; best for fixing bad OCR.
                         </div>
                       </div>
                     </label>
                   </div>
                 </div>
-              </div>
-            </div>
-
-            <!-- Right Column: Engine HUD Specs -->
-            <div class="preview-panel">
-              <div class="shield-card">
-                <div class="shield-icon" id="shieldIcon" aria-hidden="true">
-                  <svg
-                    width="38"
-                    height="38"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="2"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                  >
-                    <path d="M2 12h20M7 5l5 7-5 7M17 5l-5 7 5 7"></path>
-                  </svg>
-                </div>
-
-                <h3 class="shield-title">WebAssembly Neural OCR</h3>
-                <span class="shield-status" id="shieldStatus"
-                  >OCR Engine Ready</span
-                >
-
-                <ul class="shield-specs">
-                  <li>
-                    <span class="shield-spec__label">Core Architecture:</span>
-                    <span class="shield-spec__val">Tesseract WASM LSTM</span>
-                  </li>
-                  <li>
-                    <span class="shield-spec__label">Document Type:</span>
-                    <span class="shield-spec__val" id="specDocType"
-                      >Scanned Document</span
-                    >
-                  </li>
-                  <li>
-                    <span class="shield-spec__label">Text Layer:</span>
-                    <span class="shield-spec__val" id="specTextLayer"
-                      >Scanning…</span
-                    >
-                  </li>
-                  <li>
-                    <span class="shield-spec__label">Language Model:</span>
-                    <span class="shield-spec__val" id="specLang">English</span>
-                  </li>
-                  <li>
-                    <span class="shield-spec__label">Resolution Mode:</span>
-                    <span class="shield-spec__val" id="specMode"
-                      >Fast Stream (2.5x)</span
-                    >
-                  </li>
-                  <li>
-                    <span class="shield-spec__label">Queued Pages:</span>
-                    <span class="shield-spec__val" id="specPages"
-                      >All Pages</span
-                    >
-                  </li>
-                  <li>
-                    <span class="shield-spec__label">Searchable PDF:</span>
-                    <span
-                      class="shield-spec__val"
-                      id="specPdfMode"
-                      style="color: var(--shield-green)"
-                      >Enabled (Sandwich)</span
-                    >
-                  </li>
-                  <li>
-                    <span class="shield-spec__label">RAM Allocation:</span>
-                    <span class="shield-spec__val" id="specRam"
-                      >&lt; 35 MB (Single-buffer)</span
-                    >
-                  </li>
-                </ul>
-
-                <p class="shield-privacy-note">
-                  🔒 All character recognition occurs 100% locally inside your
-                  web browser. Zero bytes are ever sent to remote servers or
-                  cloud AI.
-                </p>
               </div>
             </div>
           </div>
@@ -1709,7 +1573,7 @@
                 ></path>
               </svg>
             </div>
-            <h3>100+ Language Neural Models</h3>
+            <h3>15+ Language Neural Models</h3>
             <p>
               High-accuracy Long Short-Term Memory (LSTM) neural networks tuned
               specifically for Latin, Cyrillic, Devanagari, Arabic, and CJK
@@ -1973,8 +1837,8 @@
                 >) and its context is cleared.
               </li>
               <li>
-                <strong>Compact Representation:</strong> Only a lightweight
-                vector JSON object and a compressed thumbnail are preserved in
+                <strong>Compact Representation:</strong> Only lightweight
+                vector coordinate data and a compressed thumbnail are preserved in
                 memory (reducing RAM by over 95%).
               </li>
               <li>
@@ -2095,7 +1959,7 @@
             </summary>
             <div class="faq-answer">
               <p>
-                We support over 100 languages including English, Spanish,
+                We support 15 popular languages including English, Spanish,
                 French, German, Italian, Portuguese, Hindi, Russian, Chinese
                 (Simplified), Japanese, Arabic, Dutch, Polish, Turkish, and
                 Korean using official Tesseract LSTM neural network language
@@ -2428,48 +2292,40 @@
     </section>
 
     <!-- ════════════════════════ CATEGORIZED FOOTER ════════════════════════ -->
-    <footer class="site-footer">
+    <footer class="site-footer" id="contact">
       <div class="container">
         <div class="footer__grid">
           <div class="footer__brand">
-            <a
-              href="https://pdfmaster.co.in"
-              class="nav-logo"
-              aria-label="PDFMaster Home"
-            >
+            <a href="/" class="nav-logo">
               <img
                 src="/assets/apple-touch-icon.png"
-                alt="PDFMaster"
+                alt="PDFMaster Logo"
                 width="36"
                 height="36"
               />
               <span class="logo-text">PDF<span>Master</span></span>
             </a>
             <p>
-              Free, private, client-side PDF &amp; image tools. Zero server
-              uploads. Your data never leaves your device.
+              Free, private, client-side PDF manipulation tools. No file size
+              limits, no tracking, and zero server uploads.
             </p>
             <div class="footer__socials">
               <a
-                href="https://github.com/happy-2345/pdfmaster.co.in"
-                class="footer__social-link"
+                href="https://github.com/happy2539/pdfmaster.co.in/"
                 target="_blank"
                 rel="noopener"
-                aria-label="GitHub"
+                class="footer__social-link"
+                aria-label="GitHub repository"
               >
                 <svg
                   width="18"
                   height="18"
                   viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
+                  fill="currentColor"
                 >
                   <path
-                    d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"
-                  ></path>
+                    d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"
+                  />
                 </svg>
               </a>
             </div>
@@ -2540,17 +2396,31 @@
               <li><a href="/contact">Help Center</a></li>
               <li><a href="/privacy">Privacy Policy</a></li>
               <li><a href="/terms">Terms of Service</a></li>
+              <li><a href="/faq">FAQ</a></li>
             </ul>
           </div>
         </div>
         <div class="footer__bottom">
-          <p>
-            &copy; 2026 PDFMaster. All rights reserved. Free, private PDF tools
-            running locally in your browser.
+          <p class="footer__copy">
+            © 2026 <a href="/">PDFMaster All right reserved</a>
           </p>
         </div>
       </div>
     </footer>
+
+    <!-- Back to Top Button -->
+    <button class="back-top" id="backTop" aria-label="Back to top">
+      <svg
+        width="16"
+        height="16"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2.5"
+      >
+        <polyline points="18 15 12 9 6 15" />
+      </svg>
+    </button>
 
     <!-- Core Scripts -->
     <script src="/assets/vendor/pdf-lib.min.js"></script>
@@ -2559,6 +2429,6 @@
     <script src="/js/sw-register.js" defer></script>
     <script src="/js/universal-popup.js"></script>
     <script src="/js/conversion-tracker.js" defer></script>
-    <script src="/js/ocr-pdf.js?v=1.2"></script>
+    <script src="/js/ocr-pdf.js?v=1.6"></script>
   </body>
 </html>

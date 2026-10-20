@@ -636,7 +636,8 @@ button {
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: var(--radius);
-  margin-bottom: 24px;
+  margin: 0 auto 24px;
+  max-width: 920px;
   box-shadow: var(--shadow-sm);
 }
 
@@ -721,19 +722,11 @@ button {
   line-height: 1.5;
 }
 
-/* ===== 2-COLUMN WORKSPACE GRID ===== */
+/* ===== WORKSPACE CONFIGURATION LAYOUT ===== */
 .workspace-grid {
-  display: grid;
-  grid-template-columns: 1.25fr 0.95fr;
-  gap: 24px;
-  margin-bottom: 30px;
-  align-items: start;
-}
-
-@media (max-width: 960px) {
-  .workspace-grid {
-    grid-template-columns: 1fr;
-  }
+  display: block;
+  max-width: 920px;
+  margin: 0 auto 30px;
 }
 
 /* Configuration Panels */
@@ -1109,7 +1102,8 @@ button {
   bottom: 20px;
   z-index: 50;
   gap: 16px;
-  margin-top: 20px;
+  max-width: 920px;
+  margin: 20px auto 0;
 }
 
 @media (max-width: 650px) {
@@ -1141,7 +1135,8 @@ button {
   border: 1px solid var(--border);
   border-radius: var(--radius);
   padding: 24px;
-  margin-bottom: 24px;
+  max-width: 920px;
+  margin: 0 auto 24px;
   box-shadow: var(--shadow-sm);
 }
 
@@ -1819,4 +1814,51 @@ button {
 
 .tool-card-link:hover svg {
   transform: translateX(3px);
+}
+
+/* Back to Top */
+.back-top {
+  position: fixed !important;
+  bottom: 24px !important;
+  right: 24px !important;
+  left: auto !important;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  color: var(--text-2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: var(--shadow);
+  opacity: 0;
+  visibility: hidden;
+  transition: all var(--transition);
+  z-index: 900;
+  cursor: pointer;
+}
+
+.back-top.active,
+.back-top.visible,
+.back-top.show {
+  opacity: 1;
+  visibility: visible;
+}
+
+.back-top:hover {
+  background: var(--accent);
+  color: #ffffff;
+  border-color: var(--accent);
+  transform: translateY(-2px);
+}
+
+@media (max-width: 768px) {
+  .back-top {
+    bottom: 20px !important;
+    right: 16px !important;
+    left: auto !important;
+    width: 40px;
+    height: 40px;
+  }
 }
