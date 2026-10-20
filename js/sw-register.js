@@ -15,6 +15,9 @@
   if (!('serviceWorker' in navigator)) return;
 
   var reloadingAfterUpdate = false;
+  // Track whether this document was already controlled when it loaded.
+  // On first visit (or hard refresh), controller is null.
+  var hadController = Boolean(navigator.serviceWorker.controller);
 
   function doRegister() {
     navigator.serviceWorker
@@ -32,6 +35,14 @@
   }
 
   navigator.serviceWorker.addEventListener('controllerchange', function () {
+    // If the page was not controlled when it was loaded, this controllerchange
+    // event is simply the first-time service worker taking control after
+    // pre-caching. DO NOT reload the page!
+    if (!hadController) {
+      hadController = true;
+      return;
+    }
+
     // Fires once the visitor has approved an update (see notifyUpdate
     // below) and the new worker has taken control. Reload once to pick
     // up the matching new HTML/CSS/JS together.
