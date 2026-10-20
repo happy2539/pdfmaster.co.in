@@ -453,8 +453,50 @@ ul {
   font-size: clamp(1rem, 1.8vw, 1.15rem);
   color: var(--text-2);
   max-width: 680px;
-  margin: 0 auto 32px;
+  margin: 0 auto 24px;
   line-height: 1.6;
+}
+
+.hero-rating {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-bottom: 24px;
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: var(--text-2);
+  flex-wrap: wrap;
+}
+
+.hero-rating__stars {
+  display: flex;
+  align-items: center;
+  color: #f59e0b;
+  gap: 3px;
+}
+
+.hero-rating__score {
+  font-weight: 700;
+  color: var(--text);
+}
+
+.hero-rating__votes {
+  color: var(--text-2);
+}
+
+.hero-rating__sep {
+  opacity: 0.4;
+}
+
+.hero-rating__highlight {
+  color: var(--success-green);
+  font-weight: 600;
+}
+
+.hero-rating__badge {
+  font-weight: 600;
+  color: var(--accent);
 }
 
 .hero-pills {
@@ -2762,6 +2804,164 @@ input:checked + .slider:before {
   transform: translateX(-50%) translateY(0);
 }
 
+/* ===== USER REVIEWS & RATINGS SECTION ===== */
+.reviews-summary-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 28px 32px;
+  margin-bottom: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 28px;
+  flex-wrap: wrap;
+}
+
+.reviews-score-box {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.reviews-big-num {
+  font-size: 3.25rem;
+  font-weight: 800;
+  line-height: 1;
+  color: var(--text);
+  font-family: var(--font-heading);
+}
+
+.reviews-stars-score {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.reviews-stars-row {
+  display: flex;
+  gap: 4px;
+  color: #f59e0b;
+}
+
+.reviews-meta-sub {
+  font-size: 0.9rem;
+  color: var(--text-2);
+}
+
+.reviews-highlight-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.review-badge-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  background: var(--bg-1, #f9f8f6);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-full);
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-2);
+}
+
+.reviews-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+}
+
+.review-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 14px;
+  transition: transform 0.2s ease, border-color 0.2s ease;
+}
+
+.review-card:hover {
+  border-color: var(--accent);
+  transform: translateY(-2px);
+}
+
+.review-card__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.review-card__user {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.review-card__avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--accent-light);
+  color: var(--accent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 0.95rem;
+}
+
+.review-card__name {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--text);
+  line-height: 1.2;
+}
+
+.review-card__role {
+  font-size: 0.8rem;
+  color: var(--text-3);
+}
+
+.review-card__verified {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.75rem;
+  color: var(--success-green);
+  font-weight: 600;
+  background: var(--success-bg);
+  padding: 3px 8px;
+  border-radius: var(--radius-full);
+}
+
+.review-card__stars {
+  display: flex;
+  gap: 2px;
+  color: #f59e0b;
+}
+
+.review-card__body {
+  font-size: 0.92rem;
+  line-height: 1.6;
+  color: var(--text-2);
+}
+
+.review-card__footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 0.8rem;
+  color: var(--text-3);
+  border-top: 1px solid var(--border);
+  padding-top: 12px;
+}
+
 /* ===== RESPONSIVE MEDIA QUERIES ===== */
 @media (max-width: 1024px) {
   .editor-layout {
@@ -2807,6 +3007,13 @@ input:checked + .slider:before {
   }
   .features-grid {
     grid-template-columns: 1fr;
+  }
+  .reviews-grid {
+    grid-template-columns: 1fr;
+  }
+  .reviews-summary-card {
+    flex-direction: column;
+    align-items: flex-start;
   }
   .use-cases-grid {
     grid-template-columns: 1fr;

@@ -303,6 +303,12 @@
 
 
 /sign-pdf-online                /sign-pdf                  301!
+/esign-pdf.html                 /sign-pdf                  301!
+/esign-pdf                      /sign-pdf                  301!
+/e-sign-pdf.html                /sign-pdf                  301!
+/e-sign-pdf                     /sign-pdf                  301!
+/esign                          /sign-pdf                  301!
+/e-sign                         /sign-pdf                  301!
 
 
 /unlock-pdf.html                  /unlock-pdf                  301!
