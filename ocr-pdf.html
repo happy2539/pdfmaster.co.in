@@ -68,7 +68,7 @@
 
     <!-- Stylesheets -->
     <link rel="stylesheet" href="/css/universal-popup.css" />
-    <link rel="stylesheet" href="/css/ocr-pdf.css?v=1.4" />
+    <link rel="stylesheet" href="/css/ocr-pdf.css?v=1.5" />
     <link rel="stylesheet" href="/css/categorized-footer.css" />
 
     <!-- Theme Initialization Script -->
@@ -1293,46 +1293,40 @@
                     >
                       A+
                     </button>
-                    <button
-                      type="button"
-                      class="btn-secondary btn-xs"
-                      id="copyTextBtn"
-                      title="Copy text to clipboard"
-                    >
-                      <svg
-                        width="12"
-                        height="12"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        stroke-width="2"
-                      >
-                        <rect
-                          x="9"
-                          y="9"
-                          width="13"
-                          height="13"
-                          rx="2"
-                          ry="2"
-                        ></rect>
-                        <path
-                          d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"
-                        ></path>
-                      </svg>
-                      Copy
-                    </button>
-                    <button
-                      type="button"
-                      class="btn-ghost btn-xs"
-                      id="clearTextBtn"
-                      title="Clear textarea"
-                    >
-                      Clear
-                    </button>
                   </div>
                 </div>
 
-                <div class="editor-tabs-bar" id="editorTabsBar"></div>
+                <div class="editor-tabs-bar" id="editorTabsBar">
+                  <button
+                    type="button"
+                    class="btn-secondary btn-xs"
+                    id="editorPrevPageBtn"
+                    title="Previous Page"
+                  >
+                    ◀
+                  </button>
+                  <span
+                    id="editorCurrentPageIndicator"
+                    style="font-size: 0.8rem; font-weight: 600"
+                    >Page 1</span
+                  >
+                  <button
+                    type="button"
+                    class="btn-secondary btn-xs"
+                    id="editorNextPageBtn"
+                    title="Next Page"
+                  >
+                    ▶
+                  </button>
+                  <button
+                    type="button"
+                    class="btn-secondary btn-xs is-active"
+                    id="editorAllPagesBtn"
+                    style="margin-left: 6px"
+                  >
+                    All Pages
+                  </button>
+                </div>
 
                 <div class="editor-viewport">
                   <textarea
@@ -2462,6 +2456,16 @@
     <script src="/js/sw-register.js" defer></script>
     <script src="/js/universal-popup.js"></script>
     <script src="/js/conversion-tracker.js" defer></script>
-    <script src="/js/ocr-pdf.js?v=1.7"></script>
+    <!-- OCR PDF Modular Engine -->
+    <script src="/js/ocr-pdf/state.js?v=2.1"></script>
+    <script src="/js/ocr-pdf/storage.js?v=2.1"></script>
+    <script src="/js/ocr-pdf/preprocess.js?v=2.1"></script>
+    <script src="/js/ocr-pdf/engine.js?v=2.1"></script>
+    <script src="/js/ocr-pdf/pdf-builder.js?v=2.1"></script>
+    <script src="/js/ocr-pdf/studio.js?v=2.1"></script>
+    <script src="/js/ocr-pdf/pipeline.js?v=2.1"></script>
+    <script src="/js/ocr-pdf/ui.js?v=2.1"></script>
+    <script src="/js/ocr-pdf/main.js?v=2.1"></script>
+    <script src="/js/ocr-pdf.js?v=2.1"></script>
   </body>
 </html>

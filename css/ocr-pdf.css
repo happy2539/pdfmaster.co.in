@@ -1394,11 +1394,17 @@ button {
 .editor-tabs-bar {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 8px;
   padding: 8px 14px;
   background: var(--surface);
   border-bottom: 1px solid var(--border);
   overflow-x: auto;
+}
+
+.editor-tabs-bar .btn-secondary.is-active {
+  background: var(--accent);
+  color: #fff;
+  border-color: var(--accent);
 }
 
 .page-tab-btn {
