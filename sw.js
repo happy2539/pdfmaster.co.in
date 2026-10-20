@@ -24,7 +24,7 @@
  * visit - see the activate handler below.
  */
 
-const CACHE_VERSION = "v58";
+const CACHE_VERSION = "v59";
 const CACHE_PREFIX = "pdfmaster-";
 
 const STATIC_CACHE = `${CACHE_PREFIX}static-${CACHE_VERSION}`;
@@ -64,6 +64,7 @@ const PRECACHE_URLS = [
   "/assets/vendor/pdf.worker-3.4.120.min.js",
   "/assets/vendor/pdf.worker-3.11.174.min.js",
   "/assets/vendor/pdf.worker.min.js",
+  "/assets/vendor/tesseract.min.js",
   "/assets/vendor/Sortable.min.js",
   "/assets/android-chrome-192x192.png",
   "/assets/android-chrome-512x512.png",
@@ -102,9 +103,11 @@ const PRECACHE_URLS = [
   "/css/happy-gupta-founder-of-pdfmaster.css",
   "/css/index.css",
   "/css/insert-blank-page-pdf.css",
+  "/css/ocr-pdf.css",
   "/css/page-number-pdf.css",
   "/css/pdf-compiler.css",
   "/css/protect-pdf.css",
+  "/css/unlock-pdf.css",
   "/css/pdf-editor.css",
   "/css/pdf-metadata.css",
   "/css/pdf-reorder.css",
@@ -159,9 +162,11 @@ const PRECACHE_URLS = [
   "/js/happy-gupta-founder-of-pdfmaster.js",
   "/js/index.js",
   "/js/insert-blank-page-pdf.js",
+  "/js/ocr-pdf.js",
   "/js/page-number-pdf.js",
   "/js/pdf-compiler.js",
   "/js/protect-pdf.js",
+  "/js/unlock-pdf.js",
   "/js/pdf-editor.js",
   "/js/pdf-metadata.js",
   "/js/pdf-reorder.js",

@@ -27,6 +27,7 @@ def main():
         "pdf-lib-1.17.1.min.js": "https://cdn.jsdelivr.net/npm/pdf-lib@1.17.1/dist/pdf-lib.min.js",
         "pdf-3.11.174.min.js": "https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/build/pdf.min.js",
         "pdf.worker-3.11.174.min.js": "https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/build/pdf.worker.min.js",
+        "tesseract.min.js": "https://cdn.jsdelivr.net/npm/tesseract.js@5.1.1/dist/tesseract.min.js",
         "background-removal-1.5.6.esm.js": "https://cdn.jsdelivr.net/npm/@imgly/background-removal@1.5.6/+esm"
     }
     
