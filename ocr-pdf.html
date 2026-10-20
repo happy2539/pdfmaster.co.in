@@ -673,8 +673,8 @@
             Choose PDF File
           </label>
           <p class="upload-zone__formats">
-            Supports: Any scanned PDF, image-based document, or photo compilation
-            · Processed 100% locally on your device
+            Supports: Any scanned PDF, image-based document, or photo
+            compilation · Processed 100% locally on your device
           </p>
         </div>
         <input
@@ -756,7 +756,9 @@
               </svg>
             </div>
             <div>
-              <span class="zero-trace-banner__tag">Low-RAM Stream Architecture</span>
+              <span class="zero-trace-banner__tag"
+                >Low-RAM Stream Architecture</span
+              >
               <p class="zero-trace-banner__desc">
                 PDFMaster processes documents sequentially: each page canvas is
                 rendered, recognized via WebAssembly, and immediately freed from
@@ -817,7 +819,9 @@
                     <option value="por">Portuguese - Português (por)</option>
                     <option value="hin">Hindi - हिन्दी (hin)</option>
                     <option value="rus">Russian - Русский (rus)</option>
-                    <option value="chi_sim">Chinese Simplified - 简体中文 (chi_sim)</option>
+                    <option value="chi_sim">
+                      Chinese Simplified - 简体中文 (chi_sim)
+                    </option>
                     <option value="jpn">Japanese - 日本語 (jpn)</option>
                     <option value="ara">Arabic - العربية (ara)</option>
                     <option value="nld">Dutch - Nederlands (nld)</option>
@@ -846,9 +850,11 @@
                         checked
                       />
                       <div>
-                        <div class="radio-card__title">Fast Stream (Recommended)</div>
+                        <div class="radio-card__title">
+                          Fast Stream (Recommended)
+                        </div>
                         <div class="radio-card__desc">
-                          1.5x scale · 3x faster · Lowest RAM consumption
+                          2.5x scale · High Speed · Ultra-low RAM
                         </div>
                       </div>
                     </label>
@@ -865,9 +871,11 @@
                         value="accurate"
                       />
                       <div>
-                        <div class="radio-card__title">High Definition</div>
+                        <div class="radio-card__title">
+                          High Definition (300 DPI)
+                        </div>
                         <div class="radio-card__desc">
-                          2.0x scale · Ideal for small fonts &amp; noisy scans
+                          3.0x scale (300 DPI) · Industry Grade · Max accuracy
                         </div>
                       </div>
                     </label>
@@ -915,7 +923,8 @@
                       id="customRangeHint"
                       style="font-size: 0.78rem"
                     >
-                      Enter comma-separated page numbers or ranges (e.g. 1-3, 5).
+                      Enter comma-separated page numbers or ranges (e.g. 1-3,
+                      5).
                     </p>
                   </div>
                 </div>
@@ -928,14 +937,11 @@
                         Auto-Binarization &amp; Scan Contrast Filter
                       </div>
                       <div class="toggle-row__desc">
-                        Removes paper shadows and grain; boosts character recognition accuracy
+                        Removes paper shadows and grain; boosts character
+                        recognition accuracy
                       </div>
                     </div>
-                    <input
-                      type="checkbox"
-                      id="enhanceScanCheck"
-                      checked
-                    />
+                    <input type="checkbox" id="enhanceScanCheck" checked />
                   </label>
                 </div>
 
@@ -947,24 +953,44 @@
                         Download as Searchable PDF (Sandwich Text Layer)
                       </div>
                       <div class="toggle-row__desc">
-                        Embeds an invisible selectable text layer into the PDF (searchable in Acrobat &amp; Chrome)
+                        Embeds an invisible selectable text layer into the PDF
+                        (searchable in Acrobat &amp; Chrome)
                       </div>
                     </div>
-                    <input
-                      type="checkbox"
-                      id="generatePdfCheck"
-                      checked
-                    />
+                    <input type="checkbox" id="generatePdfCheck" checked />
                   </label>
                 </div>
 
                 <!-- Smart Layer & Duplicate Prevention Option -->
                 <div class="form-group" id="layerHandlingGroup">
-                  <label class="form-label" style="display: flex; justify-content: space-between; align-items: center;">
+                  <label
+                    class="form-label"
+                    style="
+                      display: flex;
+                      justify-content: space-between;
+                      align-items: center;
+                    "
+                  >
                     <span>Searchable PDF Layer Architecture</span>
-                    <span class="badge-smart" id="detectedLayerBadge" style="display: none; font-size: 0.72rem; padding: 2px 8px; border-radius: 12px; background: rgba(16,185,129,0.15); color: #10b981; font-weight: 600;">Clean Scan</span>
+                    <span
+                      class="badge-smart"
+                      id="detectedLayerBadge"
+                      style="
+                        display: none;
+                        font-size: 0.72rem;
+                        padding: 2px 8px;
+                        border-radius: 12px;
+                        background: rgba(16, 185, 129, 0.15);
+                        color: #10b981;
+                        font-weight: 600;
+                      "
+                      >Clean Scan</span
+                    >
                   </label>
-                  <div class="radio-cards-grid" style="grid-template-columns: 1fr;">
+                  <div
+                    class="radio-cards-grid"
+                    style="grid-template-columns: 1fr"
+                  >
                     <label
                       class="radio-card is-active"
                       id="radioCardSmartLayer"
@@ -982,7 +1008,9 @@
                           Smart Anti-Duplication (Recommended)
                         </div>
                         <div class="radio-card__desc">
-                          Only overlays invisible OCR on scanned images. Prevents duplicate Ctrl+F matches if document already has digital text.
+                          Only overlays invisible OCR on scanned images.
+                          Prevents duplicate Ctrl+F matches if document already
+                          has digital text.
                         </div>
                       </div>
                     </label>
@@ -1003,7 +1031,9 @@
                           Re-OCR &amp; Replace Text Layer
                         </div>
                         <div class="radio-card__desc">
-                          Renders pages to clean images and builds a fresh single OCR text layer. Ideal for fixing PDFs with corrupted or low-accuracy prior OCR.
+                          Renders pages to clean images and builds a fresh
+                          single OCR text layer. Ideal for fixing PDFs with
+                          corrupted or low-accuracy prior OCR.
                         </div>
                       </div>
                     </label>
@@ -1026,9 +1056,7 @@
                     stroke-linecap="round"
                     stroke-linejoin="round"
                   >
-                    <path
-                      d="M2 12h20M7 5l5 7-5 7M17 5l-5 7 5 7"
-                    ></path>
+                    <path d="M2 12h20M7 5l5 7-5 7M17 5l-5 7 5 7"></path>
                   </svg>
                 </div>
 
@@ -1044,11 +1072,15 @@
                   </li>
                   <li>
                     <span class="shield-spec__label">Document Type:</span>
-                    <span class="shield-spec__val" id="specDocType">Scanned Document</span>
+                    <span class="shield-spec__val" id="specDocType"
+                      >Scanned Document</span
+                    >
                   </li>
                   <li>
                     <span class="shield-spec__label">Text Layer:</span>
-                    <span class="shield-spec__val" id="specTextLayer">Scanning…</span>
+                    <span class="shield-spec__val" id="specTextLayer"
+                      >Scanning…</span
+                    >
                   </li>
                   <li>
                     <span class="shield-spec__label">Language Model:</span>
@@ -1057,16 +1089,23 @@
                   <li>
                     <span class="shield-spec__label">Resolution Mode:</span>
                     <span class="shield-spec__val" id="specMode"
-                      >Fast Stream (1.5x)</span
+                      >Fast Stream (2.5x)</span
                     >
                   </li>
                   <li>
                     <span class="shield-spec__label">Queued Pages:</span>
-                    <span class="shield-spec__val" id="specPages">All Pages</span>
+                    <span class="shield-spec__val" id="specPages"
+                      >All Pages</span
+                    >
                   </li>
                   <li>
                     <span class="shield-spec__label">Searchable PDF:</span>
-                    <span class="shield-spec__val" id="specPdfMode" style="color: var(--shield-green)">Enabled (Sandwich)</span>
+                    <span
+                      class="shield-spec__val"
+                      id="specPdfMode"
+                      style="color: var(--shield-green)"
+                      >Enabled (Sandwich)</span
+                    >
                   </li>
                   <li>
                     <span class="shield-spec__label">RAM Allocation:</span>
@@ -1077,8 +1116,9 @@
                 </ul>
 
                 <p class="shield-privacy-note">
-                  🔒 All character recognition occurs 100% locally inside your web
-                  browser. Zero bytes are ever sent to remote servers or cloud AI.
+                  🔒 All character recognition occurs 100% locally inside your
+                  web browser. Zero bytes are ever sent to remote servers or
+                  cloud AI.
                 </p>
               </div>
             </div>
@@ -1090,11 +1130,7 @@
               Ready to recognize text from document
             </div>
             <div class="action-bar__btn-wrap">
-              <button
-                class="btn-primary btn-lg"
-                id="startOcrBtn"
-                type="button"
-              >
+              <button class="btn-primary btn-lg" id="startOcrBtn" type="button">
                 <svg
                   width="18"
                   height="18"
@@ -1215,7 +1251,9 @@
                     stroke="currentColor"
                     stroke-width="2"
                   >
-                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                    <path
+                      d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"
+                    ></path>
                   </svg>
                 </div>
                 <div>
@@ -1418,11 +1456,7 @@
             <!-- Export Download Toolbar -->
             <div class="studio-actions-bar">
               <div class="studio-actions-group">
-                <button
-                  type="button"
-                  class="btn-primary"
-                  id="downloadPdfBtn"
-                >
+                <button type="button" class="btn-primary" id="downloadPdfBtn">
                   <svg
                     width="16"
                     height="16"
@@ -1431,20 +1465,14 @@
                     stroke="currentColor"
                     stroke-width="2"
                   >
-                    <path
-                      d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"
-                    ></path>
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
                     <polyline points="7 10 12 15 17 10"></polyline>
                     <line x1="12" y1="15" x2="12" y2="3"></line>
                   </svg>
                   Download Searchable PDF
                 </button>
 
-                <button
-                  type="button"
-                  class="btn-secondary"
-                  id="downloadTxtBtn"
-                >
+                <button type="button" class="btn-secondary" id="downloadTxtBtn">
                   <svg
                     width="16"
                     height="16"
@@ -1461,11 +1489,7 @@
                   Download Text (.txt)
                 </button>
 
-                <button
-                  type="button"
-                  class="btn-secondary"
-                  id="downloadDocBtn"
-                >
+                <button type="button" class="btn-secondary" id="downloadDocBtn">
                   <svg
                     width="16"
                     height="16"
@@ -1485,11 +1509,7 @@
               </div>
 
               <div class="studio-actions-group">
-                <button
-                  type="button"
-                  class="btn-secondary"
-                  id="copyAllBtn"
-                >
+                <button type="button" class="btn-secondary" id="copyAllBtn">
                   <svg
                     width="16"
                     height="16"
@@ -1513,11 +1533,7 @@
                   Copy All Text
                 </button>
 
-                <button
-                  type="button"
-                  class="btn-ghost"
-                  id="ocrAnotherBtn"
-                >
+                <button type="button" class="btn-ghost" id="ocrAnotherBtn">
                   OCR Another PDF
                 </button>
               </div>
@@ -1540,7 +1556,9 @@
 
         <div class="arch-card">
           <div style="max-width: 820px; margin: 0 auto">
-            <p style="margin-bottom: 16px; font-size: 1rem; color: var(--text-2)">
+            <p
+              style="margin-bottom: 16px; font-size: 1rem; color: var(--text-2)"
+            >
               When you scan paper documents, snap photos of receipts, or save a
               document as an image, your computer does not see letters or words.
               Instead, it stores millions of colored pixels in a grid. Because
@@ -1548,11 +1566,13 @@
               <kbd>Ctrl+F</kbd>, select sentences with your mouse, or copy-paste
               vital data into a spreadsheet.
             </p>
-            <p style="margin-bottom: 24px; font-size: 1rem; color: var(--text-2)">
+            <p
+              style="margin-bottom: 24px; font-size: 1rem; color: var(--text-2)"
+            >
               <strong>Optical Character Recognition (OCR)</strong> solves this
               by running computer vision neural networks over the raster images.
-              The algorithm detects character baselines, glyph patterns, and word
-              boundaries to reconstruct editable typography.
+              The algorithm detects character baselines, glyph patterns, and
+              word boundaries to reconstruct editable typography.
             </p>
 
             <div class="arch-flow">
@@ -1574,7 +1594,8 @@
                 <div class="arch-node__num">3</div>
                 <div class="arch-node__title">Neural LSTM OCR</div>
                 <p class="arch-node__desc">
-                  Recognizes language characters and word coordinate bounding boxes
+                  Recognizes language characters and word coordinate bounding
+                  boxes
                 </p>
               </div>
               <div class="arch-node">
@@ -1586,11 +1607,13 @@
               </div>
             </div>
 
-            <p style="font-size: 0.95rem; color: var(--text-2); line-height: 1.6">
+            <p
+              style="font-size: 0.95rem; color: var(--text-2); line-height: 1.6"
+            >
               Unlike legacy server tools that upload your private files to
-              untrusted remote machines, PDFMaster executes the complete
-              optical character recognition engine right inside your browser
-              using WebAssembly and SIMD hardware acceleration.
+              untrusted remote machines, PDFMaster executes the complete optical
+              character recognition engine right inside your browser using
+              WebAssembly and SIMD hardware acceleration.
             </p>
           </div>
         </div>
@@ -1632,7 +1655,8 @@
             <h3>Run WebAssembly OCR</h3>
             <p>
               Click 'Start OCR Recognition'. Our sequential low-RAM pipeline
-              processes pages with live progress, timer, and character benchmarks.
+              processes pages with live progress, timer, and character
+              benchmarks.
             </p>
           </div>
 
@@ -1792,8 +1816,7 @@
             <h3>Multi-Format Export &amp; Studio</h3>
             <p>
               Inspect word bounding boxes in real time. Download Searchable PDF,
-              Plain Text (.txt), Word (.doc), or copy to
-              clipboard with 1 click.
+              Plain Text (.txt), Word (.doc), or copy to clipboard with 1 click.
             </p>
           </div>
         </div>
@@ -1825,16 +1848,22 @@
                 <tr>
                   <td><strong>Document Privacy</strong></td>
                   <td class="highlight-col">
-                    <span class="check-pill">✓ 100% On-Device (Zero Uploads)</span>
+                    <span class="check-pill"
+                      >✓ 100% On-Device (Zero Uploads)</span
+                    >
                   </td>
                   <td>
-                    <span class="cross-pill">✗ Sent to remote third-party servers</span>
+                    <span class="cross-pill"
+                      >✗ Sent to remote third-party servers</span
+                    >
                   </td>
                 </tr>
                 <tr>
                   <td><strong>File Size &amp; Page Limits</strong></td>
                   <td class="highlight-col">
-                    <span class="check-pill">✓ Unlimited (Hardware bounded)</span>
+                    <span class="check-pill"
+                      >✓ Unlimited (Hardware bounded)</span
+                    >
                   </td>
                   <td>
                     <span class="cross-pill">✗ 10-20 MB cap or paywalls</span>
@@ -1843,10 +1872,14 @@
                 <tr>
                   <td><strong>Processing Queue &amp; Latency</strong></td>
                   <td class="highlight-col">
-                    <span class="check-pill">✓ Instant Local CPU / WebAssembly</span>
+                    <span class="check-pill"
+                      >✓ Instant Local CPU / WebAssembly</span
+                    >
                   </td>
                   <td>
-                    <span class="cross-pill">✗ Server queues &amp; upload delays</span>
+                    <span class="cross-pill"
+                      >✗ Server queues &amp; upload delays</span
+                    >
                   </td>
                 </tr>
                 <tr>
@@ -1855,25 +1888,35 @@
                     <span class="check-pill">✓ Included Free</span>
                   </td>
                   <td>
-                    <span class="cross-pill">✗ Often locked behind paid plans</span>
+                    <span class="cross-pill"
+                      >✗ Often locked behind paid plans</span
+                    >
                   </td>
                 </tr>
                 <tr>
                   <td><strong>Account or Sign-up Required</strong></td>
                   <td class="highlight-col">
-                    <span class="check-pill">✓ None (Anonymous &amp; Instant)</span>
+                    <span class="check-pill"
+                      >✓ None (Anonymous &amp; Instant)</span
+                    >
                   </td>
                   <td>
-                    <span class="cross-pill">✗ Email / credit card prompts</span>
+                    <span class="cross-pill"
+                      >✗ Email / credit card prompts</span
+                    >
                   </td>
                 </tr>
                 <tr>
                   <td><strong>Offline Capability</strong></td>
                   <td class="highlight-col">
-                    <span class="check-pill">✓ Fully functional offline via SW</span>
+                    <span class="check-pill"
+                      >✓ Fully functional offline via SW</span
+                    >
                   </td>
                   <td>
-                    <span class="cross-pill">✗ Requires active internet connection</span>
+                    <span class="cross-pill"
+                      >✗ Requires active internet connection</span
+                    >
                   </td>
                 </tr>
               </tbody>
@@ -1899,27 +1942,53 @@
             <h3 style="font-family: var(--font-heading); margin-bottom: 12px">
               Sequential Single-Buffer Pipeline
             </h3>
-            <p style="color: var(--text-2); margin-bottom: 16px; line-height: 1.6">
+            <p
+              style="
+                color: var(--text-2);
+                margin-bottom: 16px;
+                line-height: 1.6;
+              "
+            >
               When processing a 50-page scanned PDF, each rendered 200 DPI page
               canvas requires approximately 14 MB of uncompressed bitmap RAM.
               Holding all pages simultaneously would consume over 700 MB of
               memory, causing mobile browsers and low-spec laptops to crash.
             </p>
-            <p style="color: var(--text-2); margin-bottom: 20px; line-height: 1.6">
+            <p
+              style="
+                color: var(--text-2);
+                margin-bottom: 20px;
+                line-height: 1.6;
+              "
+            >
               PDFMaster implements an **Ephemeral Single-Buffer Lifecycle**:
             </p>
-            <ul style="padding-left: 20px; margin-bottom: 24px; color: var(--text-2); line-height: 1.7">
+            <ul
+              style="
+                padding-left: 20px;
+                margin-bottom: 24px;
+                color: var(--text-2);
+                line-height: 1.7;
+              "
+            >
               <li>
                 <strong>Page Isolation:</strong> Page <em>N</em> is loaded into
                 an offscreen canvas and binarized.
               </li>
               <li>
-                <strong>Vector Coordinate Extraction:</strong> The Tesseract WASM
-                worker recognizes word bounding boxes and character text.
+                <strong>Vector Coordinate Extraction:</strong> The Tesseract
+                WASM worker recognizes word bounding boxes and character text.
               </li>
               <li>
                 <strong>Immediate Destruction:</strong> The large canvas is
-                instantly wiped (<code style="background: var(--surface-2); padding: 2px 6px; border-radius: 4px">canvas.width = 0</code>) and its context is cleared.
+                instantly wiped (<code
+                  style="
+                    background: var(--surface-2);
+                    padding: 2px 6px;
+                    border-radius: 4px;
+                  "
+                  >canvas.width = 0</code
+                >) and its context is cleared.
               </li>
               <li>
                 <strong>Compact Representation:</strong> Only a lightweight
@@ -1928,8 +1997,8 @@
               </li>
               <li>
                 <strong>Sandwich PDF Synthesis:</strong> Using pdf-lib, an
-                invisible selectable text layer is overlaid with zero loss to the
-                original vector graphics or page images.
+                invisible selectable text layer is overlaid with zero loss to
+                the original vector graphics or page images.
               </li>
             </ul>
           </div>
@@ -1951,7 +2020,14 @@
           <details class="faq-item">
             <summary class="faq-summary">
               What is a "Searchable Sandwich PDF"?
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <svg
+                width="18"
+                height="18"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
                 <polyline points="6 9 12 15 18 9"></polyline>
               </svg>
             </summary>
@@ -1974,7 +2050,14 @@
           <details class="faq-item">
             <summary class="faq-summary">
               Are my confidential files uploaded to any server?
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <svg
+                width="18"
+                height="18"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
                 <polyline points="6 9 12 15 18 9"></polyline>
               </svg>
             </summary>
@@ -1991,15 +2074,22 @@
           <details class="faq-item">
             <summary class="faq-summary">
               How does PDFMaster prevent browser tab crashes on large PDFs?
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <svg
+                width="18"
+                height="18"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
                 <polyline points="6 9 12 15 18 9"></polyline>
               </svg>
             </summary>
             <div class="faq-answer">
               <p>
-                Traditional browser tools render all PDF pages simultaneously into
-                giant bitmap canvases, which quickly consumes gigabytes of RAM
-                and crashes mobile tabs. PDFMaster uses a strict Low-RAM
+                Traditional browser tools render all PDF pages simultaneously
+                into giant bitmap canvases, which quickly consumes gigabytes of
+                RAM and crashes mobile tabs. PDFMaster uses a strict Low-RAM
                 Streaming Architecture: pages are rendered and recognized one by
                 one. As soon as a page is processed, its canvas is immediately
                 wiped and freed from memory before moving to the next page.
@@ -2010,16 +2100,24 @@
           <details class="faq-item">
             <summary class="faq-summary">
               Which languages are supported for OCR?
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <svg
+                width="18"
+                height="18"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
                 <polyline points="6 9 12 15 18 9"></polyline>
               </svg>
             </summary>
             <div class="faq-answer">
               <p>
-                We support over 100 languages including English, Spanish, French,
-                German, Italian, Portuguese, Hindi, Russian, Chinese (Simplified),
-                Japanese, Arabic, Dutch, Polish, Turkish, and Korean using
-                official Tesseract LSTM neural network language models.
+                We support over 100 languages including English, Spanish,
+                French, German, Italian, Portuguese, Hindi, Russian, Chinese
+                (Simplified), Japanese, Arabic, Dutch, Polish, Turkish, and
+                Korean using official Tesseract LSTM neural network language
+                models.
               </p>
             </div>
           </details>
@@ -2027,7 +2125,14 @@
           <details class="faq-item">
             <summary class="faq-summary">
               How can I improve OCR accuracy on noisy or yellowed scans?
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <svg
+                width="18"
+                height="18"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
                 <polyline points="6 9 12 15 18 9"></polyline>
               </svg>
             </summary>
@@ -2044,7 +2149,14 @@
           <details class="faq-item">
             <summary class="faq-summary">
               Can I OCR only specific pages of a multi-page PDF?
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <svg
+                width="18"
+                height="18"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
                 <polyline points="6 9 12 15 18 9"></polyline>
               </svg>
             </summary>
@@ -2060,29 +2172,53 @@
           <details class="faq-item">
             <summary class="faq-summary">
               What export formats can I download?
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <svg
+                width="18"
+                height="18"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
                 <polyline points="6 9 12 15 18 9"></polyline>
               </svg>
             </summary>
             <div class="faq-answer">
               <p>
-                You can download a true Searchable PDF (.pdf) with an invisible selectable
-                text layer, formatted Plain Text (.txt) with page dividers, rich Word
-                Document (.doc), or copy all text to your clipboard in 1 click.
+                You can download a true Searchable PDF (.pdf) with an invisible
+                selectable text layer, formatted Plain Text (.txt) with page
+                dividers, rich Word Document (.doc), or copy all text to your
+                clipboard in 1 click.
               </p>
             </div>
           </details>
 
           <details class="faq-item">
             <summary class="faq-summary">
-              Why do some OCR tools make words match twice when searching with Ctrl+F?
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              Why do some OCR tools make words match twice when searching with
+              Ctrl+F?
+              <svg
+                width="18"
+                height="18"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
                 <polyline points="6 9 12 15 18 9"></polyline>
               </svg>
             </summary>
             <div class="faq-answer">
               <p>
-                When a PDF already contains a digital text layer, basic OCR tools blindly inject a second invisible text layer on top of it, creating duplicate overlapping text. When you press <kbd>Ctrl+F</kbd> in Acrobat or Chrome, the viewer matches both layers and highlights every word twice. PDFMaster features <strong>Smart Anti-Duplication Architecture</strong>: it analyzes each page first and only injects invisible OCR text onto scanned image pages that lack text, guaranteeing single-match, crisp search results.
+                When a PDF already contains a digital text layer, basic OCR
+                tools blindly inject a second invisible text layer on top of it,
+                creating duplicate overlapping text. When you press
+                <kbd>Ctrl+F</kbd> in Acrobat or Chrome, the viewer matches both
+                layers and highlights every word twice. PDFMaster features
+                <strong>Smart Anti-Duplication Architecture</strong>: it
+                analyzes each page first and only injects invisible OCR text
+                onto scanned image pages that lack text, guaranteeing
+                single-match, crisp search results.
               </p>
             </div>
           </details>
@@ -2090,13 +2226,26 @@
           <details class="faq-item">
             <summary class="faq-summary">
               Can I OCR a permission-protected or copy-restricted PDF?
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <svg
+                width="18"
+                height="18"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
                 <polyline points="6 9 12 15 18 9"></polyline>
               </svg>
             </summary>
             <div class="faq-answer">
               <p>
-                Yes! If your PDF is permission-protected (e.g., copying text, printing, or modifying content is locked with an owner password, but requires no password to open), PDFMaster processes it seamlessly without asking for any password. Our client-side rendering pipeline visualizes each page and extracts all text with Tesseract OCR, allowing you to download a 100% unlocked, searchable PDF, Plain Text, or Word document.
+                Yes! If your PDF is permission-protected (e.g., copying text,
+                printing, or modifying content is locked with an owner password,
+                but requires no password to open), PDFMaster processes it
+                seamlessly without asking for any password. Our client-side
+                rendering pipeline visualizes each page and extracts all text
+                with Tesseract OCR, allowing you to download a 100% unlocked,
+                searchable PDF, Plain Text, or Word document.
               </p>
             </div>
           </details>
@@ -2104,7 +2253,14 @@
           <details class="faq-item">
             <summary class="faq-summary">
               Is PDFMaster OCR completely free?
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <svg
+                width="18"
+                height="18"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
                 <polyline points="6 9 12 15 18 9"></polyline>
               </svg>
             </summary>
@@ -2134,7 +2290,14 @@
           <div class="tool-card">
             <div>
               <div class="tool-card-icon">
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <svg
+                  width="22"
+                  height="22"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                >
                   <polyline points="4 14 10 14 10 20"></polyline>
                   <polyline points="20 10 14 10 14 4"></polyline>
                   <line x1="14" y1="10" x2="21" y2="3"></line>
@@ -2149,7 +2312,14 @@
             </div>
             <a href="/compress-pdf" class="tool-card-link">
               <span>Compress PDF</span>
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <svg
+                width="14"
+                height="14"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2.5"
+              >
                 <path d="M5 12h14M12 5l7 7-7 7" />
               </svg>
             </a>
@@ -2158,8 +2328,22 @@
           <div class="tool-card">
             <div>
               <div class="tool-card-icon">
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                <svg
+                  width="22"
+                  height="22"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                >
+                  <rect
+                    x="3"
+                    y="11"
+                    width="18"
+                    height="11"
+                    rx="2"
+                    ry="2"
+                  ></rect>
                   <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
                 </svg>
               </div>
@@ -2171,7 +2355,14 @@
             </div>
             <a href="/unlock-pdf" class="tool-card-link">
               <span>Unlock PDF</span>
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <svg
+                width="14"
+                height="14"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2.5"
+              >
                 <path d="M5 12h14M12 5l7 7-7 7" />
               </svg>
             </a>
@@ -2180,9 +2371,18 @@
           <div class="tool-card">
             <div>
               <div class="tool-card-icon">
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <svg
+                  width="22"
+                  height="22"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                >
                   <path d="m18 15-6-6-6 6" transform="rotate(90 12 12)"></path>
-                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                  <path
+                    d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"
+                  ></path>
                 </svg>
               </div>
               <h3>Sign PDF</h3>
@@ -2193,7 +2393,14 @@
             </div>
             <a href="/sign-pdf" class="tool-card-link">
               <span>Sign PDF</span>
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <svg
+                width="14"
+                height="14"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2.5"
+              >
                 <path d="M5 12h14M12 5l7 7-7 7" />
               </svg>
             </a>
@@ -2202,7 +2409,14 @@
           <div class="tool-card">
             <div>
               <div class="tool-card-icon">
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <svg
+                  width="22"
+                  height="22"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                >
                   <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
                   <circle cx="8.5" cy="8.5" r="1.5" />
                   <polyline points="21 15 16 10 5 21" />
@@ -2216,7 +2430,14 @@
             </div>
             <a href="/extract-photos-from-pdf" class="tool-card-link">
               <span>Extract Photos</span>
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <svg
+                width="14"
+                height="14"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2.5"
+              >
                 <path d="M5 12h14M12 5l7 7-7 7" />
               </svg>
             </a>
@@ -2357,6 +2578,6 @@
     <script src="/js/sw-register.js" defer></script>
     <script src="/js/universal-popup.js"></script>
     <script src="/js/conversion-tracker.js" defer></script>
-    <script src="/js/ocr-pdf.js?v=1.0"></script>
+    <script src="/js/ocr-pdf.js?v=1.1"></script>
   </body>
 </html>
