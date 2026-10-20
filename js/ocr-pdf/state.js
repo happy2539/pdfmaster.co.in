@@ -88,7 +88,6 @@
     DOM.generatePdfCheck = document.getElementById("generatePdfCheck");
 
     DOM.layerHandlingGroup = document.getElementById("layerHandlingGroup");
-    DOM.detectedLayerBadge = document.getElementById("detectedLayerBadge");
     DOM.layerModeSmart = document.getElementById("layerModeSmart");
     DOM.layerModeReplace = document.getElementById("layerModeReplace");
     DOM.radioCardSmartLayer = document.getElementById("radioCardSmartLayer");
@@ -102,16 +101,6 @@
     DOM.customRangeWrap = document.getElementById("customRangeWrap");
     DOM.customRangeInput = document.getElementById("customRangeInput");
     DOM.customRangeHint = document.getElementById("customRangeHint");
-
-    DOM.shieldIcon = document.getElementById("shieldIcon");
-    DOM.shieldStatus = document.getElementById("shieldStatus");
-    DOM.specDocType = document.getElementById("specDocType");
-    DOM.specTextLayer = document.getElementById("specTextLayer");
-    DOM.specLang = document.getElementById("specLang");
-    DOM.specMode = document.getElementById("specMode");
-    DOM.specPages = document.getElementById("specPages");
-    DOM.specPdfMode = document.getElementById("specPdfMode");
-    DOM.specRam = document.getElementById("specRam");
 
     DOM.actionBar = document.getElementById("actionBar");
     DOM.actionBarStatus = document.getElementById("actionBarStatus");
@@ -147,8 +136,6 @@
     DOM.ocrTextArea = document.getElementById("ocrTextArea");
     DOM.wordCountBadge = document.getElementById("wordCountBadge");
     DOM.charCountBadge = document.getElementById("charCountBadge");
-    DOM.copyTextBtn = document.getElementById("copyTextBtn");
-    DOM.clearTextBtn = document.getElementById("clearTextBtn");
     DOM.fontDecBtn = document.getElementById("fontDecBtn");
     DOM.fontIncBtn = document.getElementById("fontIncBtn");
 

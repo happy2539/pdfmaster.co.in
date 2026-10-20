@@ -35,9 +35,6 @@
     DOM.progressHud.style.display = "block";
     DOM.ocrStudio.style.display = "none";
     DOM.cancelOcrBtn.disabled = false;
-    if (DOM.shieldIcon) DOM.shieldIcon.classList.add("is-active-scan");
-    if (DOM.shieldStatus)
-      DOM.shieldStatus.textContent = "Recognizing Characters…";
 
     updateProgress(0, "Analyzing document text layers…", 0);
 
@@ -310,8 +307,6 @@
       }
       DOM.progressHud.style.display = "none";
       DOM.actionBar.style.display = "flex";
-      if (DOM.shieldIcon) DOM.shieldIcon.classList.remove("is-active-scan");
-      if (DOM.shieldStatus) DOM.shieldStatus.textContent = "OCR Ready";
     } finally {
       state.isProcessing = false;
     }

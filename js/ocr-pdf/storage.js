@@ -241,10 +241,6 @@
         if (session.lang && DOM.ocrLangSelect) {
           DOM.ocrLangSelect.value = session.lang;
           state.options.lang = session.lang;
-          const selectedText =
-            DOM.ocrLangSelect.options[DOM.ocrLangSelect.selectedIndex]?.text;
-          if (DOM.specLang && selectedText)
-            DOM.specLang.textContent = selectedText.split(" ")[0];
         }
         if (session.mode) {
           state.options.mode = session.mode;

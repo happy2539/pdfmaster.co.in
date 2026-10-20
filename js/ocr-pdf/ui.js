@@ -262,9 +262,6 @@
       }
 
       DOM.pageCountBadge.textContent = `${state.totalPages} ${state.totalPages === 1 ? "page" : "pages"}`;
-      if (DOM.specPages) {
-        DOM.specPages.textContent = `${state.totalPages} ${state.totalPages === 1 ? "Page" : "Pages"}`;
-      }
 
       // Pre-Flight Digital Text Layer Analysis
       DOM.actionBarStatus.textContent = "Analyzing document text layers…";
@@ -293,42 +290,6 @@
       }
 
       state.documentHasDigitalText = digitalPagesFound > 0;
-
-      // Update Spec HUD & Badge
-      if (DOM.detectedLayerBadge) {
-        DOM.detectedLayerBadge.style.display = "inline-block";
-        if (digitalPagesFound === 0) {
-          DOM.detectedLayerBadge.textContent = "Pure Image Scan";
-          DOM.detectedLayerBadge.style.background = "rgba(16, 185, 129, 0.15)";
-          DOM.detectedLayerBadge.style.color = "#10b981";
-        } else if (digitalPagesFound === checkLimit) {
-          DOM.detectedLayerBadge.textContent = "Digital Text Detected";
-          DOM.detectedLayerBadge.style.background = "rgba(59, 130, 246, 0.15)";
-          DOM.detectedLayerBadge.style.color = "#3b82f6";
-        } else {
-          DOM.detectedLayerBadge.textContent = `Mixed (${digitalPagesFound} Digital)`;
-          DOM.detectedLayerBadge.style.background = "rgba(245, 158, 11, 0.15)";
-          DOM.detectedLayerBadge.style.color = "#f59e0b";
-        }
-      }
-
-      if (DOM.specDocType) {
-        DOM.specDocType.textContent =
-          digitalPagesFound === 0
-            ? "Pure Image Scan"
-            : digitalPagesFound === checkLimit
-              ? "Digital Document"
-              : `Mixed (${digitalPagesFound} Digital)`;
-      }
-
-      if (DOM.specTextLayer) {
-        DOM.specTextLayer.textContent =
-          digitalPagesFound === 0
-            ? "None (Needs OCR)"
-            : "Pre-existing (Protected)";
-        DOM.specTextLayer.style.color =
-          digitalPagesFound === 0 ? "var(--shield-green)" : "#3b82f6";
-      }
 
       updateSelectedPages();
       DOM.actionBarStatus.textContent = "Ready to recognize text from document";
@@ -375,18 +336,12 @@
       OCR.clearSessionFromDB();
     }
 
-    if (DOM.detectedLayerBadge) DOM.detectedLayerBadge.style.display = "none";
-    if (DOM.specDocType) DOM.specDocType.textContent = "Scanning…";
-    if (DOM.specTextLayer) DOM.specTextLayer.textContent = "Auto-detecting";
-
     if (DOM.fileInput) DOM.fileInput.value = "";
     if (DOM.uploadZone) DOM.uploadZone.style.display = "block";
     if (DOM.workspace) DOM.workspace.style.display = "none";
     if (DOM.ocrStudio) DOM.ocrStudio.style.display = "none";
     if (DOM.progressHud) DOM.progressHud.style.display = "none";
     if (DOM.actionBar) DOM.actionBar.style.display = "none";
-    if (DOM.shieldIcon) DOM.shieldIcon.classList.remove("is-active-scan");
-    if (DOM.shieldStatus) DOM.shieldStatus.textContent = "OCR Engine Ready";
   }
 
   /* ==========================================================================
@@ -397,8 +352,6 @@
     if (DOM.ocrLangSelect) {
       DOM.ocrLangSelect.addEventListener("change", (e) => {
         state.options.lang = e.target.value;
-        const selectedText = e.target.options[e.target.selectedIndex].text;
-        if (DOM.specLang) DOM.specLang.textContent = selectedText.split(" ")[0];
         if (OCR.prewarmTesseractEngine)
           OCR.prewarmTesseractEngine(state.options.lang, state.options.mode);
         if (OCR.scheduleDBSave) OCR.scheduleDBSave();
@@ -411,8 +364,6 @@
         state.options.mode = "fast";
         DOM.radioCardFast.classList.add("is-active");
         DOM.radioCardAccurate.classList.remove("is-active");
-        if (DOM.specMode) DOM.specMode.textContent = "Fast Stream (SIMD)";
-        if (DOM.specRam) DOM.specRam.textContent = "< 35 MB (Single-buffer)";
         if (OCR.prewarmTesseractEngine)
           OCR.prewarmTesseractEngine(state.options.lang, "fast");
         if (OCR.scheduleDBSave) OCR.scheduleDBSave();
@@ -422,9 +373,6 @@
         state.options.mode = "accurate";
         DOM.radioCardFast.classList.remove("is-active");
         DOM.radioCardAccurate.classList.add("is-active");
-        if (DOM.specMode)
-          DOM.specMode.textContent = "High Definition (300 DPI)";
-        if (DOM.specRam) DOM.specRam.textContent = "< 50 MB (Single-buffer)";
         if (OCR.prewarmTesseractEngine)
           OCR.prewarmTesseractEngine(state.options.lang, "accurate");
         if (OCR.scheduleDBSave) OCR.scheduleDBSave();
@@ -443,14 +391,6 @@
     if (DOM.generatePdfCheck) {
       DOM.generatePdfCheck.addEventListener("change", (e) => {
         state.options.generatePdf = e.target.checked;
-        if (DOM.specPdfMode) {
-          DOM.specPdfMode.textContent = e.target.checked
-            ? "Enabled (Sandwich)"
-            : "Disabled";
-          DOM.specPdfMode.style.color = e.target.checked
-            ? "var(--shield-green)"
-            : "var(--text-3)";
-        }
         if (OCR.scheduleDBSave) OCR.scheduleDBSave();
       });
     }
@@ -593,9 +533,6 @@
       }
     }
 
-    if (DOM.specPages) {
-      DOM.specPages.textContent = `${state.selectedPages.length} of ${state.totalPages} ${state.totalPages === 1 ? "Page" : "Pages"}`;
-    }
     DOM.startOcrBtn.disabled = state.selectedPages.length === 0;
   }
 

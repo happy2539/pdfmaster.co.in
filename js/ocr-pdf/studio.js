@@ -19,8 +19,6 @@
   function finishOcrStudio() {
     DOM.progressHud.style.display = "none";
     DOM.ocrStudio.style.display = "block";
-    if (DOM.shieldIcon) DOM.shieldIcon.classList.remove("is-active-scan");
-    if (DOM.shieldStatus) DOM.shieldStatus.textContent = "OCR Completed";
 
     // Summary Metrics
     const totalWords = state.pageResults.reduce(
@@ -302,35 +300,41 @@
   }
 
   async function copyCurrentText() {
-    const text = DOM.ocrTextArea.value;
+    const text = DOM.ocrTextArea ? DOM.ocrTextArea.value : "";
     if (!text) return;
 
     try {
       await navigator.clipboard.writeText(text);
-      const originalText = DOM.copyTextBtn.innerHTML;
-      DOM.copyTextBtn.innerHTML = `
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-          <polyline points="20 6 9 17 4 12"></polyline>
-        </svg> Copied!
-      `;
-      DOM.copyAllBtn.innerHTML = `
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-          <polyline points="20 6 9 17 4 12"></polyline>
-        </svg> Copied to Clipboard!
-      `;
-      setTimeout(() => {
-        DOM.copyTextBtn.innerHTML = originalText;
-        DOM.copyAllBtn.innerHTML = `
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
-            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
-          </svg> Copy All Text
+      const originalCopyText = DOM.copyTextBtn ? DOM.copyTextBtn.innerHTML : null;
+      const originalCopyAll = DOM.copyAllBtn ? DOM.copyAllBtn.innerHTML : null;
+      if (DOM.copyTextBtn) {
+        DOM.copyTextBtn.innerHTML = `
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <polyline points="20 6 9 17 4 12"></polyline>
+          </svg> Copied!
         `;
+      }
+      if (DOM.copyAllBtn) {
+        DOM.copyAllBtn.innerHTML = `
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <polyline points="20 6 9 17 4 12"></polyline>
+          </svg> Copied to Clipboard!
+        `;
+      }
+      setTimeout(() => {
+        if (DOM.copyTextBtn && originalCopyText !== null) {
+          DOM.copyTextBtn.innerHTML = originalCopyText;
+        }
+        if (DOM.copyAllBtn && originalCopyAll !== null) {
+          DOM.copyAllBtn.innerHTML = originalCopyAll;
+        }
       }, 2000);
     } catch (e) {
       console.warn("Clipboard copy failed, using fallback:", e);
-      DOM.ocrTextArea.select();
-      document.execCommand("copy");
+      if (DOM.ocrTextArea) {
+        DOM.ocrTextArea.select();
+        document.execCommand("copy");
+      }
     }
   }
 
