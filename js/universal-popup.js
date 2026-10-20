@@ -511,6 +511,13 @@
           res
             .then(() => {
               updateDownloadSuccessState();
+      try {
+        window.dispatchEvent(
+          new CustomEvent("pdfmaster:file-downloaded", {
+            detail: { fileName: currentOptions.fileName || "download" },
+          }),
+        );
+      } catch (_) {}
             })
             .catch((err) => {
               console.error("PDFMasterPopup onDownload error:", err);
@@ -525,6 +532,13 @@
         console.error("PDFMasterPopup onDownload sync error:", err);
       }
       updateDownloadSuccessState();
+      try {
+        window.dispatchEvent(
+          new CustomEvent("pdfmaster:file-downloaded", {
+            detail: { fileName: currentOptions.fileName || "download" },
+          }),
+        );
+      } catch (_) {}
       return;
     }
 
@@ -566,6 +580,13 @@
       }
 
       updateDownloadSuccessState();
+      try {
+        window.dispatchEvent(
+          new CustomEvent("pdfmaster:file-downloaded", {
+            detail: { fileName: currentOptions.fileName || "download" },
+          }),
+        );
+      } catch (_) {}
 
       // Toast notification if present
       if (typeof window.showToast === "function") {

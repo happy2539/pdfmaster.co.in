@@ -284,10 +284,12 @@ function handleFileSelect(file) {
 
   uploadZone.classList.add("has-file");
   uploadZone.querySelector("h3").textContent = file.name;
+  uploadZone.querySelector("h3").title = file.name;
   uploadZone.querySelector("p").textContent =
     fmtSize(file.size) + " — Loading…";
 
   fileNameEl.textContent = file.name + " · " + fmtSize(file.size);
+  fileNameEl.title = file.name;
   fileInfo.classList.add("show");
 
   const reader = new FileReader();
@@ -684,6 +686,19 @@ downloadAllBtn.addEventListener("click", async () => {
 });
 
 // ─── Helpers ──────────────────────────────────────────────────────────────
+function formatShortFileName(name, maxLen = 22) {
+  if (!name || typeof name !== "string") return name || "";
+  if (name.length <= maxLen) return name;
+  const extIdx = name.lastIndexOf(".");
+  const ext = extIdx !== -1 ? name.slice(extIdx) : "";
+  const base = extIdx !== -1 ? name.slice(0, extIdx) : name;
+  const avail = maxLen - ext.length - 1;
+  if (avail <= 4) return name.slice(0, maxLen - 1) + "…";
+  const start = Math.ceil(avail / 2);
+  const end = Math.floor(avail / 2);
+  return base.slice(0, start) + "…" + base.slice(-end) + ext;
+}
+
 function baseName() {
   return pdfFile ? pdfFile.name.replace(/\.pdf$/i, "") : "output";
 }
@@ -695,6 +710,7 @@ function triggerDownload(url, name) {
   a.click();
   document.body.removeChild(a);
   if (url.startsWith("blob:")) setTimeout(() => URL.revokeObjectURL(url), 2000);
+  clearSessionFromDB();
 }
 
 // ─── Reset ───────────────────────────────────────────────────────────────
@@ -849,10 +865,12 @@ async function loadSessionFromDB(isManual = false) {
 
     uploadZone.classList.add("has-file");
     uploadZone.querySelector("h3").textContent = pdfFile.name;
+    uploadZone.querySelector("h3").title = pdfFile.name;
     uploadZone.querySelector("p").textContent =
       fmtSize(pdfFile.size) + " — Restoring…";
 
     fileNameEl.textContent = pdfFile.name + " · " + fmtSize(pdfFile.size);
+    fileNameEl.title = pdfFile.name;
     fileInfo.classList.add("show");
 
     if (session) {
@@ -897,7 +915,7 @@ async function loadSessionFromDB(isManual = false) {
 
     if (isManual) {
       showToast(
-        `Restored '${pdfFile.name}' and conversion options!`,
+        `Restored '${formatShortFileName(pdfFile.name, 22)}' and conversion options!`,
         "success",
         4000,
       );
@@ -938,9 +956,11 @@ async function checkStoredSessionAvailable(notifyOnFound = false) {
     updateRecoveryBadge(hasData);
 
     if (hasData && notifyOnFound && !currentPdfBytes) {
-      const name = data.fileName ? `'${data.fileName}'` : "Previous PDF";
+      const shortName = data.fileName
+        ? `'${formatShortFileName(data.fileName, 22)}'`
+        : "Previous PDF";
       showToast(
-        `Last session (${name}) is available. Click to restore.`,
+        `Last session (${shortName}) is available. Click to restore.`,
         "info",
         8000,
         () => loadSessionFromDB(true),
@@ -968,6 +988,11 @@ if (recoveryBtn) {
     loadSessionFromDB(true);
   });
 }
+
+// Listen for downloads from universal popup
+window.addEventListener("pdfmaster:file-downloaded", () => {
+  clearSessionFromDB();
+});
 
 // Check stored session on startup
 checkStoredSessionAvailable(true);
