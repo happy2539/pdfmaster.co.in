@@ -8,7 +8,9 @@
   "use strict";
 
   const STORAGE_KEY = "pdfmaster_festival_theme";
-  const WORKER_ENDPOINT = "https://admin-tracking-pdfmaster.guptamrhappy.workers.dev/api/theme";
+  const WORKER_ENDPOINT =
+    (typeof window !== "undefined" && window.PDFMASTER_THEME_ENDPOINT) ||
+    "https://tracking.guptamrhappy.workers.dev/api/theme";
 
   // Rich Vector Artwork: Dancing Terracotta Diya & Sparkling Diwali Anar Cracker
   const FESTIVAL_ASSETS = {
