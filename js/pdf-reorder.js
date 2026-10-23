@@ -48,11 +48,22 @@ const bottomDownloadBtn = document.getElementById("bottomDownloadBtn");
 //  THEME
 // =============================================
 const themeToggle = document.getElementById("themeToggle");
+const sunIcon = document.getElementById("sunIcon");
+const moonIcon = document.getElementById("moonIcon");
 const html = document.documentElement;
 
 function applyTheme(theme) {
   html.setAttribute("data-theme", theme);
   localStorage.setItem("pdfmaster-theme", theme);
+  if (sunIcon && moonIcon) {
+    if (theme === "dark") {
+      sunIcon.style.display = "block";
+      moonIcon.style.display = "none";
+    } else {
+      sunIcon.style.display = "none";
+      moonIcon.style.display = "block";
+    }
+  }
 }
 
 (function initTheme() {
@@ -63,46 +74,46 @@ function applyTheme(theme) {
   applyTheme(saved || preferred);
 })();
 
-themeToggle.addEventListener("click", () => {
-  applyTheme(html.getAttribute("data-theme") === "dark" ? "light" : "dark");
-});
+if (themeToggle) {
+  themeToggle.addEventListener("click", () => {
+    applyTheme(html.getAttribute("data-theme") === "dark" ? "light" : "dark");
+  });
+}
 
 // =============================================
-//  HAMBURGER / DRAWER
+//  HAMBURGER / SIDE MENU
 // =============================================
 const hamburgerBtn = document.getElementById("hamburgerBtn");
-const navDrawer = document.getElementById("navDrawer");
-const drawerOverlay = document.getElementById("drawerOverlay");
+const sideMenu = document.getElementById("sideMenu");
+const sideOverlay = document.getElementById("sideOverlay");
+const closeMenuBtn = document.getElementById("closeMenuBtn");
 
-function openDrawer() {
-  hamburgerBtn.classList.add("open");
-  navDrawer.classList.add("open");
-  drawerOverlay.classList.add("open");
-  hamburgerBtn.setAttribute("aria-expanded", "true");
-  drawerOverlay.removeAttribute("aria-hidden");
+if (hamburgerBtn && sideMenu && sideOverlay) {
+  const openSide = () => {
+    sideMenu.classList.add("active");
+    sideOverlay.classList.add("active");
+  };
+
+  const closeSide = () => {
+    sideMenu.classList.remove("active");
+    sideOverlay.classList.remove("active");
+  };
+
+  hamburgerBtn.addEventListener("click", () => {
+    sideMenu.classList.contains("active") ? closeSide() : openSide();
+  });
+
+  if (closeMenuBtn) closeMenuBtn.addEventListener("click", closeSide);
+  sideOverlay.addEventListener("click", closeSide);
+
+  sideMenu.querySelectorAll(".side-nav a").forEach((el) => {
+    el.addEventListener("click", closeSide);
+  });
+
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") closeSide();
+  });
 }
-
-function closeDrawer() {
-  hamburgerBtn.classList.remove("open");
-  navDrawer.classList.remove("open");
-  drawerOverlay.classList.remove("open");
-  hamburgerBtn.setAttribute("aria-expanded", "false");
-  drawerOverlay.setAttribute("aria-hidden", "true");
-}
-
-hamburgerBtn.addEventListener("click", () => {
-  navDrawer.classList.contains("open") ? closeDrawer() : openDrawer();
-});
-
-drawerOverlay.addEventListener("click", closeDrawer);
-
-document.querySelectorAll("[data-close-drawer]").forEach((el) => {
-  el.addEventListener("click", closeDrawer);
-});
-
-document.addEventListener("keydown", (e) => {
-  if (e.key === "Escape") closeDrawer();
-});
 
 // =============================================
 //  BACK TO TOP

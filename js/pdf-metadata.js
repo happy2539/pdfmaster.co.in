@@ -16,7 +16,7 @@ let isOffloaded = false;
 const LOW_RAM_THRESHOLD = 25 * 1024 * 1024; // 25 MB threshold for Low-RAM mode
 
 // ── Theme ─────────────────────────────────────────────
-const btn = document.getElementById("themeBtn");
+const themeToggle = document.getElementById("themeToggle") || document.getElementById("themeBtn");
 const sunIcon = document.getElementById("sunIcon");
 const moonIcon = document.getElementById("moonIcon");
 const root = document.documentElement;
@@ -25,50 +25,43 @@ const applyTheme = (t) => {
   root.setAttribute("data-theme", t);
   localStorage.setItem("pdfm-theme", t);
   if (t === "dark") {
-    sunIcon.style.display = "block";
-    moonIcon.style.display = "none";
+    if (sunIcon) sunIcon.style.display = "block";
+    if (moonIcon) moonIcon.style.display = "none";
   } else {
-    sunIcon.style.display = "none";
-    moonIcon.style.display = "block";
+    if (sunIcon) sunIcon.style.display = "none";
+    if (moonIcon) moonIcon.style.display = "block";
   }
 };
 applyTheme(localStorage.getItem("pdfm-theme") || "light");
-btn.addEventListener("click", () => {
-  const next = root.getAttribute("data-theme") === "dark" ? "light" : "dark";
-  applyTheme(next);
-});
+if (themeToggle) {
+  themeToggle.addEventListener("click", () => {
+    const next = root.getAttribute("data-theme") === "dark" ? "light" : "dark";
+    applyTheme(next);
+  });
+}
 
-// ── Hamburger & Drawer ────────────────────────────────
+// ── Hamburger & Side Menu ─────────────────────────────
 const hamburgerBtn = document.getElementById("hamburgerBtn");
-const drawerOverlay = document.getElementById("drawerOverlay");
-const navDrawer = document.getElementById("navDrawer");
-const drawerClose = document.getElementById("drawerClose");
+const sideMenu = document.getElementById("sideMenu");
+const sideOverlay = document.getElementById("sideOverlay");
+const closeMenuBtn = document.getElementById("closeMenuBtn");
 
-const openDrawer = () => {
-  navDrawer.classList.add("open");
-  drawerOverlay.classList.add("open");
-  hamburgerBtn.classList.add("active");
-  hamburgerBtn.setAttribute("aria-expanded", "true");
-};
-const closeDrawer = () => {
-  navDrawer.classList.remove("open");
-  drawerOverlay.classList.remove("open");
-  hamburgerBtn.classList.remove("active");
-  hamburgerBtn.setAttribute("aria-expanded", "false");
-};
-hamburgerBtn.addEventListener("click", openDrawer);
-drawerClose.addEventListener("click", closeDrawer);
-drawerOverlay.addEventListener("click", closeDrawer);
+if (hamburgerBtn && sideMenu && sideOverlay) {
+  hamburgerBtn.addEventListener("click", () => {
+    sideMenu.classList.add("active");
+    sideOverlay.classList.add("active");
+  });
 
-function navTo(id) {
-  closeDrawer();
-  setTimeout(
-    () =>
-      document
-        .getElementById(id)
-        ?.scrollIntoView({ behavior: "smooth", block: "start" }),
-    200,
-  );
+  const closeSide = () => {
+    sideMenu.classList.remove("active");
+    sideOverlay.classList.remove("active");
+  };
+
+  if (closeMenuBtn) closeMenuBtn.addEventListener("click", closeSide);
+  sideOverlay.addEventListener("click", closeSide);
+  sideMenu.querySelectorAll(".side-nav a").forEach((a) => {
+    a.addEventListener("click", closeSide);
+  });
 }
 
 // ── Tabs ──────────────────────────────────────────────
