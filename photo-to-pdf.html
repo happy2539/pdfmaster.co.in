@@ -67,6 +67,26 @@
 
     <!-- CSS -->
     <link rel="stylesheet" href="css/photo-to-pdf.css" />
+    <link rel="stylesheet" href="css/festival-theme.css" />
+
+    <!-- Synchronous zero-CLS festival theme loader -->
+    <script>
+      (function() {
+        try {
+          var t = localStorage.getItem("pdfmaster_festival_theme");
+          if (t) {
+            var p = JSON.parse(t);
+            if (p && p.active && p.theme && p.theme !== "none") {
+              document.documentElement.setAttribute("data-festival", p.theme);
+            }
+            var userToggled = sessionStorage.getItem("pdfmaster_user_toggled_theme");
+            if (!userToggled && p && (p.initialThemeMode === "dark" || p.initialThemeMode === "light")) {
+              document.documentElement.setAttribute("data-theme", p.initialThemeMode);
+            }
+          }
+        } catch(e) {}
+      })();
+    </script>
 
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="default" />
@@ -191,14 +211,38 @@
       ></iframe
     ></noscript>
     <!-- End Google Tag Manager (noscript) -->
+    <!-- Cascading Falling Sparkles Canvas Layer -->
+    <canvas id="festivalCanvas" class="festival-canvas" aria-hidden="true"></canvas>
+
     <!-- ════════════════════════ NAVBAR ════════════════════════ -->
     <header>
+      <!-- Shimmering Diwali Toran Garland Border along bottom of Navbar -->
+      <div class="diwali-toran-border" id="diwaliToranBorder" aria-hidden="true"></div>
+
       <nav class="container">
-        <a href="https://pdfmaster.co.in" class="nav-logo">
-          <img src="assets/apple-touch-icon.png" alt="PDFMaster" />
-          <span class="logo-text">PDF<span>Master</span></span>
-        </a>
+        <div class="nav-brand-wrap">
+          <!-- Animated Dancing Diya on Left Side of Navbar -->
+          <div class="nav-diya-left" id="navDiyaLeft" aria-hidden="true" title="Happy Diwali"></div>
+
+          <a href="https://pdfmaster.co.in" class="nav-logo" aria-label="PDFMaster Home">
+            <img src="assets/apple-touch-icon.png" alt="PDFMaster" width="36" height="36" />
+            <span class="logo-text">PDF<span>Master</span></span>
+          </a>
+
+          <!-- In-Nav Diwali Festive Badge -->
+          <div class="nav-diwali-pill" id="navDiwaliPill" aria-label="Happy Diwali">
+            <span class="diwali-badge-diya">🪔</span>
+            <span class="diwali-badge-text"><span class="badge-prefix">Shubh </span>Deepawali</span>
+          </div>
+        </div>
+
         <div class="nav-right">
+          <!-- Animated Diwali Cracker (Anar Sparkler Fountain) with shooting sparks -->
+          <div class="nav-cracker-slot" id="navCrackerSlot" aria-hidden="true" title="Diwali Sparkler Cracker ✨ Click to burst sparks!"></div>
+
+          <!-- Animated Standing Diya on Right Side of Navbar -->
+          <div class="nav-diya-slot" id="navDiyaSlot" aria-hidden="true" title="Happy Diwali"></div>
+
           <!-- Recovery button -->
           <button
             type="button"
@@ -225,6 +269,29 @@
               style="display: none"
             ></span>
           </button>
+
+          <a
+            href="/subscribe"
+            class="theme-toggle"
+            aria-label="Subscribe"
+            title="Subscribe"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="18"
+              height="18"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <rect x="3" y="8" width="18" height="12" rx="2" ry="2"></rect>
+              <line x1="4" y1="10" x2="12" y2="14"></line>
+              <line x1="20" y1="10" x2="12" y2="14"></line>
+            </svg>
+          </a>
 
           <button
             class="theme-toggle"
@@ -264,29 +331,7 @@
               <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
             </svg>
           </button>
-          <a
-            href="/subscribe"
-            class="theme-toggle"
-            aria-label="Subscribe"
-            title="Subscribe"
-            style="margin-right: 8px"
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="18"
-              height="18"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            >
-              <rect x="3" y="8" width="18" height="12" rx="2" ry="2"></rect>
-              <line x1="4" y1="10" x2="12" y2="14"></line>
-              <line x1="20" y1="10" x2="12" y2="14"></line>
-            </svg>
-          </a>
+
           <button
             class="hamburger-btn"
             id="hamburgerBtn"
@@ -2058,5 +2103,6 @@
     <!-- Conversion Analytics Tracker -->
     <script src="/js/conversion-tracker.js" defer></script>
     <script src="js/photo-to-pdf.js"></script>
+    <script src="js/festival-theme.js" defer></script>
   </body>
 </html>

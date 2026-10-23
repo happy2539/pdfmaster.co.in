@@ -378,7 +378,7 @@
       } catch (_) {}
 
       previewConfig.active = true;
-      previewConfig.theme = "diwali";
+      previewConfig.theme = urlParams.get("theme") || previewConfig.theme || "diwali";
       localStorage.setItem(STORAGE_KEY, JSON.stringify(previewConfig));
       applyTheme(previewConfig);
       renderFloatingPreviewBadge();

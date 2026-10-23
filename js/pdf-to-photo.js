@@ -83,19 +83,40 @@ function applyTheme(theme) {
   root.setAttribute("data-theme", theme);
   localStorage.setItem("pdfmaster-theme", theme);
   if (theme === "dark") {
-    sunIcon.style.display = "block";
-    moonIcon.style.display = "none";
+    if (sunIcon) sunIcon.style.display = "block";
+    if (moonIcon) moonIcon.style.display = "none";
   } else {
-    sunIcon.style.display = "none";
-    moonIcon.style.display = "block";
+    if (sunIcon) sunIcon.style.display = "none";
+    if (moonIcon) moonIcon.style.display = "block";
   }
 }
 
-const saved = localStorage.getItem("pdfmaster-theme") || "light";
-applyTheme(saved);
+// Expose globally so festival engine can sync when KV response arrives
+window.PDFMasterApplyTheme = applyTheme;
 
-btn.addEventListener("click", () => {
-  const next = root.getAttribute("data-theme") === "dark" ? "light" : "dark";
+let initialTheme = "light";
+try {
+  const festRaw = localStorage.getItem("pdfmaster_festival_theme");
+  const fest = festRaw ? JSON.parse(festRaw) : null;
+  const userToggled = sessionStorage.getItem("pdfmaster_user_toggled_theme");
+
+  if (!userToggled && fest && (fest.initialThemeMode === "dark" || fest.initialThemeMode === "light")) {
+    initialTheme = fest.initialThemeMode;
+  } else if (userToggled) {
+    initialTheme = localStorage.getItem("pdfmaster-theme") || root.getAttribute("data-theme") || "light";
+  } else {
+    initialTheme = localStorage.getItem("pdfmaster-theme") || root.getAttribute("data-theme") || "light";
+  }
+} catch (_) {
+  initialTheme = localStorage.getItem("pdfmaster-theme") || "light";
+}
+
+applyTheme(initialTheme);
+
+btn?.addEventListener("click", () => {
+  sessionStorage.setItem("pdfmaster_user_toggled_theme", "true");
+  const current = root.getAttribute("data-theme") || "light";
+  const next = current === "dark" ? "light" : "dark";
   applyTheme(next);
 });
 

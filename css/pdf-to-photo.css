@@ -1617,6 +1617,13 @@ footer {
   .container {
     padding: 0 16px;
   }
+  header .container,
+  header nav.container {
+    padding: 0 12px;
+  }
+  .sidebar {
+    max-width: 86vw;
+  }
   .tool-card {
     padding: 20px 16px;
   }
