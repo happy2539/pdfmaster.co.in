@@ -479,7 +479,6 @@ pdfmaster.co.in/
 ├── pdf-viewer.html             # PDF Viewer Page
 ├── watermark-pdf-add.html      # Watermark PDF Page
 ├── about.html                  # About Page
-├── announcements.html          # Announcement Page
 ├── happy-gupta-founder-of-pdfmaster.html       #Founder Page of PDFMaster
 ├── offline.html                #sw utility
 ├── sw.js                       #sw file
@@ -503,7 +502,6 @@ pdfmaster.co.in/
 │   ├── pdf-viewer.css             # CSS PDF Viewer Page
 │   ├── watermark-pdf-add.css      # CSS Watermark PDF Page
 │   ├── about.css                  # CSS About Page
-│   ├── announcements.css          # CSS Announcement Page
 |   ├── happy-gupta-founder-of-pdfmaster.css        #stylesheet
 │   └── 404.css                    # CSS 404 Page
 │
@@ -527,7 +525,6 @@ pdfmaster.co.in/
 │   ├── pdf-viewer.js             # Js PDF Viewer Page
 │   ├── watermark-pdf-add.js      # Js Watermark PDF Page
 │   ├── about.js                  # Js About Page
-│   ├── announcements.js          # Js Announcement Page
 |   ├── happy-gupta-founder-of-pdfmaster.js         #JS file for the founder page
 |   ├── sw-register.js            # Js for the service worker
 │   └── 404.js                    # Js 404 Page
