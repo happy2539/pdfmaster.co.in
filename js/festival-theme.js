@@ -203,9 +203,24 @@
 
   let activeParticleEngine = null;
 
+  // ── Auto-schedule Window Check (Evaluated with client/visitor timestamp) ──
+  function isScheduleActive(config) {
+    if (!config || !config.active) return false;
+    const now = Date.now();
+    if (config.startDate) {
+      const start = new Date(config.startDate).getTime();
+      if (!isNaN(start) && start > now) return false;
+    }
+    if (config.endDate) {
+      const end = new Date(config.endDate).getTime();
+      if (!isNaN(end) && end < now) return false;
+    }
+    return true;
+  }
+
   // ── Render Diwali Theme onto the Navbar ──
   function applyTheme(data) {
-    if (!data || !data.active || !data.theme || data.theme === "none") {
+    if (!data || !data.active || !data.theme || data.theme === "none" || !isScheduleActive(data)) {
       cleanupTheme();
       return;
     }
@@ -329,16 +344,34 @@
       activeParticleEngine.stop();
       activeParticleEngine = null;
     }
+
+    const floatingBadge = document.getElementById("festPreviewFloatingBadge");
+    if (floatingBadge) floatingBadge.remove();
+
+    // Revert forced theme mode if user has not manually toggled
+    const userManuallyToggled = sessionStorage.getItem("pdfmaster_user_toggled_theme");
+    if (!userManuallyToggled) {
+      const normalTheme = localStorage.getItem("pdfmaster-theme") || "light";
+      if (typeof window.PDFMasterApplyTheme === "function") {
+        window.PDFMasterApplyTheme(normalTheme);
+      } else {
+        document.documentElement.setAttribute("data-theme", normalTheme);
+      }
+    }
   }
 
   // ── Floating Badge for Live Preview Mode ──
-  function renderFloatingPreviewBadge() {
+  function renderFloatingPreviewBadge(theme = "diwali") {
     if (document.getElementById("festPreviewFloatingBadge")) return;
+    const isDefault = (theme === "none" || theme === "default");
+    const label = isDefault 
+      ? `<span>⚡ <strong>Standard Clean Navbar Preview Active</strong> (Zero-Festival Mode)</span>`
+      : `<span>🪔 <strong>Diwali Navbar Preview Active</strong> (Click Cracker for Sparks!)</span>`;
     const badge = document.createElement("div");
     badge.id = "festPreviewFloatingBadge";
     badge.innerHTML = `
       <div style="position: fixed; bottom: 18px; right: 18px; z-index: 99999; background: #120a0e; color: #ffffff; padding: 9px 16px; border-radius: 999px; box-shadow: 0 8px 25px rgba(255,145,0,0.35); display: flex; align-items: center; gap: 10px; font-size: 0.82rem; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; border: 1.5px solid rgba(255,179,0,0.6);">
-        <span>🪔 <strong>Diwali Navbar Preview Active</strong> (Click Cracker for Sparks!)</span>
+        ${label}
         <button id="festExitPreviewBtn" style="background: rgba(255,179,0,0.25); border: 1px solid rgba(255,179,0,0.5); color: #ffeb3b; padding: 3px 10px; border-radius: 6px; cursor: pointer; font-size: 0.74rem; font-weight: 700; transition: all 0.2s;">Exit</button>
       </div>
     `;
@@ -379,47 +412,51 @@
         }
       } catch (_) {}
 
-      previewConfig.active = true;
-      previewConfig.theme = urlParams.get("theme") || previewConfig.theme || "diwali";
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(previewConfig));
+      const themeParam = urlParams.get("theme");
+      if (themeParam === "none" || themeParam === "default" || previewConfig.theme === "none" || previewConfig.active === false) {
+        previewConfig.active = false;
+        previewConfig.theme = "none";
+      } else {
+        previewConfig.active = true;
+        previewConfig.theme = themeParam || previewConfig.theme || "diwali";
+      }
+
+      // Preview mode runs in-memory: NEVER mutates persistent localStorage
       applyTheme(previewConfig);
-      renderFloatingPreviewBadge();
-      return; // Do NOT let the background worker fetch overwrite the preview!
+      renderFloatingPreviewBadge(previewConfig.theme);
+      return; // Do NOT let background fetch overwrite active preview
     }
 
-    // 2. Check localStorage (instant render from local draft or cached theme)
+    // 2. Check localStorage (instant render for zero-CLS)
     let localData = null;
     try {
       const cached = localStorage.getItem(STORAGE_KEY);
       if (cached) {
         localData = JSON.parse(cached);
-        if (localData && localData.active && localData.theme && localData.theme !== "none") {
+        if (localData && localData.active && localData.theme && localData.theme !== "none" && isScheduleActive(localData)) {
           applyTheme(localData);
+        } else {
+          cleanupTheme();
         }
       }
     } catch (_) {}
 
-    // 3. Background Fetch to Cloudflare KV Edge
+    // 3. Background Fetch to Cloudflare KV Edge (Authoritative Source of Truth)
     try {
-      const res = await fetch(WORKER_ENDPOINT, {
+      // Cache-busting timestamp guarantees a fresh network response on every visit without triggering CORS preflights
+      const fetchUrl = `${WORKER_ENDPOINT}${WORKER_ENDPOINT.includes("?") ? "&" : "?"}_=${Date.now()}`;
+      const res = await fetch(fetchUrl, {
         method: "GET",
-        headers: { "Accept": "application/json" }
+        headers: {
+          "Accept": "application/json"
+        }
       });
 
       if (!res.ok) return;
       const remoteData = await res.json();
 
-      const isLocalhost = window.location.hostname === "localhost" ||
-                          window.location.hostname === "127.0.0.1" ||
-                          window.location.hostname.endsWith(".localhost") ||
-                          window.location.protocol === "file:";
-
-      // If developer is on localhost and has an active local theme draft, preserve it
-      if (isLocalhost && localData && localData.active && (!remoteData || !remoteData.active)) {
-        return;
-      }
-
-      if (remoteData) {
+      if (remoteData && typeof remoteData === "object") {
+        // Authoritative reconciliation: Edge response ALWAYS overrides local cache
         localStorage.setItem(STORAGE_KEY, JSON.stringify(remoteData));
         applyTheme(remoteData);
       }

@@ -24,7 +24,7 @@
  * visit - see the activate handler below.
  */
 
-const CACHE_VERSION = "v67";
+const CACHE_VERSION = "v70";
 const CACHE_PREFIX = "pdfmaster-";
 
 const STATIC_CACHE = `${CACHE_PREFIX}static-${CACHE_VERSION}`;
@@ -134,22 +134,22 @@ const PRECACHE_URLS = [
   "/js/compress-pdf/state.js",
   "/js/compress-pdf/storage.js",
   "/js/compress-pdf/ui.js",
-  "/pdf-editor/crop-modal.js",
-  "/pdf-editor/eraser.js",
-  "/pdf-editor/export.js",
-  "/pdf-editor/geometry.js",
-  "/pdf-editor/history.js",
-  "/pdf-editor/loader.js",
-  "/pdf-editor/main.js",
-  "/pdf-editor/pointer.js",
-  "/pdf-editor/renderer.js",
-  "/pdf-editor/signature-modal.js",
-  "/pdf-editor/state.js",
-  "/pdf-editor/storage.js",
-  "/pdf-editor/text-tool.js",
-  "/pdf-editor/tool-options.js",
-  "/pdf-editor/ui.js",
-  "/pdf-editor/utils.js",
+  "/js/pdf-editor/crop-modal.js",
+  "/js/pdf-editor/eraser.js",
+  "/js/pdf-editor/export.js",
+  "/js/pdf-editor/geometry.js",
+  "/js/pdf-editor/history.js",
+  "/js/pdf-editor/loader.js",
+  "/js/pdf-editor/main.js",
+  "/js/pdf-editor/pointer.js",
+  "/js/pdf-editor/renderer.js",
+  "/js/pdf-editor/signature-modal.js",
+  "/js/pdf-editor/state.js",
+  "/js/pdf-editor/storage.js",
+  "/js/pdf-editor/text-tool.js",
+  "/js/pdf-editor/tool-options.js",
+  "/js/pdf-editor/ui.js",
+  "/js/pdf-editor/utils.js",
   "/js/404.js",
   "/js/about.js",
   "/js/compress-pdf.js",
@@ -192,6 +192,9 @@ const BYPASS_HOSTS = [
   "script.googleusercontent.com",
   "trustpilot.com",
   "guptamrhappy.worker.dev",
+  "guptamrhappy.workers.dev",
+  "admin-tracking-pdfmaster.guptamrhappy.workers.dev",
+  "tracking.guptamrhappy.workers.dev",
 ];
 
 // Cross-origin hosts that are safe to cache aggressively: the pinned-
@@ -266,6 +269,27 @@ self.addEventListener("activate", (event) => {
           )
           .map((key) => caches.delete(key)),
       );
+
+      // Clean up any previously cached festival theme scripts, styles, or APIs
+      for (const cacheName of CURRENT_CACHES) {
+        try {
+          const cache = await caches.open(cacheName);
+          const cachedRequests = await cache.keys();
+          for (const req of cachedRequests) {
+            const reqUrl = new URL(req.url);
+            if (
+              reqUrl.pathname.includes("festival") ||
+              reqUrl.pathname.includes("/api/theme") ||
+              reqUrl.pathname.includes("/api/admin/theme") ||
+              reqUrl.searchParams.has("fest_preview") ||
+              reqUrl.searchParams.has("preview_theme")
+            ) {
+              await cache.delete(req);
+            }
+          }
+        } catch (_) {}
+      }
+
       await self.clients.claim();
     })(),
   );
@@ -283,6 +307,20 @@ self.addEventListener("fetch", (event) => {
 
   const url = new URL(request.url);
 
+  // 1. NEVER cache or serve festival theme files or endpoints via Service Worker.
+  // Bypass SW completely so all changes (activations, theme switches, and deactivations)
+  // are fetched fresh from the network immediately, even after the first visit.
+  if (
+    url.pathname.includes("festival") ||
+    url.pathname.endsWith("/api/theme") ||
+    url.pathname.endsWith("/api/festival-theme") ||
+    url.pathname.endsWith("/api/admin/theme") ||
+    url.searchParams.has("fest_preview") ||
+    url.searchParams.has("preview_theme")
+  ) {
+    return;
+  }
+
   if (BYPASS_HOSTS.some((host) => url.hostname.includes(host))) return;
 
   // Full page loads: typing a URL, clicking a link, refreshing.
@@ -294,7 +332,7 @@ self.addEventListener("fetch", (event) => {
   }
 
   if (url.origin === self.location.origin) {
-    if (STATIC_EXTENSIONS.test(url.pathname)) {
+    if (STATIC_EXTENSIONS.test(url.pathname) && !url.pathname.includes("festival")) {
       event.respondWith(staleWhileRevalidate(request, STATIC_CACHE, event));
     }
     // Same-origin requests that aren't recognised static assets are
