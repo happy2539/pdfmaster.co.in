@@ -58,6 +58,29 @@
 
 html {
   scroll-behavior: smooth;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border) var(--bg);
+}
+
+/* ══════════════════ SCROLLBAR (THEME-ADAPTIVE) ══════════════════ */
+::-webkit-scrollbar {
+  width: 7px;
+  height: 7px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bg);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 99px;
+  border: 1.5px solid var(--bg);
+  transition: background 0.2s ease;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--text-muted);
 }
 
 body {
@@ -111,7 +134,7 @@ header {
     border-color 0.3s;
 }
 
-nav {
+header nav {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -231,31 +254,45 @@ nav {
   }
 }
 
-/* Mobile Hamburger Button */
+/* Hamburger Button — displayed across all viewports just like other tools */
 .hamburger-btn {
-  display: none;
+  display: flex;
   flex-direction: column;
+  align-items: center;
   justify-content: center;
   gap: 5px;
   width: 38px;
   height: 38px;
-  background: none;
-  border: 1px solid var(--border);
-  border-radius: var(--radius-sm);
+  background: var(--bg-card);
+  border: 1.5px solid var(--border);
+  border-radius: 9px;
   cursor: pointer;
-  padding: 8px;
-  transition: background 0.2s;
+  padding: 7px;
+  transition: all 0.2s;
+  flex-shrink: 0;
 }
 
-.hamburger-btn span {
+.hamburger-btn:hover {
+  border-color: var(--primary);
+  background: rgba(230, 57, 70, 0.06);
+}
+
+.hamburger-btn span,
+.hamburger-btn .h-bar {
   display: block;
   height: 2px;
-  width: 100%;
-  background: var(--text);
+  width: 18px;
+  background: var(--text-2);
   border-radius: 2px;
   transition:
+    background 0.2s,
     transform 0.3s,
     opacity 0.3s;
+}
+
+.hamburger-btn:hover span,
+.hamburger-btn:hover .h-bar {
+  background: var(--primary);
 }
 
 .hamburger-btn.open span:nth-child(1) {
@@ -268,6 +305,154 @@ nav {
 
 .hamburger-btn.open span:nth-child(3) {
   transform: translateY(-7px) rotate(-45deg);
+}
+
+/* ══ Side Menu Drawer — unified with photo-to-pdf and pdf-to-photo ══ */
+.side-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 1100;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s;
+}
+
+.side-overlay.open,
+.side-overlay.active {
+  opacity: 1;
+  visibility: visible;
+}
+
+.side-menu {
+  position: fixed;
+  top: 0;
+  right: -310px;
+  width: 290px;
+  height: 100%;
+  background: var(--bg-card);
+  z-index: 1200;
+  box-shadow: -4px 0 32px rgba(0, 0, 0, 0.12);
+  transition: right 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex;
+  flex-direction: column;
+  border-left: 1px solid var(--border);
+  overflow: hidden;
+}
+
+.side-menu.open {
+  right: 0;
+}
+
+.side-menu-head {
+  padding: 20px 22px 16px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-shrink: 0;
+}
+
+.side-menu-title {
+  font-family: "Sora", sans-serif;
+  font-weight: 800;
+  font-size: 0.95rem;
+  color: var(--text);
+}
+
+.close-btn {
+  width: 30px;
+  height: 30px;
+  border-radius: 7px;
+  border: 1.5px solid var(--border);
+  background: transparent;
+  cursor: pointer;
+  font-size: 16px;
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+  flex-shrink: 0;
+}
+
+.close-btn:hover {
+  background: var(--primary);
+  color: #fff;
+  border-color: var(--primary);
+}
+
+.side-nav {
+  flex: 1 1 auto;
+  height: auto;
+  min-height: 0;
+  padding: 8px 0 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: flex-start;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border) transparent;
+}
+
+.side-nav::-webkit-scrollbar {
+  width: 5px;
+}
+
+.side-nav::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.side-nav::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 10px;
+}
+
+.side-nav::-webkit-scrollbar-thumb:hover {
+  background: var(--text-muted);
+}
+
+.side-nav a {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 22px;
+  color: var(--text-2);
+  font-size: 0.9rem;
+  font-weight: 500;
+  border-left: 3px solid transparent;
+  transition: all 0.2s;
+  text-decoration: none;
+}
+
+.side-nav a:hover {
+  color: var(--primary);
+  border-radius: 5px;
+  background: rgba(230, 57, 70, 0.05);
+  border-left-color: var(--primary);
+}
+
+.side-nav .nav-icon {
+  font-size: 1rem;
+  width: 20px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.side-nav-heading {
+  margin: 12px 22px 4px;
+  padding-top: 10px;
+  border-top: 1px solid var(--border);
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
 /* Mobile Dropdown Nav */
@@ -2027,6 +2212,17 @@ footer {
 }
 
 @media (max-width: 768px) {
+  header nav.container,
+  header .container {
+    padding: 0 14px;
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .side-menu {
+    max-width: 86vw;
+  }
+
   .nav-links {
     display: none;
   }
@@ -2265,34 +2461,63 @@ footer {
   }
 }
 
-@media (max-width: 400px) {
+@media (max-width: 480px) {
+  header nav.container,
+  header .container {
+    padding: 0 10px;
+  }
+
   .nav-logo img {
-    width: 25px;
-    height: 25px;
+    width: 26px;
+    height: 26px;
   }
 
   .logo-text {
-    font-size: 1.05rem;
+    font-size: 0.98rem;
   }
 
   .nav-right {
     gap: 4px;
   }
 
-  .theme-toggle {
-    width: 30px;
-    height: 30px;
-  }
-
-  .theme-toggle svg {
-    width: 14px;
-    height: 14px;
-  }
-
+  .theme-toggle,
+  .recovery-btn,
   .hamburger-btn {
-    width: 30px;
-    height: 30px;
-    padding: 6px;
+    width: 32px;
+    height: 32px;
+  }
+}
+
+@media (max-width: 380px) {
+  header nav.container,
+  header .container {
+    padding: 0 7px;
+  }
+
+  .nav-logo img {
+    width: 24px;
+    height: 24px;
+  }
+
+  .logo-text {
+    font-size: 0.88rem;
+  }
+
+  .nav-right {
+    gap: 3px;
+  }
+
+  .theme-toggle,
+  .recovery-btn,
+  .hamburger-btn {
+    width: 28px;
+    height: 28px;
+    padding: 5px;
+  }
+
+  .hamburger-btn span,
+  .hamburger-btn .h-bar {
+    width: 15px;
   }
 
   .page-range-row input {

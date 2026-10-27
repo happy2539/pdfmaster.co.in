@@ -18,6 +18,7 @@
   --radius: 14px;
   --radius-lg: 22px;
   --nav-h: 68px;
+  --fest-banner-h: 0px;
 }
 [data-theme="dark"] {
   --bg: #0c0e13;
@@ -69,7 +70,7 @@ img {
 
 /* ── Navbar ── */
 header {
-  position: fixed;
+  position: absolute;
   top: 0;
   left: 0;
   right: 0;
@@ -166,7 +167,7 @@ nav {
 
 /* ── Hero ── */
 .hero {
-  padding-top: calc(var(--nav-h) + 88px);
+  padding-top: calc(var(--nav-h) + var(--fest-banner-h, 0px) + 88px);
   padding-bottom: 88px;
   position: relative;
   overflow: hidden;
@@ -918,7 +919,7 @@ footer {
     display: none;
   }
   .hero {
-    padding-top: calc(var(--nav-h) + 52px);
+    padding-top: calc(var(--nav-h) + var(--fest-banner-h, 0px) + 52px);
     padding-bottom: 60px;
   }
   .tools-grid {

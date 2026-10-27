@@ -43,7 +43,31 @@
 }
 html {
   scroll-behavior: smooth;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border) var(--bg);
 }
+
+/* ══════════════════ SCROLLBAR (THEME-ADAPTIVE) ══════════════════ */
+::-webkit-scrollbar {
+  width: 7px;
+  height: 7px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bg);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 99px;
+  border: 1.5px solid var(--bg);
+  transition: background 0.2s ease;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--text-muted);
+}
+
 body {
   font-family: "DM Sans", sans-serif;
   background: var(--bg);
@@ -83,7 +107,7 @@ header {
     background 0.3s,
     border-color 0.3s;
 }
-nav {
+header nav {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -341,6 +365,7 @@ nav {
   display: flex;
   flex-direction: column;
   border-left: 1px solid var(--border);
+  overflow: hidden;
 }
 .side-menu.open {
   right: 0;
@@ -351,6 +376,7 @@ nav {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  flex-shrink: 0;
 }
 .side-menu-title {
   font-family: "Sora", sans-serif;
@@ -371,6 +397,7 @@ nav {
   align-items: center;
   justify-content: center;
   transition: all 0.2s;
+  flex-shrink: 0;
 }
 .close-btn:hover {
   background: var(--primary);
@@ -378,10 +405,29 @@ nav {
   border-color: var(--primary);
 }
 .side-nav {
-  padding: 4px 0;
+  flex: 1 1 auto;
+  height: auto;
+  min-height: 0;
+  padding: 8px 0 24px;
   display: flex;
   flex-direction: column;
   align-items: stretch;
+  justify-content: flex-start;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+.side-nav::-webkit-scrollbar {
+  width: 5px;
+}
+.side-nav::-webkit-scrollbar-track {
+  background: transparent;
+}
+.side-nav::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 10px;
+}
+.side-nav::-webkit-scrollbar-thumb:hover {
+  background: var(--text-muted);
 }
 .side-nav a {
   display: flex;
@@ -1839,6 +1885,15 @@ footer {
   }
 }
 @media (max-width: 768px) {
+  header nav.container,
+  header .container {
+    padding: 0 14px;
+    width: 100%;
+    max-width: 100%;
+  }
+  .side-menu {
+    max-width: 86vw;
+  }
   .tool-hero {
     padding-top: calc(var(--nav-h) + 38px);
     padding-bottom: 38px;
@@ -1935,6 +1990,37 @@ footer {
     font-size: 0.82rem;
     height: 36px;
     min-height: 36px;
+  }
+}
+@media (max-width: 480px) {
+  header nav.container,
+  header .container {
+    padding: 0 10px;
+  }
+  .nav-right {
+    gap: 4px;
+  }
+  .theme-toggle,
+  .recovery-btn,
+  .hamburger-btn {
+    width: 32px;
+    height: 32px;
+  }
+}
+@media (max-width: 380px) {
+  header nav.container,
+  header .container {
+    padding: 0 7px;
+  }
+  .nav-right {
+    gap: 3px;
+  }
+  .theme-toggle,
+  .recovery-btn,
+  .hamburger-btn {
+    width: 28px;
+    height: 28px;
+    padding: 5px;
   }
 }
 @media (max-width: 360px) {

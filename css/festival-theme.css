@@ -1,0 +1,959 @@
+/**
+ * PDFMaster Festival Theme Engine — Diwali Navbar Theme
+ * Exclusive, in-nav festive design: glowing golden ambiance, animated dancing diyas,
+ * festive button styling, golden toran shimmer border, and 60fps golden sparkles.
+ */
+
+/* ── Full-Screen Cascading Golden Sparkles Canvas ── */
+.festival-canvas {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+  z-index: 1001; /* Renders above header (1000) so sparkles fall seamlessly across navbar and hero */
+  display: none;
+}
+
+[data-festival="diwali"] .festival-canvas,
+html[data-festival="diwali"] .festival-canvas,
+body[data-festival="diwali"] .festival-canvas {
+  display: block;
+}
+
+header nav {
+  position: relative;
+  z-index: 2;
+}
+
+/* ── Brand Wrap (Left Diya + Logo + Diwali Pill) ── */
+.nav-brand-wrap {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+/* ── Standing Diya on Left Side of Navbar ── */
+.nav-diya-left {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  margin-left: -16px; /* Shifted more to the left */
+  margin-right: 4px;
+  cursor: pointer;
+  transition: transform 0.25s ease;
+  flex-shrink: 0;
+}
+
+[data-festival="diwali"] .nav-diya-left,
+header[data-festival="diwali"] .nav-diya-left {
+  display: flex;
+}
+
+.nav-diya-left:hover {
+  transform: scale(1.18);
+}
+
+/* ── Animated Diwali Cracker (Anar Fountain Sparkler) ── */
+.nav-cracker-slot {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  margin-right: 8px;
+  cursor: pointer;
+  position: relative;
+  transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+[data-festival="diwali"] .nav-cracker-slot,
+header[data-festival="diwali"] .nav-cracker-slot {
+  display: flex;
+}
+
+.nav-cracker-slot:hover {
+  transform: scale(1.22) translateY(-2px);
+}
+
+.nav-cracker-slot:active {
+  transform: scale(0.95);
+}
+
+/* Anar Fountain Sparks Keyframes */
+.anar-sparks-anim {
+  transform-origin: 19px 15px;
+  animation: anarFountain 1.2s infinite ease-in-out alternate;
+}
+
+@keyframes anarFountain {
+  0% {
+    transform: scale(0.9, 0.85);
+    opacity: 0.8;
+    filter: drop-shadow(0 0 2px #ffd700);
+  }
+  50% {
+    transform: scale(1.12, 1.25);
+    opacity: 1;
+    filter: drop-shadow(0 0 8px #ffea00);
+  }
+  100% {
+    transform: scale(1, 1.1) rotate(2deg);
+    opacity: 0.9;
+    filter: drop-shadow(0 0 5px #ff9100);
+  }
+}
+
+.spark-dot-1 { animation: sparkBlink 0.6s infinite alternate; }
+.spark-dot-2 { animation: sparkBlink 0.8s infinite alternate 0.15s; }
+.spark-dot-3 { animation: sparkBlink 0.7s infinite alternate 0.3s; }
+.spark-dot-4 { animation: sparkBlink 0.9s infinite alternate 0.45s; }
+.spark-dot-5 { animation: sparkBlink 0.75s infinite alternate 0.2s; }
+
+@keyframes sparkBlink {
+  0% { opacity: 0.3; transform: scale(0.8); }
+  100% { opacity: 1; transform: scale(1.4); }
+}
+
+/* ── In-Nav Diwali Festive Badge ── */
+.nav-diwali-pill {
+  display: none;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 11px;
+  border-radius: 999px;
+  background: linear-gradient(135deg, rgba(230, 81, 0, 0.16), rgba(255, 179, 0, 0.24));
+  border: 1.5px solid rgba(255, 179, 0, 0.55);
+  box-shadow: 0 0 14px rgba(255, 179, 0, 0.22);
+  user-select: none;
+  cursor: default;
+  white-space: nowrap; /* Forces text to fit in a single line */
+  flex-shrink: 0;
+  transition: all 0.25s ease;
+}
+
+[data-festival="diwali"] .nav-diwali-pill,
+header[data-festival="diwali"] .nav-diwali-pill {
+  display: inline-flex;
+}
+
+.nav-diwali-pill:hover {
+  transform: translateY(-1px);
+  border-color: #ffd54f;
+  box-shadow: 0 0 18px rgba(255, 179, 0, 0.4);
+}
+
+.diwali-badge-diya {
+  font-size: 0.92rem;
+  line-height: 1;
+  animation: diyaWobble 2.2s infinite ease-in-out;
+  flex-shrink: 0;
+}
+
+.diwali-badge-text {
+  font-family: "Sora", sans-serif;
+  font-size: 0.74rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  white-space: nowrap; /* Guarantee single line */
+  background: linear-gradient(90deg, #ff9100 0%, #ffd54f 50%, #ff6d00 100%);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: textShine 4s linear infinite;
+}
+
+@keyframes textShine {
+  0% { background-position: 0% center; }
+  100% { background-position: 200% center; }
+}
+
+@keyframes diyaWobble {
+  0%, 100% { transform: scale(1) rotate(0deg); }
+  25% { transform: scale(1.1) rotate(-4deg); }
+  75% { transform: scale(1.1) rotate(4deg); }
+}
+
+/* ── Standing Diya Mascot in Nav (.nav-right) ── */
+.nav-diya-slot {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  margin-right: 6px;
+  cursor: pointer;
+  transition: transform 0.25s ease;
+}
+
+[data-festival="diwali"] .nav-diya-slot,
+header[data-festival="diwali"] .nav-diya-slot {
+  display: flex;
+}
+
+.nav-diya-slot:hover {
+  transform: scale(1.15);
+}
+
+/* ── Toran Garland Shimmer Border ── */
+.diwali-toran-border {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(
+    90deg,
+    #ff6f00 0%,
+    #ffd54f 20%,
+    #d84315 40%,
+    #ffd54f 60%,
+    #ff6f00 80%,
+    #ffd54f 100%
+  );
+  background-size: 200% 100%;
+  animation: toranShimmer 5s linear infinite;
+  box-shadow: 0 1px 12px rgba(255, 179, 0, 0.5);
+  display: none;
+  z-index: 3;
+}
+
+[data-festival="diwali"] .diwali-toran-border,
+header[data-festival="diwali"] .diwali-toran-border {
+  display: block;
+}
+
+@keyframes toranShimmer {
+  0% { background-position: 0% 50%; }
+  100% { background-position: 200% 50%; }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   DIWALI NAVBAR ATMOSPHERE (LIGHT & DARK MODES)
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* Un-stick navbar on scroll on homepage: stays at the top and scrolls away with the page */
+header#mainHeader[data-festival="diwali"],
+[data-festival="diwali"] header#mainHeader {
+  position: absolute !important;
+  top: 0;
+  left: 0;
+  right: 0;
+}
+
+/* Light Mode Diwali Navbar */
+[data-theme="light"] header[data-festival="diwali"],
+[data-theme="light"][data-festival="diwali"] header {
+  background: linear-gradient(
+    90deg,
+    rgba(255, 252, 245, 0.97) 0%,
+    rgba(255, 246, 230, 0.96) 50%,
+    rgba(255, 252, 245, 0.97) 100%
+  ) !important;
+  border-bottom: 2px solid rgba(245, 127, 23, 0.6) !important;
+  box-shadow: 0 4px 24px rgba(245, 127, 23, 0.16) !important;
+}
+
+/* Dark Mode Diwali Navbar */
+[data-theme="dark"] header[data-festival="diwali"],
+[data-theme="dark"][data-festival="diwali"] header {
+  background: linear-gradient(
+    90deg,
+    rgba(18, 10, 14, 0.97) 0%,
+    rgba(34, 15, 8, 0.96) 50%,
+    rgba(18, 10, 14, 0.97) 100%
+  ) !important;
+  border-bottom: 2px solid rgba(255, 179, 0, 0.8) !important;
+  box-shadow: 0 4px 28px rgba(255, 111, 0, 0.24), 0 0 16px rgba(255, 193, 7, 0.14) !important;
+}
+
+/* Logo Accent Glow in Diwali */
+header[data-festival="diwali"] .logo-text span,
+[data-festival="diwali"] .logo-text span {
+  color: #ff9100 !important;
+  text-shadow: 0 0 12px rgba(255, 145, 0, 0.6);
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   DIWALI NAV LINKS STYLING (NATURAL FLEX CENTERING — ZERO OVERLAP)
+   ═══════════════════════════════════════════════════════════════════════════ */
+[data-festival="diwali"] .nav-links a,
+header[data-festival="diwali"] .nav-links a {
+  position: relative;
+  font-weight: 600;
+  padding: 6px 11px;
+  font-size: 0.88rem;
+  white-space: nowrap;
+  transition: all 0.22s ease;
+}
+
+/* Align nav-links in the center using flex flow — zero overlap with brand pill or tools */
+@media (min-width: 769px) {
+  header[data-festival="diwali"] nav,
+  [data-festival="diwali"] header nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  header[data-festival="diwali"] .nav-links,
+  [data-festival="diwali"] header .nav-links {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    margin: 0 auto; /* Natural flex centering: distributes remaining space evenly */
+    position: static !important; /* Never overlap with brand pill or tools */
+    transform: none !important;
+  }
+}
+
+@media (max-width: 1150px) and (min-width: 769px) {
+  header[data-festival="diwali"] .nav-links a,
+  [data-festival="diwali"] header .nav-links a {
+    padding: 5px 8px;
+    font-size: 0.82rem;
+  }
+  .nav-brand-wrap {
+    gap: 6px;
+  }
+  .nav-diwali-pill {
+    padding: 2px 7px;
+  }
+  .diwali-badge-text {
+    font-size: 0.68rem;
+  }
+}
+
+/* Light mode nav link colors */
+[data-theme="light"][data-festival="diwali"] .nav-links a,
+[data-theme="light"] header[data-festival="diwali"] .nav-links a {
+  color: #4a2818;
+}
+
+/* Dark mode nav link colors */
+[data-theme="dark"][data-festival="diwali"] .nav-links a,
+[data-theme="dark"] header[data-festival="diwali"] .nav-links a {
+  color: #fff3e0;
+}
+
+/* Hover state on nav links */
+[data-festival="diwali"] .nav-links a:hover,
+header[data-festival="diwali"] .nav-links a:hover {
+  color: #ff9100 !important;
+  background: rgba(255, 179, 0, 0.14);
+  box-shadow: 0 0 12px rgba(255, 179, 0, 0.22);
+  transform: translateY(-1px);
+}
+
+/* Golden Underline Indicator */
+[data-festival="diwali"] .nav-links a::after,
+header[data-festival="diwali"] .nav-links a::after {
+  content: "";
+  position: absolute;
+  bottom: 2px;
+  left: 14px;
+  right: 14px;
+  height: 2px;
+  background: linear-gradient(90deg, #ff9100, #ffd54f);
+  border-radius: 2px;
+  transform: scaleX(0);
+  transition: transform 0.25s ease;
+}
+
+[data-festival="diwali"] .nav-links a:hover::after,
+header[data-festival="diwali"] .nav-links a:hover::after {
+  transform: scaleX(1);
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   DIWALI BUTTONS IN NAV-RIGHT (SHIFTED MORE TO RIGHT SIDE & ALL TOOLS)
+   ═══════════════════════════════════════════════════════════════════════════ */
+header[data-festival="diwali"] .nav-right,
+[data-festival="diwali"] header .nav-right {
+  margin-left: auto;
+  margin-right: -8px; /* Shifted more to the right side */
+  gap: 11px;
+  flex-shrink: 0;
+}
+
+[data-festival="diwali"] .nav-right .theme-toggle,
+header[data-festival="diwali"] .nav-right .theme-toggle,
+[data-festival="diwali"] .nav-right .recovery-btn,
+header[data-festival="diwali"] .nav-right .recovery-btn,
+[data-festival="diwali"] .nav-right .hamburger-btn,
+header[data-festival="diwali"] .nav-right .hamburger-btn {
+  background: rgba(255, 179, 0, 0.09) !important;
+  border: 1.5px solid rgba(255, 179, 0, 0.45) !important;
+  color: #ff9100 !important;
+  box-shadow: 0 0 10px rgba(255, 179, 0, 0.18) !important;
+  transition: all 0.22s ease;
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+[data-festival="diwali"] .nav-right .theme-toggle:hover,
+header[data-festival="diwali"] .nav-right .theme-toggle:hover,
+[data-festival="diwali"] .nav-right .recovery-btn:hover,
+header[data-festival="diwali"] .nav-right .recovery-btn:hover,
+[data-festival="diwali"] .nav-right .hamburger-btn:hover,
+header[data-festival="diwali"] .nav-right .hamburger-btn:hover {
+  background: rgba(255, 179, 0, 0.22) !important;
+  border-color: #ffd54f !important;
+  color: #ffb300 !important;
+  box-shadow: 0 0 18px rgba(255, 179, 0, 0.5), 0 0 6px #ffd54f !important;
+  transform: scale(1.08);
+}
+
+[data-festival="diwali"] .nav-right .theme-toggle svg,
+header[data-festival="diwali"] .nav-right .theme-toggle svg,
+[data-festival="diwali"] .nav-right .recovery-btn svg,
+header[data-festival="diwali"] .nav-right .recovery-btn svg {
+  color: #ff9100;
+  stroke: #ff9100;
+  transition: all 0.22s ease;
+}
+
+[data-festival="diwali"] .nav-right .theme-toggle:hover svg,
+header[data-festival="diwali"] .nav-right .theme-toggle:hover svg,
+[data-festival="diwali"] .nav-right .recovery-btn:hover svg,
+header[data-festival="diwali"] .nav-right .recovery-btn:hover svg {
+  color: #ffd54f;
+  stroke: #ffd54f;
+}
+
+[data-festival="diwali"] .nav-right .hamburger-btn .h-bar,
+[data-festival="diwali"] .nav-right .hamburger-btn span,
+header[data-festival="diwali"] .nav-right .hamburger-btn .h-bar,
+header[data-festival="diwali"] .nav-right .hamburger-btn span {
+  background: #ff9100 !important;
+  transition: background 0.2s ease;
+}
+
+[data-festival="diwali"] .nav-right .hamburger-btn:hover .h-bar,
+[data-festival="diwali"] .nav-right .hamburger-btn:hover span,
+header[data-festival="diwali"] .nav-right .hamburger-btn:hover .h-bar,
+header[data-festival="diwali"] .nav-right .hamburger-btn:hover span {
+  background: #ffd54f !important;
+}
+
+[data-festival="diwali"] .recovery-badge,
+header[data-festival="diwali"] .recovery-badge {
+  background: #ff9100 !important;
+  border-color: #ffd54f !important;
+  box-shadow: 0 0 8px #ff9100 !important;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   DANCING DIYA FLAME KEYFRAMES
+   ═══════════════════════════════════════════════════════════════════════════ */
+.diya-flame-anim {
+  transform-origin: 18px 20px;
+  animation: diyaDancingFlame 1.3s infinite ease-in-out alternate;
+}
+
+@keyframes diyaDancingFlame {
+  0% {
+    transform: scale(0.96, 0.92) rotate(-2.5deg);
+    filter: drop-shadow(0 0 3px #ff9100);
+  }
+  30% {
+    transform: scale(1.06, 1.16) rotate(2.5deg);
+    filter: drop-shadow(0 0 8px #ffd54f);
+  }
+  65% {
+    transform: scale(0.98, 1.05) rotate(-1.5deg);
+    filter: drop-shadow(0 0 5px #ff6d00);
+  }
+  100% {
+    transform: scale(1.14, 1.28) rotate(2deg);
+    filter: drop-shadow(0 0 10px #ffea00);
+  }
+}
+
+/* ── Accessibility ── */
+@media (prefers-reduced-motion: reduce) {
+  .diwali-flame-anim,
+  .diwali-badge-diya,
+  .diwali-toran-border,
+  .diwali-badge-text {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   RESPONSIVE MEDIA QUERIES FOR DIWALI NAVBAR (ALL BREAKPOINTS & TOOLS)
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* ── 1. Desktop & Laptop Breakpoint (max-width: 1100px) ── */
+@media (max-width: 1100px) and (min-width: 769px) {
+  header[data-festival="diwali"] .nav-links a {
+    padding: 5px 8px;
+    font-size: 0.83rem;
+  }
+
+  .nav-brand-wrap {
+    gap: 6px;
+  }
+
+  .nav-diwali-pill {
+    padding: 2.5px 8px;
+  }
+
+  .nav-diwali-pill .diwali-badge-text {
+    font-size: 0.7rem;
+  }
+
+  header[data-festival="diwali"] .nav-right {
+    gap: 9px;
+    margin-right: -4px;
+  }
+
+  header[data-festival="diwali"] .nav-right .theme-toggle,
+  header[data-festival="diwali"] .nav-right .recovery-btn,
+  header[data-festival="diwali"] .nav-right .hamburger-btn {
+    width: 38px;
+    height: 38px;
+  }
+
+  .nav-diya-left svg {
+    width: 30px;
+    height: 28px;
+  }
+
+  .nav-cracker-slot svg {
+    width: 30px;
+    height: 32px;
+  }
+
+  .nav-diya-slot svg {
+    width: 30px;
+    height: 28px;
+  }
+}
+
+/* ── 2. Small Desktop & Tablet Landscape (max-width: 920px) ── */
+@media (max-width: 920px) and (min-width: 769px) {
+  /* Hide duplicate subscribe link in nav-links since subscribe button exists in nav-right */
+  header[data-festival="diwali"] .nav-links li:last-child {
+    display: none;
+  }
+
+  /* Hide right standing diya to preserve clean space for navigation links */
+  header[data-festival="diwali"] .nav-diya-slot {
+    display: none !important;
+  }
+
+  header[data-festival="diwali"] .nav-links a {
+    padding: 5px 7px;
+    font-size: 0.8rem;
+  }
+}
+
+/* ── 3. Tablet Portrait & Standard Mobile (max-width: 768px) ── */
+@media (max-width: 768px) {
+  /* Prevent horizontal navbar overflow */
+  header[data-festival="diwali"] nav.container,
+  [data-festival="diwali"] header nav.container {
+    padding-left: 14px !important;
+    padding-right: 14px !important;
+  }
+
+  /* Hide right standing diya on mobile to preserve clean breathing room */
+  header[data-festival="diwali"] .nav-diya-slot {
+    display: none !important;
+  }
+
+  .nav-brand-wrap {
+    gap: 6px;
+    min-width: 0;
+    flex-shrink: 1;
+  }
+
+  /* Left Diya scaled neatly for mobile */
+  .nav-diya-left {
+    margin-left: -4px;
+    margin-right: 2px;
+  }
+
+  .nav-diya-left svg {
+    width: 28px;
+    height: 26px;
+  }
+
+  /* PDFMaster Brand Logo on mobile */
+  .nav-logo {
+    gap: 7px;
+    min-width: 0;
+  }
+
+  .nav-logo img {
+    width: 32px;
+    height: 32px;
+  }
+
+  .logo-text {
+    font-size: 1.12rem;
+  }
+
+  /* Diwali Pill badge */
+  .nav-diwali-pill {
+    padding: 2.5px 8px;
+    gap: 4px;
+    flex-shrink: 0;
+  }
+
+  .nav-diwali-pill .diwali-badge-diya {
+    font-size: 0.88rem;
+  }
+
+  .nav-diwali-pill .diwali-badge-text {
+    font-size: 0.7rem;
+  }
+
+  /* Nav Right items: Cracker + Buttons smoothly aligned */
+  header[data-festival="diwali"] .nav-right {
+    margin-right: 0;
+    gap: 6px;
+    flex-shrink: 0;
+  }
+
+  .nav-cracker-slot {
+    margin-right: 1px;
+  }
+
+  .nav-cracker-slot svg {
+    width: 28px;
+    height: 30px;
+  }
+
+  /* Action buttons scaled neatly */
+  header[data-festival="diwali"] .nav-right .theme-toggle,
+  header[data-festival="diwali"] .nav-right .recovery-btn,
+  header[data-festival="diwali"] .nav-right .hamburger-btn {
+    display: flex !important;
+    width: 35px;
+    height: 35px;
+    flex-shrink: 0;
+  }
+
+  header[data-festival="diwali"] .nav-right .theme-toggle svg,
+  header[data-festival="diwali"] .nav-right .recovery-btn svg,
+  header[data-festival="diwali"] .nav-right .hamburger-btn svg {
+    width: 15.5px;
+    height: 15.5px;
+  }
+}
+
+/* ── 4. Mobile Phone (max-width: 540px) ── */
+@media (max-width: 540px) {
+  header[data-festival="diwali"] nav.container,
+  [data-festival="diwali"] header nav.container {
+    padding-left: 10px !important;
+    padding-right: 10px !important;
+  }
+
+  .nav-brand-wrap {
+    gap: 5px;
+  }
+
+  .nav-diya-left {
+    margin-left: 0;
+    margin-right: 1px;
+  }
+
+  .nav-diya-left svg {
+    width: 25px;
+    height: 24px;
+  }
+
+  .nav-logo {
+    gap: 6px;
+  }
+
+  .nav-logo img {
+    width: 28px;
+    height: 28px;
+    border-radius: 7px;
+  }
+
+  .logo-text {
+    font-size: 1.05rem;
+  }
+
+  /* Shorten to "Deepawali" on <=540px to eliminate any chance of overflow */
+  .nav-diwali-pill .badge-prefix {
+    display: none;
+  }
+
+  .nav-diwali-pill {
+    padding: 2px 6px;
+    gap: 3px;
+  }
+
+  .nav-diwali-pill .diwali-badge-text {
+    font-size: 0.68rem;
+  }
+
+  /* Interactive Cracker Sparkler */
+  .nav-cracker-slot svg {
+    width: 25px;
+    height: 27px;
+  }
+
+  /* Nav Right: Cracker + Recovery + Subscribe + Theme + Hamburger */
+  header[data-festival="diwali"] .nav-right {
+    gap: 4.5px;
+    margin-right: 0;
+    flex-shrink: 0;
+  }
+
+  header[data-festival="diwali"] .nav-right a.theme-toggle[href="/subscribe"] {
+    display: flex !important;
+  }
+
+  header[data-festival="diwali"] .nav-right .theme-toggle,
+  header[data-festival="diwali"] .nav-right .recovery-btn,
+  header[data-festival="diwali"] .nav-right .hamburger-btn {
+    width: 32px;
+    height: 32px;
+    flex-shrink: 0;
+  }
+
+  header[data-festival="diwali"] .nav-right .theme-toggle svg,
+  header[data-festival="diwali"] .nav-right .recovery-btn svg,
+  header[data-festival="diwali"] .nav-right .hamburger-btn svg {
+    width: 14.5px;
+    height: 14.5px;
+  }
+}
+
+/* ── 5. Compact Mobile Phones (max-width: 480px) ── */
+@media (max-width: 480px) {
+  header[data-festival="diwali"] nav.container,
+  [data-festival="diwali"] header nav.container {
+    padding-left: 8px !important;
+    padding-right: 8px !important;
+  }
+
+  /* Display compact glowing Diya pill to guarantee hamburger button NEVER overflows */
+  .nav-diwali-pill .diwali-badge-text {
+    display: none;
+  }
+
+  .nav-diwali-pill {
+    padding: 3px 6px;
+    border-radius: 999px;
+  }
+
+  .nav-diwali-pill .diwali-badge-diya {
+    font-size: 0.92rem;
+  }
+
+  .logo-text {
+    font-size: 0.96rem;
+  }
+
+  .nav-logo img {
+    width: 25px;
+    height: 25px;
+  }
+
+  .nav-diya-left svg {
+    width: 22px;
+    height: 21px;
+  }
+
+  .nav-cracker-slot svg {
+    width: 23px;
+    height: 24px;
+  }
+
+  header[data-festival="diwali"] .nav-right {
+    gap: 3.5px;
+    flex-shrink: 0;
+  }
+
+  header[data-festival="diwali"] .nav-right .theme-toggle,
+  header[data-festival="diwali"] .nav-right .recovery-btn,
+  header[data-festival="diwali"] .nav-right .hamburger-btn {
+    width: 30px;
+    height: 30px;
+    flex-shrink: 0;
+  }
+
+  header[data-festival="diwali"] .nav-right .theme-toggle svg,
+  header[data-festival="diwali"] .nav-right .recovery-btn svg,
+  header[data-festival="diwali"] .nav-right .hamburger-btn svg {
+    width: 13.5px;
+    height: 13.5px;
+  }
+}
+
+/* ── 6. Ultra-Compact Mobile Phones (max-width: 375px) ── */
+@media (max-width: 375px) {
+  header[data-festival="diwali"] nav.container,
+  [data-festival="diwali"] header nav.container {
+    padding-left: 6px !important;
+    padding-right: 6px !important;
+  }
+
+  .logo-text {
+    font-size: 0.88rem;
+  }
+
+  .nav-logo img {
+    width: 23px;
+    height: 23px;
+  }
+
+  .nav-diya-left svg {
+    width: 20px;
+    height: 19px;
+  }
+
+  .nav-cracker-slot svg {
+    width: 21px;
+    height: 22px;
+  }
+
+  header[data-festival="diwali"] .nav-right {
+    gap: 2.5px;
+    flex-shrink: 0;
+  }
+
+  header[data-festival="diwali"] .nav-right .theme-toggle,
+  header[data-festival="diwali"] .nav-right .recovery-btn,
+  header[data-festival="diwali"] .nav-right .hamburger-btn {
+    width: 28px;
+    height: 28px;
+    flex-shrink: 0;
+  }
+
+  header[data-festival="diwali"] .nav-right .theme-toggle svg,
+  header[data-festival="diwali"] .nav-right .recovery-btn svg,
+  header[data-festival="diwali"] .nav-right .hamburger-btn svg {
+    width: 12.5px;
+    height: 12.5px;
+  }
+}
+
+/* ── 7. Micro Screens (max-width: 340px) ── */
+@media (max-width: 340px) {
+  header[data-festival="diwali"] nav.container,
+  [data-festival="diwali"] header nav.container {
+    padding-left: 4px !important;
+    padding-right: 4px !important;
+  }
+
+  .nav-brand-wrap {
+    gap: 3px;
+  }
+
+  .nav-diya-left svg {
+    width: 18px;
+    height: 17px;
+  }
+
+  .nav-logo {
+    gap: 3px;
+  }
+
+  .nav-logo img {
+    width: 20px;
+    height: 20px;
+  }
+
+  .logo-text {
+    font-size: 0.82rem;
+  }
+
+  header[data-festival="diwali"] .nav-right {
+    gap: 2px;
+  }
+
+  header[data-festival="diwali"] .nav-right .theme-toggle,
+  header[data-festival="diwali"] .nav-right .recovery-btn,
+  header[data-festival="diwali"] .nav-right .hamburger-btn {
+    width: 26px;
+    height: 26px;
+  }
+
+  header[data-festival="diwali"] .nav-right .theme-toggle svg,
+  header[data-festival="diwali"] .nav-right .recovery-btn svg,
+  header[data-festival="diwali"] .nav-right .hamburger-btn svg {
+    width: 11.5px;
+    height: 11.5px;
+  }
+}
+
+/* ══════════════════════════════════════════════════
+   FESTIVAL SCROLLBAR (DIWALI THEME)
+   Theme-adaptive warm gold gradients with soft glow
+   ══════════════════════════════════════════════════ */
+[data-festival="diwali"],
+html[data-festival="diwali"],
+body[data-festival="diwali"] {
+  scrollbar-width: thin;
+  scrollbar-color: #d97706 rgba(18, 12, 8, 0.6);
+}
+
+[data-festival="diwali"] ::-webkit-scrollbar,
+html[data-festival="diwali"] ::-webkit-scrollbar,
+body[data-festival="diwali"] ::-webkit-scrollbar {
+  width: 7px;
+  height: 7px;
+}
+
+[data-festival="diwali"] ::-webkit-scrollbar-track,
+html[data-festival="diwali"] ::-webkit-scrollbar-track,
+body[data-festival="diwali"] ::-webkit-scrollbar-track {
+  background: rgba(18, 12, 8, 0.7);
+}
+
+[data-festival="diwali"] ::-webkit-scrollbar-thumb,
+html[data-festival="diwali"] ::-webkit-scrollbar-thumb,
+body[data-festival="diwali"] ::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #f5a623 0%, #d97706 100%);
+  border-radius: 99px;
+  border: 1.5px solid rgba(18, 12, 8, 0.7);
+  box-shadow: 0 0 6px rgba(245, 166, 35, 0.35);
+  transition: all 0.2s ease;
+}
+
+[data-festival="diwali"] ::-webkit-scrollbar-thumb:hover,
+html[data-festival="diwali"] ::-webkit-scrollbar-thumb:hover,
+body[data-festival="diwali"] ::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, #ffd166 0%, #f5a623 100%);
+  box-shadow: 0 0 10px rgba(255, 209, 102, 0.65);
+}
+
+/* Side navigation drawer scrollbar in Diwali festival theme */
+[data-festival="diwali"] .side-nav,
+[data-festival="diwali"] .sidebar-nav {
+  scrollbar-width: thin;
+  scrollbar-color: #d97706 transparent;
+}
+
+[data-festival="diwali"] .side-nav::-webkit-scrollbar,
+[data-festival="diwali"] .sidebar-nav::-webkit-scrollbar {
+  width: 6px;
+}
+
+[data-festival="diwali"] .side-nav::-webkit-scrollbar-track,
+[data-festival="diwali"] .sidebar-nav::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+[data-festival="diwali"] .side-nav::-webkit-scrollbar-thumb,
+[data-festival="diwali"] .sidebar-nav::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #f5a623 0%, #d97706 100%);
+  border-radius: 99px;
+  box-shadow: 0 0 6px rgba(245, 166, 35, 0.45);
+}
+
+[data-festival="diwali"] .side-nav::-webkit-scrollbar-thumb:hover,
+[data-festival="diwali"] .sidebar-nav::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, #ffd166 0%, #f5a623 100%);
+  box-shadow: 0 0 10px rgba(255, 209, 102, 0.7);
+}

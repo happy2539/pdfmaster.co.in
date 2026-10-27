@@ -63,19 +63,58 @@ function applyTheme(theme) {
   root.setAttribute("data-theme", theme);
   localStorage.setItem("pdfmaster-theme", theme);
   if (theme === "dark") {
-    sunIcon.style.display = "block";
-    moonIcon.style.display = "none";
+    if (sunIcon) sunIcon.style.display = "block";
+    if (moonIcon) moonIcon.style.display = "none";
   } else {
-    sunIcon.style.display = "none";
-    moonIcon.style.display = "block";
+    if (sunIcon) sunIcon.style.display = "none";
+    if (moonIcon) moonIcon.style.display = "block";
   }
 }
 
-const saved = localStorage.getItem("pdfmaster-theme") || "light";
-applyTheme(saved);
+// Expose globally so festival engine can sync when KV response arrives
+window.PDFMasterApplyTheme = applyTheme;
 
-btn.addEventListener("click", () => {
-  const next = root.getAttribute("data-theme") === "dark" ? "light" : "dark";
+let initialTheme = "light";
+try {
+  const festRaw = localStorage.getItem("pdfmaster_festival_theme");
+  const fest = festRaw ? JSON.parse(festRaw) : null;
+  const userToggled = sessionStorage.getItem("pdfmaster_user_toggled_theme");
+
+  const isScheduleActive = (f) => {
+    if (!f || !f.active || !f.theme || f.theme === "none") return false;
+    const now = Date.now();
+    if (f.startDate) {
+      const s = new Date(f.startDate).getTime();
+      if (!isNaN(s) && s > now) return false;
+    }
+    if (f.endDate) {
+      const e = new Date(f.endDate).getTime();
+      if (!isNaN(e) && e < now) return false;
+    }
+    return true;
+  };
+
+  const isFestActive = isScheduleActive(fest);
+
+  if (!isFestActive) {
+    root.removeAttribute("data-festival");
+  }
+
+  if (!userToggled && isFestActive && (fest.initialThemeMode === "dark" || fest.initialThemeMode === "light")) {
+    initialTheme = fest.initialThemeMode;
+  } else {
+    initialTheme = localStorage.getItem("pdfmaster-theme") || "light";
+  }
+} catch (_) {
+  initialTheme = localStorage.getItem("pdfmaster-theme") || "light";
+}
+
+applyTheme(initialTheme);
+
+btn?.addEventListener("click", () => {
+  sessionStorage.setItem("pdfmaster_user_toggled_theme", "true");
+  const current = root.getAttribute("data-theme") || "light";
+  const next = current === "dark" ? "light" : "dark";
   applyTheme(next);
 });
 

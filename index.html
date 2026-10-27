@@ -100,6 +100,39 @@
 
     <!-- CSS -->
     <link rel="stylesheet" href="css/index.css" />
+    <link rel="stylesheet" href="css/festival-theme.css" />
+
+    <!-- Synchronous zero-CLS festival theme loader -->
+    <script>
+      (function() {
+        try {
+          var t = localStorage.getItem("pdfmaster_festival_theme");
+          if (t) {
+            var p = JSON.parse(t);
+            var now = Date.now();
+            var schedActive = p && p.active && p.theme && p.theme !== "none";
+            if (schedActive && p.startDate) {
+              var s = new Date(p.startDate).getTime();
+              if (!isNaN(s) && s > now) schedActive = false;
+            }
+            if (schedActive && p.endDate) {
+              var e = new Date(p.endDate).getTime();
+              if (!isNaN(e) && e < now) schedActive = false;
+            }
+
+            if (schedActive) {
+              document.documentElement.setAttribute("data-festival", p.theme);
+              var userToggled = sessionStorage.getItem("pdfmaster_user_toggled_theme");
+              if (!userToggled && (p.initialThemeMode === "dark" || p.initialThemeMode === "light")) {
+                document.documentElement.setAttribute("data-theme", p.initialThemeMode);
+              }
+            } else {
+              document.documentElement.removeAttribute("data-festival");
+            }
+          }
+        } catch(e) {}
+      })();
+    </script>
 
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="default" />
@@ -171,30 +204,52 @@
     ></noscript>
     <!-- End Google Tag Manager (noscript) -->
 
+    <!-- Cascading Falling Sparkles Canvas Layer -->
+    <canvas id="festivalCanvas" class="festival-canvas" aria-hidden="true"></canvas>
+
     <!-- ═══════════════ NAVBAR ═══════════════ -->
-    <header>
+    <header id="mainHeader">
+      <!-- Shimmering Diwali Toran Garland Border along bottom of Navbar -->
+      <div class="diwali-toran-border" id="diwaliToranBorder" aria-hidden="true"></div>
+
       <nav class="container">
-        <a href="/" class="nav-logo">
-          <img
-            src="/assets/apple-touch-icon.png"
-            alt="PDFMaster"
-            fetchpriority="high"
-            width="40"
-            height="40"
-          />
-          <span class="logo-text">PDF<span>Master</span></span>
-        </a>
+        <div class="nav-brand-wrap">
+          <!-- Animated Dancing Diya on Left Side of Navbar -->
+          <div class="nav-diya-left" id="navDiyaLeft" aria-hidden="true" title="Happy Diwali"></div>
+
+          <a href="/" class="nav-logo">
+            <img
+              src="/assets/apple-touch-icon.png"
+              alt="PDFMaster"
+              fetchpriority="high"
+              width="40"
+              height="40"
+            />
+            <span class="logo-text">PDF<span>Master</span></span>
+          </a>
+
+          <!-- In-Nav Diwali Festive Badge -->
+          <div class="nav-diwali-pill" id="navDiwaliPill" aria-label="Happy Diwali">
+            <span class="diwali-badge-diya">🪔</span>
+            <span class="diwali-badge-text"><span class="badge-prefix">Shubh </span>Deepawali</span>
+          </div>
+        </div>
 
         <ul class="nav-links">
           <li><a href="/#tools">Tools</a></li>
           <li><a href="/#features">Features</a></li>
           <li><a href="/about">About</a></li>
           <li><a href="/contact">Contact</a></li>
-          <li><a href="/announcements">Announcements</a></li>
           <li><a href="/subscribe">Subscribe</a></li>
         </ul>
 
         <div class="nav-right">
+          <!-- Animated Diwali Cracker (Anar Sparkler Fountain) with shooting sparks -->
+          <div class="nav-cracker-slot" id="navCrackerSlot" aria-hidden="true" title="Diwali Sparkler Cracker ✨ Click to burst sparks!"></div>
+
+          <!-- Animated Standing Diya on Right Side of Navbar -->
+          <div class="nav-diya-slot" id="navDiyaSlot" aria-hidden="true" title="Happy Diwali"></div>
+
           <a
             href="/subscribe"
             class="theme-toggle"
@@ -319,28 +374,6 @@
                 Why PDFMaster?
               </a>
               <a
-                href="announcements"
-                class="btn-outline"
-                aria-label="Announcements"
-                title="Announcements"
-                style="padding: 11px 16px"
-              >
-                <svg
-                  aria-hidden="true"
-                  width="16"
-                  height="16"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="2.5"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                >
-                  <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
-                  <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
-                </svg>
-              </a>
-              <a
                 href="/subscribe"
                 class="btn-outline"
                 aria-label="Subscribe"
@@ -388,9 +421,9 @@
         <div class="container">
           <div class="sec-head">
             <div class="sec-label">Toolkit</div>
-            <h2>Complete PDF &amp; Image Toolkit</h2>
+            <h2>Complete PDF Toolkit</h2>
             <p>
-              Everything you need to work with PDFs and images — all on your
+              Everything you need to work with PDFs — all on your
               device, no uploads needed.
             </p>
           </div>
@@ -1700,6 +1733,7 @@
     <button class="b2t" id="b2t" aria-label="Back to top"></button>
 
     <script src="js/index.js"></script>
+    <script src="js/festival-theme.js" defer></script>
     <script>
       // Reveal animations – deferred until after render
       document.querySelectorAll(".reveal").forEach(function (el) {
