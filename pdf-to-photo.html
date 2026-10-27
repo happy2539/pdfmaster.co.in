@@ -79,12 +79,25 @@
           var t = localStorage.getItem("pdfmaster_festival_theme");
           if (t) {
             var p = JSON.parse(t);
-            if (p && p.active && p.theme && p.theme !== "none") {
-              document.documentElement.setAttribute("data-festival", p.theme);
+            var now = Date.now();
+            var schedActive = p && p.active && p.theme && p.theme !== "none";
+            if (schedActive && p.startDate) {
+              var s = new Date(p.startDate).getTime();
+              if (!isNaN(s) && s > now) schedActive = false;
             }
-            var userToggled = sessionStorage.getItem("pdfmaster_user_toggled_theme");
-            if (!userToggled && p && (p.initialThemeMode === "dark" || p.initialThemeMode === "light")) {
-              document.documentElement.setAttribute("data-theme", p.initialThemeMode);
+            if (schedActive && p.endDate) {
+              var e = new Date(p.endDate).getTime();
+              if (!isNaN(e) && e < now) schedActive = false;
+            }
+
+            if (schedActive) {
+              document.documentElement.setAttribute("data-festival", p.theme);
+              var userToggled = sessionStorage.getItem("pdfmaster_user_toggled_theme");
+              if (!userToggled && (p.initialThemeMode === "dark" || p.initialThemeMode === "light")) {
+                document.documentElement.setAttribute("data-theme", p.initialThemeMode);
+              }
+            } else {
+              document.documentElement.removeAttribute("data-festival");
             }
           }
         } catch(e) {}

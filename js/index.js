@@ -20,19 +20,37 @@ function applyTheme(theme) {
 window.PDFMasterApplyTheme = applyTheme;
 
 // Determine initial theme:
-// Prioritize admin's forced initial theme unless the visitor explicitly clicked the toggle during this session
+// Prioritize admin's forced initial theme only when a festival is actively running
 let initialTheme = "light";
 try {
   const festRaw = localStorage.getItem("pdfmaster_festival_theme");
   const fest = festRaw ? JSON.parse(festRaw) : null;
   const userToggled = sessionStorage.getItem("pdfmaster_user_toggled_theme");
 
-  if (!userToggled && fest && (fest.initialThemeMode === "dark" || fest.initialThemeMode === "light")) {
+  const isScheduleActive = (f) => {
+    if (!f || !f.active || !f.theme || f.theme === "none") return false;
+    const now = Date.now();
+    if (f.startDate) {
+      const s = new Date(f.startDate).getTime();
+      if (!isNaN(s) && s > now) return false;
+    }
+    if (f.endDate) {
+      const e = new Date(f.endDate).getTime();
+      if (!isNaN(e) && e < now) return false;
+    }
+    return true;
+  };
+
+  const isFestActive = isScheduleActive(fest);
+
+  if (!isFestActive) {
+    root.removeAttribute("data-festival");
+  }
+
+  if (!userToggled && isFestActive && (fest.initialThemeMode === "dark" || fest.initialThemeMode === "light")) {
     initialTheme = fest.initialThemeMode;
-  } else if (userToggled) {
-    initialTheme = localStorage.getItem("pdfmaster-theme") || root.getAttribute("data-theme") || "light";
   } else {
-    initialTheme = localStorage.getItem("pdfmaster-theme") || root.getAttribute("data-theme") || "light";
+    initialTheme = localStorage.getItem("pdfmaster-theme") || "light";
   }
 } catch (_) {
   initialTheme = localStorage.getItem("pdfmaster-theme") || "light";
