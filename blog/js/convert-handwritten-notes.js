@@ -21,49 +21,59 @@ function applyTheme(theme) {
 const savedTheme = localStorage.getItem(THEME_KEY) || "light";
 applyTheme(savedTheme);
 
-document.getElementById("themeToggle").addEventListener("click", () => {
-  const current = html.getAttribute("data-theme");
-  const next = current === "dark" ? "light" : "dark";
-  applyTheme(next);
-});
+const themeToggle = document.getElementById("themeToggle");
+if (themeToggle) {
+  themeToggle.addEventListener("click", () => {
+    const current = html.getAttribute("data-theme");
+    const next = current === "dark" ? "light" : "dark";
+    applyTheme(next);
+  });
+}
 
-// ── Hamburger / Drawer ──────────────────────────────────────
-const hamburger = document.getElementById("hamburger");
-const navDrawer = document.getElementById("navDrawer");
-hamburger.addEventListener("click", () => {
-  const isOpen = hamburger.classList.toggle("open");
-  hamburger.setAttribute("aria-expanded", isOpen);
-  navDrawer.classList.toggle("open", isOpen);
-});
+// ── Side Menu (Matching Tool Pages) ─────────────────────────
+const hamburgerBtn = document.getElementById("hamburgerBtn");
+const sideMenu = document.getElementById("sideMenu");
+const sideOverlay = document.getElementById("sideOverlay");
+const closeMenuBtn = document.getElementById("closeMenuBtn");
 
-// ── Navbar Scroll Shadow ────────────────────────────────────
-const navbar = document.getElementById("navbar");
-window.addEventListener(
-  "scroll",
-  () => {
-    navbar.classList.toggle("scrolled", window.scrollY > 20);
-  },
-  { passive: true },
-);
+if (hamburgerBtn && sideMenu && sideOverlay) {
+  hamburgerBtn.addEventListener("click", () => {
+    sideMenu.classList.add("active");
+    sideOverlay.classList.add("active");
+    document.body.style.overflow = "hidden";
+  });
+
+  const closeSide = () => {
+    sideMenu.classList.remove("active");
+    sideOverlay.classList.remove("active");
+    document.body.style.overflow = "";
+  };
+
+  if (closeMenuBtn) closeMenuBtn.addEventListener("click", closeSide);
+  sideOverlay.addEventListener("click", closeSide);
+}
 
 // ── Back to Top ─────────────────────────────────────────────
 const btt = document.getElementById("backToTop");
-window.addEventListener(
-  "scroll",
-  () => {
-    btt.classList.toggle("visible", window.scrollY > 400);
-  },
-  { passive: true },
-);
-btt.addEventListener("click", () =>
-  window.scrollTo({ top: 0, behavior: "smooth" }),
-);
+if (btt) {
+  window.addEventListener(
+    "scroll",
+    () => {
+      btt.classList.toggle("visible", window.scrollY > 400);
+    },
+    { passive: true },
+  );
+  btt.addEventListener("click", () =>
+    window.scrollTo({ top: 0, behavior: "smooth" }),
+  );
+}
 
 // ── FAQ Accordion ────────────────────────────────────────────
 document.querySelectorAll(".faq-question").forEach((btn) => {
   btn.addEventListener("click", () => {
     const id = btn.dataset.faq;
     const answer = document.getElementById("faq-" + id);
+    if (!answer) return;
     const isOpen = answer.classList.contains("open");
 
     // Close all
