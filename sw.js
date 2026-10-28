@@ -24,7 +24,7 @@
  * visit - see the activate handler below.
  */
 
-const CACHE_VERSION = "v70";
+const CACHE_VERSION = "v71";
 const CACHE_PREFIX = "pdfmaster-";
 
 const STATIC_CACHE = `${CACHE_PREFIX}static-${CACHE_VERSION}`;
@@ -77,20 +77,14 @@ const PRECACHE_URLS = [
   "/assets/founder.png",
   "/assets/site.webmanifest",
   "/manifest.json",
-  "/blog/pdf-metadata/css/style.css",
-  "/blog/pdf-metadata/css/pdf-metadata-guide.css",
-  "/blog/pdf-metadata/js/script.js",
-  "/blog/pdf-metadata/js/pdf-metadata-guide.js",
-  "/blog/pdf-to-photo/css/index.css",
-  "/blog/pdf-to-photo/css/style.css",
-  "/blog/pdf-to-photo/script/index.js",
-  "/blog/pdf-to-photo/script/script.js",
-  "/blog/photo-to-pdf/css/index.css",
-  "/blog/photo-to-pdf/css/photo-to-pdf-mobile-guide.css",
-  "/blog/photo-to-pdf/css/style.css",
-  "/blog/photo-to-pdf/script/index.js",
-  "/blog/photo-to-pdf/script/photo-to-pdf-mobile-guide.js",
-  "/blog/photo-to-pdf/script/script.js",
+  "/blog/css/convert-handwritten-notes.css",
+  "/blog/css/pdf-metadata-guide.css",
+  "/blog/css/pdf-to-image-quality-guide.css",
+  "/blog/css/photo-to-pdf-mobile-guide.css",
+  "/blog/js/convert-handwritten-notes.js",
+  "/blog/js/pdf-metadata-guide.js",
+  "/blog/js/pdf-to-image-quality-guide.js",
+  "/blog/js/photo-to-pdf-mobile-guide.js",
   "/blog/script.js",
   "/blog/style.css",
   "/css/404.css",

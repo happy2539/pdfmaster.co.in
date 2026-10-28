@@ -1,6 +1,16 @@
 User-agent: *
 Allow: /
 
+# Google AdSense & Quality Crawlers
+User-agent: Mediapartners-Google
+Allow: /
+
+User-agent: AdsBot-Google
+Allow: /
+
+User-agent: AdsBot-Google-Mobile
+Allow: /
+
 # Block internal or useless files
 Disallow: /404.html
 Disallow: /vercel.json

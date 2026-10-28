@@ -174,60 +174,31 @@
   <url>
     <loc>https://pdfmaster.co.in/blog</loc>
     <priority>0.9</priority>
-    <lastmod>2026-10-09</lastmod>
-  </url>
-
-  <!-- Blog - Photo to PDF Home Page -->
-
-  <url>
-    <loc>https://pdfmaster.co.in/blog/photo-to-pdf</loc>
-    <priority>0.9</priority>
-    <lastmod>2026-10-09</lastmod>
-  </url>
-
-  <!-- Blogs Photo to PDF Converter -->
-  <url>
-    <loc>https://pdfmaster.co.in/blog/photo-to-pdf/convert-handwritten-notes-to-pdf-for-submission</loc>
-    <priority>0.9</priority>
-    <lastmod>2026-10-09</lastmod>
+    <lastmod>2026-10-28</lastmod>
   </url>
 
   <url>
-    <loc>https://pdfmaster.co.in/blog/photo-to-pdf/photo-to-pdf-mobile-guide</loc>
-    <priority>0.9</priority>
-    <lastmod>2026-10-16</lastmod>
+    <loc>https://pdfmaster.co.in/blog/photo-to-pdf-mobile-guide</loc>
+    <priority>0.8</priority>
+    <lastmod>2026-10-28</lastmod>
   </url>
 
-  <!-- Blog - PDF to Photo Home Page -->
-
   <url>
-    <loc>https://pdfmaster.co.in/blog/pdf-to-photo</loc>
-    <priority>0.9</priority>
-    <lastmod>2026-10-09</lastmod>
+    <loc>https://pdfmaster.co.in/blog/convert-handwritten-notes-to-pdf-for-submission</loc>
+    <priority>0.8</priority>
+    <lastmod>2026-10-28</lastmod>
   </url>
 
-  <!-- Blogs PDF to Photo Converter -->
-
   <url>
-    <loc>https://pdfmaster.co.in/blog/pdf-to-photo/pdf-to-image-quality-guide</loc>
-    <priority>0.9</priority>
-    <lastmod>2026-10-16</lastmod>
+    <loc>https://pdfmaster.co.in/blog/pdf-to-image-quality-guide</loc>
+    <priority>0.8</priority>
+    <lastmod>2026-10-28</lastmod>
   </url>
 
-  <!-- Blog - PDF Metadata Home Page -->
-
   <url>
-    <loc>https://pdfmaster.co.in/blog/pdf-metadata</loc>
-    <priority>0.9</priority>
-    <lastmod>2026-10-09</lastmod>
-  </url>
-
-  <!-- Blogs PDF Metadata -->
-
-  <url>
-    <loc>https://pdfmaster.co.in/blog/pdf-metadata/pdf-metadata-guide</loc>
-    <priority>0.9</priority>
-    <lastmod>2026-10-16</lastmod>
+    <loc>https://pdfmaster.co.in/blog/pdf-metadata-guide</loc>
+    <priority>0.8</priority>
+    <lastmod>2026-10-28</lastmod>
   </url>
 
 </urlset>

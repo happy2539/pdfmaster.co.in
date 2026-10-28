@@ -388,45 +388,48 @@
 
 
 # -----------------------------
-# BLOG FOLDER REDIRECTS
+# BLOG FOLDER REDIRECTS (CENTRALIZED)
 # -----------------------------
 
-/blog/photo-to-pdf/index.html                             /blog/photo-to-pdf                                301!
-/blog/pdf-to-photo/index.html                             /blog/pdf-to-photo                                301!
-/blog/pdf-metadata/index.html                            /blog/pdf-metadata                                301!
-
-
-
-
-
-# -----------------------------
-# BLOG PAGES REDIRECTS
-# -----------------------------
-
+/blog/photo-to-pdf/index.html                             /blog                                                 301!
+/blog/pdf-to-photo/index.html                             /blog                                                 301!
+/blog/pdf-metadata/index.html                             /blog                                                 301!
+/blog/photo-to-pdf                                        /blog                                                 301!
+/blog/pdf-to-photo                                        /blog                                                 301!
+/blog/pdf-metadata                                        /blog                                                 301!
 
 # -----------------------------
-# BLOG PAGES REDIRECTS      (PDF TO PHOTO)
+# CENTRALIZED BLOG HTML REDIRECTS
 # -----------------------------
 
-/blog/pdf-to-photo/best-free-pdf-to-photo-converter-mobile-desktop-no-internet.html    /blog/pdf-to-photo/best-free-pdf-to-photo-converter-mobile-desktop-no-internet    301!
-/blog/pdf-to-photo/how-to-convert-pdf-to-jpg-offline-without-uploading.html            /blog/pdf-to-photo/how-to-convert-pdf-to-jpg-offline-without-uploading            301!
-
-
-
+/blog/convert-handwritten-notes-to-pdf-for-submission.html    /blog/convert-handwritten-notes-to-pdf-for-submission    301!
+/blog/photo-to-pdf-mobile-guide.html                          /blog/photo-to-pdf-mobile-guide                          301!
+/blog/pdf-metadata-guide.html                                 /blog/pdf-metadata-guide                                 301!
+/blog/pdf-to-image-quality-guide.html                         /blog/pdf-to-image-quality-guide                         301!
 
 # -----------------------------
-# BLOG PAGES REDIRECTS      (PHOTO TO PDF)
+# LEGACY NESTED BLOG PAGES REDIRECTS -> NEW CENTRALIZED PATHS
 # -----------------------------
 
-/blog/photo-to-pdf/fastest-jpg-to-pdf-converter.html                                   /blog/photo-to-pdf/fastest-jpg-to-pdf-converter                                   301!
-/blog/photo-to-pdf/png-to-pdf-converter.html                                           /blog/photo-to-pdf/png-to-pdf-converter                                           301!
-/blog/photo-to-pdf/photo-to-pdf-offline-converter.html                                 /blog/photo-to-pdf/photo-to-pdf-offline-converter                                 301!
-/blog/photo-to-pdf/secure-image-to-pdf-converter-no-upload.html                        /blog/photo-to-pdf/secure-image-to-pdf-converter-no-upload                        301!
-/blog/photo-to-pdf/jpg-vs-png-which-is-better-for-pdf.html                             /blog/photo-to-pdf/jpg-vs-png-which-is-better-for-pdf                             301!
-/blog/photo-to-pdf/convert-handwritten-notes-to-pdf-for-submission.html                /blog/photo-to-pdf/convert-handwritten-notes-to-pdf-for-submission                301!
-/blog/photo-to-pdf/best-photo-to-pdf-converter-free.html                               /blog/photo-to-pdf/best-photo-to-pdf-converter-free                               301!
-/blog/photo-to-pdf/convert-images-to-pdf-on-mobile-without-app.html                    /blog/photo-to-pdf/convert-images-to-pdf-on-mobile-without-app                    301!
-/blog/photo-to-pdf/convert-multiple-photos-into-one-pdf-online.html                    /blog/photo-to-pdf/convert-multiple-photos-into-one-pdf-online                    301!
+/blog/photo-to-pdf/convert-handwritten-notes-to-pdf-for-submission.html    /blog/convert-handwritten-notes-to-pdf-for-submission    301!
+/blog/photo-to-pdf/convert-handwritten-notes-to-pdf-for-submission         /blog/convert-handwritten-notes-to-pdf-for-submission    301!
+/blog/photo-to-pdf/photo-to-pdf-mobile-guide.html                          /blog/photo-to-pdf-mobile-guide                          301!
+/blog/photo-to-pdf/photo-to-pdf-mobile-guide                              /blog/photo-to-pdf-mobile-guide                          301!
+/blog/pdf-metadata/pdf-metadata-guide.html                                 /blog/pdf-metadata-guide                                 301!
+/blog/pdf-metadata/pdf-metadata-guide                                      /blog/pdf-metadata-guide                                 301!
+/blog/pdf-to-photo/pdf-to-image-quality-guide.html                         /blog/pdf-to-image-quality-guide                         301!
+/blog/pdf-to-photo/pdf-to-image-quality-guide                              /blog/pdf-to-image-quality-guide                         301!
+
+/blog/photo-to-pdf/fastest-jpg-to-pdf-converter.html                      /blog                                                 301!
+/blog/photo-to-pdf/png-to-pdf-converter.html                              /blog                                                 301!
+/blog/photo-to-pdf/photo-to-pdf-offline-converter.html                    /blog                                                 301!
+/blog/photo-to-pdf/secure-image-to-pdf-converter-no-upload.html           /blog                                                 301!
+/blog/photo-to-pdf/jpg-vs-png-which-is-better-for-pdf.html                /blog                                                 301!
+/blog/photo-to-pdf/best-photo-to-pdf-converter-free.html                  /blog                                                 301!
+/blog/photo-to-pdf/convert-images-to-pdf-on-mobile-without-app.html       /blog                                                 301!
+/blog/photo-to-pdf/convert-multiple-photos-into-one-pdf-online.html       /blog                                                 301!
+/blog/pdf-to-photo/best-free-pdf-to-photo-converter-mobile-desktop-no-internet.html    /blog                                     301!
+/blog/pdf-to-photo/how-to-convert-pdf-to-jpg-offline-without-uploading.html            /blog                                     301!
 
 
 
