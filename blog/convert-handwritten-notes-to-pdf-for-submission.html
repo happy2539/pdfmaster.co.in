@@ -79,6 +79,7 @@
 
     <link rel="preload" href="/blog/css/convert-handwritten-notes.css" as="style" />
     <link rel="stylesheet" href="/blog/css/convert-handwritten-notes.css" />
+    <link rel="stylesheet" href="/css/categorized-footer.css" />
 
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="default" />
@@ -2219,146 +2220,116 @@
     </main>
 
     <!-- ── Footer ──────────────────────────────────────────────── -->
-    <footer class="footer">
-      <div class="footer-inner">
-        <div class="footer-grid">
-          <div class="footer-brand">
-            <a href="/" class="footer-logo">
+    <footer class="site-footer" id="contact">
+      <div class="container">
+        <div class="footer__grid">
+          <div class="footer__brand">
+            <a href="/" class="nav-logo">
               <img
                 src="/assets/apple-touch-icon.png"
-                alt="PDFMaster"
-                width="34"
-                height="34"
+                alt="PDFMaster Logo"
+                width="36"
+                height="36"
               />
-              <span>PDF<em>Master</em></span>
+              <span class="logo-text">PDF<span>Master</span></span>
             </a>
             <p>
-              Free, browser-based PDF and image tools. All processing happens on
-              your device — your files never leave your browser.
+              Free, private, client-side PDF manipulation tools. No file size
+              limits, no tracking, and zero server uploads.
             </p>
-            <div class="fsocials">
+            <div class="footer__socials">
               <a
-                href="https://github.com/happy2539"
-                class="fsoc"
-                aria-label="GitHub"
+                href="https://github.com/happy2539/pdfmaster.co.in/"
                 target="_blank"
                 rel="noopener"
+                class="footer__social-link"
+                aria-label="GitHub repository"
               >
                 <svg
-                  width="20"
-                  height="20"
+                  width="18"
+                  height="18"
                   viewBox="0 0 24 24"
-                  fill="none"
-                  aria-hidden="true"
+                  fill="currentColor"
                 >
                   <path
-                    d="M12 2C6.477 2 2 6.484 2 12.021c0 4.428 2.865 8.184 6.839 9.504.5.092.682-.217.682-.483 0-.237-.009-.868-.014-1.703-2.782.605-3.369-1.342-3.369-1.342-.454-1.154-1.11-1.462-1.11-1.462-.908-.62.069-.608.069-.608 1.004.07 1.532 1.032 1.532 1.032.892 1.53 2.341 1.088 2.91.832.091-.647.35-1.088.636-1.339-2.221-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.987 1.029-2.687-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.025A9.564 9.564 0 0 1 12 6.844c.85.004 1.705.115 2.504.337 1.909-1.295 2.748-1.025 2.748-1.025.546 1.378.202 2.397.1 2.65.64.7 1.028 1.594 1.028 2.687 0 3.847-2.337 4.695-4.566 4.944.359.309.678.919.678 1.853 0 1.337-.012 2.419-.012 2.749 0 .268.18.579.688.481C19.138 20.2 22 16.447 22 12.021 22 6.484 17.523 2 12 2Z"
-                    fill="currentColor"
+                    d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"
                   />
                 </svg>
               </a>
             </div>
           </div>
-          <div class="footer-col">
-            <h4>PDF Tools</h4>
-            <ul>
-              <li>
-                <a href="/protect-pdf">Protect PDF</a>
+          <div class="footer__col footer__col--tools">
+            <h4>Tools</h4>
+            <ul class="footer__tools-list">
+              <li class="footer__cat-group">
+                <span class="footer__cat-header">Organize PDF</span>
+                <ul class="footer__cat-items">
+                  <li><a href="/merge-pdf">PDF Compiler</a></li>
+                  <li><a href="/split-pdf">Split PDF</a></li>
+                  <li><a href="/pdf-reorder">PDF Reorder</a></li>
+                  <li><a href="/rotate-pdf">Rotate PDF</a></li>
+                  <li><a href="/delete-pdf-pages">Delete PDF Pages</a></li>
+                  <li><a href="/insert-blank-page-pdf">Insert Blank Page</a></li>
+                </ul>
               </li>
-              <li>
-                <a href="/unlock-pdf">Unlock PDF</a>
+              <li class="footer__cat-group">
+                <span class="footer__cat-header">Edit &amp; View</span>
+                <ul class="footer__cat-items">
+                  <li><a href="/pdf-editor">PDF Editor</a></li>
+                  <li><a href="/pdf-viewer">PDF Viewer</a></li>
+                  <li><a href="/page-number-pdf">Page Number PDF</a></li>
+                  <li><a href="/watermark-pdf-add">Watermark PDF</a></li>
+                </ul>
               </li>
-              <li>
-                <a href="/insert-blank-page-pdf">Insert Blank Page</a>
+              <li class="footer__cat-group">
+                <span class="footer__cat-header">Convert &amp; Extract</span>
+                <ul class="footer__cat-items">
+                  <li><a href="/ocr-pdf">OCR PDF</a></li>
+                  <li><a href="/photo-to-pdf">Photo to PDF</a></li>
+                  <li><a href="/pdf-to-photo">PDF to Photo</a></li>
+                  <li><a href="/extract-photos-from-pdf">Extract Photos</a></li>
+                </ul>
               </li>
-              <li>
-                <a href="/pdf-viewer">PDF Viewer</a>
-              </li>
-              <li>
-                <a href="/photo-to-pdf">Photo to PDF</a>
-              </li>
-              <li>
-                <a href="/merge-pdf">PDF Compiler</a>
-              </li>
-              <li>
-                <a href="/pdf-to-photo">PDF to Photo</a>
-              </li>
-              <li><a href="/split-pdf">Split PDF</a></li>
-              <li><a href="/delete-pdf-pages">Delete PDF Pages</a></li>
-              <li>
-                <a href="/pdf-reorder">PDF Reorder</a>
-              </li>
-              <li>
-                <a href="/pdf-metadata"
-                  >Metadata Remover</a
-                >
+              <li class="footer__cat-group">
+                <span class="footer__cat-header">Security &amp; Optimize</span>
+                <ul class="footer__cat-items">
+                  <li><a href="/sign-pdf">Sign PDF</a></li>
+                  <li><a href="/protect-pdf">Protect PDF</a></li>
+                  <li><a href="/unlock-pdf">Unlock PDF</a></li>
+                  <li><a href="/compress-pdf">Compress PDF</a></li>
+                  <li><a href="/pdf-metadata">Metadata Remover</a></li>
+                </ul>
               </li>
             </ul>
           </div>
-          <div class="footer-col">
-            <h4>Company</h4>
+          <div class="footer__col">
+            <h4>Resources</h4>
             <ul>
-              <li><a href="/">Home</a></li>
+              <li><a href="/blog">Blog</a></li>
+              <li><a href="/faq">FAQ</a></li>
               <li><a href="/about">About Us</a></li>
               <li>
-                <a
-                  href="/happy-gupta-founder-of-pdfmaster"
+                <a href="/happy-gupta-founder-of-pdfmaster"
                   >About Happy Gupta</a
                 >
               </li>
-              <li>
-                <a href="/blog">Blog</a>
-              </li>
-              <li><a href="/subscribe">Subscribe</a></li>
+              <li><a href="/#tools">All Tools</a></li>
             </ul>
           </div>
-          <div class="footer-col">
+          <div class="footer__col">
             <h4>Support</h4>
             <ul>
-              <li>
-                <a href="/contact">Help Center</a>
-              </li>
-              <li>
-                <a href="/privacy">Privacy Policy</a>
-              </li>
-              <li>
-                <a href="/terms">Terms of Service</a>
-              </li>
-              <li>
-                <a href="/faq">FAQ</a>
-              </li>
+              <li><a href="/contact">Help Center</a></li>
+              <li><a href="/privacy">Privacy Policy</a></li>
+              <li><a href="/terms">Terms of Service</a></li>
+              <li><a href="/faq">FAQ</a></li>
             </ul>
           </div>
         </div>
-        <div class="footer-bottom">
-          <span>© 2026 PDFMaster. All rights reserved.</span>
-          <span
-            >Made with
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="14"
-              height="14"
-              viewBox="0 0 24 24"
-              fill="none"
-              fill="currentColor"
-              stroke="currentColor"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              style="
-                color: #e8372a;
-                display: inline;
-                vertical-align: middle;
-                margin: 0 2px;
-              "
-            >
-              <path
-                d="M20.84 4.61a5.5 5.06 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.06 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.06 0 0 0 0-7.78z"
-              ></path>
-            </svg>
-            in India · Privacy-first PDF tools</span
-          >
-          <a href="/">pdfmaster.co.in</a>
+        <div class="footer__bottom">
+          <p class="footer__copy">
+            © 2026 <a href="/">PDFMaster All right reserved</a>
+          </p>
         </div>
       </div>
     </footer>

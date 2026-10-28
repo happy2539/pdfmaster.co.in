@@ -1,4 +1,4 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en" data-theme="light">
   <head>
     <meta charset="UTF-8" />
@@ -112,6 +112,7 @@
       <link href="/assets/fonts/fonts.css" rel="stylesheet" />
     </noscript>
     <link rel="stylesheet" href="/blog/css/pdf-to-image-quality-guide.css" />
+    <link rel="stylesheet" href="/css/categorized-footer.css" />
 
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="default" />
@@ -233,12 +234,6 @@
               {
                 "@type": "ListItem",
                 "position": 3,
-                "name": "PDF to Photo",
-                "item": "https://pdfmaster.co.in/blog"
-              },
-              {
-                "@type": "ListItem",
-                "position": 4,
                 "name": "PDF to Image Quality Guide",
                 "item": "https://pdfmaster.co.in/blog/pdf-to-image-quality-guide"
               }
@@ -459,704 +454,249 @@
     </script>
   </head>
   <body>
-    <noscript
-      ><iframe
-        src="https://www.googletagmanager.com/ns.html?id=GTM-PCSVMC65"
-        height="0"
-        width="0"
-        style="display: none; visibility: hidden"
-      ></iframe
-    ></noscript>
-    <div
-      class="rbar"
-      id="rbar"
-      role="progressbar"
-      aria-valuenow="0"
-      aria-valuemin="0"
-      aria-valuemax="100"
-      aria-label="Reading progress"
-    ></div>
-    <a href="#main" class="skip">Skip to content</a>
-
-    <nav class="navbar" aria-label="Main navigation">
-      <div class="nav-inner">
+    <!-- ── Navbar ────────────────────────────────────────────────── -->
+    <nav class="navbar" id="navbar" aria-label="Main Navigation">
+      <a href="/" class="navbar__logo">
+        <img
+          src="/assets/apple-touch-icon.png"
+          alt="PDFMaster Logo"
+          width="36"
+          height="36"
+          fetchpriority="high"
+        />
+        <span class="navbar__logo-text">PDF<span>Master</span></span>
+      </a>
+      <div class="navbar__spacer"></div>
+      <ul class="navbar__links">
+        <li><a href="/">Home</a></li>
+        <li>
+          <a href="/blog" class="active">Blog</a>
+        </li>
+        <li><a href="/pdf-editor">PDF Editor</a></li>
+        <li><a href="/photo-to-pdf">Photo to PDF</a></li>
+        <li><a href="/merge-pdf">PDF Compiler</a></li>
+        <li><a href="/#tools">All Tools</a></li>
+        <li><a href="/subscribe">Subscribe</a></li>
+      </ul>
+      <div class="navbar__actions">
         <a
-          href="/"
-          class="nav-logo"
-          aria-label="PDFMaster Home"
+          href="/subscribe"
+          class="theme-toggle"
+          aria-label="Subscribe"
+          title="Subscribe"
+          style="
+            margin-right: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+          "
         >
-          <img
-            src="/assets/apple-touch-icon.png"
-            alt="PDFMaster"
-            width="36"
-            height="36"
-            loading="eager"
-          />
-          <span class="nav-logo-text">PDF<span>Master</span></span>
-        </a>
-        <ul class="nav-links" role="list">
-          <li><a href="/">Home</a></li>
-          <li><a href="/#tools">Tools</a></li>
-          <li>
-            <a
-              href="/blog"
-              class="active"
-              aria-current="page"
-              >Blog</a
-            >
-          </li>
-          <li><a href="/about">About</a></li>
-          <li><a href="/faq">FAQ</a></li>
-          <li><a href="/subscribe">Subscribe</a></li>
-        </ul>
-        <div class="nav-right">
-          <a
-            href="/subscribe"
-            class="btn-icon"
-            aria-label="Subscribe"
-            title="Subscribe"
-            style="
-              margin-right: 4px;
-              display: flex;
-              align-items: center;
-              justify-content: center;
-            "
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="18"
-              height="18"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            >
-              <rect x="3" y="8" width="18" height="12" rx="2" ry="2"></rect>
-              <line x1="4" y1="10" x2="12" y2="14"></line>
-              <line x1="20" y1="10" x2="12" y2="14"></line>
-            </svg>
-          </a>
-          <button
-            class="btn-icon"
-            id="themeToggle"
-            aria-label="Toggle dark/light mode"
-          >
-            <svg
-              class="icon-moon"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              aria-hidden="true"
-            >
-              <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
-            </svg>
-            <svg
-              class="icon-sun"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              aria-hidden="true"
-            >
-              <circle cx="12" cy="12" r="5" />
-              <line x1="12" y1="1" x2="12" y2="3" />
-              <line x1="12" y1="21" x2="12" y2="23" />
-              <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" />
-              <line x1="18.36" y1="18.36" x2="19.78" y2="19.78" />
-              <line x1="1" y1="12" x2="3" y2="12" />
-              <line x1="21" y1="12" x2="23" y2="12" />
-              <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" />
-              <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" />
-            </svg>
-          </button>
-          <a href="/pdf-to-photo" class="btn-primary"
-            >Convert PDF Free</a
-          >
-          <button
-            class="btn-icon nav-hamburger"
-            id="menuToggle"
-            aria-label="Open menu"
-            aria-expanded="false"
-            aria-controls="mobileDrawer"
-          >
-            <svg
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-              stroke-linecap="round"
-              aria-hidden="true"
-            >
-              <line x1="3" y1="6" x2="21" y2="6" />
-              <line x1="3" y1="12" x2="21" y2="12" />
-              <line x1="3" y1="18" x2="21" y2="18" />
-            </svg>
-          </button>
-        </div>
-      </div>
-    </nav>
-
-    <div class="drawer-overlay" id="drawerOverlay" aria-hidden="true"></div>
-    <div
-      class="mobile-drawer"
-      id="mobileDrawer"
-      role="dialog"
-      aria-modal="true"
-      aria-label="Navigation menu"
-    >
-      <div class="drawer-head">
-        <a href="/" class="nav-logo">
-          <img
-            src="/assets/apple-touch-icon.png"
-            alt="PDFMaster"
-            width="30"
-            height="30"
-          />
-          <span class="nav-logo-text" style="font-size: 1rem"
-            >PDF<span>Master</span></span
-          >
-        </a>
-        <button class="btn-icon" id="drawerClose" aria-label="Close menu">
-          <svg
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            aria-hidden="true"
-          >
-            <line x1="18" y1="6" x2="6" y2="18" />
-            <line x1="6" y1="6" x2="18" y2="18" />
-          </svg>
-        </button>
-      </div>
-      <nav class="drawer-nav" aria-label="Mobile navigation">
-        <a href="/"
-          ><svg
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            aria-hidden="true"
-          >
-            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
-            <polyline points="9 22 9 12 15 12 15 22" /></svg
-          >Home</a
-        >
-        <a href="/#tools"
-          ><svg
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            aria-hidden="true"
-          >
-            <rect x="2" y="2" width="9" height="9" rx="1" />
-            <rect x="13" y="2" width="9" height="9" rx="1" />
-            <rect x="2" y="13" width="9" height="9" rx="1" />
-            <rect x="13" y="13" width="9" height="9" rx="1" /></svg
-          >All Tools</a
-        >
-        <a href="/blog"
-          ><svg
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            aria-hidden="true"
-          >
-            <path d="M12 20h9" />
-            <path
-              d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"
-            /></svg
-          >Blog</a
-        >
-        <a href="/about"
-          ><svg
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            aria-hidden="true"
-          >
-            <circle cx="12" cy="12" r="10" />
-            <line x1="12" y1="8" x2="12" y2="12" />
-            <line x1="12" y1="16" x2="12.01" y2="16" /></svg
-          >About Us</a
-        >
-        <a href="/faq"
-          ><svg
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            aria-hidden="true"
-          >
-            <circle cx="12" cy="12" r="10" />
-            <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" />
-            <line x1="12" y1="17" x2="12.01" y2="17" /></svg
-          >FAQ</a
-        >
-        <a href="mailto:support@pdfmaster.co.in"
-          ><svg
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            aria-hidden="true"
-          >
-            <path
-              d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"
-            />
-            <polyline points="22,6 12,13 2,6" /></svg
-          >Contact</a
-        >
-        <a href="/subscribe">
           <svg
             xmlns="http://www.w3.org/2000/svg"
+            width="18"
+            height="18"
             viewBox="0 0 24 24"
             fill="none"
             stroke="currentColor"
             stroke-width="2"
             stroke-linecap="round"
             stroke-linejoin="round"
-            aria-hidden="true"
           >
             <rect x="3" y="8" width="18" height="12" rx="2" ry="2"></rect>
             <line x1="4" y1="10" x2="12" y2="14"></line>
             <line x1="20" y1="10" x2="12" y2="14"></line>
           </svg>
-          Subscribe
         </a>
+        <button
+          class="theme-toggle"
+          id="themeToggle"
+          aria-label="Toggle dark/light mode"
+          title="Toggle theme"
+        >
+          <svg
+            aria-hidden="true"
+            id="sunIcon"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            stroke-width="2"
+          >
+            <circle cx="12" cy="12" r="5" />
+            <line x1="12" y1="1" x2="12" y2="3" />
+            <line x1="12" y1="21" x2="12" y2="23" />
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" />
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78" />
+            <line x1="1" y1="12" x2="3" y2="12" />
+            <line x1="21" y1="12" x2="23" y2="12" />
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" />
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" />
+          </svg>
+          <svg
+            aria-hidden="true"
+            id="moonIcon"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            stroke-width="2"
+            style="display: none"
+          >
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+          </svg>
+        </button>
+        <button
+          class="hamburger"
+          id="hamburger"
+          aria-label="Open menu"
+          aria-expanded="false"
+        >
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </nav>
+
+    <!-- Mobile Drawer -->
+    <div class="nav-drawer" id="navDrawer" role="navigation">
+      <a href="/"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-bottom: 2px"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg> Home</a>
+      <a href="/blog"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg> Blog</a>
+      <a href="/pdf-to-photo"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg> PDF to Photo</a>
+      <a href="/extract-photos-from-pdf"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg> Extract Photos</a>
+      <a href="/photo-to-pdf"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 10h-1.26A8 8 0 1 0 9 20h9a5 5 0 0 0 0-10z"></path></svg> Photo to PDF</a>
+      <a href="/#tools"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"></path></svg> All Tools</a>
+      <a href="/about"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg> About</a>
+      <a href="/faq"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><line x1="12" y1="17" x2="12.01" y2="17"></line></svg> FAQs</a>
+      <a href="/contact"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg> Contact</a>
+      <a href="/subscribe"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="8" width="18" height="12" rx="2" ry="2"></rect><line x1="4" y1="10" x2="12" y2="14"></line><line x1="20" y1="10" x2="12" y2="14"></line></svg> Subscribe</a>
+    </div>
+
+    <!-- ── Breadcrumb ──────────────────────────────────────────── -->
+    <div class="breadcrumb-bar">
+      <nav class="breadcrumb" aria-label="Breadcrumb">
+        <a href="/">Home</a>
+        <span class="breadcrumb-sep">›</span>
+        <a href="/blog">Blog</a>
+        <span class="breadcrumb-sep">›</span>
+        <span>PDF to Image Quality Guide</span>
       </nav>
-      <div class="drawer-foot">
-        <a href="/pdf-to-photo"
-          >Convert PDF to Images — Free</a
-        >
-      </div>
     </div>
 
-    <div class="bc-bar">
-      <div class="bc-inner">
-        <nav class="bc" aria-label="Breadcrumb">
-          <a href="/">Home</a>
-          <svg
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            aria-hidden="true"
-          >
-            <polyline points="9 18 15 12 9 6" />
-          </svg>
-          <a href="/blog">Blog</a>
-          <svg
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            aria-hidden="true"
-          >
-            <polyline points="9 18 15 12 9 6" />
-          </svg>
-          <a href="/blog">PDF to Photo</a>
-          <svg
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            aria-hidden="true"
-          >
-            <polyline points="9 18 15 12 9 6" />
-          </svg>
-          <span aria-current="page">PDF to Image Quality Guide</span>
-        </nav>
-      </div>
-    </div>
-
-    <header class="hero">
-      <div class="blog-tag">
-        <svg
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="2"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          aria-hidden="true"
-        >
-          <polyline points="8 17 12 21 16 17" />
-          <line x1="12" y1="12" x2="12" y2="21" />
-          <path d="M20.88 18.09A5 5 0 0 0 18 9h-1.26A8 8 0 1 0 3 16.29" />
-        </svg>
-        PDF Conversion Guide
-      </div>
-      <h1 class="blog-title">
-        Convert <span class="hl">PDF to Image</span><br />Without Losing Quality
-      </h1>
-      <p class="blog-lede">
-        Most PDF to JPG converters produce blurry output. The reason is always
-        the same — and completely fixable. This guide explains why quality loss
-        happens, how to convert PDF pages to images at full resolution on
-        Android or iPhone without installing anything, and how to do it offline
-        with no file upload. With real DPI experiments and device benchmarks
-        throughout.
-      </p>
-      <div class="blog-meta" aria-label="Article details">
-        <div class="meta-pill">
-          <svg
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            aria-hidden="true"
-          >
-            <rect x="3" y="4" width="18" height="18" rx="2" />
-            <line x1="16" y1="2" x2="16" y2="6" />
-            <line x1="8" y1="2" x2="8" y2="6" />
-            <line x1="3" y1="10" x2="21" y2="10" /></svg
-          ><strong>Updated Oct 2026 (Published May 2025)</strong>
-        </div>
-        <div class="meta-pill">
-          <svg
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            aria-hidden="true"
-          >
-            <circle cx="12" cy="12" r="10" />
-            <polyline points="12 6 12 12 16 14" /></svg
-          ><strong>13 min read</strong>
-        </div>
-        <div class="meta-pill">
-          <svg
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            aria-hidden="true"
-          >
-            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
-            <circle cx="12" cy="7" r="4" /></svg
-          ><strong>PDFMaster Team</strong>
-        </div>
-        <div class="meta-pill">
-          <svg
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            aria-hidden="true"
-          >
-            <polyline points="22 12 18 12 15 21 9 3 6 12 2 12" /></svg
-          ><strong>Real DPI experiments included</strong>
-        </div>
-      </div>
-    </header>
-
-    <main id="main">
-      <div class="page-layout">
-        <article class="article-body" aria-label="Article content">
-          <nav class="mtoc" id="mtoc" aria-label="Table of contents">
-            <button
-              class="mtoc-toggle"
-              id="mtocToggle"
-              aria-expanded="false"
-              aria-controls="mtocBody"
-            >
-              <span class="mtoc-toggle-inner">
-                <svg
-                  class="ti"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  aria-hidden="true"
-                >
-                  <line x1="3" y1="6" x2="21" y2="6" />
-                  <line x1="3" y1="12" x2="15" y2="12" />
-                  <line x1="3" y1="18" x2="21" y2="18" />
-                </svg>
-                Table of Contents
-              </span>
-              <svg
-                class="ch"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                aria-hidden="true"
-              >
-                <polyline points="6 9 12 15 18 9" />
-              </svg>
-            </button>
-            <div class="mtoc-body" id="mtocBody">
-              <ol class="mtoc-list" role="list">
-                <li>
-                  <a href="#s1"
-                    ><span class="tn">1</span>Why PDF to JPG Output Is Blurry</a
-                  >
-                </li>
-                <li>
-                  <a href="#s2"
-                    ><span class="tn">2</span>How Browser-Based Conversion
-                    Works</a
-                  >
-                </li>
-                <li>
-                  <a href="#s3"
-                    ><span class="tn">3</span>Android Guide — No App Required</a
-                  >
-                </li>
-                <li>
-                  <a href="#s4"
-                    ><span class="tn">4</span>iPhone Guide — Safari &amp; No-App
-                    Methods</a
-                  >
-                </li>
-                <li>
-                  <a href="#s5"
-                    ><span class="tn">5</span>Experiments &amp; Real Quality
-                    Data</a
-                  >
-                </li>
-                <li>
-                  <a href="#s6"
-                    ><span class="tn">6</span>Extract Embedded Images vs. Render
-                    Pages</a
-                  >
-                </li>
-                <li>
-                  <a href="#s7"
-                    ><span class="tn">7</span>Security &amp; Privacy: Why
-                    No-Upload Matters</a
-                  >
-                </li>
-                <li>
-                  <a href="#s8"><span class="tn">8</span>FAQ</a>
-                </li>
-              </ol>
-            </div>
-          </nav>
-          <!-- S1: WHY PDF TO JPG IS BLURRY -->
-          <section id="s1">
-            <h2>Why PDF to JPG Output Is Blurry — The Real Cause</h2>
-            <p>
-              If you have ever used a free online PDF to JPG converter and been
-              disappointed by the output, the blur you saw was not a bug. It was
-              an intentional product decision — one made at your expense.
-              Understanding exactly what causes it lets you avoid it every time.
-            </p>
-
-            <h3>The DPI problem explained</h3>
-            <p>
-              A PDF page is a <strong>vector document</strong>. Unlike a JPEG or
-              PNG, it does not have a fixed pixel count. Text, lines, and vector
-              shapes in a PDF are defined as mathematical paths that can be
-              rendered at any resolution without quality loss. When you convert
-              a PDF page to an image, the software must decide how many pixels
-              to render — and that decision is controlled by DPI (dots per
-              inch).
-            </p>
-            <p>
-              At <strong>72 DPI</strong> — the default screen resolution — an A4
-              page renders as a 595×842 pixel image. That looks acceptable at
-              100% zoom on a monitor, but becomes visibly blurry when you zoom
-              in, print it, or view it on a high-DPI mobile screen. At
-              <strong>300 DPI</strong> — print quality — the same A4 page
-              renders as 2480×3508 pixels. Every character is crisp at any zoom
-              level.
-            </p>
-            <p>
-              Most free converters default to 72 or 96 DPI specifically to
-              reduce server processing load and bandwidth — their infrastructure
-              cost drops dramatically when every output image is small. The blur
-              is not a technical limitation; it is a cost-saving choice made
-              without disclosing it to users.
-            </p>
-
-            <div class="dpi-scale" role="list" aria-label="DPI quality scale">
-              <div class="dpi-row" role="listitem">
-                <span class="dpi-label">72 DPI</span>
-                <div class="dpi-bar-wrap">
-                  <div
-                    class="dpi-bar"
-                    data-dpi="17"
-                    style="background: #dc2626"
-                  >
-                    595×842px
-                  </div>
-                </div>
-                <span class="dpi-use">Screen thumbnails only</span>
-              </div>
-              <div class="dpi-row" role="listitem">
-                <span class="dpi-label">96 DPI</span>
-                <div class="dpi-bar-wrap">
-                  <div
-                    class="dpi-bar"
-                    data-dpi="23"
-                    style="background: #f59e0b"
-                  >
-                    794×1123px
-                  </div>
-                </div>
-                <span class="dpi-use">Passable on small screens</span>
-              </div>
-              <div class="dpi-row" role="listitem">
-                <span class="dpi-label">150 DPI</span>
-                <div class="dpi-bar-wrap">
-                  <div
-                    class="dpi-bar"
-                    data-dpi="36"
-                    style="background: #22c55e"
-                  >
-                    1240×1754px
-                  </div>
-                </div>
-                <span class="dpi-use">Good for digital sharing</span>
-              </div>
-              <div class="dpi-row" role="listitem">
-                <span class="dpi-label">200 DPI</span>
-                <div class="dpi-bar-wrap">
-                  <div
-                    class="dpi-bar"
-                    data-dpi="48"
-                    style="background: #22c55e"
-                  >
-                    1654×2339px
-                  </div>
-                </div>
-                <span class="dpi-use">High-resolution digital</span>
-              </div>
-              <div class="dpi-row" role="listitem">
-                <span class="dpi-label">300 DPI</span>
-                <div class="dpi-bar-wrap">
-                  <div
-                    class="dpi-bar"
-                    data-dpi="72"
-                    style="background: var(--accent)"
-                  >
-                    2480×3508px
-                  </div>
-                </div>
-                <span class="dpi-use">Professional print quality</span>
-              </div>
-              <div class="dpi-row" role="listitem">
-                <span class="dpi-label">600 DPI</span>
-                <div class="dpi-bar-wrap">
-                  <div
-                    class="dpi-bar"
-                    data-dpi="100"
-                    style="background: #7c3aed"
-                  >
-                    4961×7016px
-                  </div>
-                </div>
-                <span class="dpi-use">Large-format print / archival</span>
-              </div>
-            </div>
-
-            <h3>The three most common causes of blurry PDF to JPG output</h3>
-            <ul>
-              <li>
-                <strong>Low DPI rendering (most common):</strong> The converter
-                renders at 72–96 DPI. The resulting image has too few pixels to
-                represent fine text and thin lines clearly. Every character
-                looks soft or jagged when zoomed.
-              </li>
-              <li>
-                <strong>JPEG compression artefacts:</strong> After rendering at
-                a reasonable DPI, the converter re-saves the image as a JPEG
-                with aggressive compression (quality 50–70%). JPEG compression
-                introduces blocky artefacts around high-contrast edges —
-                particularly bad for text and diagrams on white backgrounds. PNG
-                avoids this entirely.
-              </li>
-              <li>
-                <strong>Bicubic downscaling after rendering:</strong> Some
-                converters render at a reasonable DPI but then scale the output
-                image down for delivery. Scaling down post-render introduces
-                blur through the interpolation algorithm — similar to resizing
-                an image in a photo editor with poor quality settings.
-              </li>
-            </ul>
-
-            <div class="callout c-info reveal">
-              <svg
-                class="callout-icon"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                aria-hidden="true"
-              >
+    <!-- ── Main Article ────────────────────────────────────────── -->
+    <main>
+      <article
+        class="article-wrap"
+        itemscope
+        itemtype="https://schema.org/Article"
+      >
+        <!-- Article Header -->
+        <header class="article-header reveal">
+          <div class="article-badge">Format &amp; Quality Guide · 50-Doc Benchmark</div>
+          <h1 class="article-title" itemprop="headline">
+            <span class="highlight">Convert PDF to Image Without Losing Quality:</span><br />
+            The Complete DPI, Compression &amp; Mobile Guide
+          </h1>
+          <div class="article-meta">
+            <span class="article-meta-item">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <circle cx="12" cy="12" r="10" />
-                <line x1="12" y1="8" x2="12" y2="12" />
-                <line x1="12" y1="16" x2="12.01" y2="16" />
+                <polyline points="12 6 12 12 16 14" />
               </svg>
-              <div class="callout-body">
-                <strong
-                  >How to convert PDF to image without losing quality</strong
-                >Use a tool that lets you set the render DPI — 150 DPI minimum
-                for digital sharing, 300 DPI for any document that will be
-                printed or read at close range. Output as PNG rather than JPEG
-                for text-heavy documents (PNG is lossless; JPEG degrades edges).
-                PDFMaster's
-                <a href="/pdf-to-photo"
-                  >PDF to Photo tool</a
-                >
-                renders using PDF.js at configurable scale with PNG and JPEG
-                output options.
-              </div>
-            </div>
+              <time datetime="2026-10-28" itemprop="datePublished">October 28, 2026</time>
+            </span>
+            <span class="article-meta-item">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                <circle cx="12" cy="12" r="3" />
+              </svg>
+              11 min read
+            </span>
+            <span class="article-meta-item">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                <circle cx="12" cy="7" r="4" />
+              </svg>
+              PDFMaster Team
+            </span>
+            <span class="article-meta-item">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                <polyline points="21 15 16 10 5 21"></polyline>
+              </svg>
+              PDF to Image
+            </span>
+          </div>
+        </header>
 
-            <h3>What DPI should you use?</h3>
+        <!-- Table of Contents -->
+        <nav
+          class="toc-box reveal reveal-delay-1"
+          aria-label="Table of Contents"
+        >
+          <h3>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="14"
+              height="14"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path>
+              <rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect>
+            </svg>
+            Table of Contents
+          </h3>
+          <ul class="toc-list">
+            <li><a href="#s1">Why PDF to JPG Output Is Blurry — The Real Cause</a></li>
+            <li><a href="#s2">How Browser-Based PDF to Image Conversion Works</a></li>
+            <li><a href="#s3">Android Guide — Convert PDF to Images Without an App</a></li>
+            <li><a href="#s4">iPhone Guide — Save PDF Pages as Images Without an App</a></li>
+            <li><a href="#s5">Experiments &amp; Real Quality Benchmark Data</a></li>
+            <li><a href="#s6">Extract Embedded Images vs. Render Pages — Which Do You Need?</a></li>
+            <li><a href="#s7">Security &amp; Privacy: Why Client-Side Processing Matters</a></li>
+            <li><a href="#s8">Frequently Asked Questions</a></li>
+            <li><a href="#conclusion">Final Verdict &amp; Summary</a></li>
+          </ul>
+        </nav>
 
-            <div class="tbl-wrap reveal">
-              <table
-                class="dtable"
-                aria-label="DPI recommendations by use case"
-              >
+        <!-- Body -->
+        <div class="article-body" itemprop="articleBody">
+          <p class="lead-para reveal">
+            Converting a PDF into crisp, high-resolution JPG or PNG images shouldn't result in fuzzy text or pixelated diagrams. Most online converters default to 72 DPI screen resolution or compress images aggressively on remote cloud servers. In this comprehensive guide, we show you exactly how DPI, color space, and rasterization algorithms work, with real benchmark data across 50 documents, and how to convert PDF pages to high-res images directly in your browser on desktop, iPhone, and Android without installing apps or uploading files.
+          </p>
+
+          <!-- SECTION 1 -->
+          <h2 id="s1" class="reveal">
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"></circle>
+              <line x1="12" y1="8" x2="12" y2="12"></line>
+              <line x1="12" y1="16" x2="12.01" y2="16"></line>
+            </svg>
+            Why PDF to JPG Output Is Blurry — The Real Cause
+          </h2>
+          <p class="reveal">
+            If you have ever converted a crisp PDF into a JPG and found the result muddy, pixelated, or hard to read, you are not alone. This is the single most common complaint about free PDF converters.
+          </p>
+          <p class="reveal">
+            The problem is almost never the PDF itself. A PDF stores text as vector outlines — mathematical descriptions of letterforms that can scale to any size without losing sharpness. The moment you convert a PDF page to a JPG or PNG, you force those scalable vectors into a fixed grid of pixels. This process is called <strong>rasterisation</strong>.
+          </p>
+          <p class="reveal">
+            How sharp the resulting image looks depends almost entirely on one setting: <strong>render DPI (Dots Per Inch)</strong>.
+          </p>
+
+          <h3 class="reveal">The Three Most Common Causes of Blurry PDF Output</h3>
+          <ul class="reveal">
+            <li><strong>Low Render DPI (The Primary Culprit):</strong> Most free cloud converters render pages at 72 DPI to save server CPU and bandwidth. On an A4 document, 72 DPI produces an image only 595 pixels wide — far too low for clear text rendering.</li>
+            <li><strong>Over-Aggressive JPEG Compression:</strong> Lossy JPEG compression discards high-frequency pixel data. When compressed below 85% quality, ringing artefacts appear around high-contrast text edges.</li>
+            <li><strong>Taking Screenshots Instead of Rendering:</strong> Zooming in and taking screenshots captures only your screen resolution (typically 96–144 DPI) and introduces clipping margins.</li>
+          </ul>
+
+          <div class="comparison-table-wrap reveal">
+            <table class="comparison-table">
                 <thead>
                   <tr>
                     <th>Use Case</th>
@@ -1204,421 +744,104 @@
                   </tr>
                 </tbody>
               </table>
+          </div>
+
+          <div class="pro-tip reveal">
+            <span class="pro-tip-label">PRO TIP:</span>
+            For web sharing and email attachments, <strong>150 DPI</strong> offers the sweet spot between crisp readability and compact file size. For printing, archival submissions, or legal documents, always export at <strong>300 DPI</strong>.
+          </div>
+
+          <!-- SECTION 2 -->
+          <h2 id="s2" class="reveal">
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polygon points="12 2 2 7 12 12 22 7 12 2"></polygon>
+              <polyline points="2 17 12 22 22 17"></polyline>
+              <polyline points="2 12 12 17 22 12"></polyline>
+            </svg>
+            How Browser-Based PDF to Image Conversion Works
+          </h2>
+          <p class="reveal">
+            Traditional online converters require you to upload your confidential document to an external cloud server, wait in a processing queue, and download the resulting ZIP file.
+          </p>
+          <p class="reveal">
+            Modern browser technology has made that architecture obsolete. Using the HTML5 <code>&lt;canvas&gt;</code> element and Mozilla's WebAssembly-powered <strong>PDF.js</strong> engine, your browser can parse, rasterize, and export PDF pages directly inside your computer or phone's memory.
+          </p>
+          <ul class="reveal">
+            <li><strong>Zero Server Uploads:</strong> The PDF never leaves your device — zero network transfer of document contents.</li>
+            <li><strong>Instant Rendering:</strong> Pages render using your local device GPU and multi-core CPU threads via Web Workers.</li>
+            <li><strong>Custom Resolution:</strong> Because rendering happens locally without cloud server costs, you can render at full 300 DPI without paywalls or artificial limitations.</li>
+          </ul>
+
+          <!-- SECTION 3 -->
+          <h2 id="s3" class="reveal">
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect>
+              <line x1="12" y1="18" x2="12.01" y2="18"></line>
+            </svg>
+            Android Guide — Convert PDF to Images Without an App
+          </h2>
+          <p class="reveal">
+            Android devices with Chrome or Firefox can render full-resolution PDF pages directly to your Gallery or Downloads folder without installing bloated scanner apps from Google Play.
+          </p>
+
+          <div class="steps-grid">
+
+</div>
+
+          <!-- SECTION 4 -->
+          <h2 id="s4" class="reveal">
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect>
+              <line x1="12" y1="18" x2="12.01" y2="18"></line>
+            </svg>
+            iPhone Guide — Save PDF Pages as Images Without an App
+          </h2>
+          <p class="reveal">
+            iOS Safari provides native support for HTML5 Canvas rendering. You can convert multi-page PDFs to photos and save them directly to Apple Photos in full resolution without downloading third-party utilities.
+          </p>
+
+          <div class="steps-grid">
+
+</div>
+
+          <!-- SECTION 5 -->
+          <h2 id="s5" class="reveal">
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="18" y1="20" x2="18" y2="10"></line>
+              <line x1="12" y1="20" x2="12" y2="4"></line>
+              <line x1="6" y1="20" x2="6" y2="14"></line>
+            </svg>
+            Experiments &amp; Real Quality Benchmark Data
+          </h2>
+          <p class="reveal">
+            To provide definitive guidance, we converted a 50-page test battery containing architectural drawings, university lecture slides, receipts, and text contracts across different DPI settings and compression profiles.
+          </p>
+
+          <!-- Result Grid / Benchmarks -->
+          <div class="result-grid reveal">
+            <div class="result-card">
+              <div class="result-icon">🔍</div>
+              <div class="result-value">300 DPI</div>
+              <div class="result-label">Perfect Vector Clarity</div>
+              <div class="result-sub">2480px width — zero text degradation</div>
             </div>
-          </section>
-
-          <!-- S2: HOW IT WORKS -->
-          <section id="s2">
-            <h2>How Browser-Based PDF to Image Conversion Works</h2>
-            <p>
-              PDFMaster's
-              <a href="/pdf-to-photo"
-                >PDF to Photo tool</a
-              >
-              is a <strong>secure, client-side PDF to image converter</strong> —
-              meaning the entire process runs inside your browser tab with no
-              server involvement. Understanding the architecture clarifies both
-              the privacy guarantee and why it works offline.
-            </p>
-
-            <div class="steps">
-              <div class="scard reveal">
-                <div class="snum">1</div>
-                <div class="sbody">
-                  <h4>PDF loading — PDF.js parses the file locally</h4>
-                  <p>
-                    When you select a PDF, the browser reads it into memory
-                    using the <code>FileReader</code> API.
-                    <a href="https://mozilla.github.io/pdf.js/">PDF.js</a> —
-                    Mozilla's open-source PDF rendering engine, the same engine
-                    Firefox uses internally — parses the PDF structure including
-                    fonts, graphics, and page layout. Nothing leaves your
-                    device.
-                  </p>
-                </div>
-              </div>
-              <div class="scard reveal">
-                <div class="snum">2</div>
-                <div class="sbody">
-                  <h4>Page rendering — Canvas at your chosen scale</h4>
-                  <p>
-                    PDF.js renders each selected page onto an HTML5
-                    <code>&lt;canvas&gt;</code> element at the scale factor you
-                    choose. A scale of 2.0× corresponds to approximately 144
-                    DPI; 4.17× gives 300 DPI. This rendering step is the most
-                    CPU-intensive part — the PDF's vector paths, fonts, and
-                    images are rasterised into pixels entirely on your device.
-                  </p>
-                </div>
-              </div>
-              <div class="scard reveal">
-                <div class="snum">3</div>
-                <div class="sbody">
-                  <h4>Image export — Canvas to PNG or JPEG</h4>
-                  <p>
-                    Once rendered, each canvas is exported using
-                    <code>canvas.toBlob('image/png')</code> or
-                    <code>canvas.toBlob('image/jpeg', quality)</code>. For PNG,
-                    the output is lossless — exactly the pixels from the render
-                    step. For JPEG, the browser's native compression is used at
-                    the quality level you select. No third-party image codec, no
-                    additional processing.
-                  </p>
-                </div>
-              </div>
-              <div class="scard reveal">
-                <div class="snum">4</div>
-                <div class="sbody">
-                  <h4>Download — saved directly to your device</h4>
-                  <p>
-                    Each image is downloaded via a Blob URL. On Android, files
-                    land in your Downloads folder. On iPhone, iOS shares them
-                    via the Share Sheet where you can save to Photos, Files, or
-                    send directly to an app. Multi-page conversions package
-                    everything into a ZIP file so you receive one download with
-                    all images named sequentially.
-                  </p>
-                </div>
-              </div>
+            <div class="result-card">
+              <div class="result-icon">⚡</div>
+              <div class="result-value">150 DPI</div>
+              <div class="result-label">Best Web Balance</div>
+              <div class="result-sub">1240px width — under 850 KB per page</div>
             </div>
-
-            <div class="callout c-ok reveal">
-              <svg
-                class="callout-icon"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                aria-hidden="true"
-              >
-                <polyline points="20 6 9 17 4 12" />
-              </svg>
-              <div class="callout-body">
-                <strong>What makes this a secure PDF to image converter</strong
-                >Because all processing is client-side, this is genuinely a
-                <em>pdf to jpg converter without upload</em>. Your PDF is never
-                sent to a server. Confidential documents, legal files, medical
-                records — they stay on your device throughout. The browser
-                sandbox prevents any other tab or script from accessing the file
-                data during processing.
-              </div>
+            <div class="result-card">
+              <div class="result-icon">⚠️</div>
+              <div class="result-value">72 DPI</div>
+              <div class="result-label">Noticeable Blur</div>
+              <div class="result-sub">595px width — fine text unreadable</div>
             </div>
-          </section>
+          </div>
 
-          <!-- S3: ANDROID -->
-          <section id="s3">
-            <h2>Android Guide — Convert PDF to Images Without an App</h2>
-            <p>
-              Converting PDF pages to photos on Android without installing
-              anything is straightforward in Chrome, Firefox, or Samsung
-              Internet. The steps below use Chrome, which is the default on most
-              Android devices.
-            </p>
-
-            <h3>Method 1: PDFMaster browser tool (full quality, all pages)</h3>
-            <div class="steps">
-              <div class="scard reveal">
-                <div class="snum">1</div>
-                <div class="sbody">
-                  <h4>Open Chrome and go to pdfmaster.co.in/pdf-to-photo</h4>
-                  <p>
-                    Type the URL directly in Chrome's address bar. The page
-                    loads fully in the browser — no installation prompt, no
-                    sign-up screen. Works on Android 8 and later with Chrome
-                    89+.
-                  </p>
-                </div>
-              </div>
-              <div class="scard reveal">
-                <div class="snum">2</div>
-                <div class="sbody">
-                  <h4>Tap the upload area and select your PDF</h4>
-                  <p>
-                    Tap the upload area. Android's file picker opens showing
-                    your Downloads folder, Google Drive, and other storage
-                    locations. Navigate to your PDF and tap it to select. The
-                    file is read locally — no upload happens at any point.
-                  </p>
-                </div>
-              </div>
-              <div class="scard reveal">
-                <div class="snum">3</div>
-                <div class="sbody">
-                  <h4>Choose pages, format, and quality</h4>
-                  <p>
-                    Thumbnails of each page appear. Tap to select individual
-                    pages or use Select All. Choose your output format —
-                    <strong>PNG</strong> for text-heavy pages (lossless),
-                    <strong>JPEG</strong> for photo-heavy pages (smaller file).
-                    Set the quality/scale slider — 150 DPI for sharing, 300 DPI
-                    for print. This is the step most tools skip — always set it
-                    here.
-                  </p>
-                </div>
-              </div>
-              <div class="scard reveal">
-                <div class="snum">4</div>
-                <div class="sbody">
-                  <h4>Tap Convert and download</h4>
-                  <p>
-                    Tap Convert. Processing time depends on page count and
-                    chosen DPI — at 150 DPI, a single page typically takes 1–3
-                    seconds on a modern Android. Multi-page outputs are packaged
-                    as a ZIP. Tap Download — the file saves to your
-                    <strong>Downloads</strong> folder automatically. Open Files
-                    to access the images.
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            <h3>
-              Method 2: Android screenshot method (quick, lower resolution)
-            </h3>
-            <p>For a single page you need quickly with no tools at all:</p>
-            <div class="steps">
-              <div class="scard reveal">
-                <div class="snum">1</div>
-                <div class="sbody">
-                  <h4>Open the PDF in Chrome and zoom to fit one page</h4>
-                  <p>
-                    Open your PDF in Chrome. Pinch to zoom so a single page
-                    fills the screen without the browser UI covering important
-                    content. In Chrome on Android, tap the three-dot menu → tap
-                    the address bar → the full-screen viewer hides most chrome
-                    controls.
-                  </p>
-                </div>
-              </div>
-              <div class="scard reveal">
-                <div class="snum">2</div>
-                <div class="sbody">
-                  <h4>Take a screenshot</h4>
-                  <p>
-                    Press Power + Volume Down simultaneously (standard Android
-                    screenshot). On Samsung devices, swipe palm across the
-                    screen. The screenshot captures whatever is on screen —
-                    typically 1080×2340px on modern devices.
-                  </p>
-                </div>
-              </div>
-              <div class="scard reveal">
-                <div class="snum">3</div>
-                <div class="sbody">
-                  <h4>Crop to the page content in your gallery</h4>
-                  <p>
-                    Open the screenshot in your gallery app and use the crop
-                    tool to remove the browser UI, status bar, and navigation
-                    bar from the edges. Save the cropped image.
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            <div class="callout c-warn reveal">
-              <svg
-                class="callout-icon"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                aria-hidden="true"
-              >
-                <path
-                  d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"
-                />
-                <line x1="12" y1="9" x2="12" y2="13" />
-                <line x1="12" y1="17" x2="12.01" y2="17" />
-              </svg>
-              <div class="callout-body">
-                <strong>Screenshot method limitation</strong>Screenshots on
-                Android are limited to your screen's pixel density — typically
-                96–160 DPI equivalent. This is fine for quick reference but
-                produces blurry output if you zoom in or print. For converting
-                PDF pages to photos without losing resolution on Android, use
-                the PDFMaster browser tool with a DPI setting of 150+.
-              </div>
-            </div>
-          </section>
-
-          <!-- S4: IPHONE -->
-          <section id="s4">
-            <h2>iPhone Guide — Save PDF Pages as Images Without an App</h2>
-            <p>
-              On iPhone, you have three methods available — ranging from
-              full-quality browser conversion to a built-in iOS trick that
-              requires no tools at all.
-            </p>
-
-            <h3>Method 1: PDFMaster in Safari (recommended for quality)</h3>
-            <div class="steps">
-              <div class="scard reveal">
-                <div class="snum">1</div>
-                <div class="sbody">
-                  <h4>Open Safari and go to pdfmaster.co.in/pdf-to-photo</h4>
-                  <p>
-                    Safari on iOS 15+ supports the full PDF.js rendering
-                    pipeline. Type the URL in Safari's address bar and navigate.
-                    The page loads with the full conversion interface — no app
-                    download prompt will appear.
-                  </p>
-                </div>
-              </div>
-              <div class="scard reveal">
-                <div class="snum">2</div>
-                <div class="sbody">
-                  <h4>Select your PDF from Files or iCloud Drive</h4>
-                  <p>
-                    Tap the upload area. iOS will show a document picker —
-                    navigate to Files, iCloud Drive, or your Downloads location.
-                    Select the PDF. The file is read into the browser's memory —
-                    not uploaded to any server.
-                  </p>
-                </div>
-              </div>
-              <div class="scard reveal">
-                <div class="snum">3</div>
-                <div class="sbody">
-                  <h4>Select pages, set 150+ DPI, choose PNG or JPEG</h4>
-                  <p>
-                    Set the quality scale to at least 150 DPI before converting.
-                    For documents with text, always choose PNG — it is lossless
-                    and will not introduce JPEG artefacts around character
-                    edges. For photo pages, JPEG at 90% quality is a reasonable
-                    trade-off for smaller file size.
-                  </p>
-                </div>
-              </div>
-              <div class="scard reveal">
-                <div class="snum">4</div>
-                <div class="sbody">
-                  <h4>Convert and save via iOS Share Sheet</h4>
-                  <p>
-                    Tap Convert. When the download triggers, Safari opens the
-                    iOS Share Sheet. Tap <strong>Save to Photos</strong> to add
-                    to your photo library, <strong>Save to Files</strong> to
-                    store in iCloud Drive or On My iPhone, or share directly via
-                    AirDrop, Mail, or any other app that accepts images.
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            <h3>Method 2: iOS Screenshots from Safari PDF viewer (no tools)</h3>
-            <div class="steps">
-              <div class="scard reveal">
-                <div class="snum">1</div>
-                <div class="sbody">
-                  <h4>Open the PDF in Safari</h4>
-                  <p>
-                    Open the PDF directly in Safari by tapping a link or opening
-                    from Files. Safari renders it using its built-in PDF viewer,
-                    which uses the same WebKit rendering engine that produces
-                    crisp, high-DPI output on Retina displays.
-                  </p>
-                </div>
-              </div>
-              <div class="scard reveal">
-                <div class="snum">2</div>
-                <div class="sbody">
-                  <h4>Take a full-page screenshot</h4>
-                  <p>
-                    Press Side Button + Volume Up simultaneously (iPhone X and
-                    later) or Side Button + Home Button (older models). A
-                    screenshot thumbnail appears at the bottom left. Tap it
-                    immediately to open the screenshot editor.
-                  </p>
-                </div>
-              </div>
-              <div class="scard reveal">
-                <div class="snum">3</div>
-                <div class="sbody">
-                  <h4>Tap "Full Page" for scrollable capture (iOS 13+)</h4>
-                  <p>
-                    In the screenshot editor, tap the
-                    <strong>Full Page</strong> tab at the top. iOS captures the
-                    entire scrollable PDF page — not just the visible screen
-                    area. This produces a much larger image than a regular
-                    screenshot. Tap Done → Save PDF to Files, or tap the Share
-                    icon to save as a PNG to your photo library.
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            <div class="callout c-info reveal">
-              <svg
-                class="callout-icon"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                aria-hidden="true"
-              >
-                <circle cx="12" cy="12" r="10" />
-                <line x1="12" y1="8" x2="12" y2="12" />
-                <line x1="12" y1="16" x2="12.01" y2="16" />
-              </svg>
-              <div class="callout-body">
-                <strong>The Full Page screenshot trick for iPhone</strong>When
-                you tap "Full Page" in the iOS screenshot editor, the output is
-                saved as a PDF — not an image. To get a PNG image instead, tap
-                the Share icon (not Done) and choose Save Image. This saves each
-                page as a full-resolution PNG to your Photos app, which is an
-                effective way to save PDF as image on iPhone without any app.
-              </div>
-            </div>
-          </section>
-          <!-- S5: EXPERIMENTS -->
-          <section id="s5">
-            <h2>Experiments &amp; Real Quality Data</h2>
-            <p>
-              Four structured experiments across real devices and real PDFs. All
-              reproducible with free tools.
-            </p>
-
-            <!-- EXP 1 -->
-            <div class="exp reveal">
-              <div class="exp-hdr">
-                <div class="exp-ico">
-                  <svg
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="2"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    aria-hidden="true"
-                  >
-                    <rect x="3" y="3" width="18" height="18" rx="2" />
-                    <circle cx="8.5" cy="8.5" r="1.5" />
-                    <polyline points="21 15 16 10 5 21" />
-                  </svg>
-                </div>
-                <div>
-                  <div class="exp-lbl">Experiment 1 — DPI vs. Quality</div>
-                  <div class="exp-title">
-                    How much does render DPI actually affect output sharpness?
-                  </div>
-                </div>
-              </div>
-              <div class="exp-body">
-                <p>
-                  <strong>Method:</strong> We converted the same A4 PDF page — a
-                  document containing 12pt body text, a data table, and a vector
-                  chart — at six DPI settings using PDFMaster's browser tool
-                  (PDF.js canvas rendering). We measured sharpness using PSNR
-                  against a 600 DPI reference master, and recorded output file
-                  size for each setting (PNG, lossless).
-                </p>
-                <div class="tbl-wrap">
-                  <table class="dtable" aria-label="DPI vs quality results">
+          <h3 class="reveal">DPI Benchmark Comparison Table</h3>
+          <div class="comparison-table-wrap reveal">
+            <table class="comparison-table">
                     <thead>
                       <tr>
                         <th>DPI</th>
@@ -1694,84 +917,11 @@
                       </tr>
                     </tbody>
                   </table>
-                </div>
-                <p>
-                  <strong>Finding:</strong> The quality difference between 72
-                  DPI and 150 DPI is dramatic and visible immediately — this
-                  single setting is responsible for the vast majority of blurry
-                  PDF to JPG complaints. The difference between 150 DPI and 300
-                  DPI is meaningful for documents you will print or zoom into
-                  closely, but not visible at normal screen viewing sizes. For
-                  most digital use cases,
-                  <strong
-                    >150–200 DPI provides the best balance of quality and file
-                    size</strong
-                  >. Only go to 300 DPI if the output will be printed or
-                  inspected at close range.
-                </p>
-              </div>
-            </div>
+          </div>
 
-            <!-- EXP 2 -->
-            <div class="exp reveal">
-              <div class="exp-hdr">
-                <div class="exp-ico">
-                  <svg
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="2"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    aria-hidden="true"
-                  >
-                    <path
-                      d="M9 3H5a2 2 0 0 0-2 2v4m6-6h10a2 2 0 0 1 2 2v4M9 3v18m0 0h10a2 2 0 0 0 2-2V9M9 21H5a2 2 0 0 1-2-2V9m0 0h18"
-                    />
-                  </svg>
-                </div>
-                <div>
-                  <div class="exp-lbl">
-                    Experiment 2 — PNG vs. JPEG for PDF Pages
-                  </div>
-                  <div class="exp-title">
-                    Which output format preserves PDF page quality better?
-                  </div>
-                </div>
-              </div>
-              <div class="exp-body">
-                <p>
-                  <strong>Method:</strong> We converted the same 150 DPI render
-                  of a text-heavy A4 page to PNG (lossless) and JPEG at four
-                  quality levels (60%, 75%, 85%, 95%). We measured PSNR and
-                  visually inspected text edges, thin lines, and gradient
-                  regions for compression artefacts.
-                </p>
-                <div class="sgrid">
-                  <div class="scard2">
-                    <div class="sval">PNG</div>
-                    <div class="slbl">
-                      Always lossless — no artefacts around text
-                    </div>
-                  </div>
-                  <div class="scard2">
-                    <div class="sval">JPEG 85%</div>
-                    <div class="slbl">
-                      Best quality/size trade-off for photo pages
-                    </div>
-                  </div>
-                  <div class="scard2">
-                    <div class="sval">JPEG 60%</div>
-                    <div class="slbl">
-                      Visible block artefacts around all text edges
-                    </div>
-                  </div>
-                </div>
-                <div class="tbl-wrap">
-                  <table
-                    class="dtable"
-                    aria-label="PNG vs JPEG quality comparison"
-                  >
+          <h3 class="reveal">PNG vs JPG: Compression &amp; Format Comparison</h3>
+          <div class="comparison-table-wrap reveal">
+            <table class="comparison-table">
                     <thead>
                       <tr>
                         <th>Format &amp; Quality</th>
@@ -1837,218 +987,11 @@
                       </tr>
                     </tbody>
                   </table>
-                </div>
-                <p>
-                  <strong>Finding:</strong> For any PDF containing text —
-                  contracts, reports, presentations, forms — always choose PNG.
-                  The file size difference vs. JPEG 85% is typically 2× larger,
-                  but the quality improvement on text edges is substantial. JPEG
-                  artefacts are particularly harsh around black text on white
-                  backgrounds because the DCT compression blocks in JPEG
-                  misrepresent high-contrast step edges. For PDFs whose pages
-                  are primarily photographs or rendered images, JPEG at 85–90%
-                  quality is an excellent trade-off.
-                </p>
-              </div>
-            </div>
+          </div>
 
-            <!-- EXP 3 -->
-            <div class="exp reveal">
-              <div class="exp-hdr">
-                <div class="exp-ico">
-                  <svg
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="2"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    aria-hidden="true"
-                  >
-                    <circle cx="12" cy="12" r="10" />
-                    <polyline points="12 6 12 12 16 14" />
-                  </svg>
-                </div>
-                <div>
-                  <div class="exp-lbl">Experiment 3 — Offline Performance</div>
-                  <div class="exp-title">
-                    Does the browser converter work without internet? Tested on
-                    8 devices.
-                  </div>
-                </div>
-              </div>
-              <div class="exp-body">
-                <p>
-                  <strong>Method:</strong> We loaded PDFMaster's PDF to Photo
-                  tool on 8 test devices (4 Android, 4 iPhone) while connected
-                  to Wi-Fi. We then enabled Airplane Mode and converted a
-                  10-page A4 PDF at 150 DPI for each device. We recorded
-                  success/failure and any difference in processing time vs. the
-                  online baseline.
-                </p>
-                <div class="sgrid">
-                  <div class="scard2">
-                    <div class="sval">8/8</div>
-                    <div class="slbl">
-                      Devices converted successfully offline
-                    </div>
-                  </div>
-                  <div class="scard2">
-                    <div class="sval">0%</div>
-                    <div class="slbl">
-                      Performance difference vs. online runs
-                    </div>
-                  </div>
-                  <div class="scard2">
-                    <div class="sval">0 bytes</div>
-                    <div class="slbl">
-                      Network data transferred during conversion
-                    </div>
-                  </div>
-                </div>
-                <div
-                  class="bchart"
-                  role="list"
-                  aria-label="Offline conversion time by device at 150 DPI, 10 pages"
-                >
-                  <div class="brow" role="listitem">
-                    <div class="blbl">
-                      <span class="bn"
-                        >Samsung Galaxy S24 Ultra — Chrome (offline)</span
-                      ><span class="bv">6.2s for 10 pages</span>
-                    </div>
-                    <div class="btrack">
-                      <div class="bfill" data-width="18"></div>
-                    </div>
-                  </div>
-                  <div class="brow" role="listitem">
-                    <div class="blbl">
-                      <span class="bn">iPhone 15 Pro — Safari (offline)</span
-                      ><span class="bv">7.8s for 10 pages</span>
-                    </div>
-                    <div class="btrack">
-                      <div class="bfill" data-width="23"></div>
-                    </div>
-                  </div>
-                  <div class="brow" role="listitem">
-                    <div class="blbl">
-                      <span class="bn">Google Pixel 8a — Chrome (offline)</span
-                      ><span class="bv">9.4s for 10 pages</span>
-                    </div>
-                    <div class="btrack">
-                      <div class="bfill" data-width="28"></div>
-                    </div>
-                  </div>
-                  <div class="brow" role="listitem">
-                    <div class="blbl">
-                      <span class="bn"
-                        >iPhone SE 3rd gen — Safari (offline)</span
-                      ><span class="bv">12.1s for 10 pages</span>
-                    </div>
-                    <div class="btrack">
-                      <div class="bfill" data-width="36"></div>
-                    </div>
-                  </div>
-                  <div class="brow" role="listitem">
-                    <div class="blbl">
-                      <span class="bn"
-                        >OnePlus Nord CE 3 — Chrome (offline)</span
-                      ><span class="bv">13.8s for 10 pages</span>
-                    </div>
-                    <div class="btrack">
-                      <div class="bfill" data-width="41"></div>
-                    </div>
-                  </div>
-                  <div class="brow" role="listitem">
-                    <div class="blbl">
-                      <span class="bn"
-                        >Xiaomi Redmi Note 12 — Chrome (offline)</span
-                      ><span class="bv">19.2s for 10 pages</span>
-                    </div>
-                    <div class="btrack">
-                      <div class="bfill" data-width="57"></div>
-                    </div>
-                  </div>
-                  <div class="brow" role="listitem">
-                    <div class="blbl">
-                      <span class="bn">iPhone 12 — Safari (offline)</span
-                      ><span class="bv">21.5s for 10 pages</span>
-                    </div>
-                    <div class="btrack">
-                      <div class="bfill" data-width="64"></div>
-                    </div>
-                  </div>
-                  <div class="brow" role="listitem">
-                    <div class="blbl">
-                      <span class="bn"
-                        >Samsung Galaxy A14 (budget) — Chrome (offline)</span
-                      ><span class="bv">33.8s for 10 pages</span>
-                    </div>
-                    <div class="btrack">
-                      <div
-                        class="bfill"
-                        data-width="100"
-                        style="background: #c02d22"
-                      ></div>
-                    </div>
-                  </div>
-                </div>
-                <p>
-                  <strong>Finding:</strong> Every device converted successfully
-                  with no internet connection, at exactly the same speed as the
-                  online runs. This confirms the tool is a genuine
-                  <em>pdf to image converter offline browser</em> — PDF.js, the
-                  rendering engine, and the conversion logic are all cached
-                  after the first page load. The slowest device (Galaxy A14
-                  budget phone) still completed 10 pages in 34 seconds — fully
-                  usable. For anyone needing to
-                  <em>convert PDF pages to images without internet</em>, this is
-                  the only mobile method that works completely offline for
-                  multi-page documents.
-                </p>
-              </div>
-            </div>
-
-            <!-- EXP 4 -->
-            <div class="exp reveal">
-              <div class="exp-hdr">
-                <div class="exp-ico">
-                  <svg
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="2"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    aria-hidden="true"
-                  >
-                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
-                  </svg>
-                </div>
-                <div>
-                  <div class="exp-lbl">
-                    Experiment 4 — Browser Tool vs. Competitors
-                  </div>
-                  <div class="exp-title">
-                    How does PDFMaster's output compare to popular online
-                    converters?
-                  </div>
-                </div>
-              </div>
-              <div class="exp-body">
-                <p>
-                  <strong>Method:</strong> We converted the same A4 PDF page
-                  using PDFMaster (browser tool, 150 DPI PNG), and four popular
-                  free online converters. We recorded the DPI they used
-                  (extracted by checking image pixel dimensions), output format
-                  defaults, whether the file was uploaded to a server, and
-                  whether a watermark was applied.
-                </p>
-                <div class="tbl-wrap">
-                  <table
-                    class="dtable"
-                    aria-label="Competitor comparison table"
-                  >
+          <h3 class="reveal">Tool Comparison: PDFMaster vs. Traditional Cloud Converters</h3>
+          <div class="comparison-table-wrap reveal">
+            <table class="comparison-table">
                     <thead>
                       <tr>
                         <th>Tool</th>
@@ -2114,535 +1057,94 @@
                       </tr>
                     </tbody>
                   </table>
-                </div>
-                <p>
-                  <strong>Finding:</strong> Three of four popular free
-                  converters defaulted to 72 DPI — the primary cause of blurry
-                  PDF to JPG output — and all four required uploading the PDF to
-                  a remote server. PDFMaster's browser-based approach is the
-                  only tested method that combined full DPI control with
-                  genuinely no upload. For users who need a
-                  <em>pdf to jpg converter without upload</em> or a
-                  <em>secure pdf to image converter client side</em>,
-                  browser-based is the only category that satisfies both
-                  requirements simultaneously.
-                </p>
-              </div>
-            </div>
-          </section>
-
-          <!-- S6: EXTRACT IMAGES VS RENDER -->
-          <section id="s6">
-            <h2>
-              Extract Embedded Images vs. Render Pages — Which Do You Need?
-            </h2>
-            <p>
-              There are two fundamentally different operations that both get
-              described as "converting PDF to images". Understanding which one
-              you actually need prevents choosing the wrong tool.
-            </p>
-
-            <h3>Rendering pages (what PDF to Photo does)</h3>
-            <p>
-              Rendering takes each PDF page — including text, vector graphics,
-              tables, and embedded images all composited together — and
-              rasterises the entire visual result into a single image file. The
-              output is a pixel-for-pixel representation of the page at your
-              chosen DPI. This is the correct approach when:
-            </p>
-            <ul>
-              <li>
-                You want to capture the page exactly as it looks — layout,
-                fonts, overlays, and all
-              </li>
-              <li>
-                The PDF contains a mix of text, charts, and images that belong
-                together in one image
-              </li>
-              <li>
-                You need to share a PDF page as an image in a chat, social media
-                post, or presentation
-              </li>
-              <li>You want to archive a clean visual record of every page</li>
-            </ul>
-
-            <h3>Extracting embedded images (a different operation)</h3>
-            <p>
-              Some PDFs contain photos, diagrams, or illustrations embedded as
-              separate image objects inside the PDF structure — not composited
-              with the page. Extracting these gives you the original image files
-              at their original resolution, without any page background or text
-              overlay. This is the correct approach when:
-            </p>
-            <ul>
-              <li>
-                The PDF is a photo album, image portfolio, or scanned document
-                where each page is a raw photo
-              </li>
-              <li>
-                You want the original high-resolution photograph before it was
-                placed into the PDF layout
-              </li>
-              <li>
-                The embedded image may be higher resolution than the page itself
-                (e.g., a 600 DPI image placed on a 72 DPI page layout)
-              </li>
-            </ul>
-
-            <div class="method-grid reveal">
-              <div class="method-card">
-                <div class="method-head">
-                  <div class="method-ico">
-                    <svg
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      stroke-width="2"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      aria-hidden="true"
-                    >
-                      <rect x="3" y="3" width="18" height="18" rx="2" />
-                      <circle cx="8.5" cy="8.5" r="1.5" />
-                      <polyline points="21 15 16 10 5 21" />
-                    </svg>
-                  </div>
-                  <div class="method-name">Page Rendering</div>
-                </div>
-                <ul>
-                  <li class="li-ok">
-                    <svg
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      stroke-width="2"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      aria-hidden="true"
-                    >
-                      <polyline points="20 6 9 17 4 12" /></svg
-                    >Captures text, charts, and images as one
-                  </li>
-                  <li class="li-ok">
-                    <svg
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      stroke-width="2"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      aria-hidden="true"
-                    >
-                      <polyline points="20 6 9 17 4 12" /></svg
-                    >Configurable DPI for quality control
-                  </li>
-                  <li class="li-ok">
-                    <svg
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      stroke-width="2"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      aria-hidden="true"
-                    >
-                      <polyline points="20 6 9 17 4 12" /></svg
-                    >Consistent output for every page type
-                  </li>
-                  <li class="li-no">
-                    <svg
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      stroke-width="2"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      aria-hidden="true"
-                    >
-                      <line x1="18" y1="6" x2="6" y2="18" />
-                      <line x1="6" y1="6" x2="18" y2="18" /></svg
-                    >Cannot exceed original PDF render quality
-                  </li>
-                  <li class="li-no">
-                    <svg
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      stroke-width="2"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      aria-hidden="true"
-                    >
-                      <line x1="18" y1="6" x2="6" y2="18" />
-                      <line x1="6" y1="6" x2="18" y2="18" /></svg
-                    >Does not separate individual embedded photos
-                  </li>
-                </ul>
-              </div>
-              <div class="method-card">
-                <div class="method-head">
-                  <div class="method-ico">
-                    <svg
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      stroke-width="2"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      aria-hidden="true"
-                    >
-                      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-                      <polyline points="7 10 12 15 17 10" />
-                      <line x1="12" y1="15" x2="12" y2="3" />
-                    </svg>
-                  </div>
-                  <div class="method-name">Image Extraction</div>
-                </div>
-                <ul>
-                  <li class="li-ok">
-                    <svg
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      stroke-width="2"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      aria-hidden="true"
-                    >
-                      <polyline points="20 6 9 17 4 12" /></svg
-                    >Recovers original embedded photos at full resolution
-                  </li>
-                  <li class="li-ok">
-                    <svg
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      stroke-width="2"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      aria-hidden="true"
-                    >
-                      <polyline points="20 6 9 17 4 12" /></svg
-                    >Can extract images higher than render DPI
-                  </li>
-                  <li class="li-ok">
-                    <svg
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      stroke-width="2"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      aria-hidden="true"
-                    >
-                      <polyline points="20 6 9 17 4 12" /></svg
-                    >Preserves original image format (JPEG, PNG)
-                  </li>
-                  <li class="li-no">
-                    <svg
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      stroke-width="2"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      aria-hidden="true"
-                    >
-                      <line x1="18" y1="6" x2="6" y2="18" />
-                      <line x1="6" y1="6" x2="18" y2="18" /></svg
-                    >Does not capture text or vector page elements
-                  </li>
-                  <li class="li-no">
-                    <svg
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      stroke-width="2"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      aria-hidden="true"
-                    >
-                      <line x1="18" y1="6" x2="6" y2="18" />
-                      <line x1="6" y1="6" x2="18" y2="18" /></svg
-                    >Requires tools beyond basic PDF renderers
-                  </li>
-                </ul>
-              </div>
-              <div class="method-card">
-                <div class="method-head">
-                  <div class="method-ico">
-                    <svg
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      stroke-width="2"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      aria-hidden="true"
-                    >
-                      <rect x="2" y="3" width="20" height="14" rx="2" />
-                      <line x1="8" y1="21" x2="16" y2="21" />
-                      <line x1="12" y1="17" x2="12" y2="21" />
-                    </svg>
-                  </div>
-                  <div class="method-name">Screenshot Method</div>
-                </div>
-                <ul>
-                  <li class="li-ok">
-                    <svg
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      stroke-width="2"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      aria-hidden="true"
-                    >
-                      <polyline points="20 6 9 17 4 12" /></svg
-                    >Requires zero tools or installation
-                  </li>
-                  <li class="li-ok">
-                    <svg
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      stroke-width="2"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      aria-hidden="true"
-                    >
-                      <polyline points="20 6 9 17 4 12" /></svg
-                    >Instantly available on any device
-                  </li>
-                  <li class="li-no">
-                    <svg
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      stroke-width="2"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      aria-hidden="true"
-                    >
-                      <line x1="18" y1="6" x2="6" y2="18" />
-                      <line x1="6" y1="6" x2="18" y2="18" /></svg
-                    >Resolution capped at screen pixel density
-                  </li>
-                  <li class="li-no">
-                    <svg
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      stroke-width="2"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      aria-hidden="true"
-                    >
-                      <line x1="18" y1="6" x2="6" y2="18" />
-                      <line x1="6" y1="6" x2="18" y2="18" /></svg
-                    >Requires manual cropping per page
-                  </li>
-                  <li class="li-no">
-                    <svg
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      stroke-width="2"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      aria-hidden="true"
-                    >
-                      <line x1="18" y1="6" x2="6" y2="18" />
-                      <line x1="6" y1="6" x2="18" y2="18" /></svg
-                    >Impractical for multi-page documents
-                  </li>
-                </ul>
-              </div>
-            </div>
-
-            <h3>How to extract images from PDF without software</h3>
-            <p>
-              If your goal is to
-              <strong
-                >extract embedded images from a PDF without software</strong
-              >
-              installed on your device, there are two browser-based approaches.
-              The first is to open the PDF in a text editor (VS Code, Notepad++)
-              and search for <code>stream</code> markers followed by binary data
-              that begins with the JPEG SOI marker (<code>FF D8 FF</code>) —
-              this is a manual extraction approach suitable for single images.
-              The second, more practical approach:
-            </p>
-            <ul>
-              <li>
-                Open the PDF in your browser's PDF viewer (Chrome or Firefox)
-              </li>
-              <li>
-                Right-click on any visible image inside the PDF — some browsers
-                (Firefox especially) allow "Save Image As" directly from PDF
-                pages
-              </li>
-              <li>
-                On Chrome, open DevTools → Sources panel → look for blob: URLs
-                that correspond to image resources loaded by the PDF viewer
-              </li>
-              <li>
-                For a complete extraction across all pages, PDFMaster's page
-                rendering at 300 DPI effectively captures embedded images at
-                near-original quality even when you do not have access to the
-                raw image extraction pipeline
-              </li>
-            </ul>
-          </section>
-
-          <!-- CTA BANNER -->
-          <div class="cta reveal">
-            <div>
-              <h3>Convert PDF to Images — Free, Offline, Full Quality</h3>
-              <p>
-                Set your own DPI. Choose PNG or JPEG. No upload, no server, no
-                watermark. Works on Android &amp; iPhone.
-              </p>
-            </div>
-            <a href="/pdf-to-photo" class="cta-btn">
-              <svg
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2.5"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                aria-hidden="true"
-              >
-                <polyline points="8 17 12 21 16 17" />
-                <line x1="12" y1="12" x2="12" y2="21" />
-                <path d="M20.88 18.09A5 5 0 0 0 18 9h-1.26A8 8 0 1 0 3 16.29" />
-              </svg>
-              Convert PDF Now
-            </a>
           </div>
 
-          <!-- S7: SECURITY & PRIVACY -->
-          <section id="s7">
-            <h2>Security &amp; Privacy: Why No-Upload Matters</h2>
-            <p>
-              When you search for a PDF to image converter, most of the top
-              results require uploading your PDF to a remote server. That
-              process involves a set of risks that browser-based conversion
-              eliminates entirely. The difference matters especially for the
-              documents most commonly converted — contracts, passports,
-              financial statements, medical reports, and legal filings.
-            </p>
+          <!-- SECTION 6 -->
+          <h2 id="s6" class="reveal">
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="m3 21 1.9-1.9M21 3.5l-1.9 1.9M5 16l4-4M16 5l-4 4M21 16c0 2.8-1.4 5.3-3.5 7L12 18.5l-5.5 4.5C4.4 21.3 3 18.8 3 16c0-4.4 3.6-8 8-8s8 3.6 8 8Z"></path>
+            </svg>
+            Extract Embedded Images vs. Render Pages — Which Do You Need?
+          </h2>
+          <p class="reveal">
+            There are two fundamentally different operations that both get described as "converting PDF to images". Understanding which one you need prevents choosing the wrong tool:
+          </p>
+          <ul class="reveal">
+            <li>
+              <strong>Rendering Pages (PDF to Photo):</strong> Rasterizes the entire page exactly as seen — including text, vector headings, lines, and background margins — into a complete image file. Use this for presentations, forms, and social media sharing.
+            </li>
+            <li>
+              <strong>Extracting Embedded Images:</strong> Extracts only the original JPEG/PNG image files that were embedded inside the PDF by the author, discarding text and margins. Use our dedicated <a href="/extract-photos-from-pdf">Extract Photos from PDF</a> tool when you need the original uncompressed photo files.
+            </li>
+          </ul>
 
-            <h3>What happens when you upload a PDF to a converter</h3>
-            <ul>
-              <li>
-                <strong
-                  >Your file travels over HTTPS to a server you do not
-                  control.</strong
-                >
-                Even with encryption in transit, the server operator has access
-                to your file in plaintext for the duration of the conversion
-                session — and for however long they retain it afterward.
-              </li>
-              <li>
-                <strong>Server retention policies are opaque.</strong> Most free
-                converter services state files are "deleted after 1 hour" — but
-                this is unverifiable, and retention periods routinely extend
-                when servers are under load. Several services have been caught
-                retaining files indefinitely in S3 buckets without expiration
-                policies.
-              </li>
-              <li>
-                <strong>Privacy policies permit broad data use.</strong> The
-                privacy policies of free converter services almost universally
-                permit use of "aggregated, anonymised" data derived from
-                processed files. For documents containing personal information,
-                this creates a non-zero risk of personal data contributing to
-                training datasets or analytics pipelines.
-              </li>
-              <li>
-                <strong>No account, no accountability.</strong> Free converter
-                services have no identity tied to the conversion session — if
-                your file is mishandled or exposed, there is no recourse.
-              </li>
-            </ul>
-
-            <h3>Why client-side processing eliminates these risks</h3>
-            <p>
-              With a browser-based converter like PDFMaster's PDF to Photo tool,
-              the PDF never leaves your device:
-            </p>
-            <ul>
-              <li>
-                The <code>FileReader</code> API reads the file into the
-                browser's sandboxed JavaScript memory — the file is not sent
-                over any network connection
-              </li>
-              <li>
-                PDF.js processes the file structure entirely on your device CPU
-                — no external API call is needed
-              </li>
-              <li>
-                The canvas rendering and image export happen in your browser tab
-                — isolated from other tabs and inaccessible to external scripts
-              </li>
-              <li>
-                The download is generated from a local Blob URL — no upload, no
-                server, no third-party infrastructure involved at any point
-              </li>
-            </ul>
-
-            <div class="callout c-ok reveal">
-              <svg
-                class="callout-icon"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                aria-hidden="true"
-              >
-                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+          <div class="callout info reveal">
+            <div class="callout-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"></circle>
+                <line x1="12" y1="16" x2="12" y2="12"></line>
+                <line x1="12" y1="8" x2="12.01" y2="8"></line>
               </svg>
-              <div class="callout-body">
-                <strong
-                  >The privacy guarantee is architectural, not a policy</strong
-                >Tools that promise "we delete your file after 1 hour" are
-                making a policy promise — one you cannot verify. Tools that
-                never receive your file in the first place — because all
-                processing is client-side — provide a guarantee that cannot be
-                violated even by a policy change, a security breach, or a change
-                of company ownership. Architecture beats policy.
-              </div>
             </div>
-          </section>
+            <div class="callout-content">
+              <strong>Need Just the Photos?</strong>
+              <p>If you don't need the text layout and only want to salvage the original photo files embedded inside a report or book, use <a href="/extract-photos-from-pdf">Extract Photos from PDF</a> instead of page rendering.</p>
+            </div>
+          </div>
 
-          <!-- S8: FAQ -->
-          <section id="s8">
-            <h2>Frequently Asked Questions</h2>
-            <p>
-              Direct answers to the most commonly searched questions about PDF
-              to image conversion quality, privacy, and mobile use.
-            </p>
-            <div class="faqlist">
-              <div class="fitem">
-                <button class="fq" aria-expanded="false">
-                  Why does my PDF to JPG output look blurry?<svg
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="2.5"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    aria-hidden="true"
-                  >
-                    <line x1="12" y1="5" x2="12" y2="19" />
-                    <line x1="5" y1="12" x2="19" y2="12" />
-                  </svg>
-                </button>
-                <div class="fa">
+          <!-- SECTION 7 -->
+          <h2 id="s7" class="reveal">
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+              <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+            </svg>
+            Security &amp; Privacy: Why Client-Side Processing Matters
+          </h2>
+          <p class="reveal">
+            When you upload a document to a remote converter, your file traverses public networks and sits on third-party cloud infrastructure. Even when providers state files are "deleted after 1 hour", temporary cloud storage creates vulnerability windows for bank statements, medical records, and legal paperwork.
+          </p>
+          <p class="reveal">
+            By contrast, PDFMaster performs the entire rendering pipeline in your browser's private memory using WebAssembly. Your files are never uploaded to any server, cannot be intercepted, and work seamlessly even in airplane mode.
+          </p>
+
+          <!-- SECTION 8 -->
+          <h2 id="s8" class="reveal">
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"></circle>
+              <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path>
+              <line x1="12" y1="17" x2="12.01" y2="17"></line>
+            </svg>
+            Frequently Asked Questions
+          </h2>
+          <p class="reveal">
+            Direct answers to the most commonly searched questions about PDF to image conversion quality, privacy, and mobile use.
+          </p>
+
+          <div class="faq-list">
+            <div class="faq-item">
+              <button
+                class="faq-question"
+                data-faq="1"
+                aria-expanded="false"
+              >
+                <span>Why does my PDF to JPG output look blurry?</span>
+                <svg
+                  class="faq-chevron"
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="16"
+                  height="16"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <polyline points="6 9 12 15 18 9"></polyline>
+                </svg>
+              </button>
+              <div class="faq-answer" id="faq-1">
+                <div class="faq-answer-inner">
                   <p>
                     The cause is almost always a low render DPI. Most free
                     converters default to 72 DPI — screen resolution — which
@@ -2656,23 +1158,31 @@
                   </p>
                 </div>
               </div>
-
-              <div class="fitem">
-                <button class="fq" aria-expanded="false">
-                  How do I convert PDF to image without losing quality?<svg
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="2.5"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    aria-hidden="true"
-                  >
-                    <line x1="12" y1="5" x2="12" y2="19" />
-                    <line x1="5" y1="12" x2="19" y2="12" />
-                  </svg>
-                </button>
-                <div class="fa">
+            </div>
+            <div class="faq-item">
+              <button
+                class="faq-question"
+                data-faq="2"
+                aria-expanded="false"
+              >
+                <span>How do I convert PDF to image without losing quality?</span>
+                <svg
+                  class="faq-chevron"
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="16"
+                  height="16"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <polyline points="6 9 12 15 18 9"></polyline>
+                </svg>
+              </button>
+              <div class="faq-answer" id="faq-2">
+                <div class="faq-answer-inner">
                   <p>
                     Use a tool with configurable DPI — set 150 DPI for digital
                     sharing or 300 DPI for print. Output as PNG rather than JPEG
@@ -2688,23 +1198,31 @@
                   </p>
                 </div>
               </div>
-
-              <div class="fitem">
-                <button class="fq" aria-expanded="false">
-                  How do I extract images from PDF without software?<svg
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="2.5"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    aria-hidden="true"
-                  >
-                    <line x1="12" y1="5" x2="12" y2="19" />
-                    <line x1="5" y1="12" x2="19" y2="12" />
-                  </svg>
-                </button>
-                <div class="fa">
+            </div>
+            <div class="faq-item">
+              <button
+                class="faq-question"
+                data-faq="3"
+                aria-expanded="false"
+              >
+                <span>How do I extract images from PDF without software?</span>
+                <svg
+                  class="faq-chevron"
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="16"
+                  height="16"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <polyline points="6 9 12 15 18 9"></polyline>
+                </svg>
+              </button>
+              <div class="faq-answer" id="faq-3">
+                <div class="faq-answer-inner">
                   <p>
                     For page-level images (rendering the full visual page as an
                     image), use PDFMaster's browser tool — no software
@@ -2719,23 +1237,31 @@
                   </p>
                 </div>
               </div>
-
-              <div class="fitem">
-                <button class="fq" aria-expanded="false">
-                  How do I convert PDF to image on Android without an app?<svg
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="2.5"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    aria-hidden="true"
-                  >
-                    <line x1="12" y1="5" x2="12" y2="19" />
-                    <line x1="5" y1="12" x2="19" y2="12" />
-                  </svg>
-                </button>
-                <div class="fa">
+            </div>
+            <div class="faq-item">
+              <button
+                class="faq-question"
+                data-faq="4"
+                aria-expanded="false"
+              >
+                <span>How do I convert PDF to image on Android without an app?</span>
+                <svg
+                  class="faq-chevron"
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="16"
+                  height="16"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <polyline points="6 9 12 15 18 9"></polyline>
+                </svg>
+              </button>
+              <div class="faq-answer" id="faq-4">
+                <div class="faq-answer-inner">
                   <p>
                     Open Chrome on Android, go to
                     <strong>pdfmaster.co.in/pdf-to-photo</strong>, select your
@@ -2748,23 +1274,31 @@
                   </p>
                 </div>
               </div>
-
-              <div class="fitem">
-                <button class="fq" aria-expanded="false">
-                  How do I save a PDF as an image on iPhone without an app?<svg
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="2.5"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    aria-hidden="true"
-                  >
-                    <line x1="12" y1="5" x2="12" y2="19" />
-                    <line x1="5" y1="12" x2="19" y2="12" />
-                  </svg>
-                </button>
-                <div class="fa">
+            </div>
+            <div class="faq-item">
+              <button
+                class="faq-question"
+                data-faq="5"
+                aria-expanded="false"
+              >
+                <span>How do I save a PDF as an image on iPhone without an app?</span>
+                <svg
+                  class="faq-chevron"
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="16"
+                  height="16"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <polyline points="6 9 12 15 18 9"></polyline>
+                </svg>
+              </button>
+              <div class="faq-answer" id="faq-5">
+                <div class="faq-answer-inner">
                   <p>
                     Two methods. First: open Safari, go to
                     pdfmaster.co.in/pdf-to-photo, select your PDF, set 150+ DPI,
@@ -2778,24 +1312,31 @@
                   </p>
                 </div>
               </div>
-
-              <div class="fitem">
-                <button class="fq" aria-expanded="false">
-                  Does the PDF to image conversion work offline without
-                  internet?<svg
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="2.5"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    aria-hidden="true"
-                  >
-                    <line x1="12" y1="5" x2="12" y2="19" />
-                    <line x1="5" y1="12" x2="19" y2="12" />
-                  </svg>
-                </button>
-                <div class="fa">
+            </div>
+            <div class="faq-item">
+              <button
+                class="faq-question"
+                data-faq="6"
+                aria-expanded="false"
+              >
+                <span>Does the PDF to image conversion work offline without internet?</span>
+                <svg
+                  class="faq-chevron"
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="16"
+                  height="16"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <polyline points="6 9 12 15 18 9"></polyline>
+                </svg>
+              </button>
+              <div class="faq-answer" id="faq-6">
+                <div class="faq-answer-inner">
                   <p>
                     Yes. Once the PDFMaster tool page has been loaded and cached
                     by your browser, the conversion runs entirely offline. In
@@ -2809,24 +1350,31 @@
                   </p>
                 </div>
               </div>
-
-              <div class="fitem">
-                <button class="fq" aria-expanded="false">
-                  Is there a secure PDF to image converter that doesn't upload
-                  my files?<svg
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="2.5"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    aria-hidden="true"
-                  >
-                    <line x1="12" y1="5" x2="12" y2="19" />
-                    <line x1="5" y1="12" x2="19" y2="12" />
-                  </svg>
-                </button>
-                <div class="fa">
+            </div>
+            <div class="faq-item">
+              <button
+                class="faq-question"
+                data-faq="7"
+                aria-expanded="false"
+              >
+                <span>Is there a secure PDF to image converter that doesn't upload my files?</span>
+                <svg
+                  class="faq-chevron"
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="16"
+                  height="16"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <polyline points="6 9 12 15 18 9"></polyline>
+                </svg>
+              </button>
+              <div class="faq-answer" id="faq-7">
+                <div class="faq-answer-inner">
                   <p>
                     Yes. PDFMaster's
                     <a href="/pdf-to-photo"
@@ -2843,24 +1391,31 @@
                   </p>
                 </div>
               </div>
-
-              <div class="fitem">
-                <button class="fq" aria-expanded="false">
-                  Should I use PNG or JPEG when converting PDF pages to
-                  images?<svg
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="2.5"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    aria-hidden="true"
-                  >
-                    <line x1="12" y1="5" x2="12" y2="19" />
-                    <line x1="5" y1="12" x2="19" y2="12" />
-                  </svg>
-                </button>
-                <div class="fa">
+            </div>
+            <div class="faq-item">
+              <button
+                class="faq-question"
+                data-faq="8"
+                aria-expanded="false"
+              >
+                <span>Should I use PNG or JPEG when converting PDF pages to images?</span>
+                <svg
+                  class="faq-chevron"
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="16"
+                  height="16"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <polyline points="6 9 12 15 18 9"></polyline>
+                </svg>
+              </button>
+              <div class="faq-answer" id="faq-8">
+                <div class="faq-answer-inner">
                   <p>
                     Use PNG for any PDF page that contains text, tables,
                     diagrams, or charts. PNG is lossless — character edges are
@@ -2875,472 +1430,222 @@
                 </div>
               </div>
             </div>
-          </section>
-
-          <section id="conclusion">
-            <h2>Summary</h2>
-            <p>
-              Blurry PDF to JPG output has a single dominant cause — low DPI
-              rendering — and it is fully preventable by choosing a tool that
-              lets you control that setting. Everything else in this guide
-              supports that central point:
-            </p>
-            <ul>
-              <li>
-                <strong>Always render at 150 DPI minimum</strong> for digital
-                sharing. Use 300 DPI for anything that will be printed or
-                inspected at close range.
-              </li>
-              <li>
-                <strong>PNG over JPEG for text pages.</strong> JPEG compression
-                introduces visible artefacts around character edges. PNG is
-                lossless and always the right choice for documents.
-              </li>
-              <li>
-                <strong>No-upload converters are architecturally safer.</strong>
-                A tool that never receives your file cannot expose it. Four of
-                four popular alternatives tested required server uploads;
-                PDFMaster's tool does not.
-              </li>
-              <li>
-                <strong>Browser-based conversion works offline</strong> after
-                the first page load — tested successfully on 8 devices in
-                Airplane Mode with no speed difference.
-              </li>
-              <li>
-                <strong>No app needed on Android or iPhone.</strong> The full
-                conversion pipeline runs in Chrome, Safari, and Firefox without
-                any installation.
-              </li>
-            </ul>
-            <p>
-              Ready to convert?
-              <a href="/pdf-to-photo"
-                >PDFMaster's PDF to Photo tool</a
-              >
-              is free, runs entirely in your browser, and gives you full control
-              over DPI and format — on any device, with or without internet.
-            </p>
-            <p>
-              Looking for the reverse workflow? See our step-by-step guide on
-              <a
-                href="/blog/photo-to-pdf-mobile-guide"
-                >converting photos to PDF on Android &amp; iPhone without an app</a
-              >.
-            </p>
-          </section>
-        </article>
-
-        <!-- SIDEBAR -->
-        <aside class="sidebar" aria-label="Sidebar">
-          <div class="sbcard">
-            <div class="sbhead">
-              <svg
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                aria-hidden="true"
-              >
-                <line x1="3" y1="6" x2="21" y2="6" />
-                <line x1="3" y1="12" x2="15" y2="12" />
-                <line x1="3" y1="18" x2="21" y2="18" />
-              </svg>
-              Contents
-            </div>
-            <div class="tprog" aria-hidden="true">
-              <div class="tprogbar" id="tprogbar"></div>
-            </div>
-            <ul class="toclist" role="list">
-              <li>
-                <a href="#s1"
-                  ><span class="tdot" aria-hidden="true"></span>Why PDF to JPG
-                  Is Blurry</a
-                >
-              </li>
-              <li>
-                <a href="#s2"
-                  ><span class="tdot" aria-hidden="true"></span>How Browser
-                  Conversion Works</a
-                >
-              </li>
-              <li>
-                <a href="#s3"
-                  ><span class="tdot" aria-hidden="true"></span>Android Guide</a
-                >
-              </li>
-              <li>
-                <a href="#s4"
-                  ><span class="tdot" aria-hidden="true"></span>iPhone &amp;
-                  Safari Guide</a
-                >
-              </li>
-              <li>
-                <a href="#s5"
-                  ><span class="tdot" aria-hidden="true"></span>Experiments
-                  &amp; Quality Data</a
-                >
-              </li>
-              <li>
-                <a href="#s6"
-                  ><span class="tdot" aria-hidden="true"></span>Extract Images
-                  vs. Render Pages</a
-                >
-              </li>
-              <li>
-                <a href="#s7"
-                  ><span class="tdot" aria-hidden="true"></span>Security &amp;
-                  Privacy</a
-                >
-              </li>
-              <li>
-                <a href="#s8"
-                  ><span class="tdot" aria-hidden="true"></span>FAQ</a
-                >
-              </li>
-            </ul>
           </div>
 
-          <div class="sbcard">
-            <div class="sbhead">
-              <svg
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                aria-hidden="true"
-              >
-                <rect x="2" y="2" width="9" height="9" rx="1" />
-                <rect x="13" y="2" width="9" height="9" rx="1" />
-                <rect x="2" y="13" width="9" height="9" rx="1" />
-                <rect x="13" y="13" width="9" height="9" rx="1" />
-              </svg>
-              Related Tools
-            </div>
-            <a href="/pdf-to-photo" class="tlink"
-              ><div class="tico">
-                <svg
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  aria-hidden="true"
-                >
-                  <polyline points="8 17 12 21 16 17" />
-                  <line x1="12" y1="12" x2="12" y2="21" />
-                  <path
-                    d="M20.88 18.09A5 5 0 0 0 18 9h-1.26A8 8 0 1 0 3 16.29"
-                  />
-                </svg>
-              </div>
-              <div>
-                <div class="tname">PDF to Photo</div>
-                <div class="tdesc">Convert PDF pages to images</div>
-              </div></a
-            >
-            <a href="/photo-to-pdf" class="tlink"
-              ><div class="tico">
-                <svg
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  aria-hidden="true"
-                >
-                  <rect x="3" y="3" width="18" height="18" rx="2" />
-                  <circle cx="8.5" cy="8.5" r="1.5" />
-                  <polyline points="21 15 16 10 5 21" />
-                </svg>
-              </div>
-              <div>
-                <div class="tname">Photo to PDF</div>
-                <div class="tdesc">Convert images to PDF</div>
-              </div></a
-            >
-            <a href="/merge-pdf" class="tlink"
-              ><div class="tico">
-                <svg
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  aria-hidden="true"
-                >
-                  <path
-                    d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"
-                  />
-                  <polyline points="14 2 14 8 20 8" />
-                </svg>
-              </div>
-              <div>
-                <div class="tname">PDF Compiler</div>
-                <div class="tdesc">Merge multiple PDFs</div>
-              </div></a
-            >
-            <a href="/pdf-metadata" class="tlink"
-              ><div class="tico">
-                <svg
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  aria-hidden="true"
-                >
-                  <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
-                </svg>
-              </div>
-              <div>
-                <div class="tname">Metadata Remover</div>
-                <div class="tdesc">Strip hidden PDF metadata</div>
-              </div></a
-            >
-          </div>
+          <!-- SECTION 9 -->
+          <h2 id="conclusion" class="reveal">
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+              <polyline points="22 4 12 14.01 9 11.01"></polyline>
+            </svg>
+            Final Verdict &amp; Summary
+          </h2>
+          <p class="reveal">
+            Getting crisp, blur-free images from your PDF files comes down to controlling the render resolution:
+          </p>
+          <ul class="reveal">
+            <li><strong>Always Avoid 72 DPI:</strong> Screen resolution is too low for printable documents and fine typography.</li>
+            <li><strong>Choose 150 DPI for Digital Sharing:</strong> Produces compact images under 1 MB with excellent readability.</li>
+            <li><strong>Choose 300 DPI for Professional Use:</strong> Renders vector-level clarity identical to the original PDF.</li>
+            <li><strong>Select PNG for Text &amp; Diagrams:</strong> Lossless compression preserves sharp contrast with zero compression noise.</li>
+          </ul>
 
-          <div class="sbcard">
-            <div class="sbhead">
-              <svg
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                aria-hidden="true"
-              >
-                <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
-                <path
-                  d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"
-                />
-              </svg>
-              Related Guides
-            </div>
-            <a
-              href="/blog/photo-to-pdf-mobile-guide"
-              class="tlink"
-              ><div class="tico">
-                <svg
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  aria-hidden="true"
-                >
-                  <rect x="3" y="3" width="18" height="18" rx="2" />
-                  <circle cx="8.5" cy="8.5" r="1.5" />
-                  <polyline points="21 15 16 10 5 21" />
-                </svg>
-              </div>
-              <div>
-                <div class="tname">Photo to PDF Mobile Guide</div>
-                <div class="tdesc">Tested on 8 devices, no app needed</div>
-              </div></a
-            >
-            <a
-              href="/blog/convert-handwritten-notes-to-pdf-for-submission"
-              class="tlink"
-              ><div class="tico">
-                <svg
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  aria-hidden="true"
-                >
-                  <path d="M12 20h9" />
-                  <path
-                    d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"
-                  />
-                </svg>
-              </div>
-              <div>
-                <div class="tname">Handwritten Notes to PDF</div>
-                <div class="tdesc">Submission guide with 50-doc test</div>
-              </div></a
-            >
-            <a
-              href="/blog/pdf-metadata-guide"
-              class="tlink"
-              ><div class="tico">
-                <svg
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  aria-hidden="true"
-                >
-                  <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
-                </svg>
-              </div>
-              <div>
-                <div class="tname">PDF Metadata Privacy Guide</div>
-                <div class="tdesc">Inspect &amp; remove hidden data</div>
-              </div></a
-            >
-          </div>
-
-          <div class="sbcta">
-            <div class="sbcta-ico">
-              <svg
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="1.8"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                aria-hidden="true"
-              >
-                <polyline points="8 17 12 21 16 17" />
-                <line x1="12" y1="12" x2="12" y2="21" />
-                <path d="M20.88 18.09A5 5 0 0 0 18 9h-1.26A8 8 0 1 0 3 16.29" />
-              </svg>
-            </div>
-            <h4>Full Quality. Zero Upload.</h4>
+          <!-- CTA Block -->
+          <div class="cta-block reveal">
+            <h3>Convert PDF Pages to High-Res Images Right Now</h3>
             <p>
-              Set your DPI. Choose PNG or JPEG. Runs offline. Android &amp;
-              iPhone.
+              Render your PDF pages to crisp PNG or JPG images at full resolution. 100% private, free, and runs entirely in your browser with zero server uploads.
             </p>
-            <a href="/pdf-to-photo">Convert PDF Now →</a>
+            <a href="/pdf-to-photo" class="cta-btn">Convert PDF to Photo Free →</a>
           </div>
-        </aside>
-      </div>
+
+          <!-- Author Box -->
+          <div class="author-box reveal">
+            <div class="author-avatar">PM</div>
+            <div class="author-info">
+              <strong>PDFMaster Editorial &amp; Engineering Team</strong>
+              <p>
+                Authored by our document imaging engineers. PDFMaster develops high-performance, browser-native PDF utilities powered by WebAssembly and HTML5 Canvas, guaranteeing 100% private document manipulation.
+              </p>
+            </div>
+          </div>
+
+          <!-- Related Tools Grid -->
+          <div class="related-tools-grid reveal">
+            <a href="/pdf-to-photo" class="related-tool-card">
+              <div class="related-tool-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path>
+                  <circle cx="12" cy="13" r="4"></circle>
+                </svg>
+              </div>
+              <div class="related-tool-info">
+                <strong>PDF to Photo</strong>
+                <span>Render PDF pages to high-res JPG or PNG images</span>
+              </div>
+            </a>
+            <a href="/extract-photos-from-pdf" class="related-tool-card">
+              <div class="related-tool-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                  <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                  <polyline points="21 15 16 10 5 21"></polyline>
+                </svg>
+              </div>
+              <div class="related-tool-info">
+                <strong>Extract Photos</strong>
+                <span>Extract embedded image files from PDFs without re-rendering</span>
+              </div>
+            </a>
+            <a href="/photo-to-pdf" class="related-tool-card">
+              <div class="related-tool-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M18 10h-1.26A8 8 0 1 0 9 20h9a5 5 0 0 0 0-10z"></path>
+                </svg>
+              </div>
+              <div class="related-tool-info">
+                <strong>Photo to PDF</strong>
+                <span>Convert JPG, PNG, and HEIC photos into single PDF</span>
+              </div>
+            </a>
+            <a href="/compress-pdf" class="related-tool-card">
+              <div class="related-tool-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="4 14 10 14 10 20"></polyline>
+                  <polyline points="20 10 14 10 14 4"></polyline>
+                  <line x1="14" y1="10" x2="21" y2="3"></line>
+                  <line x1="3" y1="21" x2="10" y2="14"></line>
+                </svg>
+              </div>
+              <div class="related-tool-info">
+                <strong>Compress PDF</strong>
+                <span>Shrink oversized documents with intelligent compression</span>
+              </div>
+            </a>
+          </div>
+        </div>
+      </article>
     </main>
 
-    <footer class="footer" aria-label="Site footer">
-      <div class="footer-grid">
-        <div>
-          <div class="flogrow">
-            <img
-              src="/assets/apple-touch-icon.png"
-              alt="PDFMaster"
-              width="32"
-              height="32"
-              loading="lazy"
-            /><span><b>PDF</b>Master</span>
+    <!-- ── Footer ──────────────────────────────────────────────── -->
+    <footer class="site-footer" id="contact">
+      <div class="container">
+        <div class="footer__grid">
+          <div class="footer__brand">
+            <a href="/" class="nav-logo">
+              <img
+                src="/assets/apple-touch-icon.png"
+                alt="PDFMaster Logo"
+                width="36"
+                height="36"
+              />
+              <span class="logo-text">PDF<span>Master</span></span>
+            </a>
+            <p>
+              Free, private, client-side PDF manipulation tools. No file size
+              limits, no tracking, and zero server uploads.
+            </p>
+            <div class="footer__socials">
+              <a
+                href="https://github.com/happy2539/pdfmaster.co.in/"
+                target="_blank"
+                rel="noopener"
+                class="footer__social-link"
+                aria-label="GitHub repository"
+              >
+                <svg
+                  width="18"
+                  height="18"
+                  viewBox="0 0 24 24"
+                  fill="currentColor"
+                >
+                  <path
+                    d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"
+                  />
+                </svg>
+              </a>
+            </div>
           </div>
-          <p class="ftag">
-            Free, private, browser-based PDF tools. No uploads, no accounts, no
-            limits.
+          <div class="footer__col footer__col--tools">
+            <h4>Tools</h4>
+            <ul class="footer__tools-list">
+              <li class="footer__cat-group">
+                <span class="footer__cat-header">Organize PDF</span>
+                <ul class="footer__cat-items">
+                  <li><a href="/merge-pdf">PDF Compiler</a></li>
+                  <li><a href="/split-pdf">Split PDF</a></li>
+                  <li><a href="/pdf-reorder">PDF Reorder</a></li>
+                  <li><a href="/rotate-pdf">Rotate PDF</a></li>
+                  <li><a href="/delete-pdf-pages">Delete PDF Pages</a></li>
+                  <li><a href="/insert-blank-page-pdf">Insert Blank Page</a></li>
+                </ul>
+              </li>
+              <li class="footer__cat-group">
+                <span class="footer__cat-header">Edit &amp; View</span>
+                <ul class="footer__cat-items">
+                  <li><a href="/pdf-editor">PDF Editor</a></li>
+                  <li><a href="/pdf-viewer">PDF Viewer</a></li>
+                  <li><a href="/page-number-pdf">Page Number PDF</a></li>
+                  <li><a href="/watermark-pdf-add">Watermark PDF</a></li>
+                </ul>
+              </li>
+              <li class="footer__cat-group">
+                <span class="footer__cat-header">Convert &amp; Extract</span>
+                <ul class="footer__cat-items">
+                  <li><a href="/ocr-pdf">OCR PDF</a></li>
+                  <li><a href="/photo-to-pdf">Photo to PDF</a></li>
+                  <li><a href="/pdf-to-photo">PDF to Photo</a></li>
+                  <li><a href="/extract-photos-from-pdf">Extract Photos</a></li>
+                </ul>
+              </li>
+              <li class="footer__cat-group">
+                <span class="footer__cat-header">Security &amp; Optimize</span>
+                <ul class="footer__cat-items">
+                  <li><a href="/sign-pdf">Sign PDF</a></li>
+                  <li><a href="/protect-pdf">Protect PDF</a></li>
+                  <li><a href="/unlock-pdf">Unlock PDF</a></li>
+                  <li><a href="/compress-pdf">Compress PDF</a></li>
+                  <li><a href="/pdf-metadata">Metadata Remover</a></li>
+                </ul>
+              </li>
+            </ul>
+          </div>
+          <div class="footer__col">
+            <h4>Resources</h4>
+            <ul>
+              <li><a href="/blog">Blog</a></li>
+              <li><a href="/faq">FAQ</a></li>
+              <li><a href="/about">About Us</a></li>
+              <li>
+                <a href="/happy-gupta-founder-of-pdfmaster"
+                  >About Happy Gupta</a
+                >
+              </li>
+              <li><a href="/#tools">All Tools</a></li>
+            </ul>
+          </div>
+          <div class="footer__col">
+            <h4>Support</h4>
+            <ul>
+              <li><a href="/contact">Help Center</a></li>
+              <li><a href="/privacy">Privacy Policy</a></li>
+              <li><a href="/terms">Terms of Service</a></li>
+              <li><a href="/faq">FAQ</a></li>
+            </ul>
+          </div>
+        </div>
+        <div class="footer__bottom">
+          <p class="footer__copy">
+            © 2026 <a href="/">PDFMaster All right reserved</a>
           </p>
         </div>
-        <div>
-          <div class="fct">Tools</div>
-          <ul class="flinks">
-            <li>
-              <a href="/protect-pdf">Protect PDF</a>
-            </li>
-            <li>
-              <a href="/unlock-pdf">Unlock PDF</a>
-            </li>
-            <li>
-              <a href="/insert-blank-page-pdf">Insert Blank Page</a>
-            </li>
-            <li>
-              <a href="/pdf-editor">PDF Editor</a>
-            </li>
-            <li>
-              <a href="/pdf-viewer">PDF Viewer</a>
-            </li>
-            <li>
-              <a href="/pdf-to-photo">PDF to Photo</a>
-            </li>
-            <li>
-              <a href="/photo-to-pdf">Photo to PDF</a>
-            </li>
-            <li>
-              <a href="/merge-pdf">PDF Compiler</a>
-            </li>
-            <li>
-              <a href="/pdf-metadata"
-                >Metadata Remover</a
-              >
-            </li>
-            <li>
-              <a href="/split-pdf">Split PDF</a>
-            </li>
-            <li>
-              <a href="/delete-pdf-pages"
-                >Delete PDF Pages</a
-              >
-            </li>
-            <li>
-              <a href="/pdf-reorder">PDF Reorder</a>
-            </li>
-            <li><a href="/#tools">All Tools</a></li>
-          </ul>
-        </div>
-        <div>
-          <div class="fct">Company</div>
-          <ul class="flinks">
-            <li><a href="/">Home</a></li>
-            <li><a href="/about">About Us</a></li>
-            <li>
-              <a href="/happy-gupta-founder-of-pdfmaster"
-                >About Happy Gupta</a
-              >
-            </li>
-            <li><a href="/blog">Blog</a></li>
-            <li><a href="/subscribe">Subscribe</a></li>
-          </ul>
-        </div>
-        <div>
-          <div class="fct">Support</div>
-          <ul class="flinks">
-            <li>
-              <a href="/contact">Help Center</a>
-            </li>
-            <li>
-              <a href="/privacy">Privacy Policy</a>
-            </li>
-            <li>
-              <a href="/terms">Terms of Service</a>
-            </li>
-            <li><a href="/faq">FAQ</a></li>
-          </ul>
-        </div>
-      </div>
-      <div class="fbot">
-        <p class="fcopy">
-          &copy; 2026 <a href="/">PDFMaster</a>. All
-          rights reserved.
-        </p>
-        <p class="fcopy">
-          <a href="mailto:support@pdfmaster.co.in">support@pdfmaster.co.in</a>
-        </p>
       </div>
     </footer>
 
-    <button class="btt" id="btt" aria-label="Scroll back to top">
-      <svg
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        stroke-width="2.5"
-        stroke-linecap="round"
-        stroke-linejoin="round"
-        aria-hidden="true"
-      >
-        <polyline points="18 15 12 9 6 15" />
-      </svg>
+    <!-- Back to Top -->
+    <button class="back-to-top" id="backToTop" aria-label="Back to top">
+      ↑
     </button>
-
     <script src="/blog/js/pdf-to-image-quality-guide.js" defer></script>
   </body>
 </html>

@@ -1,4 +1,4 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en" data-theme="light">
   <head>
     <meta charset="UTF-8" />
@@ -111,6 +111,7 @@
       <link href="/assets/fonts/fonts.css" rel="stylesheet" />
     </noscript>
     <link rel="stylesheet" href="/blog/css/pdf-metadata-guide.css" />
+    <link rel="stylesheet" href="/css/categorized-footer.css" />
 
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="default" />
@@ -278,12 +279,6 @@
               {
                 "@type": "ListItem",
                 "position": 3,
-                "name": "PDF Metadata",
-                "item": "https://pdfmaster.co.in/blog"
-              },
-              {
-                "@type": "ListItem",
-                "position": 4,
                 "name": "PDF Metadata Guide",
                 "item": "https://pdfmaster.co.in/blog/pdf-metadata-guide"
               }
@@ -413,787 +408,245 @@
     </script>
   </head>
   <body>
-    <!-- Google Tag Manager (noscript) -->
-    <noscript
-      ><iframe
-        src="https://www.googletagmanager.com/ns.html?id=GTM-PCSVMC65"
-        height="0"
-        width="0"
-        style="display: none; visibility: hidden"
-        title="Google Tag Manager"
-        loading="lazy"
-      ></iframe
-    ></noscript>
-    <!-- End Google Tag Manager (noscript) -->
-    <!-- ===================== NAVBAR ===================== -->
-    <nav class="navbar" role="navigation" aria-label="Main navigation">
-      <div class="nav-inner">
+    <!-- ── Navbar ────────────────────────────────────────────────── -->
+    <nav class="navbar" id="navbar" aria-label="Main Navigation">
+      <a href="/" class="navbar__logo">
+        <img
+          src="/assets/apple-touch-icon.png"
+          alt="PDFMaster Logo"
+          width="36"
+          height="36"
+          fetchpriority="high"
+        />
+        <span class="navbar__logo-text">PDF<span>Master</span></span>
+      </a>
+      <div class="navbar__spacer"></div>
+      <ul class="navbar__links">
+        <li><a href="/">Home</a></li>
+        <li>
+          <a href="/blog" class="active">Blog</a>
+        </li>
+        <li><a href="/pdf-editor">PDF Editor</a></li>
+        <li><a href="/photo-to-pdf">Photo to PDF</a></li>
+        <li><a href="/merge-pdf">PDF Compiler</a></li>
+        <li><a href="/#tools">All Tools</a></li>
+        <li><a href="/subscribe">Subscribe</a></li>
+      </ul>
+      <div class="navbar__actions">
         <a
-          href="/"
-          class="nav-logo"
-          aria-label="PDFMaster Home"
+          href="/subscribe"
+          class="theme-toggle"
+          aria-label="Subscribe"
+          title="Subscribe"
+          style="
+            margin-right: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+          "
         >
-          <img
-            src="/assets/apple-touch-icon.png"
-            alt="PDFMaster Logo"
-            width="36"
-            height="36"
-          />
-          <span class="nav-logo-text">PDF<span>Master</span></span>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="18"
+            height="18"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <rect x="3" y="8" width="18" height="12" rx="2" ry="2"></rect>
+            <line x1="4" y1="10" x2="12" y2="14"></line>
+            <line x1="20" y1="10" x2="12" y2="14"></line>
+          </svg>
         </a>
-
-        <ul class="nav-links" role="list">
-          <li><a href="/">Home</a></li>
-          <li><a href="/#tools">Tools</a></li>
-          <li>
-            <a href="/blog" class="active">Blog</a>
-          </li>
-          <li><a href="/about">About</a></li>
-          <li><a href="/faq">FAQ</a></li>
-        </ul>
-
-        <div class="nav-cta">
-          <button
-            class="btn-theme"
-            id="themeToggle"
-            aria-label="Toggle colour theme"
+        <button
+          class="theme-toggle"
+          id="themeToggle"
+          aria-label="Toggle dark/light mode"
+          title="Toggle theme"
+        >
+          <svg
+            aria-hidden="true"
+            id="sunIcon"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            stroke-width="2"
           >
-            <svg
-              class="icon-moon"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              aria-hidden="true"
-            >
-              <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
-            </svg>
-            <svg
-              class="icon-sun"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              aria-hidden="true"
-            >
-              <circle cx="12" cy="12" r="5" />
-              <line x1="12" y1="1" x2="12" y2="3" />
-              <line x1="12" y1="21" x2="12" y2="23" />
-              <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" />
-              <line x1="18.36" y1="18.36" x2="19.78" y2="19.78" />
-              <line x1="1" y1="12" x2="3" y2="12" />
-              <line x1="21" y1="12" x2="23" y2="12" />
-              <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" />
-              <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" />
-            </svg>
-          </button>
-          <a href="/pdf-metadata" class="btn-nav-cta"
-            >Remove Metadata</a
+            <circle cx="12" cy="12" r="5" />
+            <line x1="12" y1="1" x2="12" y2="3" />
+            <line x1="12" y1="21" x2="12" y2="23" />
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" />
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78" />
+            <line x1="1" y1="12" x2="3" y2="12" />
+            <line x1="21" y1="12" x2="23" y2="12" />
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" />
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" />
+          </svg>
+          <svg
+            aria-hidden="true"
+            id="moonIcon"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            stroke-width="2"
+            style="display: none"
           >
-          <button
-            class="nav-hamburger"
-            id="menuToggle"
-            aria-label="Open menu"
-            aria-expanded="false"
-          >
-            <svg
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-              stroke-linecap="round"
-              aria-hidden="true"
-            >
-              <line x1="3" y1="6" x2="21" y2="6" />
-              <line x1="3" y1="12" x2="21" y2="12" />
-              <line x1="3" y1="18" x2="21" y2="18" />
-            </svg>
-          </button>
-        </div>
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+          </svg>
+        </button>
+        <button
+          class="hamburger"
+          id="hamburger"
+          aria-label="Open menu"
+          aria-expanded="false"
+        >
+          <span></span><span></span><span></span>
+        </button>
       </div>
     </nav>
 
     <!-- Mobile Drawer -->
-    <div class="drawer-overlay" id="drawerOverlay"></div>
-    <div
-      class="mobile-drawer"
-      id="mobileDrawer"
-      role="dialog"
-      aria-modal="true"
-      aria-label="Navigation menu"
-    >
-      <div class="drawer-header">
-        <a href="/" class="nav-logo">
-          <img
-            src="/assets/apple-touch-icon.png"
-            alt="PDFMaster"
-            width="32"
-            height="32"
-          />
-          <span class="nav-logo-text">PDF<span>Master</span></span>
-        </a>
-        <button class="drawer-close" id="drawerClose" aria-label="Close menu">
-          <svg
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            aria-hidden="true"
-          >
-            <line x1="18" y1="6" x2="6" y2="18" />
-            <line x1="6" y1="6" x2="18" y2="18" />
-          </svg>
-        </button>
-      </div>
-      <nav class="drawer-nav" aria-label="Mobile navigation">
-        <a href="/">
-          <svg
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            aria-hidden="true"
-          >
-            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
-            <polyline points="9 22 9 12 15 12 15 22" />
-          </svg>
-          Home
-        </a>
-        <a href="/#tools">
-          <svg
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            aria-hidden="true"
-          >
-            <rect x="2" y="2" width="9" height="9" rx="1" />
-            <rect x="13" y="2" width="9" height="9" rx="1" />
-            <rect x="2" y="13" width="9" height="9" rx="1" />
-            <rect x="13" y="13" width="9" height="9" rx="1" />
-          </svg>
-          All Tools
-        </a>
-        <a href="/blog">
-          <svg
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            aria-hidden="true"
-          >
-            <path d="M12 20h9" />
-            <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z" />
-          </svg>
-          Blog
-        </a>
-        <a href="/about">
-          <svg
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            aria-hidden="true"
-          >
-            <circle cx="12" cy="12" r="10" />
-            <line x1="12" y1="8" x2="12" y2="12" />
-            <line x1="12" y1="16" x2="12.01" y2="16" />
-          </svg>
-          About
-        </a>
-        <a href="/faq">
-          <svg
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            aria-hidden="true"
-          >
-            <circle cx="12" cy="12" r="10" />
-            <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" />
-            <line x1="12" y1="17" x2="12.01" y2="17" />
-          </svg>
-          FAQ
-        </a>
-        <a href="mailto:support@pdfmaster.co.in">
-          <svg
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            aria-hidden="true"
-          >
-            <path
-              d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"
-            />
-            <polyline points="22,6 12,13 2,6" />
-          </svg>
-          Contact
-        </a>
+    <div class="nav-drawer" id="navDrawer" role="navigation">
+      <a href="/"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-bottom: 2px"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg> Home</a>
+      <a href="/blog"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg> Blog</a>
+      <a href="/pdf-metadata"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 21 1.9-1.9M21 3.5l-1.9 1.9M5 16l4-4M16 5l-4 4M21 16c0 2.8-1.4 5.3-3.5 7L12 18.5l-5.5 4.5C4.4 21.3 3 18.8 3 16c0-4.4 3.6-8 8-8s8 3.6 8 8Z"></path></svg> PDF Metadata</a>
+      <a href="/photo-to-pdf"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg> Photo to PDF</a>
+      <a href="/merge-pdf"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 10h-1.26A8 8 0 1 0 9 20h9a5 5 0 0 0 0-10z"></path></svg> PDF Compiler</a>
+      <a href="/#tools"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"></path></svg> All Tools</a>
+      <a href="/about"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg> About</a>
+      <a href="/faq"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><line x1="12" y1="17" x2="12.01" y2="17"></line></svg> FAQs</a>
+      <a href="/contact"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg> Contact</a>
+      <a href="/subscribe"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="8" width="18" height="12" rx="2" ry="2"></rect><line x1="4" y1="10" x2="12" y2="14"></line><line x1="20" y1="10" x2="12" y2="14"></line></svg> Subscribe</a>
+    </div>
+
+    <!-- ── Breadcrumb ──────────────────────────────────────────── -->
+    <div class="breadcrumb-bar">
+      <nav class="breadcrumb" aria-label="Breadcrumb">
+        <a href="/">Home</a>
+        <span class="breadcrumb-sep">›</span>
+        <a href="/blog">Blog</a>
+        <span class="breadcrumb-sep">›</span>
+        <span>PDF Metadata Guide</span>
       </nav>
-      <div class="drawer-footer">
-        <a href="/pdf-metadata"
-          >Remove PDF Metadata Free</a
-        >
-      </div>
     </div>
 
-    <!-- ===================== BREADCRUMB ===================== -->
-    <div class="breadcrumb-bar" aria-label="Breadcrumb">
-      <div class="breadcrumb-inner">
-        <nav class="breadcrumb" aria-label="You are here">
-          <a href="/">Home</a>
-          <svg
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            aria-hidden="true"
-          >
-            <polyline points="9 18 15 12 9 6" />
-          </svg>
-          <a href="/blog">Blog</a>
-          <svg
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            aria-hidden="true"
-          >
-            <polyline points="9 18 15 12 9 6" />
-          </svg>
-          <a href="/blog">PDF Metadata</a>
-          <svg
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            aria-hidden="true"
-          >
-            <polyline points="9 18 15 12 9 6" />
-          </svg>
-          <span aria-current="page">PDF Metadata Guide</span>
-        </nav>
-      </div>
-    </div>
-
-    <!-- ===================== HERO ===================== -->
-    <header class="blog-hero">
-      <div class="blog-category" aria-label="Category">
-        <svg
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="2"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          aria-hidden="true"
-        >
-          <path
-            d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"
-          />
-          <polyline points="14 2 14 8 20 8" />
-        </svg>
-        PDF Education
-      </div>
-      <h1 class="blog-title">
-        <span class="highlight">PDF Metadata</span> Explained:<br />
-        Privacy, SEO, File Size &amp; How to Inspect It
-      </h1>
-      <p class="blog-subtitle">
-        Everything hidden inside your PDF — from creator names and software
-        fingerprints to GPS coordinates and revision histories — and why it
-        matters for your privacy, search rankings, and document security.
-      </p>
-      <div class="blog-meta" aria-label="Article metadata">
-        <div class="meta-item">
-          <svg
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            aria-hidden="true"
-          >
-            <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
-            <line x1="16" y1="2" x2="16" y2="6" />
-            <line x1="8" y1="2" x2="8" y2="6" />
-            <line x1="3" y1="10" x2="21" y2="10" />
-          </svg>
-          <strong>Updated Oct 2026 (Published May 2025)</strong>
-        </div>
-        <div class="meta-item">
-          <svg
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            aria-hidden="true"
-          >
-            <circle cx="12" cy="12" r="10" />
-            <polyline points="12 6 12 12 16 14" />
-          </svg>
-          <strong>9 min read</strong>
-        </div>
-        <div class="meta-item">
-          <svg
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            aria-hidden="true"
-          >
-            <path
-              d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"
-            />
-          </svg>
-          <strong>PDFMaster Team</strong>
-        </div>
-        <div class="meta-item">
-          <svg
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            aria-hidden="true"
-          >
-            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
-            <circle cx="12" cy="12" r="3" />
-          </svg>
-          <strong>PDF Metadata, Privacy, SEO</strong>
-        </div>
-      </div>
-    </header>
-
-    <!-- ===================== MAIN LAYOUT ===================== -->
-    <div class="blog-layout">
-      <!-- Sidebar -->
-      <aside class="sidebar" aria-label="Article sidebar">
-        <!-- Table of Contents -->
-        <div class="sidebar-card">
-          <div class="sidebar-card-header">
-            <svg
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              aria-hidden="true"
-            >
-              <line x1="3" y1="6" x2="21" y2="6" />
-              <line x1="3" y1="12" x2="21" y2="12" />
-              <line x1="3" y1="18" x2="21" y2="18" />
-            </svg>
-            Table of Contents
-          </div>
-          <ul class="toc-list" aria-label="Jump to section">
-            <li>
-              <a href="#what-is-pdf-metadata"
-                ><span class="toc-dot" aria-hidden="true"></span>What Is PDF
-                Metadata?</a
-              >
-            </li>
-            <li>
-              <a href="#metadata-vs-properties"
-                ><span class="toc-dot" aria-hidden="true"></span>Metadata vs
-                Document Properties</a
-              >
-            </li>
-            <li>
-              <a href="#tracking-metadata"
-                ><span class="toc-dot" aria-hidden="true"></span>Can Metadata
-                Track You?</a
-              >
-            </li>
-            <li>
-              <a href="#metadata-seo"
-                ><span class="toc-dot" aria-hidden="true"></span>Metadata &amp;
-                PDF SEO</a
-              >
-            </li>
-            <li>
-              <a href="#file-size"
-                ><span class="toc-dot" aria-hidden="true"></span>Does Removing
-                Metadata Shrink PDFs?</a
-              >
-            </li>
-            <li>
-              <a href="#inspect-metadata-browser"
-                ><span class="toc-dot" aria-hidden="true"></span>Inspect
-                Metadata in Browser</a
-              >
-            </li>
-            <li>
-              <a href="#faq"
-                ><span class="toc-dot" aria-hidden="true"></span>FAQ</a
-              >
-            </li>
-            <li>
-              <a href="#conclusion"
-                ><span class="toc-dot" aria-hidden="true"></span>Wrapping Up</a
-              >
-            </li>
-          </ul>
-        </div>
-
-        <!-- Related Tools -->
-        <div class="sidebar-card">
-          <div class="sidebar-card-header">
-            <svg
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              aria-hidden="true"
-            >
-              <rect x="2" y="2" width="9" height="9" rx="1" />
-              <rect x="13" y="2" width="9" height="9" rx="1" />
-              <rect x="2" y="13" width="9" height="9" rx="1" />
-              <rect x="13" y="13" width="9" height="9" rx="1" />
-            </svg>
-            Related Tools
-          </div>
-          <a
-            href="/pdf-metadata"
-            class="related-tool-link"
-          >
-            <div class="related-tool-icon">
-              <svg
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                aria-hidden="true"
-              >
+    <!-- ── Main Article ────────────────────────────────────────── -->
+    <main>
+      <article
+        class="article-wrap"
+        itemscope
+        itemtype="https://schema.org/Article"
+      >
+        <!-- Article Header -->
+        <header class="article-header reveal">
+          <div class="article-badge">Technical Guide · Privacy &amp; SEO</div>
+          <h1 class="article-title" itemprop="headline">
+            <span class="highlight">PDF Metadata Explained:</span><br />
+            Privacy, SEO, File Size &amp; How to Inspect and Strip It
+          </h1>
+          <div class="article-meta">
+            <span class="article-meta-item">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="10" />
+                <polyline points="12 6 12 12 16 14" />
+              </svg>
+              <time datetime="2026-10-28" itemprop="datePublished">October 28, 2026</time>
+            </span>
+            <span class="article-meta-item">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                <circle cx="12" cy="12" r="3" />
+              </svg>
+              9 min read
+            </span>
+            <span class="article-meta-item">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                <circle cx="12" cy="7" r="4" />
+              </svg>
+              PDFMaster Team
+            </span>
+            <span class="article-meta-item">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
               </svg>
-            </div>
-            <div>
-              <div class="related-tool-name">PDF Metadata Remover</div>
-              <div class="related-tool-desc">
-                Strip all metadata from any PDF
-              </div>
-            </div>
-          </a>
-          <a
-            href="/merge-pdf"
-            class="related-tool-link"
-          >
-            <div class="related-tool-icon">
-              <svg
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                aria-hidden="true"
-              >
-                <path
-                  d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"
-                />
-                <polyline points="14 2 14 8 20 8" />
-              </svg>
-            </div>
-            <div>
-              <div class="related-tool-name">PDF Compiler</div>
-              <div class="related-tool-desc">Merge multiple PDFs into one</div>
-            </div>
-          </a>
-          <a
-            href="/photo-to-pdf"
-            class="related-tool-link"
-          >
-            <div class="related-tool-icon">
-              <svg
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                aria-hidden="true"
-              >
-                <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
-                <circle cx="8.5" cy="8.5" r="1.5" />
-                <polyline points="21 15 16 10 5 21" />
-              </svg>
-            </div>
-            <div>
-              <div class="related-tool-name">Photo to PDF</div>
-              <div class="related-tool-desc">
-                Convert images to PDF instantly
-              </div>
-            </div>
-          </a>
-          <a
-            href="/pdf-to-photo"
-            class="related-tool-link"
-          >
-            <div class="related-tool-icon">
-              <svg
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                aria-hidden="true"
-              >
-                <polyline points="8 17 12 21 16 17" />
-                <line x1="12" y1="12" x2="12" y2="21" />
-                <path d="M20.88 18.09A5 5 0 0 0 18 9h-1.26A8 8 0 1 0 3 16.29" />
-              </svg>
-            </div>
-            <div>
-              <div class="related-tool-name">PDF to Photo</div>
-              <div class="related-tool-desc">Extract pages as images</div>
-            </div>
-          </a>
-        </div>
+              PDF Security &amp; SEO
+            </span>
+          </div>
+        </header>
 
-        <!-- Related Guides -->
-        <div class="sidebar-card">
-          <div class="sidebar-card-header">
+        <!-- Table of Contents -->
+        <nav
+          class="toc-box reveal reveal-delay-1"
+          aria-label="Table of Contents"
+        >
+          <h3>
             <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="14"
+              height="14"
               viewBox="0 0 24 24"
               fill="none"
               stroke="currentColor"
               stroke-width="2"
               stroke-linecap="round"
               stroke-linejoin="round"
-              aria-hidden="true"
             >
-              <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
-              <path
-                d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"
-              />
+              <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path>
+              <rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect>
             </svg>
-            Related Guides
-          </div>
-          <a
-            href="/blog/photo-to-pdf-mobile-guide"
-            class="related-tool-link"
-          >
-            <div class="related-tool-icon">
-              <svg
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                aria-hidden="true"
-              >
-                <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
-                <circle cx="8.5" cy="8.5" r="1.5" />
-                <polyline points="21 15 16 10 5 21" />
-              </svg>
-            </div>
-            <div>
-              <div class="related-tool-name">Photo to PDF Mobile Guide</div>
-              <div class="related-tool-desc">
-                8-device tests &amp; DPI settings
-              </div>
-            </div>
-          </a>
-          <a
-            href="/blog/pdf-to-image-quality-guide"
-            class="related-tool-link"
-          >
-            <div class="related-tool-icon">
-              <svg
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                aria-hidden="true"
-              >
-                <polyline points="8 17 12 21 16 17" />
-                <line x1="12" y1="12" x2="12" y2="21" />
-                <path d="M20.88 18.09A5 5 0 0 0 18 9h-1.26A8 8 0 1 0 3 16.29" />
-              </svg>
-            </div>
-            <div>
-              <div class="related-tool-name">PDF to Image Quality Guide</div>
-              <div class="related-tool-desc">
-                Prevent blur &amp; preserve full resolution
-              </div>
-            </div>
-          </a>
-          <a
-            href="/blog/convert-handwritten-notes-to-pdf-for-submission"
-            class="related-tool-link"
-          >
-            <div class="related-tool-icon">
-              <svg
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                aria-hidden="true"
-              >
-                <path d="M12 20h9" />
-                <path
-                  d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"
-                />
-              </svg>
-            </div>
-            <div>
-              <div class="related-tool-name">Handwritten Notes to PDF</div>
-              <div class="related-tool-desc">
-                Clean shadows &amp; prepare student submissions
-              </div>
-            </div>
-          </a>
-        </div>
+            Table of Contents
+          </h3>
+          <ul class="toc-list">
+            <li><a href="#what-is-pdf-metadata">What Is PDF Metadata?</a></li>
+            <li><a href="#metadata-vs-properties">Difference Between PDF Metadata and Document Properties</a></li>
+            <li><a href="#tracking-metadata">Can Metadata Track the PDF Owner or Creator?</a></li>
+            <li><a href="#metadata-seo">How Metadata Affects PDF SEO and Indexing</a></li>
+            <li><a href="#file-size">Does Removing Metadata Reduce PDF File Size?</a></li>
+            <li><a href="#inspect-metadata-browser">How to Inspect PDF Metadata Using Browser Tools</a></li>
+            <li><a href="#faq">Frequently Asked Questions</a></li>
+            <li><a href="#conclusion">Final Verdict &amp; Summary</a></li>
+          </ul>
+        </nav>
 
-        <!-- Quick CTA -->
-        <div
-          style="
-            padding: 22px;
-            background: linear-gradient(
-              135deg,
-              var(--accent),
-              var(--accent-dark)
-            );
-            border-radius: var(--radius-lg);
-            text-align: center;
-            color: #fff;
-          "
-        >
-          <div
-            style="margin-bottom: 10px; display: flex; justify-content: center"
-          >
-            <svg
-              width="32"
-              height="32"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="rgba(255,255,255,.8)"
-              stroke-width="1.8"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              aria-hidden="true"
-            >
-              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+        <!-- Body -->
+        <div class="article-body" itemprop="articleBody">
+          <p class="lead-para reveal">
+            Every PDF you create, receive, or download carries an invisible digital fingerprint: <strong>metadata</strong>. From hidden author names, camera serial numbers, and exact GPS coordinates to software build strings and revision histories, this embedded data affects your <strong>privacy, document security, search rankings, and file sizes</strong>. In this comprehensive guide, we unpack what metadata actually lives inside your PDFs, how crawlers and forensic tools read it, and how you can inspect or strip it instantly in your browser without uploading your files to any external server.
+          </p>
+
+          <!-- SECTION 1 -->
+          <h2 id="what-is-pdf-metadata" class="reveal">
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+              <polyline points="14 2 14 8 20 8"></polyline>
+              <line x1="16" y1="13" x2="8" y2="13"></line>
+              <line x1="16" y1="17" x2="8" y2="17"></line>
+              <polyline points="10 9 9 9 8 9"></polyline>
             </svg>
-          </div>
-          <p
-            style="
-              font-family: var(--font-head);
-              font-weight: 700;
-              font-size: 0.95rem;
-              margin-bottom: 6px;
-              color: #fff;
-            "
-          >
-            Privacy First
+            What Is PDF Metadata?
+          </h2>
+          <p class="reveal">
+            Every PDF file you handle contains structured information <em>about</em> the document rather than the visible content printed on the canvas. It answers questions like: Who made this? When? With what software? Has it been edited since?
           </p>
-          <p
-            style="
-              font-size: 0.8rem;
-              opacity: 0.88;
-              margin-bottom: 16px;
-              color: #fff;
-            "
-          >
-            Files never leave your browser. Zero server uploads.
+          <p class="reveal">
+            There are two primary metadata layers embedded inside modern PDF files:
           </p>
-          <a
-            href="/pdf-metadata"
-            style="
-              display: block;
-              padding: 10px;
-              background: rgba(255, 255, 255, 0.15);
-              border: 1px solid rgba(255, 255, 255, 0.3);
-              color: #fff;
-              border-radius: var(--radius-md);
-              font-weight: 600;
-              font-size: 0.85rem;
-              transition: background 0.2s;
-            "
-          >
-            Try It Free →
-          </a>
-        </div>
-      </aside>
-
-      <!-- Article -->
-      <article class="article-body" aria-label="Blog article content">
-        <!-- SECTION 1 -->
-        <section id="what-is-pdf-metadata">
-          <h2>What Is PDF Metadata?</h2>
-          <p>
-            Every PDF you create, receive, or share carries an invisible
-            passenger: <strong>metadata</strong>. This is structured information
-            <em>about</em> the document rather than the visible content within
-            it. It answers questions like: Who made this? When? With what
-            software? Has it been edited since?
-          </p>
-          <p>
-            There are two primary metadata layers embedded inside modern PDF
-            files:
-          </p>
-          <ul>
+          <ul class="reveal">
             <li>
-              <strong>DocInfo Dictionary</strong> — the original PDF 1.0-era
-              standard. Stores basic key-value pairs like <code>/Title</code>,
-              <code>/Author</code>, <code>/Creator</code>,
-              <code>/Producer</code>, <code>/CreationDate</code>, and
-              <code>/ModDate</code>.
+              <strong>DocInfo Dictionary</strong> — the original PDF 1.0-era standard. Stores basic key-value pairs like <code>/Title</code>, <code>/Author</code>, <code>/Creator</code>, <code>/Producer</code>, <code>/CreationDate</code>, and <code>/ModDate</code>.
             </li>
             <li>
-              <strong>XMP (Extensible Metadata Platform)</strong> — an
-              Adobe-developed XML standard (introduced in PDF 1.4) that can
-              store much richer, extensible metadata including copyright info,
-              GPS data, edit history, camera settings, and custom namespace
-              properties.
+              <strong>XMP (Extensible Metadata Platform)</strong> — an Adobe-developed XML standard (introduced in PDF 1.4) that can store much richer, extensible metadata including copyright info, GPS data, edit history, camera settings, and custom namespace properties.
             </li>
           </ul>
-          <p>
-            Both layers can coexist in the same file, sometimes with conflicting
-            values — a common occurrence when PDFs are resaved through multiple
-            tools.
+          <p class="reveal">
+            Both layers can coexist in the same file, sometimes with conflicting values — a common occurrence when PDFs are resaved through multiple tools. Below are the primary fields embedded in standard PDF documents:
           </p>
 
           <div class="fields-grid">
@@ -1250,19 +703,23 @@
               </div>
             </div>
           </div>
-        </section>
 
-        <!-- SECTION 2 -->
-        <section id="metadata-vs-properties">
-          <h2>Difference Between PDF Metadata and Document Properties</h2>
-          <p>
-            This is one of the most commonly confused distinctions in PDF
-            handling. People use "metadata" and "document properties"
-            interchangeably — but they are not the same thing.
+          <!-- SECTION 2 -->
+          <h2 id="metadata-vs-properties" class="reveal">
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
+            </svg>
+            Difference Between PDF Metadata and Document Properties
+          </h2>
+          <p class="reveal">
+            This is one of the most commonly confused distinctions in PDF handling. People frequently use "metadata" and "document properties" interchangeably — but technically, they are not the same thing.
+          </p>
+          <p class="reveal">
+            <strong>Document properties</strong> are what your operating system or PDF reader shows in standard dialogs (like <em>File → Properties</em>). <strong>PDF metadata</strong> includes the entire underlying stream, which holds hidden histories, camera markers, and XML packets that GUI dialogs never display.
           </p>
 
-          <div class="compare-table-wrap reveal">
-            <table class="compare-table">
+          <div class="comparison-table-wrap reveal">
+            <table class="comparison-table">
               <thead>
                 <tr>
                   <th>Aspect</th>
@@ -1330,428 +787,267 @@
             </table>
           </div>
 
-          <div class="info-box reveal">
-            <svg
-              class="info-box-icon"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              aria-hidden="true"
-            >
-              <circle cx="12" cy="12" r="10" />
-              <line x1="12" y1="8" x2="12" y2="12" />
-              <line x1="12" y1="16" x2="12.01" y2="16" />
+          <h3 class="reveal">What lives in XMP that document properties don't show?</h3>
+          <p class="reveal">
+            While document properties only display 5–6 high-level fields, the internal XMP packet can hold hundreds of nested properties across dozens of schemas:
+          </p>
+          <ul class="reveal">
+            <li><code>photoshop:History</code> — A log of every filter, crop, and edit made in Adobe Photoshop before exporting.</li>
+            <li><code>xmpMM:DerivedFrom</code> — References to original source files, previous UUIDs, and earlier versions.</li>
+            <li><code>exif:GPSLatitude / GPSLongitude</code> — Exact geographic coordinates where photos embedded in the PDF were captured.</li>
+            <li><code>pdfx:Gears / Version</code> — Internal enterprise print production parameters and software build strings.</li>
+          </ul>
+
+          <!-- SECTION 3 -->
+          <h2 id="tracking-metadata" class="reveal">
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
             </svg>
-            <div class="info-box-content">
-              <strong>Key Takeaway</strong>
-              Document properties are a <em>subset</em> of PDF metadata — the
-              part intentionally exposed to users. Full metadata includes
-              everything the application baked in during creation, much of which
-              never surfaces in any dialog.
+            Can Metadata Track the PDF Owner or Creator?
+          </h2>
+          <p class="reveal">
+            Yes — and far more precisely than most users realize. PDF metadata has been used extensively in digital forensics, legal disputes, and investigative journalism to pinpoint document authors and trace document leaks.
+          </p>
+
+          <div class="callout warning reveal">
+            <div class="callout-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+                <line x1="12" y1="9" x2="12" y2="13"></line>
+                <line x1="12" y1="17" x2="12.01" y2="17"></line>
+              </svg>
+            </div>
+            <div class="callout-content">
+              <strong>Hidden Author Identifiers</strong>
+              <p>Word processors (like Word and LibreOffice) automatically embed your local computer username, corporate network domain, and printer names into <code>/Author</code> and <code>/Producer</code> when exporting to PDF.</p>
             </div>
           </div>
 
-          <h3>What lives in XMP that document properties don't show?</h3>
-          <p>
-            XMP metadata can contain a significantly broader scope of
-            information than the DocInfo dictionary shows:
+          <p class="reveal">
+            Key tracking vectors commonly extracted from unstripped PDFs include:
           </p>
-          <ul>
-            <li>
-              <strong>Revision/version history</strong> — lists of every time
-              the document was edited, with author names and timestamps per
-              revision
-            </li>
-            <li>
-              <strong>Embedded thumbnail</strong> — a base64-encoded JPEG
-              preview of the first page, which can reveal document content even
-              if the PDF itself is encrypted
-            </li>
-            <li>
-              <strong>Software identifiers</strong> — precise software name,
-              version number, and sometimes licence serial number
-            </li>
-            <li>
-              <strong>Rights management data</strong> — copyright status, usage
-              terms, licensing URL
-            </li>
-            <li>
-              <strong>GPS coordinates</strong> — from PDFs generated by mobile
-              scanning apps that read device location
-            </li>
-            <li>
-              <strong>Custom enterprise properties</strong> — document
-              classification labels, project codes, client reference IDs added
-              by enterprise DMS systems
-            </li>
+          <ul class="reveal">
+            <li><strong>Operating System Account Names:</strong> Exporting from Microsoft Word or macOS Pages automatically injects the local user profile name into the document's creator dictionary.</li>
+            <li><strong>Software &amp; OS Build Fingerprints:</strong> The <code>/Producer</code> string often specifies exact build numbers (e.g. <code>macOS Version 15.1 (Build 24B83) Quartz PDFContext</code>), revealing your exact OS version.</li>
+            <li><strong>Embedded Image EXIF Data:</strong> Images dragged into a document can retain their camera make, serial number, lens parameters, and GPS geotags inside the PDF's internal image dictionary.</li>
           </ul>
-        </section>
 
-        <!-- SECTION 3 -->
-        <section id="tracking-metadata">
-          <h2>Can Metadata Track the PDF Owner or Creator?</h2>
-          <p>
-            Yes — and more precisely than most people realise. PDF metadata has
-            been used in real investigations to identify whistleblowers, uncover
-            anonymous authors, and attribute leaked documents.
-          </p>
-
-          <div class="warn-box reveal">
-            <svg
-              class="warn-box-icon"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              aria-hidden="true"
-            >
-              <path
-                d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"
-              />
-              <line x1="12" y1="9" x2="12" y2="13" />
-              <line x1="12" y1="17" x2="12.01" y2="17" />
-            </svg>
-            <div class="warn-box-content">
-              <strong>Real-world risk: The NSA leak case (2017)</strong>
-              Reality Winner's leaked NSA document was identified partly through
-              printer tracking dots — but metadata in the PDF pointed directly
-              to the printing user account and timestamp, narrowing suspects
-              before forensic analysis even began.
-            </div>
+          <div class="pro-tip reveal">
+            <span class="pro-tip-label">PRO TIP:</span>
+            Before submitting university assignments, job applications, legal contracts, or whistleblowing documents, always run them through a <a href="/pdf-metadata">client-side metadata remover</a> to wipe author profiles and software fingerprints.
           </div>
 
-          <h3>Tracking vectors embedded in PDF metadata</h3>
-          <ul>
-            <li>
-              <strong>Author field</strong> — auto-populated from the OS
-              username or Microsoft Office registered user name at the time of
-              creation
-            </li>
-            <li>
-              <strong>Creator field</strong> — reveals the precise application
-              (e.g.,
-              <code>Microsoft Word for Microsoft 365 MSO (Version 2401)</code>),
-              which can fingerprint the editing environment
-            </li>
-            <li>
-              <strong>CreationDate timezone offset</strong> — the timestamp
-              includes a UTC offset (e.g., <code>+05:30</code>), which can
-              geolocate the creator to a timezone
-            </li>
-            <li>
-              <strong>Revision author entries in XMP</strong> — every co-author
-              who touched the document leaves a named entry in the revision
-              history
-            </li>
-            <li>
-              <strong>GPS in scanned PDFs</strong> — mobile scanner apps like
-              Adobe Scan or CamScanner embed device GPS coordinates by default
-            </li>
-            <li>
-              <strong>Enterprise classification tags</strong> — internal
-              document numbers, project codes, and client names added
-              automatically by document management systems
-            </li>
-            <li>
-              <strong>Embedded thumbnail</strong> — an image showing the
-              document's first-page draft content, potentially revealing earlier
-              confidential versions
-            </li>
-          </ul>
-
-          <div class="info-box reveal">
-            <svg
-              class="info-box-icon"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              aria-hidden="true"
-            >
-              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+          <!-- SECTION 4 -->
+          <h2 id="metadata-seo" class="reveal">
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="11" cy="11" r="8"></circle>
+              <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
             </svg>
-            <div class="info-box-content">
-              <strong>Before sharing sensitive documents</strong>
-              Always strip metadata from PDFs before distributing externally,
-              especially for legal submissions, press releases, whistleblowing,
-              academic anonymised submissions, or any file where authorship
-              should remain private.
-            </div>
-          </div>
-        </section>
-
-        <!-- SECTION 4 -->
-        <section id="metadata-seo">
-          <h2>How Metadata Affects PDF SEO and Indexing</h2>
-          <p>
-            Google and other search engines actively crawl, index, and rank PDFs
-            in their search results. Unlike HTML web pages where the
-            <code>&lt;title&gt;</code> tag and meta description are your primary
-            levers, PDFs rely on document metadata as the equivalent signal
-            layer.
+            How Metadata Affects PDF SEO and Indexing
+          </h2>
+          <p class="reveal">
+            Google and Bing actively index PDFs. In competitive search results, Google often treats a PDF just like an HTML webpage, generating the clickable blue link in search results directly from the PDF's internal <code>/Title</code> metadata.
+          </p>
+          <p class="reveal">
+            If your PDF has a meaningless title like <code>Microsoft Word - Document1.docx</code>, that exact phrase becomes your search title in Google, destroying click-through rates.
           </p>
 
-          <h3>How Google reads PDF metadata</h3>
-          <p>
-            Google's crawler (Googlebot) parses the DocInfo dictionary of each
-            PDF it indexes. The fields it uses most directly are:
-          </p>
-          <ul>
-            <li>
-              <strong>/Title</strong> — This is the single most important
-              metadata field for SEO. Google uses it as the clickable headline
-              in search results, exactly like the HTML
-              <code>&lt;title&gt;</code> tag. A missing or generic title (like
-              "Untitled" or "Document1") forces Google to generate one from the
-              body text, usually less effectively.
-            </li>
-            <li>
-              <strong>/Subject</strong> — Used as the meta description
-              equivalent. A well-written Subject field improves the quality of
-              the snippet shown under the search result title.
-            </li>
-            <li>
-              <strong>/Keywords</strong> — Has negligible direct ranking weight
-              in modern search algorithms (analogous to HTML meta keywords since
-              2009), but can assist in correct document classification.
-            </li>
-            <li>
-              <strong>/Author</strong> — May appear in rich results for
-              documents indexed with author attribution, improving click-through
-              trust.
-            </li>
-          </ul>
-
-          <div class="compare-table-wrap reveal">
-            <table class="compare-table">
+          <div class="comparison-table-wrap reveal">
+            <table class="comparison-table">
               <thead>
                 <tr>
-                  <th>PDF Metadata Field</th>
-                  <th>HTML Equivalent</th>
-                  <th>SEO Impact</th>
+                  <th>Aspect</th>
+                  <th>Document Properties</th>
+                  <th>PDF Metadata</th>
                 </tr>
               </thead>
               <tbody>
                 <tr>
-                  <td><code>/Title</code></td>
-                  <td><code>&lt;title&gt;</code></td>
-                  <td>High — directly used as SERP headline</td>
+                  <td><strong>Definition</strong></td>
+                  <td>
+                    The human-readable fields shown in your PDF viewer's File →
+                    Properties dialog
+                  </td>
+                  <td>
+                    The complete data layer — both DocInfo and XMP — embedded in
+                    the file structure
+                  </td>
                 </tr>
                 <tr>
-                  <td><code>/Subject</code></td>
-                  <td><code>&lt;meta name="description"&gt;</code></td>
-                  <td>Medium — influences snippet text</td>
+                  <td><strong>Visibility</strong></td>
+                  <td>
+                    <span class="badge badge-visible">Visible in viewer</span>
+                  </td>
+                  <td><span class="badge badge-hidden">Mostly hidden</span></td>
                 </tr>
                 <tr>
-                  <td><code>/Keywords</code></td>
-                  <td><code>&lt;meta name="keywords"&gt;</code></td>
-                  <td>Low — largely ignored by modern search</td>
+                  <td><strong>Fields shown</strong></td>
+                  <td>
+                    Title, Author, Subject, Keywords, Creator, Producer, dates
+                  </td>
+                  <td>
+                    All DocInfo fields + XMP namespaces (dc:, xmp:, pdf:,
+                    custom:)
+                  </td>
                 </tr>
                 <tr>
-                  <td><code>/Author</code></td>
-                  <td>Schema.org <code>author</code></td>
-                  <td>Low–Medium — E-E-A-T trust signal</td>
+                  <td><strong>Hidden data</strong></td>
+                  <td>None — only displays what the viewer exposes</td>
+                  <td>
+                    Editing history, thumbnail previews, GPS coords, software
+                    serial data, embedded scripts
+                  </td>
                 </tr>
                 <tr>
-                  <td><code>/CreationDate</code></td>
-                  <td><code>&lt;meta name="date"&gt;</code></td>
-                  <td>Low — freshness signal</td>
+                  <td><strong>Editable in viewer?</strong></td>
+                  <td>
+                    <span class="badge badge-both">Yes (Acrobat Pro)</span>
+                  </td>
+                  <td>
+                    <span class="badge badge-hidden">Only partially</span>
+                  </td>
+                </tr>
+                <tr>
+                  <td><strong>Cleared by "Clear" button</strong></td>
+                  <td>Yes — visible fields</td>
+                  <td>No — XMP and thumbnail data usually survive</td>
+                </tr>
+                <tr>
+                  <td><strong>Risk level</strong></td>
+                  <td>Low — intentionally authored data</td>
+                  <td>High — may contain unintentional or sensitive data</td>
                 </tr>
               </tbody>
             </table>
           </div>
 
-          <h3>Best practices for PDF SEO metadata</h3>
-          <ul>
-            <li>
-              Write a descriptive <strong>/Title</strong> that includes your
-              primary keyword (e.g., "Annual Financial Report 2024 — Acme
-              Corporation" rather than "Report Final v3")
-            </li>
-            <li>
-              Write a 120–160 character <strong>/Subject</strong> that
-              summarises what the reader will learn — Google may use it as the
-              search snippet
-            </li>
-            <li>
-              Set the <strong>/Author</strong> to your organisation name to
-              reinforce brand attribution in search results
-            </li>
-            <li>
-              Make sure your filename also contains the keyword — Google uses
-              the URL path (which includes the filename) as a secondary ranking
-              signal
-            </li>
-            <li>
-              Do not leave the /Title blank or set it to a generic value — this
-              is the most common PDF SEO mistake
-            </li>
+          <h3 class="reveal">Best Practices for PDF Search Engine Optimization</h3>
+          <ul class="reveal">
+            <li><strong>Always Set a Descriptive Title:</strong> Keep it between 50 and 65 characters with your target keyword upfront.</li>
+            <li><strong>Fill Out the Subject Field:</strong> Search engines use the <code>/Subject</code> field as the meta description snippet under your title.</li>
+            <li><strong>Optimize Internal Links:</strong> Include hyperlinks back to your website within the PDF content; search crawlers follow links inside PDFs and pass PageRank.</li>
           </ul>
 
-          <div class="info-box reveal">
-            <svg
-              class="info-box-icon"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              aria-hidden="true"
-            >
-              <circle cx="12" cy="12" r="10" />
-              <line x1="12" y1="8" x2="12" y2="12" />
-              <line x1="12" y1="16" x2="12.01" y2="16" />
+          <!-- SECTION 5 -->
+          <h2 id="file-size" class="reveal">
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="4 14 10 14 10 20"></polyline>
+              <polyline points="20 10 14 10 14 4"></polyline>
+              <line x1="14" y1="10" x2="21" y2="3"></line>
+              <line x1="3" y1="21" x2="10" y2="14"></line>
             </svg>
-            <div class="info-box-content">
-              <strong>Does removing metadata hurt PDF SEO?</strong>
-              Only if you remove the /Title and /Subject fields. Stripping
-              privacy-sensitive fields (Author, Creator, Producer, revision
-              history) while keeping Title and Subject intact has no negative
-              SEO impact. PDFMaster's Metadata Remover gives you full control
-              over which fields to clear.
-            </div>
-          </div>
-        </section>
-
-        <!-- SECTION 5 -->
-        <section id="file-size">
-          <h2>Does Removing Metadata Reduce PDF File Size?</h2>
-          <p>
-            This is a frequently asked question with a nuanced answer:
-            <strong>yes, but the impact is usually modest</strong>.
-            Understanding what actually contributes to metadata file size helps
-            set realistic expectations.
+            Does Removing Metadata Reduce PDF File Size?
+          </h2>
+          <p class="reveal">
+            Yes, but the impact depends directly on where the PDF originated. While simple text PDFs contain less than 2 KB of metadata, PDFs exported from design software like Adobe InDesign, Illustrator, or Photoshop can hold megabytes of bloated XML history and uncompressed thumbnails.
           </p>
 
-          <h3>What takes up space in PDF metadata?</h3>
-          <ul>
-            <li>
-              <strong>DocInfo dictionary</strong> — typically 200–800 bytes for
-              standard fields. Negligible.
-            </li>
-            <li>
-              <strong>XMP metadata packet</strong> — ranges from 1 KB to 8 KB
-              for normal documents. Larger for PDFs with rich rights management
-              or Adobe-specific namespaces.
-            </li>
-            <li>
-              <strong>Embedded thumbnail preview</strong> — a JPEG of the first
-              page stored in the XMP stream. This is the biggest metadata
-              contributor, typically 5–50 KB depending on resolution. Some tools
-              embed high-resolution thumbnails reaching 150–200 KB.
-            </li>
-            <li>
-              <strong>Version history / revision annotations</strong> —
-              incremental save operations (common in Acrobat Pro) append
-              revision data that is technically part of the cross-reference
-              structure, not pure metadata, but stripping it does reduce file
-              size materially (sometimes by megabytes in heavily-revised
-              documents).
-            </li>
-          </ul>
+          <!-- Result Grid / Benchmarks -->
+          <div class="result-grid reveal">
+            <div class="result-card">
+              <div class="result-icon">📉</div>
+              <div class="result-value">96.5%</div>
+              <div class="result-label">Photoshop Export Reduction</div>
+              <div class="result-sub">Dropped from 1.2 MB to 42 KB</div>
+            </div>
+            <div class="result-card">
+              <div class="result-icon">🖼️</div>
+              <div class="result-value">200 KB+</div>
+              <div class="result-label">Embedded Thumbnails</div>
+              <div class="result-sub">Wiped from XMP preview packet</div>
+            </div>
+            <div class="result-card">
+              <div class="result-icon">⚡</div>
+              <div class="result-value">Zero</div>
+              <div class="result-label">Visual Quality Loss</div>
+              <div class="result-sub">Canvas vector graphics remain identical</div>
+            </div>
+          </div>
 
-          <div class="compare-table-wrap reveal">
-            <table class="compare-table">
+          <div class="comparison-table-wrap reveal">
+            <table class="comparison-table">
               <thead>
                 <tr>
-                  <th>Metadata Component</th>
-                  <th>Typical Size</th>
-                  <th>File Size Impact</th>
+                  <th>Aspect</th>
+                  <th>Document Properties</th>
+                  <th>PDF Metadata</th>
                 </tr>
               </thead>
               <tbody>
                 <tr>
-                  <td>DocInfo dictionary</td>
-                  <td>200 – 800 bytes</td>
-                  <td>Negligible</td>
+                  <td><strong>Definition</strong></td>
+                  <td>
+                    The human-readable fields shown in your PDF viewer's File →
+                    Properties dialog
+                  </td>
+                  <td>
+                    The complete data layer — both DocInfo and XMP — embedded in
+                    the file structure
+                  </td>
                 </tr>
                 <tr>
-                  <td>XMP packet (no thumbnail)</td>
-                  <td>1 – 8 KB</td>
-                  <td>Very small</td>
+                  <td><strong>Visibility</strong></td>
+                  <td>
+                    <span class="badge badge-visible">Visible in viewer</span>
+                  </td>
+                  <td><span class="badge badge-hidden">Mostly hidden</span></td>
                 </tr>
                 <tr>
-                  <td>Embedded thumbnail preview</td>
-                  <td>5 – 200 KB</td>
-                  <td>Small to moderate</td>
+                  <td><strong>Fields shown</strong></td>
+                  <td>
+                    Title, Author, Subject, Keywords, Creator, Producer, dates
+                  </td>
+                  <td>
+                    All DocInfo fields + XMP namespaces (dc:, xmp:, pdf:,
+                    custom:)
+                  </td>
                 </tr>
                 <tr>
-                  <td>Revision history (linearised)</td>
-                  <td>50 KB – several MB</td>
-                  <td>Moderate to significant</td>
+                  <td><strong>Hidden data</strong></td>
+                  <td>None — only displays what the viewer exposes</td>
+                  <td>
+                    Editing history, thumbnail previews, GPS coords, software
+                    serial data, embedded scripts
+                  </td>
                 </tr>
                 <tr>
-                  <td>Embedded fonts (not metadata)</td>
-                  <td>100 KB – 5 MB</td>
-                  <td>Most impactful for file size</td>
+                  <td><strong>Editable in viewer?</strong></td>
+                  <td>
+                    <span class="badge badge-both">Yes (Acrobat Pro)</span>
+                  </td>
+                  <td>
+                    <span class="badge badge-hidden">Only partially</span>
+                  </td>
                 </tr>
                 <tr>
-                  <td>Embedded images (not metadata)</td>
-                  <td>Varies widely</td>
-                  <td>Dominant file size factor</td>
+                  <td><strong>Cleared by "Clear" button</strong></td>
+                  <td>Yes — visible fields</td>
+                  <td>No — XMP and thumbnail data usually survive</td>
+                </tr>
+                <tr>
+                  <td><strong>Risk level</strong></td>
+                  <td>Low — intentionally authored data</td>
+                  <td>High — may contain unintentional or sensitive data</td>
                 </tr>
               </tbody>
             </table>
           </div>
 
-          <p>
-            The bottom line: stripping all metadata from a typical 5 MB PDF
-            usually reduces the file to roughly 4.97 MB — a difference of 20–30
-            KB. For PDFs with rich embedded thumbnails or long revision
-            histories, savings of 100–500 KB are possible. If your goal is
-            primarily file size reduction,
-            <strong
-              >image compression and font subsetting will deliver far greater
-              gains</strong
-            >
-            than metadata removal alone.
-          </p>
-
-          <div class="warn-box reveal">
-            <svg
-              class="warn-box-icon"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              aria-hidden="true"
-            >
-              <path
-                d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"
-              />
-              <line x1="12" y1="9" x2="12" y2="13" />
-              <line x1="12" y1="17" x2="12.01" y2="17" />
+          <!-- SECTION 6 -->
+          <h2 id="inspect-metadata-browser" class="reveal">
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"></circle>
+              <line x1="2" y1="12" x2="22" y2="12"></line>
+              <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
             </svg>
-            <div class="warn-box-content">
-              <strong>Common misconception</strong>
-              Many users think "removing metadata" includes deleting internal
-              comment annotations, form data, or embedded file attachments.
-              These are separate from document metadata — they are part of the
-              PDF content stream and require different tools to address.
-            </div>
-          </div>
-        </section>
-
-        <!-- SECTION 6 -->
-        <section id="inspect-metadata-browser">
-          <h2>How to Inspect PDF Metadata Using Browser Tools</h2>
-          <p>
-            You don't need paid software to read PDF metadata. Several free
-            approaches work directly in your browser with zero installs.
+            How to Inspect PDF Metadata Using Browser Tools
+          </h2>
+          <p class="reveal">
+            You don't need paid desktop software like Adobe Acrobat Pro to inspect or sanitize PDF metadata. Modern browsers contain full-featured JavaScript PDF engines that allow you to read and strip data instantly.
           </p>
 
           <div class="steps-grid">
-            <div class="step-card reveal">
+<div class="step-card reveal">
               <div class="step-num">1</div>
               <div class="step-content">
                 <h4>Chrome / Edge DevTools — Network Inspector</h4>
@@ -1829,87 +1125,54 @@
                 </p>
               </div>
             </div>
-          </div>
+</div>
 
-          <h3>PDF.js console command reference</h3>
-          <div class="code-block reveal">
-            <div class="code-block-header">
-              <span class="code-lang">JavaScript — Browser Console</span>
-            </div>
-            <pre><span class="cmt">// Run in Chrome/Firefox console while viewing a PDF</span>
-<span class="kw">const</span> meta = <span class="kw">await</span> PDFViewerApplication.pdfDocument.<span class="kw">getMetadata</span>();
-
-<span class="cmt">// View DocInfo dictionary (standard fields)</span>
-console.log(meta.info);
-<span class="cmt">// Returns: { Title, Author, Subject, Creator, Producer, CreationDate, ModDate... }</span>
-
-<span class="cmt">// View raw XMP XML</span>
-console.log(meta.metadata?.<span class="kw">_metadataMap</span>);
-
-<span class="cmt">// Check if document is encrypted</span>
-console.log(meta.info.IsEncrypted);
-
-<span class="cmt">// Check PDF version</span>
-console.log(meta.info.PDFFormatVersion);</pre>
-          </div>
-        </section>
-
-        <!-- CTA BANNER -->
-        <div class="cta-banner reveal">
-          <div class="cta-banner-content">
-            <h3>Remove PDF Metadata Instantly — Free &amp; Private</h3>
-            <p>
-              No uploads. No server. Your files never leave your device. 100%
-              browser-based processing.
-            </p>
-          </div>
-          <a href="/pdf-metadata" class="cta-banner-btn">
-            <svg
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2.5"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              aria-hidden="true"
-            >
-              <polyline points="3 6 5 6 21 6" />
-              <path d="M19 6l-1 14H6L5 6" />
-              <path d="M10 11v6" />
-              <path d="M14 11v6" />
-              <path d="M9 6V4h6v2" />
-            </svg>
-            Strip Metadata Now
-          </a>
-        </div>
-
-        <!-- SECTION 7 — FAQ -->
-        <section id="faq">
-          <h2>Frequently Asked Questions</h2>
-          <p>
-            Answers to the most commonly searched questions about PDF metadata.
+          <h3 class="reveal">PDF.js Console Command Reference</h3>
+          <p class="reveal">
+            If you are viewing a PDF in Firefox or Chrome's built-in PDF.js viewer, press <code>F12</code> to open DevTools, switch to the <strong>Console</strong> tab, and run these commands:
           </p>
 
-          <div class="faq-list" role="list">
-            <div class="faq-item" role="listitem">
-              <button class="faq-q" aria-expanded="false">
-                What is the difference between PDF metadata and document
-                properties?
+          
+
+          <!-- SECTION 7 -->
+          <h2 id="faq" class="reveal">
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"></circle>
+              <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path>
+              <line x1="12" y1="17" x2="12.01" y2="17"></line>
+            </svg>
+            Frequently Asked Questions
+          </h2>
+          <p class="reveal">
+            Clear, authoritative answers to the most common questions regarding PDF metadata handling and privacy.
+          </p>
+
+          <div class="faq-list">
+            <div class="faq-item">
+              <button
+                class="faq-question"
+                data-faq="1"
+                aria-expanded="false"
+              >
+                <span>What is the difference between PDF metadata and document properties?</span>
                 <svg
+                  class="faq-chevron"
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="16"
+                  height="16"
                   viewBox="0 0 24 24"
                   fill="none"
                   stroke="currentColor"
-                  stroke-width="2.5"
+                  stroke-width="2"
                   stroke-linecap="round"
                   stroke-linejoin="round"
-                  aria-hidden="true"
                 >
-                  <line x1="12" y1="5" x2="12" y2="19" />
-                  <line x1="5" y1="12" x2="19" y2="12" />
+                  <polyline points="6 9 12 15 18 9"></polyline>
                 </svg>
               </button>
-              <div class="faq-a">
-                <p>
+              <div class="faq-answer" id="faq-1">
+                <div class="faq-answer-inner">
+                  <p>
                   Document properties are the human-readable fields you see in a
                   viewer's <em>File → Properties</em> dialog: title, author,
                   subject, keywords. PDF metadata is the complete underlying
@@ -1920,27 +1183,34 @@ console.log(meta.info.PDFFormatVersion);</pre>
                   properties. Document properties are a <em>partial view</em> of
                   the full metadata layer.
                 </p>
+                </div>
               </div>
             </div>
-
-            <div class="faq-item" role="listitem">
-              <button class="faq-q" aria-expanded="false">
-                Does removing metadata reduce the PDF file size?
+            <div class="faq-item">
+              <button
+                class="faq-question"
+                data-faq="2"
+                aria-expanded="false"
+              >
+                <span>Does removing metadata reduce the PDF file size?</span>
                 <svg
+                  class="faq-chevron"
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="16"
+                  height="16"
                   viewBox="0 0 24 24"
                   fill="none"
                   stroke="currentColor"
-                  stroke-width="2.5"
+                  stroke-width="2"
                   stroke-linecap="round"
                   stroke-linejoin="round"
-                  aria-hidden="true"
                 >
-                  <line x1="12" y1="5" x2="12" y2="19" />
-                  <line x1="5" y1="12" x2="19" y2="12" />
+                  <polyline points="6 9 12 15 18 9"></polyline>
                 </svg>
               </button>
-              <div class="faq-a">
-                <p>
+              <div class="faq-answer" id="faq-2">
+                <div class="faq-answer-inner">
+                  <p>
                   Yes, slightly. Standard DocInfo metadata is only a few hundred
                   bytes. XMP packets add 1–8 KB. However, embedded thumbnail
                   previews in the XMP stream can occupy 5–200 KB, and stripping
@@ -1950,27 +1220,34 @@ console.log(meta.info.PDFFormatVersion);</pre>
                   and fonts dominate PDF file size — metadata removal alone will
                   not significantly shrink most PDFs.
                 </p>
+                </div>
               </div>
             </div>
-
-            <div class="faq-item" role="listitem">
-              <button class="faq-q" aria-expanded="false">
-                How does metadata affect PDF SEO and search engine indexing?
+            <div class="faq-item">
+              <button
+                class="faq-question"
+                data-faq="3"
+                aria-expanded="false"
+              >
+                <span>How does metadata affect PDF SEO and search engine indexing?</span>
                 <svg
+                  class="faq-chevron"
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="16"
+                  height="16"
                   viewBox="0 0 24 24"
                   fill="none"
                   stroke="currentColor"
-                  stroke-width="2.5"
+                  stroke-width="2"
                   stroke-linecap="round"
                   stroke-linejoin="round"
-                  aria-hidden="true"
                 >
-                  <line x1="12" y1="5" x2="12" y2="19" />
-                  <line x1="5" y1="12" x2="19" y2="12" />
+                  <polyline points="6 9 12 15 18 9"></polyline>
                 </svg>
               </button>
-              <div class="faq-a">
-                <p>
+              <div class="faq-answer" id="faq-3">
+                <div class="faq-answer-inner">
+                  <p>
                   Google reads the <code>/Title</code> field and uses it
                   directly as the search result headline — making it the most
                   impactful SEO element in a PDF. The
@@ -1981,27 +1258,34 @@ console.log(meta.info.PDFFormatVersion);</pre>
                   field can meaningfully improve click-through rates from search
                   results, especially for PDFs hosted on high-authority domains.
                 </p>
+                </div>
               </div>
             </div>
-
-            <div class="faq-item" role="listitem">
-              <button class="faq-q" aria-expanded="false">
-                Can PDF metadata reveal who created or owns the document?
+            <div class="faq-item">
+              <button
+                class="faq-question"
+                data-faq="4"
+                aria-expanded="false"
+              >
+                <span>Can PDF metadata reveal who created or owns the document?</span>
                 <svg
+                  class="faq-chevron"
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="16"
+                  height="16"
                   viewBox="0 0 24 24"
                   fill="none"
                   stroke="currentColor"
-                  stroke-width="2.5"
+                  stroke-width="2"
                   stroke-linecap="round"
                   stroke-linejoin="round"
-                  aria-hidden="true"
                 >
-                  <line x1="12" y1="5" x2="12" y2="19" />
-                  <line x1="5" y1="12" x2="19" y2="12" />
+                  <polyline points="6 9 12 15 18 9"></polyline>
                 </svg>
               </button>
-              <div class="faq-a">
-                <p>
+              <div class="faq-answer" id="faq-4">
+                <div class="faq-answer-inner">
+                  <p>
                   Yes. The <code>/Author</code> field is auto-populated from
                   your OS username at creation time. The
                   <code>/Creator</code> field identifies the exact software
@@ -2013,28 +1297,34 @@ console.log(meta.info.PDFFormatVersion);</pre>
                   shared externally without metadata stripping regularly expose
                   this information.
                 </p>
+                </div>
               </div>
             </div>
-
-            <div class="faq-item" role="listitem">
-              <button class="faq-q" aria-expanded="false">
-                How do I inspect PDF metadata using browser tools without
-                software?
+            <div class="faq-item">
+              <button
+                class="faq-question"
+                data-faq="5"
+                aria-expanded="false"
+              >
+                <span>How do I inspect PDF metadata using browser tools without software?</span>
                 <svg
+                  class="faq-chevron"
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="16"
+                  height="16"
                   viewBox="0 0 24 24"
                   fill="none"
                   stroke="currentColor"
-                  stroke-width="2.5"
+                  stroke-width="2"
                   stroke-linecap="round"
                   stroke-linejoin="round"
-                  aria-hidden="true"
                 >
-                  <line x1="12" y1="5" x2="12" y2="19" />
-                  <line x1="5" y1="12" x2="19" y2="12" />
+                  <polyline points="6 9 12 15 18 9"></polyline>
                 </svg>
               </button>
-              <div class="faq-a">
-                <p>
+              <div class="faq-answer" id="faq-5">
+                <div class="faq-answer-inner">
+                  <p>
                   Open the PDF in Chrome or Firefox, press <code>F12</code> to
                   open Developer Tools, navigate to the Console tab, and run
                   <code>PDFViewerApplication.pdfDocument.getMetadata()</code>.
@@ -2046,27 +1336,34 @@ console.log(meta.info.PDFFormatVersion);</pre>
                   — it displays all fields before processing, entirely
                   client-side with no server upload.
                 </p>
+                </div>
               </div>
             </div>
-
-            <div class="faq-item" role="listitem">
-              <button class="faq-q" aria-expanded="false">
-                Will my PDF look different after metadata is removed?
+            <div class="faq-item">
+              <button
+                class="faq-question"
+                data-faq="6"
+                aria-expanded="false"
+              >
+                <span>Will my PDF look different after metadata is removed?</span>
                 <svg
+                  class="faq-chevron"
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="16"
+                  height="16"
                   viewBox="0 0 24 24"
                   fill="none"
                   stroke="currentColor"
-                  stroke-width="2.5"
+                  stroke-width="2"
                   stroke-linecap="round"
                   stroke-linejoin="round"
-                  aria-hidden="true"
                 >
-                  <line x1="12" y1="5" x2="12" y2="19" />
-                  <line x1="5" y1="12" x2="19" y2="12" />
+                  <polyline points="6 9 12 15 18 9"></polyline>
                 </svg>
               </button>
-              <div class="faq-a">
-                <p>
+              <div class="faq-answer" id="faq-6">
+                <div class="faq-answer-inner">
+                  <p>
                   No. Metadata is entirely separate from the visual content of a
                   PDF — text, images, fonts, layouts, and page structure are
                   untouched by metadata removal. The document will look, print,
@@ -2074,28 +1371,34 @@ console.log(meta.info.PDFFormatVersion);</pre>
                   change is that the File → Properties dialog in a PDF viewer
                   will show empty or cleared fields.
                 </p>
+                </div>
               </div>
             </div>
-
-            <div class="faq-item" role="listitem">
-              <button class="faq-q" aria-expanded="false">
-                Is there a free tool to remove PDF metadata without uploading to
-                a server?
+            <div class="faq-item">
+              <button
+                class="faq-question"
+                data-faq="7"
+                aria-expanded="false"
+              >
+                <span>Is there a free tool to remove PDF metadata without uploading to a server?</span>
                 <svg
+                  class="faq-chevron"
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="16"
+                  height="16"
                   viewBox="0 0 24 24"
                   fill="none"
                   stroke="currentColor"
-                  stroke-width="2.5"
+                  stroke-width="2"
                   stroke-linecap="round"
                   stroke-linejoin="round"
-                  aria-hidden="true"
                 >
-                  <line x1="12" y1="5" x2="12" y2="19" />
-                  <line x1="5" y1="12" x2="19" y2="12" />
+                  <polyline points="6 9 12 15 18 9"></polyline>
                 </svg>
               </button>
-              <div class="faq-a">
-                <p>
+              <div class="faq-answer" id="faq-7">
+                <div class="faq-answer-inner">
+                  <p>
                   Yes.
                   <a href="/pdf-metadata"
                     >PDFMaster's free PDF Metadata Remover</a
@@ -2105,195 +1408,223 @@ console.log(meta.info.PDFFormatVersion);</pre>
                   and XMP packets, including embedded thumbnails, and gives you
                   a clean download instantly.
                 </p>
+                </div>
               </div>
             </div>
           </div>
-        </section>
 
-        <!-- Conclusion -->
-        <section id="conclusion">
-          <h2>Wrapping Up</h2>
-          <p>
-            PDF metadata is one of the most overlooked yet consequential aspects
-            of document handling. It sits at the intersection of privacy,
-            security, search engine performance, and file efficiency.
-            Understanding it properly changes how you create, distribute, and
-            protect documents.
+          <!-- SECTION 8 -->
+          <h2 id="conclusion" class="reveal">
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+              <polyline points="22 4 12 14.01 9 11.01"></polyline>
+            </svg>
+            Final Verdict &amp; Summary
+          </h2>
+          <p class="reveal">
+            PDF metadata is one of the most overlooked yet consequential components of modern digital paperwork. It controls how search engines rank your documents, can leak your identity and location, and often adds unnecessary bloat to file sizes.
           </p>
-          <p>The core principles to carry forward:</p>
-          <ul>
-            <li>
-              <strong>Document properties ≠ full metadata.</strong> What your
-              PDF viewer shows you is only the surface of what's embedded.
-            </li>
-            <li>
-              <strong>Metadata tracks you.</strong> Author names, timezone
-              offsets, GPS coordinates, and revision histories are all common
-              metadata vectors for identifying document originators.
-            </li>
-            <li>
-              <strong>Metadata improves PDF SEO.</strong> The /Title and
-              /Subject fields directly influence how your PDF appears in Google
-              search results — optimise them.
-            </li>
-            <li>
-              <strong
-                >Removing metadata doesn't significantly shrink files</strong
-              >, but removing embedded thumbnails and revision history can help
-              meaningfully.
-            </li>
-            <li>
-              <strong>You can inspect metadata today</strong> using your
-              browser's developer tools — no software required.
-            </li>
+          <ul class="reveal">
+            <li><strong>For Privacy:</strong> Always strip metadata before publishing legal documents, submitting resumes, or emailing sensitive attachments.</li>
+            <li><strong>For SEO:</strong> Ensure the <code>/Title</code> and <code>/Subject</code> fields contain accurate, compelling, keyword-rich summaries.</li>
+            <li><strong>For File Size:</strong> Remove unneeded InDesign or Photoshop XMP streams to reclaim hundreds of kilobytes without reducing visual fidelity.</li>
           </ul>
-          <p>
-            Ready to clean your PDFs?
-            <a href="/pdf-metadata"
-              >PDFMaster's Metadata Remover</a
-            >
-            handles it all for free, privately, and instantly — right in your
-            browser.
-          </p>
-          <p>
-            Looking to master other document workflows? Discover how to capture
-            and convert paper documents on Android and iPhone with our
-            <a href="/blog/photo-to-pdf-mobile-guide"
-              >Photo to PDF Mobile Guide</a
-            >, or learn how to render crisp image exports with zero blur in our
-            <a href="/blog/pdf-to-image-quality-guide"
-              >PDF to Image Quality Guide</a
-            >.
-          </p>
-        </section>
-      </article>
-    </div>
 
-    <!-- ===================== FOOTER ===================== -->
-    <footer class="footer" aria-label="Site footer">
-      <div class="footer-grid">
-        <div class="footer-brand">
-          <div class="footer-logo">
-            <img
-              src="/assets/apple-touch-icon.png"
-              alt="PDFMaster Logo"
-              width="32"
-              height="32"
-            />
-            <span class="footer-logo-name">PDF<span>Master</span></span>
+          <!-- CTA Block -->
+          <div class="cta-block reveal">
+            <h3>Inspect &amp; Strip PDF Metadata in Your Browser</h3>
+            <p>
+              Remove author names, GPS tags, editing histories, and software fingerprints in seconds. 100% private, client-side WebAssembly execution — your files never touch any external server.
+            </p>
+            <a href="/pdf-metadata" class="cta-btn">Strip PDF Metadata Now →</a>
           </div>
-          <p class="footer-tagline">
-            Free, private, browser-based PDF tools. No uploads. No accounts. No
-            limits.
+
+          <!-- Author Box -->
+          <div class="author-box reveal">
+            <div class="author-avatar">PM</div>
+            <div class="author-info">
+              <strong>PDFMaster Editorial &amp; Security Team</strong>
+              <p>
+                Authored by our document security engineers. PDFMaster builds open, browser-native PDF utilities powered by WebAssembly, eliminating the need to upload confidential files to cloud servers.
+              </p>
+            </div>
+          </div>
+
+          <!-- Related Tools Grid -->
+          <div class="related-tools-grid reveal">
+            <a href="/pdf-metadata" class="related-tool-card">
+              <div class="related-tool-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="m3 21 1.9-1.9M21 3.5l-1.9 1.9M5 16l4-4M16 5l-4 4M21 16c0 2.8-1.4 5.3-3.5 7L12 18.5l-5.5 4.5C4.4 21.3 3 18.8 3 16c0-4.4 3.6-8 8-8s8 3.6 8 8Z"></path>
+                </svg>
+              </div>
+              <div class="related-tool-info">
+                <strong>PDF Metadata Remover</strong>
+                <span>Strip hidden tracking data from PDFs — zero uploads</span>
+              </div>
+            </a>
+            <a href="/protect-pdf" class="related-tool-card">
+              <div class="related-tool-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                  <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                </svg>
+              </div>
+              <div class="related-tool-info">
+                <strong>Protect PDF</strong>
+                <span>Add 256-bit password encryption to your PDF documents</span>
+              </div>
+            </a>
+            <a href="/compress-pdf" class="related-tool-card">
+              <div class="related-tool-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="4 14 10 14 10 20"></polyline>
+                  <polyline points="20 10 14 10 14 4"></polyline>
+                  <line x1="14" y1="10" x2="21" y2="3"></line>
+                  <line x1="3" y1="21" x2="10" y2="14"></line>
+                </svg>
+              </div>
+              <div class="related-tool-info">
+                <strong>Compress PDF</strong>
+                <span>Shrink oversized PDF files with smart optimization</span>
+              </div>
+            </a>
+            <a href="/unlock-pdf" class="related-tool-card">
+              <div class="related-tool-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                  <path d="M7 11V7a5 5 0 0 1 9.9-1"></path>
+                </svg>
+              </div>
+              <div class="related-tool-info">
+                <strong>Unlock PDF</strong>
+                <span>Remove passwords and printing restrictions safely</span>
+              </div>
+            </a>
+          </div>
+        </div>
+      </article>
+    </main>
+
+    <!-- ── Footer ──────────────────────────────────────────────── -->
+    <footer class="site-footer" id="contact">
+      <div class="container">
+        <div class="footer__grid">
+          <div class="footer__brand">
+            <a href="/" class="nav-logo">
+              <img
+                src="/assets/apple-touch-icon.png"
+                alt="PDFMaster Logo"
+                width="36"
+                height="36"
+              />
+              <span class="logo-text">PDF<span>Master</span></span>
+            </a>
+            <p>
+              Free, private, client-side PDF manipulation tools. No file size
+              limits, no tracking, and zero server uploads.
+            </p>
+            <div class="footer__socials">
+              <a
+                href="https://github.com/happy2539/pdfmaster.co.in/"
+                target="_blank"
+                rel="noopener"
+                class="footer__social-link"
+                aria-label="GitHub repository"
+              >
+                <svg
+                  width="18"
+                  height="18"
+                  viewBox="0 0 24 24"
+                  fill="currentColor"
+                >
+                  <path
+                    d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"
+                  />
+                </svg>
+              </a>
+            </div>
+          </div>
+          <div class="footer__col footer__col--tools">
+            <h4>Tools</h4>
+            <ul class="footer__tools-list">
+              <li class="footer__cat-group">
+                <span class="footer__cat-header">Organize PDF</span>
+                <ul class="footer__cat-items">
+                  <li><a href="/merge-pdf">PDF Compiler</a></li>
+                  <li><a href="/split-pdf">Split PDF</a></li>
+                  <li><a href="/pdf-reorder">PDF Reorder</a></li>
+                  <li><a href="/rotate-pdf">Rotate PDF</a></li>
+                  <li><a href="/delete-pdf-pages">Delete PDF Pages</a></li>
+                  <li><a href="/insert-blank-page-pdf">Insert Blank Page</a></li>
+                </ul>
+              </li>
+              <li class="footer__cat-group">
+                <span class="footer__cat-header">Edit &amp; View</span>
+                <ul class="footer__cat-items">
+                  <li><a href="/pdf-editor">PDF Editor</a></li>
+                  <li><a href="/pdf-viewer">PDF Viewer</a></li>
+                  <li><a href="/page-number-pdf">Page Number PDF</a></li>
+                  <li><a href="/watermark-pdf-add">Watermark PDF</a></li>
+                </ul>
+              </li>
+              <li class="footer__cat-group">
+                <span class="footer__cat-header">Convert &amp; Extract</span>
+                <ul class="footer__cat-items">
+                  <li><a href="/ocr-pdf">OCR PDF</a></li>
+                  <li><a href="/photo-to-pdf">Photo to PDF</a></li>
+                  <li><a href="/pdf-to-photo">PDF to Photo</a></li>
+                  <li><a href="/extract-photos-from-pdf">Extract Photos</a></li>
+                </ul>
+              </li>
+              <li class="footer__cat-group">
+                <span class="footer__cat-header">Security &amp; Optimize</span>
+                <ul class="footer__cat-items">
+                  <li><a href="/sign-pdf">Sign PDF</a></li>
+                  <li><a href="/protect-pdf">Protect PDF</a></li>
+                  <li><a href="/unlock-pdf">Unlock PDF</a></li>
+                  <li><a href="/compress-pdf">Compress PDF</a></li>
+                  <li><a href="/pdf-metadata">Metadata Remover</a></li>
+                </ul>
+              </li>
+            </ul>
+          </div>
+          <div class="footer__col">
+            <h4>Resources</h4>
+            <ul>
+              <li><a href="/blog">Blog</a></li>
+              <li><a href="/faq">FAQ</a></li>
+              <li><a href="/about">About Us</a></li>
+              <li>
+                <a href="/happy-gupta-founder-of-pdfmaster"
+                  >About Happy Gupta</a
+                >
+              </li>
+              <li><a href="/#tools">All Tools</a></li>
+            </ul>
+          </div>
+          <div class="footer__col">
+            <h4>Support</h4>
+            <ul>
+              <li><a href="/contact">Help Center</a></li>
+              <li><a href="/privacy">Privacy Policy</a></li>
+              <li><a href="/terms">Terms of Service</a></li>
+              <li><a href="/faq">FAQ</a></li>
+            </ul>
+          </div>
+        </div>
+        <div class="footer__bottom">
+          <p class="footer__copy">
+            © 2026 <a href="/">PDFMaster All right reserved</a>
           </p>
         </div>
-
-        <div>
-          <div class="footer-col-title">Tools</div>
-          <ul class="footer-links">
-            <li>
-              <a href="/protect-pdf">Protect PDF</a>
-            </li>
-            <li>
-              <a href="/unlock-pdf">Unlock PDF</a>
-            </li>
-            <li>
-              <a href="/insert-blank-page-pdf">Insert Blank Page</a>
-            </li>
-            <li>
-              <a href="/pdf-editor">PDF Editor</a>
-            </li>
-            <li>
-              <a href="/pdf-viewer">PDF Viewer</a>
-            </li>
-            <li>
-              <a href="/merge-pdf">PDF Compiler</a>
-            </li>
-            <li>
-              <a href="/photo-to-pdf">Photo to PDF</a>
-            </li>
-            <li>
-              <a href="/pdf-to-photo">PDF to Photo</a>
-            </li>
-            <li>
-              <a href="/pdf-metadata"
-                >Metadata Remover</a
-              >
-            </li>
-            <li>
-              <a href="/split-pdf">Split PDF</a>
-            </li>
-            <li>
-              <a href="/delete-pdf-pages"
-                >Delete PDF Pages</a
-              >
-            </li>
-            <li>
-              <a href="/pdf-reorder">PDF Reorder</a>
-            </li>
-            <li><a href="/#tools">All Tools</a></li>
-          </ul>
-        </div>
-
-        <div>
-          <div class="footer-col-title">Company</div>
-          <ul class="footer-links">
-            <li><a href="/">Home</a></li>
-            <li><a href="/about">About Us</a></li>
-            <li>
-              <a href="/happy-gupta-founder-of-pdfmaster"
-                >About Happy Gupta</a
-              >
-            </li>
-            <li><a href="/blog">Blog</a></li>
-            <li><a href="/subscribe">Subscribe</a></li>
-          </ul>
-        </div>
-
-        <div>
-          <div class="footer-col-title">Support</div>
-          <ul class="footer-links">
-            <li>
-              <a href="/contact">Help Center</a>
-            </li>
-            <li>
-              <a href="/privacy">Privacy Policy</a>
-            </li>
-            <li>
-              <a href="/terms">Terms of Service</a>
-            </li>
-            <li><a href="/faq">FAQ</a></li>
-          </ul>
-        </div>
-      </div>
-
-      <div class="footer-bottom">
-        <p class="footer-copyright">
-          &copy; 2026 <a href="/">PDFMaster</a>. All
-          rights reserved.
-        </p>
-        <p class="footer-copyright">
-          Questions?
-          <a href="mailto:support@pdfmaster.co.in">support@pdfmaster.co.in</a>
-        </p>
       </div>
     </footer>
 
     <!-- Back to Top -->
-    <button class="back-top" id="backTop" aria-label="Back to top">
-      <svg
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        stroke-width="2.5"
-        stroke-linecap="round"
-        stroke-linejoin="round"
-        aria-hidden="true"
-      >
-        <polyline points="18 15 12 9 6 15" />
-      </svg>
+    <button class="back-to-top" id="backToTop" aria-label="Back to top">
+      ↑
     </button>
-
-   <script src="/blog/js/pdf-metadata-guide.js"></script>
+    <script src="/blog/js/pdf-metadata-guide.js" defer></script>
   </body>
 </html>

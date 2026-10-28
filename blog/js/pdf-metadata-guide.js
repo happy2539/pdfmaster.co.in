@@ -1,84 +1,85 @@
-// ── Theme ──────────────────────────────────────
-const root = document.documentElement;
-const savedTheme = localStorage.getItem("pdfmaster-theme") || "light";
-root.setAttribute("data-theme", savedTheme);
+// ── Theme ───────────────────────────────────────────────────
+const THEME_KEY = "pdfmaster-theme";
+const html = document.documentElement;
+const sunIcon = document.getElementById("sunIcon");
+const moonIcon = document.getElementById("moonIcon");
+
+function applyTheme(theme) {
+  html.setAttribute("data-theme", theme);
+  localStorage.setItem(THEME_KEY, theme);
+  if (sunIcon && moonIcon) {
+    if (theme === "dark") {
+      sunIcon.style.display = "block";
+      moonIcon.style.display = "none";
+    } else {
+      sunIcon.style.display = "none";
+      moonIcon.style.display = "block";
+    }
+  }
+}
+
+const savedTheme = localStorage.getItem(THEME_KEY) || "light";
+applyTheme(savedTheme);
 
 document.getElementById("themeToggle").addEventListener("click", () => {
-  const next = root.getAttribute("data-theme") === "light" ? "dark" : "light";
-  root.setAttribute("data-theme", next);
-  localStorage.setItem("pdfmaster-theme", next);
+  const current = html.getAttribute("data-theme");
+  const next = current === "dark" ? "light" : "dark";
+  applyTheme(next);
 });
 
-// ── Mobile Drawer ──────────────────────────────
-const menuToggle = document.getElementById("menuToggle");
-const drawer = document.getElementById("mobileDrawer");
-const overlay = document.getElementById("drawerOverlay");
-const drawerClose = document.getElementById("drawerClose");
+// ── Hamburger / Drawer ──────────────────────────────────────
+const hamburger = document.getElementById("hamburger");
+const navDrawer = document.getElementById("navDrawer");
+hamburger.addEventListener("click", () => {
+  const isOpen = hamburger.classList.toggle("open");
+  hamburger.setAttribute("aria-expanded", isOpen);
+  navDrawer.classList.toggle("open", isOpen);
+});
 
-function openDrawer() {
-  drawer.classList.add("open");
-  overlay.classList.add("open");
-  menuToggle.setAttribute("aria-expanded", "true");
-  document.body.style.overflow = "hidden";
-}
-function closeDrawer() {
-  drawer.classList.remove("open");
-  overlay.classList.remove("open");
-  menuToggle.setAttribute("aria-expanded", "false");
-  document.body.style.overflow = "";
-}
-menuToggle.addEventListener("click", openDrawer);
-drawerClose.addEventListener("click", closeDrawer);
-overlay.addEventListener("click", closeDrawer);
-drawer
-  .querySelectorAll("a")
-  .forEach((a) => a.addEventListener("click", closeDrawer));
-
-// ── Back to Top ────────────────────────────────
-const backTop = document.getElementById("backTop");
+// ── Navbar Scroll Shadow ────────────────────────────────────
+const navbar = document.getElementById("navbar");
 window.addEventListener(
   "scroll",
   () => {
-    backTop.classList.toggle("visible", window.scrollY > 400);
+    navbar.classList.toggle("scrolled", window.scrollY > 20);
   },
   { passive: true },
 );
-backTop.addEventListener("click", () =>
+
+// ── Back to Top ─────────────────────────────────────────────
+const btt = document.getElementById("backToTop");
+window.addEventListener(
+  "scroll",
+  () => {
+    btt.classList.toggle("visible", window.scrollY > 400);
+  },
+  { passive: true },
+);
+btt.addEventListener("click", () =>
   window.scrollTo({ top: 0, behavior: "smooth" }),
 );
 
-// ── FAQ Accordion ──────────────────────────────
-document.querySelectorAll(".faq-q").forEach((btn) => {
+// ── FAQ Accordion ────────────────────────────────────────────
+document.querySelectorAll(".faq-question").forEach((btn) => {
   btn.addEventListener("click", () => {
-    const item = btn.closest(".faq-item");
-    const isOpen = item.classList.contains("open");
-    // close all
-    document.querySelectorAll(".faq-item.open").forEach((el) => {
-      el.classList.remove("open");
-      el.querySelector(".faq-q").setAttribute("aria-expanded", "false");
+    const id = btn.dataset.faq;
+    const answer = document.getElementById("faq-" + id);
+    const isOpen = answer.classList.contains("open");
+
+    // Close all
+    document.querySelectorAll(".faq-answer").forEach((a) => {
+      a.classList.remove("open");
     });
+    document.querySelectorAll(".faq-question").forEach((b) => {
+      b.classList.remove("active");
+      b.setAttribute("aria-expanded", "false");
+    });
+
+    // Open clicked if it was closed
     if (!isOpen) {
-      item.classList.add("open");
+      answer.classList.add("open");
+      btn.classList.add("active");
       btn.setAttribute("aria-expanded", "true");
     }
   });
 });
-
-// ── Active TOC highlight ───────────────────────
-const sections = document.querySelectorAll("section[id]");
-const tocLinks = document.querySelectorAll(".toc-list a");
-const tocObs = new IntersectionObserver(
-  (entries) => {
-    entries.forEach((e) => {
-      if (e.isIntersecting) {
-        tocLinks.forEach((a) => a.classList.remove("active"));
-        const active = document.querySelector(
-          `.toc-list a[href="#${e.target.id}"]`,
-        );
-        if (active) active.classList.add("active");
-      }
-    });
-  },
-  { rootMargin: `-${68 + 30}px 0px -60% 0px` },
-);
-sections.forEach((s) => tocObs.observe(s));
