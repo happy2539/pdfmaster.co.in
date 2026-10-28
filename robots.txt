@@ -1,25 +1,25 @@
-User-agent: *
-Allow: /
-
-# Google AdSense & Quality Crawlers
+# Google AdSense Crawler (Ad targeting & site evaluation)
 User-agent: Mediapartners-Google
 Allow: /
 
+# Google Ads Quality & Landing Page Crawlers
 User-agent: AdsBot-Google
 Allow: /
 
 User-agent: AdsBot-Google-Mobile
 Allow: /
 
-# Block internal or useless files
+# General Search Engine Crawlers (Googlebot, Bingbot, etc.)
+User-agent: *
 Disallow: /404.html
+Disallow: /thank-you.html
 Disallow: /vercel.json
 Disallow: /README.md
 Disallow: /CNAME
-Disallow: /thank-you.html
 Disallow: /_redirects
+Allow: /
 
-# Allow AI Crawlers
+# AI & Search Assistant Crawlers
 User-agent: GPTBot
 Allow: /
 
