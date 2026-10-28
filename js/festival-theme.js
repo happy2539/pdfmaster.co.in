@@ -366,7 +366,7 @@
     const isDefault = (theme === "none" || theme === "default");
     const label = isDefault 
       ? `<span>⚡ <strong>Standard Clean Navbar Preview Active</strong> (Zero-Festival Mode)</span>`
-      : `<span>🪔 <strong>Diwali Navbar Preview Active</strong> (Click Cracker for Sparks!)</span>`;
+      : `<span>🪔 <strong>Diwali Navbar Preview Active</strong> (Click Sparkler for Sparks!)</span>`;
     const badge = document.createElement("div");
     badge.id = "festPreviewFloatingBadge";
     badge.innerHTML = `
