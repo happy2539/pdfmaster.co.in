@@ -119,16 +119,18 @@ if (hamburgerBtn && sideMenu && sideOverlay) {
 //  BACK TO TOP
 // =============================================
 const backToTop = document.getElementById("backToTop");
-window.addEventListener(
-  "scroll",
-  () => {
-    backToTop.classList.toggle("show", window.scrollY > 400);
-  },
-  { passive: true },
-);
-backToTop.addEventListener("click", () =>
-  window.scrollTo({ top: 0, behavior: "smooth" }),
-);
+if (backToTop) {
+  window.addEventListener(
+    "scroll",
+    () => {
+      backToTop.classList.toggle("show", window.scrollY > 400);
+    },
+    { passive: true },
+  );
+  backToTop.addEventListener("click", () =>
+    window.scrollTo({ top: 0, behavior: "smooth" }),
+  );
+}
 
 // Scroll Reveal Observer Removed for SEO Integrity
 
@@ -153,7 +155,10 @@ document.addEventListener("click", (e) => {
 // =============================================
 //  FOOTER YEAR
 // =============================================
-document.getElementById("year").textContent = new Date().getFullYear();
+const yearEl = document.getElementById("year") || document.getElementById("currentYear");
+if (yearEl) {
+  yearEl.textContent = new Date().getFullYear();
+}
 
 // =============================================
 //  STATUS HELPERS
