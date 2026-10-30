@@ -72,6 +72,10 @@
     if (window.PDFCompare.initDOM) window.PDFCompare.initDOM();
     if (window.PDFCompare.ui && window.PDFCompare.ui.initEvents) window.PDFCompare.ui.initEvents();
 
+    if (window.PDFCompare.loader && window.PDFCompare.loader.checkCompareButtonState) {
+      window.PDFCompare.loader.checkCompareButtonState();
+    }
+
     if (window.PDFCompare.storage && window.PDFCompare.storage.checkSavedSession) {
       window.PDFCompare.storage.checkSavedSession();
     }

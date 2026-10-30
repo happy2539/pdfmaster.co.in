@@ -197,6 +197,10 @@
   }
 
   function checkCompareButtonState() {
+    const hasAnyFile = !!(state.fileA || state.fileB);
+    if (DOM.btnReset) {
+      DOM.btnReset.style.display = hasAnyFile ? "inline-flex" : "none";
+    }
     if (DOM.btnCompare) {
       DOM.btnCompare.disabled = !(state.fileA && state.fileB);
     }
