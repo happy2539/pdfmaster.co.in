@@ -342,11 +342,6 @@
       const exportReport = exporter.exportAuditReport || window.PDFCompare.exportAuditReport;
       if (exportReport) DOM.btnExportPdf.addEventListener("click", exportReport);
     }
-    if (DOM.btnExportPng) {
-      const exportPng = exporter.exportDiffPng || window.PDFCompare.exportDiffPng;
-      if (exportPng) DOM.btnExportPng.addEventListener("click", exportPng);
-    }
-    if (DOM.btnPrint) DOM.btnPrint.addEventListener("click", () => window.print());
 
     // Recovery Session
     if (DOM.recoveryBtn && restoreStorage) {

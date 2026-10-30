@@ -141,38 +141,11 @@
     }
   }
 
-  function exportDiffPng() {
-    const canvas = DOM.canvasB || DOM.canvasA;
-    if (!canvas) return;
-
-    canvas.toBlob((blob) => {
-      if (!blob) return;
-      const fileName = `PDF_Diff_Page_${state.currentPage}.png`;
-      if (window.PDFMasterPopup && typeof window.PDFMasterPopup.show === "function") {
-        window.PDFMasterPopup.show({
-          title: `Diff Image (Page ${state.currentPage}) Ready!`,
-          fileName: fileName,
-          fileSize: blob.size,
-          blob: blob,
-          fileType: "image",
-          downloadName: fileName
-        });
-      } else {
-        const a = document.createElement("a");
-        a.href = URL.createObjectURL(blob);
-        a.download = fileName;
-        a.click();
-      }
-    }, "image/png");
-  }
-
   // Expose Export API
   window.PDFCompare.export = {
-    exportAuditReport,
-    exportDiffPng
+    exportAuditReport
   };
 
   // Top-level debugging shortcuts
   window.PDFCompare.exportAuditReport = exportAuditReport;
-  window.PDFCompare.exportDiffPng = exportDiffPng;
 })();

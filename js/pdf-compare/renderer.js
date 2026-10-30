@@ -345,7 +345,6 @@
 
     // Use DOM.paneScrollA for accurate scale calculation
     const sizing = computePageScale(refPage, DOM.paneScrollA);
-    if (DOM.zoomIndicator) DOM.zoomIndicator.textContent = sizing.label;
 
     // Check Cache for Offscreen Canvases
     const keyA = `A_${p}_${sizing.scaleKey}`;

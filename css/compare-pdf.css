@@ -898,17 +898,6 @@ header nav {
   padding: 0 4px;
 }
 
-.zoom-indicator {
-  font-size: 0.8125rem;
-  font-weight: 700;
-  color: var(--text);
-  background: var(--surface-2);
-  padding: 4px 10px;
-  border-radius: var(--radius-sm);
-  border: 1px solid var(--border);
-  min-width: 80px;
-  text-align: center;
-}
 
 .sync-toggle-wrap {
   display: flex;

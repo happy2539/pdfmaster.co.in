@@ -110,7 +110,6 @@
     DOM.btnFitWidth = document.getElementById("btnFitWidth");
     DOM.btnFitPage = document.getElementById("btnFitPage");
     DOM.btnActualSize = document.getElementById("btnActualSize");
-    DOM.zoomIndicator = document.getElementById("zoomIndicator");
 
     DOM.syncScrollCheck = document.getElementById("syncScrollCheck");
     DOM.sensitivitySlider = document.getElementById("sensitivitySlider");
@@ -139,8 +138,6 @@
 
     // Exports
     DOM.btnExportPdf = document.getElementById("btnExportPdf");
-    DOM.btnExportPng = document.getElementById("btnExportPng");
-    DOM.btnPrint = document.getElementById("btnPrint");
     DOM.exportMeta = document.getElementById("exportMeta");
 
     // Loading Modal
