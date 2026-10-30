@@ -24,7 +24,7 @@
  * visit - see the activate handler below.
  */
 
-const CACHE_VERSION = "v75";
+const CACHE_VERSION = "v77";
 const CACHE_PREFIX = "pdfmaster-";
 
 const STATIC_CACHE = `${CACHE_PREFIX}static-${CACHE_VERSION}`;
@@ -145,6 +145,14 @@ const PRECACHE_URLS = [
   "/js/pdf-editor/tool-options.js",
   "/js/pdf-editor/ui.js",
   "/js/pdf-editor/utils.js",
+  "/js/pdf-compare/state.js",
+  "/js/pdf-compare/storage.js",
+  "/js/pdf-compare/diff-engine.js",
+  "/js/pdf-compare/renderer.js",
+  "/js/pdf-compare/loader.js",
+  "/js/pdf-compare/export.js",
+  "/js/pdf-compare/ui.js",
+  "/js/pdf-compare/main.js",
   "/js/404.js",
   "/js/about.js",
   "/js/compress-pdf.js",

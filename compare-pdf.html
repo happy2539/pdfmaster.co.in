@@ -540,18 +540,6 @@
         <div class="compare-studio" id="compareStudio">
           <!-- Sticky Toolbar -->
           <div class="studio-toolbar">
-            <!-- Mode Tabs -->
-            <div class="mode-tabs">
-              <button type="button" class="mode-tab active" data-mode="sideBySide" title="Side-by-side split screen">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="12" y1="3" x2="12" y2="21"/></svg>
-                Side-by-Side
-              </button>
-              <button type="button" class="mode-tab" data-mode="visualDiff" title="Visual pixel difference overlay">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 2a10 10 0 0 1 0 20z"/></svg>
-                Visual Diff
-              </button>
-            </div>
-
             <!-- Page Navigation -->
             <div class="toolbar-group">
               <button type="button" class="tool-btn" id="btnPrevPage" title="Previous Page" aria-label="Previous Page">
@@ -610,16 +598,38 @@
             </div>
           </div>
 
-          <!-- Studio Body: Viewports + Change Inspector Drawer -->
+          <!-- Studio Body: Dual Viewport + Change Inspector Drawer -->
           <div class="studio-body with-drawer">
             <!-- Viewport Panel Container -->
-            <div class="viewport-panel">
-              <!-- 1. Side-by-Side Viewport -->
-              <div class="viewport-content side-by-side-wrap active" id="panel_sideBySide">
+            <div class="viewport-panel" id="viewportPanel">
+              <!-- Visual Diff Header (Legend & Submodes: Highlight Clouds, Delta Mask, Flicker A/B) -->
+              <div class="visual-diff-header" id="diffControlsHeader">
+                <div class="diff-legend" id="diffLegend">
+                  <div class="legend-item"><span class="legend-dot dot-del"></span> Removed in Doc B (Red)</div>
+                  <div class="legend-item"><span class="legend-dot dot-add"></span> Added in Doc B (Green)</div>
+                  <div class="legend-item"><span class="legend-dot dot-mod"></span> Modified (Amber)</div>
+                  <div class="legend-item"><span class="legend-dot dot-same"></span> Unchanged Text</div>
+                </div>
+
+                <div class="diff-view-modes">
+                  <button type="button" class="diff-mode-btn active" id="btnDiffHighlight" title="Show document with highlighted change boxes">
+                    Highlight Clouds
+                  </button>
+                  <button type="button" class="diff-mode-btn" id="btnDiffMask" title="High-contrast color difference map">
+                    Delta Mask
+                  </button>
+                  <button type="button" class="diff-mode-btn" id="btnDiffFlicker" title="Flicker between Doc A and Doc B">
+                    Flicker A/B
+                  </button>
+                </div>
+              </div>
+
+              <!-- Side-by-Side Viewport -->
+              <div class="side-by-side-wrap active" id="panel_sideBySide">
                 <div class="pane-column">
-                  <div class="pane-header">
+                  <div class="pane-header" id="headerPaneA">
                     <span>Document A (Original)</span>
-                    <span class="doc-a-pill" style="color:var(--doc-a-color)">Baseline</span>
+                    <span class="doc-a-pill" id="pillPaneA" style="color:var(--doc-a-color)">Baseline</span>
                   </div>
                   <div class="pane-scroll-area" id="paneScrollA">
                     <div class="canvas-wrapper" id="wrapA">
@@ -630,54 +640,15 @@
                 </div>
 
                 <div class="pane-column">
-                  <div class="pane-header">
-                    <span>Document B (Modified)</span>
-                    <span class="doc-b-pill" style="color:var(--doc-b-color)">Revision</span>
+                  <div class="pane-header" id="headerPaneB">
+                    <span id="titlePaneB">Document B (Modified)</span>
+                    <span class="doc-b-pill" id="pillPaneB" style="color:var(--doc-b-color)">Revision</span>
                   </div>
                   <div class="pane-scroll-area" id="paneScrollB">
                     <div class="canvas-wrapper" id="wrapB">
                       <canvas id="canvasB"></canvas>
                       <div class="canvas-highlight-layer" id="highlightLayerB"></div>
                     </div>
-                  </div>
-                </div>
-              </div>
-
-              <!-- 2. Visual Diff (Pixel Overlay) Viewport -->
-              <div class="viewport-content visual-diff-wrap" id="panel_visualDiff">
-                <div class="visual-diff-header">
-                  <div class="diff-legend" id="diffLegend">
-                    <div class="legend-item"><span class="legend-dot dot-del"></span> Removed in Doc B (Red)</div>
-                    <div class="legend-item"><span class="legend-dot dot-add"></span> Added in Doc B (Green)</div>
-                    <div class="legend-item"><span class="legend-dot dot-mod"></span> Modified (Amber)</div>
-                    <div class="legend-item"><span class="legend-dot dot-same"></span> Unchanged Text</div>
-                  </div>
-
-                  <div class="diff-view-modes">
-                    <button type="button" class="diff-mode-btn active" id="btnDiffHighlight" title="Show document with highlighted change boxes">
-                      Highlight Clouds
-                    </button>
-                    <button type="button" class="diff-mode-btn" id="btnDiffMask" title="High-contrast color difference map">
-                      Delta Mask
-                    </button>
-                    <button type="button" class="diff-mode-btn" id="btnDiffFlicker" title="Flicker between Doc A and Doc B">
-                      Flicker A/B
-                    </button>
-                  </div>
-                </div>
-
-                <!-- Page Difference Banner -->
-                <div class="diff-page-banner" id="diffPageBanner">
-                  <div class="banner-content" id="diffBannerContent">
-                    <span>✨</span>
-                    <span>Analyzing differences...</span>
-                  </div>
-                </div>
-
-                <div class="visual-diff-scroll" id="visualDiffScroll">
-                  <div class="canvas-wrapper" id="wrapDiff">
-                    <canvas id="diffOverlayCanvas"></canvas>
-                    <div class="canvas-highlight-layer" id="diffHighlightLayer"></div>
                   </div>
                 </div>
               </div>
@@ -1286,6 +1257,14 @@
     <script src="/js/sw-register.js" defer></script>
     <script src="/js/universal-popup.js" defer></script>
     <script src="/js/conversion-tracker.js" defer></script>
+    <script src="/js/pdf-compare/state.js" defer></script>
+    <script src="/js/pdf-compare/storage.js" defer></script>
+    <script src="/js/pdf-compare/diff-engine.js" defer></script>
+    <script src="/js/pdf-compare/renderer.js" defer></script>
+    <script src="/js/pdf-compare/loader.js" defer></script>
+    <script src="/js/pdf-compare/export.js" defer></script>
+    <script src="/js/pdf-compare/ui.js" defer></script>
+    <script src="/js/pdf-compare/main.js" defer></script>
     <script src="/js/compare-pdf.js" defer></script>
     <script src="/js/festival-theme.js" defer></script>
   </body>

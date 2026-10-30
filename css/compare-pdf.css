@@ -989,31 +989,21 @@ header nav {
   border: 1px solid var(--border);
   border-radius: var(--radius);
   overflow: hidden;
-  min-height: 600px;
   position: relative;
   display: flex;
   flex-direction: column;
 }
 
-.viewport-content {
-  display: none;
-  flex: 1;
-  width: 100%;
-  height: 100%;
-}
-
-.viewport-content.active {
-  display: flex;
-}
-
-/* 1. Side-by-Side Viewport */
+/* 1. Side-by-Side Dual Viewport */
 .side-by-side-wrap {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 12px;
-  padding: 16px;
+  padding: 12px;
+  flex: 1;
   width: 100%;
-  height: 680px;
+  height: calc(100vh - 280px);
+  min-height: 620px;
   overflow: hidden;
 }
 
@@ -1041,12 +1031,13 @@ header nav {
 
 .pane-scroll-area {
   flex: 1;
-  overflow: auto;
-  padding: 24px;
+  overflow-y: auto;
+  overflow-x: auto;
+  scrollbar-gutter: stable;
+  padding: 8px;
   background: var(--canvas-bg);
   text-align: center;
   position: relative;
-  /* Smooth native scroll */
   -webkit-overflow-scrolling: touch;
 }
 
@@ -1059,7 +1050,6 @@ header nav {
   background: #ffffff;
   border-radius: 2px;
   text-align: left;
-  transition: width 0.15s ease, height 0.15s ease;
 }
 
 .canvas-wrapper canvas {
@@ -1122,18 +1112,9 @@ header nav {
 .diff-box-add .diff-box-tag { background: #10b981; }
 .diff-box-mod .diff-box-tag { background: #f59e0b; }
 
-/* 2. Visual Diff (Pixel Overlay) Viewport */
-.visual-diff-wrap {
-  width: 100%;
-  height: 680px;
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-  background: var(--surface-2);
-}
-
+/* 2. Visual Diff Submode Header & Legend */
 .visual-diff-header {
-  padding: 12px 18px;
+  padding: 10px 16px;
   background: var(--surface);
   border-bottom: 1px solid var(--border);
   display: flex;
@@ -1181,16 +1162,20 @@ header nav {
 }
 
 .diff-mode-btn {
-  padding: 4px 10px;
+  padding: 5px 12px;
   border-radius: 4px;
   font-size: 0.75rem;
   font-weight: 600;
   color: var(--text-2);
-  transition: all var(--transition);
+  cursor: pointer;
+  background: transparent;
+  border: none;
+  transition: background 0.1s ease, color 0.1s ease;
 }
 
 .diff-mode-btn:hover {
   color: var(--text);
+  background: var(--surface-3);
 }
 
 .diff-mode-btn.active {
@@ -1198,81 +1183,6 @@ header nav {
   color: var(--accent);
   box-shadow: var(--shadow-sm);
 }
-
-/* Page Difference Banner */
-.diff-page-banner {
-  padding: 10px 18px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  font-size: 0.84rem;
-  border-bottom: 1px solid var(--border);
-  flex-shrink: 0;
-  transition: all var(--transition);
-}
-
-.diff-page-banner.banner-success {
-  background: rgba(16, 185, 129, 0.1);
-  color: #059669;
-  border-color: rgba(16, 185, 129, 0.25);
-}
-
-[data-theme="dark"] .diff-page-banner.banner-success {
-  background: rgba(16, 185, 129, 0.15);
-  color: #34d399;
-}
-
-.diff-page-banner.banner-changed {
-  background: rgba(245, 158, 11, 0.1);
-  color: #d97706;
-  border-color: rgba(245, 158, 11, 0.25);
-}
-
-[data-theme="dark"] .diff-page-banner.banner-changed {
-  background: rgba(245, 158, 11, 0.15);
-  color: #fbbf24;
-}
-
-.banner-content {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-weight: 600;
-}
-
-.banner-actions {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.btn-banner-jump {
-  padding: 3px 10px;
-  border-radius: var(--radius-sm);
-  background: var(--surface);
-  border: 1px solid currentColor;
-  color: inherit;
-  font-size: 0.75rem;
-  font-weight: 700;
-  cursor: pointer;
-  transition: all var(--transition);
-}
-
-.btn-banner-jump:hover {
-  transform: translateY(-1px);
-  box-shadow: var(--shadow-sm);
-}
-
-.visual-diff-scroll {
-  flex: 1;
-  overflow: auto;
-  padding: 24px;
-  background: var(--canvas-bg);
-  text-align: center;
-  -webkit-overflow-scrolling: touch;
-}
-
 
 /* Side Drawer (Change Inspector) */
 .changes-drawer {
@@ -1845,7 +1755,7 @@ header nav {
     box-shadow: none !important;
     padding: 0 !important;
   }
-  .side-by-side-wrap, .visual-diff-wrap {
+  .side-by-side-wrap {
     height: auto !important;
     overflow: visible !important;
   }
