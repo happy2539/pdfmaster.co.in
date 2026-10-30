@@ -27,6 +27,7 @@
     visualDiffSubmode: "highlight", // 'highlight' | 'deltaMask' | 'flicker'
     zoomMode: "fitWidth", // 'fitWidth' | 'fitPage' | 'custom'
     customZoom: 1.0,
+    currentScale: 1.0,
     syncScroll: true,
     diffSensitivity: 35,
     differences: [], // [{ pageNum, hasDiff, diffPercent, addedWords, deletedWords, diffBoxesA, diffBoxesB, diffBoxesVisual, baseWidth, baseHeight, status }]
@@ -110,6 +111,7 @@
     DOM.btnFitWidth = document.getElementById("btnFitWidth");
     DOM.btnFitPage = document.getElementById("btnFitPage");
     DOM.btnActualSize = document.getElementById("btnActualSize");
+    DOM.btnFullscreen = document.getElementById("btnFullscreen");
 
     DOM.syncScrollCheck = document.getElementById("syncScrollCheck");
     DOM.sensitivitySlider = document.getElementById("sensitivitySlider");

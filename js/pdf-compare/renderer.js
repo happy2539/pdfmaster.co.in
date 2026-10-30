@@ -53,10 +53,24 @@
     };
   }
 
-  function updateZoomToolbarButtons() {
+  function updateZoomToolbarButtons(computedScale) {
+    let scale = 1.0;
+    if (state.zoomMode === "custom") {
+      scale = state.customZoom;
+    } else if (typeof computedScale === "number") {
+      scale = computedScale;
+    } else if (typeof state.currentScale === "number") {
+      scale = state.currentScale;
+    }
+    const percent = Math.round(scale * 100);
+
+    if (DOM.btnActualSize) {
+      DOM.btnActualSize.textContent = `${percent}%`;
+      DOM.btnActualSize.title = `Actual Size (100%) — Currently ${percent}%. Click to reset to 100%.`;
+      DOM.btnActualSize.classList.toggle("active", state.zoomMode === "custom" && Math.abs(scale - 1.0) < 0.03);
+    }
     if (DOM.btnFitWidth) DOM.btnFitWidth.classList.toggle("active", state.zoomMode === "fitWidth");
     if (DOM.btnFitPage) DOM.btnFitPage.classList.toggle("active", state.zoomMode === "fitPage");
-    if (DOM.btnActualSize) DOM.btnActualSize.classList.toggle("active", state.zoomMode === "custom" && Math.abs(state.customZoom - 1.0) < 0.05);
   }
 
   function updateSubmodeButtons() {
@@ -333,18 +347,25 @@
       state.flickerTimer = null;
     }
 
+    if (!state.fileA && !state.fileB) {
+      updateZoomToolbarButtons();
+      return;
+    }
+
     const p = state.currentPage;
     let pageA = null;
     let pageB = null;
 
-    if (p <= state.fileA.pageCount) pageA = await state.fileA.pdfDoc.getPage(p);
-    if (p <= state.fileB.pageCount) pageB = await state.fileB.pdfDoc.getPage(p);
+    if (state.fileA && state.fileA.pdfDoc && p <= state.fileA.pageCount) pageA = await state.fileA.pdfDoc.getPage(p);
+    if (state.fileB && state.fileB.pdfDoc && p <= state.fileB.pageCount) pageB = await state.fileB.pdfDoc.getPage(p);
 
     const refPage = pageA || pageB;
     if (!refPage) return;
 
     // Use DOM.paneScrollA for accurate scale calculation
     const sizing = computePageScale(refPage, DOM.paneScrollA);
+    state.currentScale = sizing.scale;
+    updateZoomToolbarButtons(sizing.scale);
 
     // Check Cache for Offscreen Canvases
     const keyA = `A_${p}_${sizing.scaleKey}`;

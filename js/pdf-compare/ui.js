@@ -122,6 +122,65 @@
   }
 
   // =========================================================================
+  //  FULLSCREEN COMPARISON MODE
+  // =========================================================================
+  function isFullscreenActive() {
+    return !!(
+      document.fullscreenElement ||
+      document.webkitFullscreenElement ||
+      (DOM.studio && DOM.studio.classList.contains("is-fullscreen"))
+    );
+  }
+
+  function updateFullscreenUi(isFs) {
+    if (!DOM.btnFullscreen) return;
+    DOM.btnFullscreen.classList.toggle("active", isFs);
+    DOM.btnFullscreen.classList.toggle("is-active", isFs);
+    DOM.btnFullscreen.title = isFs
+      ? "Exit Fullscreen (Esc or F)"
+      : "Toggle Fullscreen Comparison (F)";
+    const openIcon = DOM.btnFullscreen.querySelector(".fs-open-icon");
+    const exitIcon = DOM.btnFullscreen.querySelector(".fs-exit-icon");
+    if (openIcon) openIcon.style.display = isFs ? "none" : "";
+    if (exitIcon) exitIcon.style.display = isFs ? "" : "none";
+  }
+
+  async function toggleFullscreen() {
+    if (!DOM.studio) return;
+    const isFs = isFullscreenActive();
+    const renderPage = (window.PDFCompare.renderer && window.PDFCompare.renderer.renderCurrentPage) || window.PDFCompare.renderCurrentPage;
+
+    if (!isFs) {
+      DOM.studio.classList.add("is-fullscreen");
+      document.body.classList.add("compare-fullscreen-active");
+      updateFullscreenUi(true);
+
+      const req = DOM.studio.requestFullscreen || DOM.studio.webkitRequestFullscreen;
+      if (req && document.fullscreenEnabled !== false) {
+        try {
+          await req.call(DOM.studio);
+        } catch (_) {}
+      }
+    } else {
+      if (document.fullscreenElement || document.webkitFullscreenElement) {
+        const exit = document.exitFullscreen || document.webkitExitFullscreen;
+        if (exit) {
+          try {
+            await exit.call(document);
+          } catch (_) {}
+        }
+      }
+      DOM.studio.classList.remove("is-fullscreen");
+      document.body.classList.remove("compare-fullscreen-active");
+      updateFullscreenUi(false);
+    }
+
+    setTimeout(() => {
+      if (renderPage) renderPage();
+    }, 100);
+  }
+
+  // =========================================================================
   //  EVENT LISTENERS & BINDINGS
   // =========================================================================
   function initEvents() {
@@ -175,6 +234,9 @@
     if (DOM.btnCompare && compareDocs) DOM.btnCompare.addEventListener("click", compareDocs);
     if (DOM.btnReset) {
       DOM.btnReset.addEventListener("click", () => {
+        if (isFullscreenActive()) {
+          toggleFullscreen();
+        }
         if (resetDocSlot) {
           resetDocSlot("A");
           resetDocSlot("B");
@@ -239,23 +301,48 @@
       DOM.btnActualSize.addEventListener("click", () => {
         state.zoomMode = "custom";
         state.customZoom = 1.0;
+        state.currentScale = 1.0;
         if (renderPage) renderPage();
       });
     }
     if (DOM.btnZoomIn) {
       DOM.btnZoomIn.addEventListener("click", () => {
+        const base = (state.zoomMode === "custom") ? state.customZoom : (state.currentScale || state.customZoom || 1.0);
         state.zoomMode = "custom";
-        state.customZoom = Math.min(3.0, Math.round((state.customZoom + 0.15) * 100) / 100);
+        state.customZoom = Math.min(3.0, Math.round((base + 0.15) * 100) / 100);
+        state.currentScale = state.customZoom;
         if (renderPage) renderPage();
       });
     }
     if (DOM.btnZoomOut) {
       DOM.btnZoomOut.addEventListener("click", () => {
+        const base = (state.zoomMode === "custom") ? state.customZoom : (state.currentScale || state.customZoom || 1.0);
         state.zoomMode = "custom";
-        state.customZoom = Math.max(0.4, Math.round((state.customZoom - 0.15) * 100) / 100);
+        state.customZoom = Math.max(0.4, Math.round((base - 0.15) * 100) / 100);
+        state.currentScale = state.customZoom;
         if (renderPage) renderPage();
       });
     }
+
+    // Fullscreen Controls
+    if (DOM.btnFullscreen) {
+      DOM.btnFullscreen.addEventListener("click", toggleFullscreen);
+    }
+
+    const onFullscreenChange = () => {
+      const isFs = isFullscreenActive();
+      if (!isFs) {
+        if (DOM.studio) DOM.studio.classList.remove("is-fullscreen");
+        document.body.classList.remove("compare-fullscreen-active");
+      }
+      updateFullscreenUi(isFs);
+      setTimeout(() => {
+        if (renderPage) renderPage();
+      }, 100);
+    };
+
+    document.addEventListener("fullscreenchange", onFullscreenChange);
+    document.addEventListener("webkitfullscreenchange", onFullscreenChange);
 
     // Debounced window resize handler
     let resizeTimer = null;
@@ -334,6 +421,25 @@
           state.currentPage++;
           if (renderPage) renderPage();
         }
+      } else if (e.key === "f" || e.key === "F") {
+        if (!e.ctrlKey && !e.metaKey && !e.altKey) {
+          e.preventDefault();
+          toggleFullscreen();
+        }
+      } else if (e.key === "Escape") {
+        if (isFullscreenActive()) {
+          e.preventDefault();
+          toggleFullscreen();
+        }
+      } else if ((e.key === "+" || e.key === "=") && !e.ctrlKey && !e.metaKey) {
+        e.preventDefault();
+        if (DOM.btnZoomIn) DOM.btnZoomIn.click();
+      } else if (e.key === "-" && !e.ctrlKey && !e.metaKey) {
+        e.preventDefault();
+        if (DOM.btnZoomOut) DOM.btnZoomOut.click();
+      } else if (e.key === "0" && !e.ctrlKey && !e.metaKey) {
+        e.preventDefault();
+        if (DOM.btnActualSize) DOM.btnActualSize.click();
       }
     });
 
@@ -405,6 +511,8 @@
     updateToolbarSummary,
     renderDrawerList,
     updateDrawerActive,
+    toggleFullscreen,
+    isFullscreenActive,
     initEvents
   };
 
@@ -415,4 +523,6 @@
   window.PDFCompare.goToPrevDifference = goToPrevDifference;
   window.PDFCompare.renderDrawerList = renderDrawerList;
   window.PDFCompare.updateToolbarSummary = updateToolbarSummary;
+  window.PDFCompare.toggleFullscreen = toggleFullscreen;
+  window.PDFCompare.isFullscreenActive = isFullscreenActive;
 })();
