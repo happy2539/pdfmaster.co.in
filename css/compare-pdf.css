@@ -186,28 +186,12 @@ header nav {
   gap: 12px;
 }
 
-.nav-links {
-  display: flex;
-  align-items: center;
-  gap: 24px;
-  list-style: none;
-}
-
-.nav-links a {
-  font-size: 0.9375rem;
-  font-weight: 500;
-  color: var(--text-2);
-  transition: color var(--transition);
-}
-
-.nav-links a:hover {
-  color: var(--accent);
-}
-
-.theme-toggle {
+/* Header Action Buttons (Circular Edge) */
+.theme-toggle,
+.recovery-btn {
   width: 40px;
   height: 40px;
-  border-radius: var(--radius-sm);
+  border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -216,49 +200,67 @@ header nav {
   background: var(--surface);
   transition: all var(--transition);
   position: relative;
+  cursor: pointer;
+  flex-shrink: 0;
 }
 
-.theme-toggle:hover {
+.theme-toggle:hover,
+.recovery-btn:hover {
   color: var(--text);
   border-color: var(--border-focus);
   background: var(--surface-2);
+  transform: scale(1.06);
 }
 
-.theme-toggle svg {
+.theme-toggle svg,
+.recovery-btn svg {
   width: 18px;
   height: 18px;
+  pointer-events: none;
 }
 
 .recovery-badge {
   position: absolute;
-  top: -3px;
-  right: -3px;
-  width: 9px;
-  height: 9px;
+  top: 7px;
+  right: 7px;
+  width: 8px;
+  height: 8px;
   background: var(--accent);
   border: 2px solid var(--surface);
-  border-radius: var(--radius-full);
+  border-radius: 50%;
 }
 
 .hamburger-btn {
-  display: none;
+  display: flex;
   flex-direction: column;
   justify-content: center;
+  align-items: center;
   gap: 5px;
   width: 40px;
   height: 40px;
-  border-radius: var(--radius-sm);
+  border-radius: 50%;
   border: 1px solid var(--border);
   background: var(--surface);
-  padding: 9px;
   color: var(--text);
+  cursor: pointer;
+  padding: 0;
+  transition: all var(--transition);
+  flex-shrink: 0;
+}
+
+.hamburger-btn:hover {
+  color: var(--text);
+  border-color: var(--border-focus);
+  background: var(--surface-2);
+  transform: scale(1.06);
 }
 
 .hamburger-btn .h-bar {
-  width: 100%;
+  width: 18px;
   height: 2px;
   background: currentColor;
-  border-radius: 1px;
+  border-radius: 2px;
+  transition: all var(--transition);
 }
 
 /* Side Menu */
@@ -708,38 +710,11 @@ header nav {
 .workspace-controls {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-end;
   flex-wrap: wrap;
   gap: 16px;
   padding-top: 16px;
   border-top: 1px solid var(--border);
-}
-
-.sample-files-prompt {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 0.8125rem;
-  color: var(--text-3);
-}
-
-.btn-sample {
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
-  padding: 5px 12px;
-  border-radius: var(--radius-full);
-  background: rgba(255, 179, 0, 0.12);
-  border: 1px solid rgba(255, 179, 0, 0.35);
-  color: #ff9100;
-  font-weight: 600;
-  font-size: 0.8125rem;
-  transition: all var(--transition);
-}
-
-.btn-sample:hover {
-  background: rgba(255, 179, 0, 0.22);
-  transform: translateY(-1px);
 }
 
 .action-buttons-group {
@@ -1737,12 +1712,6 @@ header nav {
   }
   .changes-drawer {
     height: 320px;
-  }
-  .nav-links {
-    display: none;
-  }
-  .hamburger-btn {
-    display: flex;
   }
 }
 

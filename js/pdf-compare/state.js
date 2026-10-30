@@ -89,7 +89,6 @@
     DOM.btnBrowseA = document.getElementById("btnBrowseA");
     DOM.btnBrowseB = document.getElementById("btnBrowseB");
     DOM.btnSwap = document.getElementById("btnSwap");
-    DOM.btnSample = document.getElementById("btnSample");
     DOM.btnCompare = document.getElementById("btnCompare");
     DOM.btnReset = document.getElementById("btnReset");
 

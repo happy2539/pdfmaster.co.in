@@ -133,7 +133,6 @@
 
     const handleFile = loader.handleFileSelected || window.PDFCompare.handleFileSelected;
     const swapDocs = loader.swapDocuments || window.PDFCompare.swapDocuments;
-    const sampleDocs = loader.generateSampleDocuments || window.PDFCompare.generateSampleDocuments;
     const compareDocs = main.runComparison || window.PDFCompare.runComparison;
     const resetDocSlot = loader.resetSlot || window.PDFCompare.resetSlot;
     const clearStorage = storage.clearSessionFromDB || window.PDFCompare.clearSessionFromDB;
@@ -171,9 +170,8 @@
       if (e.target.files && e.target.files[0] && handleFile) handleFile(e.target.files[0], "B");
     });
 
-    // Swap, Sample, Compare, Reset
+    // Swap, Compare, Reset
     if (DOM.btnSwap && swapDocs) DOM.btnSwap.addEventListener("click", swapDocs);
-    if (DOM.btnSample && sampleDocs) DOM.btnSample.addEventListener("click", sampleDocs);
     if (DOM.btnCompare && compareDocs) DOM.btnCompare.addEventListener("click", compareDocs);
     if (DOM.btnReset) {
       DOM.btnReset.addEventListener("click", () => {
