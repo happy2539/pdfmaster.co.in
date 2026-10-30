@@ -1,6 +1,6 @@
 /**
  * PDFMaster - Compare PDF: Document Loader & Slot Manager
- * PDF parsing, thumbnail generation, drag & drop slot rendering, document swapping, and sample creation.
+ * PDF parsing, password decryption handling, thumbnail generation, drag & drop slot rendering, and document swapping.
  */
 (function () {
   "use strict";

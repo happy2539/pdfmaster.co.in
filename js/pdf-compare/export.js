@@ -1,6 +1,6 @@
 /**
  * PDFMaster - Compare PDF: Export & Report Generator
- * Client-side Executive Comparison Audit Report (jsPDF) & Canvas PNG Exporter.
+ * Client-side Executive Comparison Audit Report Generator via jsPDF & Universal Popup.
  */
 (function () {
   "use strict";

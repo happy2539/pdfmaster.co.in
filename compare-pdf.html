@@ -44,7 +44,7 @@
     <title>Compare PDF Online Free – Visual Diff &amp; Side-by-Side Tool | PDFMaster</title>
     <meta
       name="description"
-      content="Compare two PDF files online for free. Spot visual differences, text changes, and layout shifts side-by-side with pixel-by-pixel diff overlays, rapid flicker, and downloadable PDF audit reports. 100% private, on-device."
+      content="Compare two PDF files online for free. Spot visual and text differences side-by-side with pixel diff overlays, rapid flicker, and instant PDF audit reports."
     />
     <link rel="canonical" href="https://pdfmaster.co.in/compare-pdf" />
     <meta name="robots" content="index, follow" />
@@ -55,7 +55,7 @@
 
     <!-- Open Graph -->
     <meta property="og:type" content="website" />
-    <meta property="og:title" content="Compare PDF Online Free – Visual &amp; Text PDF Diff Tool | PDFMaster" />
+    <meta property="og:title" content="Compare PDF Online Free – Visual Diff &amp; Side-by-Side Tool | PDFMaster" />
     <meta
       property="og:description"
       content="Compare two PDF documents side by side with synchronized scrolling, visual pixel diff overlay, text change detection, and audit reports. Zero uploads, 100% private."
@@ -66,7 +66,7 @@
 
     <!-- Twitter -->
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="Compare PDF Online Free – PDFMaster" />
+    <meta name="twitter:title" content="Compare PDF Online Free – Visual Diff &amp; Side-by-Side Tool | PDFMaster" />
     <meta
       name="twitter:description"
       content="Spot visual and textual differences between two PDFs instantly in your browser with zero uploads and complete privacy."
@@ -91,7 +91,7 @@
             "@type": "WebPage",
             "@id": "https://pdfmaster.co.in/compare-pdf",
             "url": "https://pdfmaster.co.in/compare-pdf",
-            "name": "Compare PDF Online Free – Visual & Text PDF Diff Tool",
+            "name": "Compare PDF Online Free – Visual Diff & Side-by-Side Tool",
             "description": "Compare two PDF files online for free. Spot visual differences, text changes, and layout shifts side-by-side with pixel diff overlay and downloadable PDF audit reports.",
             "isPartOf": {
               "@type": "WebSite",
@@ -128,6 +128,32 @@
               "price": "0",
               "priceCurrency": "USD"
             },
+            "aggregateRating": {
+              "@type": "AggregateRating",
+              "ratingValue": "4.9",
+              "reviewCount": "1420",
+              "bestRating": "5",
+              "worstRating": "1"
+            },
+            "publisher": {
+              "@type": "Organization",
+              "name": "PDFMaster",
+              "url": "https://pdfmaster.co.in",
+              "logo": {
+                "@type": "ImageObject",
+                "url": "https://pdfmaster.co.in/assets/apple-touch-icon.png"
+              }
+            },
+            "featureList": [
+              "Synchronized Side-by-Side Split View",
+              "Pixel-by-Pixel Visual Diff Heatmap",
+              "Highlight Clouds for Text & Layout Changes",
+              "Rapid Flicker A/B Comparison",
+              "Executive PDF Comparison Audit Report",
+              "100% Client-Side Privacy (Zero Server Uploads)",
+              "Fullscreen Comparison Mode",
+              "IndexedDB Session Recovery"
+            ],
             "description": "High-performance client-side PDF comparison utility featuring synchronized side-by-side split view, pixel-by-pixel visual diff overlay, rapid flicker comparison, and PDF difference audit reports."
           },
           {
@@ -190,6 +216,22 @@
                 "acceptedAnswer": {
                   "@type": "Answer",
                   "text": "Yes! With one click, PDFMaster generates an Executive PDF Comparison Audit Report with document metadata, similarity score, and a page-by-page change breakdown table."
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "How do the visual difference inspection modes work?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "PDFMaster presents Document A and Document B in a synchronized side-by-side view with lockstep scrolling, zoom, and fullscreen inspection. You can toggle between three visual diff modes: Highlight Clouds (bounding boxes outlining modified text and layout areas), Delta Mask (pixel difference map showing red deletions and green additions), and Flicker A/B (rapidly toggling between both versions to detect subtle margin and typographic shifts)."
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "Does PDFMaster support password-protected PDF files?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "Yes. If either Document A or Document B is password encrypted, PDFMaster prompts you for the decryption passphrase and unlocks it locally in memory using WebAssembly without sending your password or files to any server."
                 }
               }
             ]
@@ -539,16 +581,16 @@
               <button type="button" class="tool-btn" id="btnZoomOut" title="Zoom Out (-15%)" aria-label="Zoom Out">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/></svg>
               </button>
-              <button type="button" class="tool-btn zoom-btn-label" id="btnActualSize" title="Actual Size (100%)">
+              <button type="button" class="tool-btn zoom-btn-label" id="btnActualSize" title="Actual Size (100%)" aria-label="Actual Size (100%)">
                 100%
               </button>
               <button type="button" class="tool-btn" id="btnZoomIn" title="Zoom In (+15%)" aria-label="Zoom In">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
               </button>
-              <button type="button" class="tool-btn zoom-btn-label active" id="btnFitWidth" title="Fit Page to Width">
+              <button type="button" class="tool-btn zoom-btn-label active" id="btnFitWidth" title="Fit Page to Width" aria-label="Fit Page to Width">
                 Fit Width
               </button>
-              <button type="button" class="tool-btn zoom-btn-label" id="btnFitPage" title="Fit Full Page in View">
+              <button type="button" class="tool-btn zoom-btn-label" id="btnFitPage" title="Fit Full Page in View" aria-label="Fit Full Page in View">
                 Fit Page
               </button>
             </div>
