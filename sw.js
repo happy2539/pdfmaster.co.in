@@ -24,7 +24,7 @@
  * visit - see the activate handler below.
  */
 
-const CACHE_VERSION = "v73";
+const CACHE_VERSION = "v74";
 const CACHE_PREFIX = "pdfmaster-";
 
 const STATIC_CACHE = `${CACHE_PREFIX}static-${CACHE_VERSION}`;
@@ -102,6 +102,7 @@ const PRECACHE_URLS = [
   "/css/protect-pdf.css",
   "/css/unlock-pdf.css",
   "/css/pdf-editor.css",
+  "/css/compare-pdf.css",
   "/css/pdf-metadata.css",
   "/css/pdf-reorder.css",
   "/css/pdf-split.css",
@@ -157,6 +158,7 @@ const PRECACHE_URLS = [
   "/js/ocr-pdf.js",
   "/js/page-number-pdf.js",
   "/js/pdf-compiler.js",
+  "/js/compare-pdf.js",
   "/js/protect-pdf.js",
   "/js/unlock-pdf.js",
   "/js/pdf-editor.js",

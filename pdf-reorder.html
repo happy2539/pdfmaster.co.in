@@ -177,8 +177,9 @@
       }
     </script>
 
-    <link rel="stylesheet" href="css/pdf-reorder.css?v=1.0.3" />
+    <link rel="stylesheet" href="/css/pdf-reorder.css?v=1.0.4" />
 
+    <meta name="mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="default" />
     <script src="/js/sw-register.js" defer></script>
@@ -1947,7 +1948,7 @@
             <p>Strip author, title, and hidden data from your PDF.</p>
             <span class="arrow-link">Try it →</span>
           </a>
-          <a href="/pdf-viewer" class="related-card">
+          <a href="/compare-pdf" class="related-card">
             <div class="related-card-icon" aria-hidden="true">
               <svg
                 viewBox="0 0 24 24"
@@ -2117,7 +2118,7 @@
                 <span class="footer__cat-header">Edit &amp; View</span>
                 <ul class="footer__cat-items">
                   <li><a href="/pdf-editor">PDF Editor</a></li>
-                  <li><a href="/pdf-viewer">PDF Viewer</a></li>
+                  <li><a href="/compare-pdf">Compare PDF</a></li>
                   <li><a href="/page-number-pdf">Page Number PDF</a></li>
                   <li><a href="/watermark-pdf-add">Watermark PDF</a></li>
                 </ul>
@@ -2169,7 +2170,7 @@
         </div>
         <div class="footer__bottom">
           <p class="footer__copy">
-            © 2026 <a href="/">PDFMaster All right reserved</a>
+            © <span id="year">2026</span> <a href="/">PDFMaster All right reserved</a>
           </p>
         </div>
       </div>
@@ -2196,6 +2197,6 @@
     <script src="/js/universal-popup.js"></script>
     <!-- Conversion Analytics Tracker -->
     <script src="/js/conversion-tracker.js" defer></script>
-    <script src="js/pdf-reorder.js?v=1.0.3"></script>
+    <script src="/js/pdf-reorder.js?v=1.0.4"></script>
   </body>
 </html>

@@ -31,7 +31,31 @@
 /pdf-editor.html     /pdf-editor     301!
 
 
-/pdf-viewer.html     /pdf-viewer     301!
+/compare-pdf.html    /compare-pdf    301!
+
+
+/pdf-compare.html    /compare-pdf    301!
+
+
+/pdf-compare         /compare-pdf    301!
+
+
+/compare-pdf-online.html /compare-pdf 301!
+
+
+/compare-pdf-online  /compare-pdf    301!
+
+
+/pdf-diff.html       /compare-pdf    301!
+
+
+/pdf-diff            /compare-pdf    301!
+
+
+/pdf-viewer.html     /compare-pdf    301!
+
+
+/pdf-viewer          /compare-pdf    301!
 
 
 /merge-pdf.html      /merge-pdf      301!
