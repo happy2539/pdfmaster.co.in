@@ -147,8 +147,8 @@
               },
               {
                 "@type": "HowToStep",
-                "name": "Select Comparison Mode",
-                "text": "Choose between Side-by-Side synchronized split view or Pixel Diff overlay with highlight clouds."
+                "name": "Select Visual Diff Mode",
+                "text": "Inspect changes in synchronized side-by-side view using Highlight Clouds, Delta Mask, or Flicker A/B modes."
               },
               {
                 "@type": "HowToStep",
@@ -694,9 +694,9 @@
 
           <div class="step-card">
             <span class="step-number">03</span>
-            <h3>Choose View Mode</h3>
+            <h3>Select Diff Mode</h3>
             <p>
-              Switch between Side-by-Side split view and Pixel Diff overlay (with Highlight Clouds, Delta Mask, and Flicker A/B).
+              Inspect changes directly on the canvas using instant visual diff modes: Highlight Clouds, Delta Mask, or Rapid Flicker A/B.
             </p>
           </div>
 
@@ -737,9 +737,9 @@
             <div class="feature-icon-wrap">
               <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 2a10 10 0 0 1 0 20z"/></svg>
             </div>
-            <h3>2. Visual Diff (Pixel Overlay)</h3>
+            <h3>2. Visual Diff (Delta Mask)</h3>
             <p>
-              Superimposes both pages and renders pixel deltas with smart color coding: deleted content is highlighted in vibrant Red, additions in Green, and identical context in low-contrast grayscale.
+              Renders high-contrast pixel deltas with smart color coding: deleted content is highlighted in vibrant Red, additions in Green, and unchanged context in low-contrast grayscale.
             </p>
           </div>
 
@@ -965,11 +965,11 @@
 
           <div class="faq-item">
             <div class="faq-q">
-              <span>What is the difference between Side-by-Side view and Visual Diff?</span>
+              <span>How do the visual difference inspection modes work?</span>
               <svg class="faq-arrow" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
             </div>
             <div class="faq-a">
-              Side-by-Side view presents Document A (Baseline) and Document B (Modified) alongside each other with synchronized scrolling and zoom controls, allowing you to read both versions in parallel. Visual Diff superimposes both documents on top of each other and highlights pixel changes: additions appear in green, deletions in red, and identical sections are rendered in low contrast. You can also switch between Highlight Clouds, Delta Mask, and Rapid Flicker submodes.
+              PDFMaster presents Document A (Baseline) and Document B (Modified) in a synchronized side-by-side view with lockstep scrolling, zoom, and fullscreen inspection. To spot differences instantly, you can toggle between three visual diff modes: Highlight Clouds (bounding boxes outlining modified text and layout areas), Delta Mask (pixel difference map showing red deletions and green additions), and Flicker A/B (rapidly toggling between both versions to detect subtle margin and typographic shifts).
             </div>
           </div>
 
