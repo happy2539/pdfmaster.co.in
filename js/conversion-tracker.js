@@ -47,6 +47,31 @@
   // Cache for deduplication (prevents double-tracking within 25 seconds)
   const recentEventKeys = new Map();
 
+  // Track theme toggle interactions during this browser session
+  let hasUserToggledThemeInSession = false;
+  try {
+    if (typeof document !== "undefined") {
+      document.addEventListener(
+        "click",
+        (e) => {
+          const t = e.target;
+          if (
+            t &&
+            (t.closest("#themeToggle") ||
+              t.closest("#themeBtn") ||
+              t.closest(".theme-toggle-btn") ||
+              t.closest(".theme-btn") ||
+              t.closest('[aria-label*="theme" i]') ||
+              t.closest('[title*="theme" i]'))
+          ) {
+            hasUserToggledThemeInSession = true;
+          }
+        },
+        true,
+      );
+    }
+  } catch (_) {}
+
   function log(...args) {
     if (config.debug && typeof console !== "undefined") {
       console.log("[PDFMaster Tracker]", ...args);
@@ -570,6 +595,285 @@
   }
 
   /**
+   * Detect device and site theme preferences and whether user customized it
+   */
+  function getDeviceTheme() {
+    try {
+      if (
+        window.matchMedia &&
+        window.matchMedia("(prefers-color-scheme: dark)").matches
+      ) {
+        return "dark";
+      }
+      if (
+        window.matchMedia &&
+        window.matchMedia("(prefers-color-scheme: light)").matches
+      ) {
+        return "light";
+      }
+    } catch (_) {}
+    return "light";
+  }
+
+  function getSiteTheme() {
+    try {
+      const htmlTheme = document.documentElement.getAttribute("data-theme");
+      if (htmlTheme) return htmlTheme.toLowerCase();
+      const bodyTheme = document.body?.getAttribute("data-theme");
+      if (bodyTheme) return bodyTheme.toLowerCase();
+      if (document.documentElement.classList.contains("dark")) return "dark";
+      const stored =
+        localStorage.getItem("pdfmaster-theme") ||
+        localStorage.getItem("pdfmaster_theme") ||
+        localStorage.getItem("theme");
+      if (stored) return stored.toLowerCase();
+    } catch (_) {}
+    return "light";
+  }
+
+  function getThemeTelemetry() {
+    const deviceTheme = getDeviceTheme();
+    const siteTheme = getSiteTheme();
+
+    let userPref = null;
+    try {
+      userPref =
+        localStorage.getItem("pdfmaster-theme") ||
+        localStorage.getItem("pdfmaster_theme") ||
+        localStorage.getItem("theme");
+    } catch (_) {}
+
+    // Theme changed check:
+    // 1. User clicked a theme toggle button during this browser session
+    // 2. OR user has an explicit saved preference in localStorage
+    // 3. OR the site theme currently differs from the device OS theme
+    const themeExplicitlySet = userPref !== null && userPref !== "";
+    const themeDiffersFromDevice = siteTheme !== deviceTheme;
+    const themeChanged = Boolean(
+      hasUserToggledThemeInSession ||
+        themeExplicitlySet ||
+        themeDiffersFromDevice,
+    );
+
+    return {
+      deviceTheme: deviceTheme, // "dark" or "light" (Device OS preference)
+      siteTheme: siteTheme, // "dark" or "light" (Active site theme)
+      themeChanged: themeChanged, // boolean: true if user changed/customized theme
+      userPreference: userPref ? userPref.toLowerCase() : "system", // "dark", "light", or "system"
+    };
+  }
+
+  /**
+   * Safely harvest non-sensitive configuration settings from the active tool UI
+   */
+  function harvestToolSettings(toolName, explicitSettings) {
+    const harvested = {};
+    const norm = String(
+      toolName || (typeof window !== "undefined" ? window.location.pathname : "") || "",
+    ).toLowerCase();
+
+    // 1. Copy explicit settings if provided (sanitizing any sensitive/raw data)
+    if (explicitSettings && typeof explicitSettings === "object") {
+      for (const [k, v] of Object.entries(explicitSettings)) {
+        if (v === null || typeof v === "undefined") continue;
+        if (
+          /dataurl|imagedata|strokes|rawpassword|^password$|^name$|^filename$/i.test(
+            k,
+          )
+        ) {
+          continue;
+        }
+        if (
+          k === "typedText" ||
+          (k === "text" && typeof v === "string" && v.length > 80)
+        ) {
+          continue;
+        }
+        harvested[k] = v;
+      }
+    }
+
+    // 2. Dynamic DOM harvesting per tool type
+    if (typeof document === "undefined") return harvested;
+    try {
+      // Compress PDF
+      if (norm.includes("compress")) {
+        const dpiSlider = document.getElementById("dpiSlider");
+        if (dpiSlider && dpiSlider.value) {
+          harvested.dpi = parseInt(dpiSlider.value, 10);
+        }
+        const qualitySlider = document.getElementById("qualitySlider");
+        if (qualitySlider && qualitySlider.value) {
+          harvested.quality = parseInt(qualitySlider.value, 10);
+        }
+        const grayscaleSwitch = document.getElementById("grayscaleSwitch");
+        if (grayscaleSwitch) {
+          harvested.grayscale = Boolean(grayscaleSwitch.checked);
+        }
+        const activeLevel = document.querySelector(
+          ".level-card.active, .compression-option.active",
+        );
+        if (activeLevel) {
+          const lvlText = activeLevel
+            .querySelector("h3, h4, .level-title")
+            ?.textContent?.trim();
+          if (lvlText) harvested.level = lvlText;
+        }
+      }
+
+      // Rotate PDF
+      if (norm.includes("rotate")) {
+        const activeAngle = document.querySelector(
+          ".angle-btn.active, [data-angle].active",
+        );
+        if (activeAngle) {
+          harvested.angle =
+            activeAngle.getAttribute("data-angle") ||
+            activeAngle.textContent.trim();
+        }
+      }
+
+      // Split PDF
+      if (norm.includes("split")) {
+        const checkedMode = document.querySelector(
+          'input[name="splitMode"]:checked, input[name="split-mode"]:checked',
+        );
+        if (checkedMode) harvested.splitMode = checkedMode.value;
+        const pageRange =
+          document.getElementById("pageRangeInput") ||
+          document.getElementById("rangeInput");
+        if (pageRange && pageRange.value) {
+          harvested.pageRange = pageRange.value.trim().slice(0, 50);
+        }
+      }
+
+      // Photo to PDF
+      if (norm.includes("photo") && norm.includes("pdf")) {
+        const chkCompress = document.getElementById("chkCompress");
+        if (chkCompress) harvested.compress = Boolean(chkCompress.checked);
+        const chkOnePage = document.getElementById("chkOnePage");
+        if (chkOnePage) harvested.oneImagePerPage = Boolean(chkOnePage.checked);
+        const orientation =
+          document.getElementById("pageOrientation") ||
+          document.querySelector('input[name="orientation"]:checked');
+        if (orientation) {
+          harvested.orientation =
+            orientation.value || orientation.textContent?.trim();
+        }
+        const pageSize =
+          document.getElementById("pageSize") ||
+          document.querySelector('input[name="pageSize"]:checked');
+        if (pageSize) {
+          harvested.pageSize = pageSize.value || pageSize.textContent?.trim();
+        }
+      }
+
+      // PDF to Photo
+      if (norm.includes("photo") || norm.includes("image")) {
+        const fmtSelect =
+          document.getElementById("formatSelect") ||
+          document.getElementById("imageFormat");
+        if (fmtSelect && fmtSelect.value) harvested.format = fmtSelect.value;
+        const dpiSelect = document.getElementById("dpiSelect");
+        if (dpiSelect && dpiSelect.value) harvested.dpi = dpiSelect.value;
+      }
+
+      // Watermark PDF
+      if (norm.includes("watermark")) {
+        const wmType = document.querySelector(
+          'input[name="wmType"]:checked, .wm-tab.active',
+        );
+        if (wmType) {
+          harvested.watermarkType =
+            wmType.value || wmType.getAttribute("data-type") || "text";
+        }
+        const wmPosition =
+          document.getElementById("wmPosition") ||
+          document.querySelector(".pos-grid-cell.active");
+        if (wmPosition) {
+          harvested.position =
+            wmPosition.value || wmPosition.getAttribute("data-pos") || "center";
+        }
+        const wmOpacity =
+          document.getElementById("wmOpacity") ||
+          document.getElementById("opacitySlider");
+        if (wmOpacity && wmOpacity.value) {
+          harvested.opacity = parseFloat(wmOpacity.value);
+        }
+      }
+
+      // Page Number PDF
+      if (norm.includes("number")) {
+        const pos = document.querySelector(
+          ".pos-btn.active, [data-position].active",
+        );
+        if (pos) {
+          harvested.position =
+            pos.getAttribute("data-position") || pos.value;
+        }
+        const fmt =
+          document.getElementById("formatSelect") ||
+          document.querySelector(".format-chip.active");
+        if (fmt) {
+          harvested.format = fmt.value || fmt.getAttribute("data-format");
+        }
+        const startNum = document.getElementById("startNumberInput");
+        if (startNum && startNum.value) {
+          harvested.startNumber = parseInt(startNum.value, 10);
+        }
+      }
+
+      // Protect PDF (Zero plain-text password leakage)
+      if (norm.includes("protect") || norm.includes("encrypt")) {
+        const passInput =
+          document.getElementById("userPassword") ||
+          document.querySelector('input[type="password"]');
+        if (passInput) {
+          harvested.hasPassword = Boolean(
+            passInput.value && passInput.value.length > 0,
+          );
+          harvested.passwordLength = passInput.value
+            ? passInput.value.length
+            : 0;
+          harvested.algorithm = "AES-256";
+        }
+      }
+
+      // Unlock PDF
+      if (norm.includes("unlock")) {
+        harvested.unlocked = true;
+      }
+
+      // Delete PDF Pages
+      if (norm.includes("delete")) {
+        const delStat =
+          document.getElementById("deletedCount") ||
+          document.getElementById("deleteCount");
+        if (delStat)
+          harvested.pagesDeleted = parseInt(delStat.textContent, 10) || 1;
+      }
+
+      // Insert Blank Page
+      if (norm.includes("blank")) {
+        const pos =
+          document.getElementById("insertPosition") ||
+          document.getElementById("blankPosition");
+        if (pos) harvested.position = pos.value;
+      }
+
+      // OCR PDF
+      if (norm.includes("ocr")) {
+        const lang =
+          document.getElementById("ocrLanguage") ||
+          document.getElementById("langSelect");
+        if (lang) harvested.language = lang.value;
+      }
+    } catch (_) {}
+
+    return harvested;
+  }
+
+  /**
    * Main Public Tracking Method: trackConversion
    * Correlates userId, PDF load duration, and conversion duration for anti-spam calculation
    */
@@ -665,20 +969,17 @@
         if (signMatch) signedPageCount = parseInt(signMatch[1], 10);
       }
 
-      // Sanitize non-sensitive settings
-      let settings = null;
-      if (data.settings && typeof data.settings === "object") {
-        const clean = { ...data.settings };
-        delete clean.dataUrl;
-        delete clean.image;
-        delete clean.imageData;
-        delete clean.text;
-        delete clean.typedText;
-        delete clean.name;
-        delete clean.fileName;
-        delete clean.strokes;
-        settings = clean;
-      }
+      // Collect structured theme telemetry and tool-specific settings
+      const themeData = getThemeTelemetry();
+      const toolSettings = harvestToolSettings(tool, data.settings);
+
+      // Clean, structured settings object:
+      // Stores theme telemetry, tool settings, and top-level aliases for clean inspection
+      const settings = {
+        theme: themeData,
+        tool: toolSettings,
+        ...toolSettings,
+      };
 
       // Deduplication check: prevent recording duplicate calls within cooldown (25s)
       const now = Date.now();
