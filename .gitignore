@@ -2,3 +2,4 @@ module/
 .gemini/
 /PROJECT_STANDARDS.md
 tests/
+.vscode/
