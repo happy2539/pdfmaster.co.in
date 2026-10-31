@@ -214,6 +214,35 @@
     } catch (_) {}
   }
 
+  // Persistent Anonymous User Identifier (Shared across tab reloads & tools)
+  var USER_ID_KEY = "pdfmaster_user_id";
+  function getUserId() {
+    try {
+      if (typeof localStorage !== "undefined") {
+        var uid = localStorage.getItem(USER_ID_KEY);
+        if (!uid || uid.length < 10) {
+          var rand =
+            Math.random().toString(36).substring(2, 10) +
+            Math.random().toString(36).substring(2, 10);
+          uid = "usr_" + Date.now().toString(36) + "_" + rand;
+          localStorage.setItem(USER_ID_KEY, uid);
+        }
+        return uid;
+      }
+    } catch (_) {}
+    if (typeof window !== "undefined") {
+      if (!window.__pdfmasterFallbackUid) {
+        window.__pdfmasterFallbackUid =
+          "usr_guest_" +
+          Date.now().toString(36) +
+          "_" +
+          Math.random().toString(36).substring(2, 8);
+      }
+      return window.__pdfmasterFallbackUid;
+    }
+    return "usr_guest_anonymous";
+  }
+
   // Tab-scoped Session Management using sessionStorage
   var TAB_SESSION_KEY = "pdfmaster_tab_session_id";
   var TAB_START_KEY = "pdfmaster_tab_session_start";
@@ -345,6 +374,7 @@
 
     var payload = {
       action: action, // "start" | "engagement" | "pulse" | "close"
+      userId: getUserId(),
       sessionId: sessionId,
       pageviewId: pageviewId,
       page: window.location.pathname || "/",
@@ -537,6 +567,9 @@
 
   // Public API (Maintains full backward compatibility with conversion-tracker.js)
   window.PDFMasterPageviewTracker = {
+    getUserId: function () {
+      return getUserId();
+    },
     getSessionId: function () {
       return sessionId;
     },

@@ -24,7 +24,7 @@
  * visit - see the activate handler below.
  */
 
-const CACHE_VERSION = "v77";
+const CACHE_VERSION = "v78";
 const CACHE_PREFIX = "pdfmaster-";
 
 const STATIC_CACHE = `${CACHE_PREFIX}static-${CACHE_VERSION}`;
@@ -107,7 +107,6 @@ const PRECACHE_URLS = [
   "/css/pdf-reorder.css",
   "/css/pdf-split.css",
   "/css/pdf-to-photo.css",
-  "/css/pdf-viewer.css",
   "/css/photo-to-pdf.css",
   "/css/privacy-policy.css",
   "/css/rotate-pdf.css",
@@ -174,7 +173,6 @@ const PRECACHE_URLS = [
   "/js/pdf-reorder.js",
   "/js/pdf-split.js",
   "/js/pdf-to-photo.js",
-  "/js/pdf-viewer.js",
   "/js/photo-to-pdf-popup.js",
   "/js/photo-to-pdf.js",
   "/js/privacy-policy.js",

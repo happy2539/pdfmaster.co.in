@@ -280,6 +280,13 @@
           viewport: viewport,
         };
 
+        if (PDFSign.activePageRenderTask) {
+          try {
+            PDFSign.activePageRenderTask.cancel();
+          } catch (_) {}
+          PDFSign.activePageRenderTask = null;
+        }
+
         PDFSign.activePageRenderTask = page.render(renderContext);
         await PDFSign.activePageRenderTask.promise;
         PDFSign.activePageRenderTask = null;

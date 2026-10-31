@@ -1442,8 +1442,9 @@
     );
 
     try {
+      const arrayBuffer = await fileOrBlob.arrayBuffer();
       const loadingTask = pdfjsLib.getDocument({
-        url: state.currentBlobUrl,
+        data: new Uint8Array(arrayBuffer),
         cMapUrl: "/assets/vendor/cmaps/",
         cMapPacked: true,
         disableAutoFetch: true,

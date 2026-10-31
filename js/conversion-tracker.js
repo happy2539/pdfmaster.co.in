@@ -1,20 +1,23 @@
 /**
- * PDFMaster - Universal Conversion Tracker Script
+ * PDFMaster - Universal Conversion & PDF Load Telemetry Tracker Script
  * ------------------------------------------------------------------
- * Modular, lightweight, non-blocking telemetry script that captures:
- *  - Conversion duration (ms)
- *  - Input / Output file size (bytes)
- *  - Active tool name & file metadata
- *  - Client browser & device type
- *  - Sends the data asynchronously to the Cloudflare KV Worker endpoint.
+ * Modular, lightweight, non-blocking telemetry engine that captures:
+ *  - Persistent User Identity (userId)
+ *  - PDF Selection & Loading Duration (ms) recorded immediately in DB
+ *  - Human Dwell Time (ms between loading PDF and clicking convert)
+ *  - Conversion Duration (ms) sent to DB on processing completion
+ *  - Anti-Spam Fraud Evaluation (correlating userId, load time & conversion time)
+ *  - Input / Output file size (bytes) & page counts
+ *  - Active tool name & non-sensitive settings
+ *  - Client browser, hardware & device specifications
  *
  * Designed to be 100% fail-safe and completely decoupled from core PDF logic.
- * Fails silently if offline or blocked, guaranteeing zero user disruption.
+ * Automatically hooks all 19 tools across PDFMaster with zero configuration.
  */
 (function () {
   "use strict";
 
-  // Default Worker Endpoint (change this or set window.PDFMASTER_TRACKER_CONFIG.endpoint)
+  // Default Worker Endpoints
   const DEFAULT_WORKER_ENDPOINT =
     "https://tracking.guptamrhappy.workers.dev/api/record";
 
@@ -29,19 +32,59 @@
 
   const config = {
     endpoint: userConfig.endpoint || localEndpoint || DEFAULT_WORKER_ENDPOINT,
+    fileLoadEndpoint:
+      userConfig.fileLoadEndpoint ||
+      (userConfig.endpoint || localEndpoint || DEFAULT_WORKER_ENDPOINT).replace(
+        /\/api\/(record|conversion)/,
+        "/api/file-load",
+      ),
     enabled: userConfig.enabled !== false,
     debug: Boolean(userConfig.debug),
     sampleRate:
       typeof userConfig.sampleRate === "number" ? userConfig.sampleRate : 1.0,
   };
 
-  // Cache for deduplication (prevents double-tracking within 4 seconds)
+  // Cache for deduplication (prevents double-tracking within 25 seconds)
   const recentEventKeys = new Map();
 
   function log(...args) {
     if (config.debug && typeof console !== "undefined") {
       console.log("[PDFMaster Tracker]", ...args);
     }
+  }
+
+  /**
+   * Persistent Anonymous User Identifier (Shared across tab reloads & tools)
+   */
+  const USER_ID_KEY = "pdfmaster_user_id";
+
+  function getUserId() {
+    try {
+      if (typeof localStorage !== "undefined") {
+        let uid = localStorage.getItem(USER_ID_KEY);
+        if (!uid || uid.length < 10) {
+          const rand =
+            Math.random().toString(36).substring(2, 10) +
+            Math.random().toString(36).substring(2, 10);
+          uid = "usr_" + Date.now().toString(36) + "_" + rand;
+          localStorage.setItem(USER_ID_KEY, uid);
+        }
+        return uid;
+      }
+    } catch (_) {}
+
+    // Fallback if localStorage is disabled in strict privacy modes
+    if (typeof window !== "undefined") {
+      if (!window.__pdfmasterFallbackUid) {
+        window.__pdfmasterFallbackUid =
+          "usr_guest_" +
+          Date.now().toString(36) +
+          "_" +
+          Math.random().toString(36).substring(2, 8);
+      }
+      return window.__pdfmasterFallbackUid;
+    }
+    return "usr_guest_anonymous";
   }
 
   /**
@@ -124,10 +167,16 @@
 
     try {
       if (typeof navigator !== "undefined") {
-        if (typeof navigator.deviceMemory === "number" && navigator.deviceMemory > 0) {
+        if (
+          typeof navigator.deviceMemory === "number" &&
+          navigator.deviceMemory > 0
+        ) {
           hw.deviceMemory = navigator.deviceMemory;
         }
-        if (typeof navigator.hardwareConcurrency === "number" && navigator.hardwareConcurrency > 0) {
+        if (
+          typeof navigator.hardwareConcurrency === "number" &&
+          navigator.hardwareConcurrency > 0
+        ) {
           hw.cpuCores = navigator.hardwareConcurrency;
         }
       }
@@ -138,7 +187,9 @@
         window.performance.memory &&
         typeof window.performance.memory.usedJSHeapSize === "number"
       ) {
-        hw.memoryUsedBytes = Math.round(window.performance.memory.usedJSHeapSize);
+        hw.memoryUsedBytes = Math.round(
+          window.performance.memory.usedJSHeapSize,
+        );
       }
 
       if (cachedStorageEstimate) {
@@ -151,7 +202,7 @@
   }
 
   /**
-   * Extract or normalize tool name
+   * Extract or normalize tool name across all 19 tools
    */
   function resolveToolName(explicitTool) {
     if (
@@ -162,34 +213,52 @@
       return explicitTool.trim();
     }
     const path = (window.location.pathname || "").toLowerCase();
-    if (path.includes("sign")) return "Sign PDF";
-    if (path.includes("merge")) return "Merge PDF";
-    if (path.includes("split")) return "Split PDF";
-    if (path.includes("rotate")) return "Rotate PDF";
-    if (path.includes("delete")) return "Delete PDF Pages";
-    if (path.includes("reorder")) return "Reorder PDF";
-    if (path.includes("watermark")) return "Watermark PDF";
-    if (path.includes("metadata")) return "PDF Metadata";
+    if (path.includes("compare-pdf")) return "Compare PDF";
+    if (path.includes("compress-pdf")) return "Compress PDF";
+    if (path.includes("delete-pdf-pages")) return "Delete PDF Pages";
+    if (path.includes("extract-photos-from-pdf")) return "Extract Photos from PDF";
+    if (path.includes("insert-blank-page-pdf")) return "Insert Blank Page PDF";
+    if (path.includes("merge-pdf")) return "Merge PDF";
+    if (path.includes("ocr-pdf")) return "OCR PDF";
+    if (path.includes("page-number-pdf")) return "Page Number PDF";
     if (path.includes("pdf-editor")) return "PDF Editor";
-    if (path.includes("photo-to-pdf")) return "Photo to PDF";
+    if (path.includes("pdf-metadata")) return "PDF Metadata";
+    if (path.includes("pdf-reorder")) return "PDF Reorder";
     if (path.includes("pdf-to-photo")) return "PDF to Photo";
-    if (path.includes("viewer")) return "PDF Viewer";
+    if (path.includes("photo-to-pdf")) return "Photo to PDF";
+    if (path.includes("protect-pdf")) return "Protect PDF";
+    if (path.includes("rotate-pdf")) return "Rotate PDF";
+    if (path.includes("sign-pdf")) return "Sign PDF";
+    if (path.includes("split-pdf")) return "Split PDF";
+    if (path.includes("unlock-pdf")) return "Unlock PDF";
+    if (path.includes("watermark-pdf-add")) return "Watermark PDF";
 
-    // Try document title
+    // Fallbacks via document title
     const title = document.title || "";
-    if (title.includes("Sign")) return "Sign PDF";
+    if (title.includes("Compare")) return "Compare PDF";
+    if (title.includes("Compress")) return "Compress PDF";
+    if (title.includes("Delete")) return "Delete PDF Pages";
+    if (title.includes("Blank Page")) return "Insert Blank Page PDF";
     if (title.includes("Merge")) return "Merge PDF";
+    if (title.includes("OCR")) return "OCR PDF";
+    if (title.includes("Number")) return "Page Number PDF";
+    if (title.includes("Sign")) return "Sign PDF";
     if (title.includes("Split")) return "Split PDF";
     if (title.includes("Rotate")) return "Rotate PDF";
-    if (title.includes("Delete")) return "Delete PDF Pages";
+    if (title.includes("Reorder")) return "PDF Reorder";
+    if (title.includes("Watermark")) return "Watermark PDF";
+    if (title.includes("Metadata")) return "PDF Metadata";
+    if (title.includes("Extract")) return "Extract Photos from PDF";
+    if (title.includes("Protect")) return "Protect PDF";
+    if (title.includes("Unlock")) return "Unlock PDF";
     if (title.includes("Editor")) return "PDF Editor";
     return "PDF Tool";
   }
 
   /**
-   * Transmit tracking payload to the KV server
+   * Transmit tracking payload to the worker endpoint
    */
-  function sendPayload(payload) {
+  function sendPayload(payload, customEndpoint) {
     if (!config.enabled) {
       log("Tracking is disabled, ignoring event:", payload);
       return;
@@ -200,14 +269,14 @@
       return;
     }
 
+    const endpointUrl = customEndpoint || config.endpoint;
     const json = JSON.stringify(payload);
-    log("Dispatching conversion event to:", config.endpoint, payload);
+    log("Dispatching telemetry event to:", endpointUrl, payload);
 
     // Prefer modern fetch with keepalive: true and credentials: 'omit'
-    // Non-blocking, survives tab close/navigation, and eliminates browser credential mismatch
     if (typeof fetch === "function") {
       try {
-        fetch(config.endpoint, {
+        fetch(endpointUrl, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -225,11 +294,11 @@
       }
     }
 
-    // Fallback: sendBeacon with text/plain (avoids CORS credentials requirement)
+    // Fallback: sendBeacon with text/plain (avoids CORS preflight)
     if (typeof navigator.sendBeacon === "function") {
       try {
         const blob = new Blob([json], { type: "text/plain;charset=UTF-8" });
-        navigator.sendBeacon(config.endpoint, blob);
+        navigator.sendBeacon(endpointUrl, blob);
       } catch (err) {
         log("sendBeacon fallback error:", err);
       }
@@ -237,7 +306,272 @@
   }
 
   /**
-   * Main Public Tracking Method
+   * PDF Load Tracking State
+   */
+  let activeFileLoad = null;
+
+  /**
+   * Record PDF Selection & Loading Telemetry in Database
+   */
+  function trackPdfLoad(data) {
+    if (!data || typeof data !== "object") return;
+    if (!config.enabled) return;
+
+    try {
+      const now = Date.now();
+      const loadId =
+        data.loadId ||
+        `load_${now}_${Math.random().toString(36).slice(2, 8)}`;
+
+      const loadDurationMs =
+        typeof data.loadDurationMs === "number" && data.loadDurationMs >= 0
+          ? Math.round(data.loadDurationMs)
+          : typeof data.durationMs === "number" && data.durationMs >= 0
+            ? Math.round(data.durationMs)
+            : 0;
+
+      const fileSize =
+        typeof data.fileSize === "number" && data.fileSize >= 0
+          ? Math.round(data.fileSize)
+          : 0;
+
+      const tool = resolveToolName(data.tool || data.toolName);
+      const rawExt =
+        data.fileExtension ||
+        data.fileType ||
+        (data.fileName ? data.fileName.split(".").pop() : "pdf");
+      const fileExtension =
+        String(rawExt || "pdf")
+          .replace(/[^a-zA-Z0-9]/g, "")
+          .toUpperCase() || "PDF";
+      const fileType = fileExtension.toLowerCase();
+
+      let pageCount =
+        typeof data.pageCount === "number" && data.pageCount > 0
+          ? Math.round(data.pageCount)
+          : null;
+
+      // Extract sessionId if pageview tracker is active
+      let pageviewSessionId = null;
+      try {
+        if (
+          window.PDFMasterPageviewTracker &&
+          typeof window.PDFMasterPageviewTracker.getSessionId === "function"
+        ) {
+          pageviewSessionId = window.PDFMasterPageviewTracker.getSessionId();
+        } else if (typeof sessionStorage !== "undefined") {
+          pageviewSessionId = sessionStorage.getItem(
+            "pdfmaster_tab_session_id",
+          );
+        }
+      } catch (_) {}
+
+      const userId = getUserId();
+
+      const payload = {
+        type: "file_load",
+        action: "file_load",
+        id: loadId,
+        loadId: loadId,
+        userId: userId,
+        sessionId: pageviewSessionId,
+        tool: tool,
+        loadDurationMs: loadDurationMs,
+        durationMs: loadDurationMs,
+        fileSize: fileSize,
+        fileExtension: fileExtension,
+        fileType: fileType,
+        pageCount: pageCount,
+        timestamp: data.timestamp || new Date(now).toISOString(),
+        path: window.location.pathname,
+        url: window.location.href,
+        referrer: document.referrer || "",
+        device: getDeviceType(),
+        browser: getBrowserName(),
+        os: getOperatingSystem(),
+        screen: `${window.screen?.width || 0}x${window.screen?.height || 0}`,
+        language: navigator.language || "en",
+      };
+
+      activeFileLoad = {
+        loadId: loadId,
+        loadDurationMs: loadDurationMs,
+        timestamp: payload.timestamp,
+        fileSize: fileSize,
+        tool: tool,
+        pageCount: pageCount,
+      };
+
+      // Dispatched to dedicated file-load endpoint (with fallback to /api/record)
+      sendPayload(payload, config.fileLoadEndpoint);
+
+      if (typeof window !== "undefined") {
+        try {
+          window.dispatchEvent(
+            new CustomEvent("pdfmaster:pdf-loaded", { detail: activeFileLoad }),
+          );
+        } catch (_) {}
+      }
+
+      return loadId;
+    } catch (err) {
+      log("Error in trackPdfLoad:", err);
+    }
+  }
+
+  /**
+   * Universal PDF Selection Listener (Applicable to all 19 tools)
+   * Captures the exact moment the user selects a file and calculates load time.
+   */
+  let lastHandledFileKey = "";
+  let lastHandledTime = 0;
+
+  function handleFileSelectionEvent(files, sourceDesc) {
+    if (!files || files.length === 0) return;
+    const file = files[0];
+    if (!file) return;
+
+    // Deduplication check: prevent multiple triggers for the same file within 3 seconds
+    const fileKey = `${file.name}:${file.size}:${file.lastModified || 0}`;
+    const now = Date.now();
+    if (fileKey === lastHandledFileKey && now - lastHandledTime < 3000) {
+      return;
+    }
+    lastHandledFileKey = fileKey;
+    lastHandledTime = now;
+
+    const selectionStartTime = performance.now();
+    const isPdf =
+      file.name.toLowerCase().endsWith(".pdf") ||
+      file.type === "application/pdf";
+
+    // Non-blocking asynchronous load timer measurement
+    const measureLoad = () => {
+      // Benchmark client disk-to-memory I/O by reading a chunk or full file
+      const sliceSize = Math.min(file.size, 2 * 1024 * 1024);
+      const reader = new FileReader();
+
+      reader.onload = function (e) {
+        const ioDurationMs = Math.max(
+          1,
+          Math.round(performance.now() - selectionStartTime),
+        );
+        let pageCount = null;
+
+        // Try extracting page count quickly from PDF binary header/cross-reference table
+        if (isPdf && e.target && e.target.result) {
+          try {
+            const bytes = new Uint8Array(e.target.result);
+            const textChunk = new TextDecoder("latin1").decode(
+              bytes.subarray(0, Math.min(bytes.length, 131072)),
+            );
+            const countMatch = textChunk.match(/\/Count\s+(\d+)/);
+            if (countMatch) {
+              pageCount = parseInt(countMatch[1], 10);
+            }
+          } catch (_) {}
+        }
+
+        const loadRecord = {
+          tool: resolveToolName(),
+          fileName: file.name,
+          fileSize: file.size,
+          fileExtension: (file.name.split(".").pop() || "pdf").toUpperCase(),
+          loadDurationMs: ioDurationMs,
+          pageCount: pageCount,
+          timestamp: new Date().toISOString(),
+        };
+
+        log(
+          "PDF selected via",
+          sourceDesc,
+          "- load time:",
+          ioDurationMs,
+          "ms",
+          loadRecord,
+        );
+        trackPdfLoad(loadRecord);
+      };
+
+      reader.onerror = function () {
+        const fallbackDuration = Math.max(
+          1,
+          Math.round(performance.now() - selectionStartTime),
+        );
+        trackPdfLoad({
+          tool: resolveToolName(),
+          fileName: file.name,
+          fileSize: file.size,
+          loadDurationMs: fallbackDuration,
+          timestamp: new Date().toISOString(),
+        });
+      };
+
+      try {
+        reader.readAsArrayBuffer(file.slice(0, sliceSize));
+      } catch (_) {
+        trackPdfLoad({
+          tool: resolveToolName(),
+          fileName: file.name,
+          fileSize: file.size,
+          loadDurationMs: Math.max(
+            1,
+            Math.round(performance.now() - selectionStartTime),
+          ),
+          timestamp: new Date().toISOString(),
+        });
+      }
+    };
+
+    if (typeof requestIdleCallback === "function") {
+      requestIdleCallback(measureLoad, { timeout: 300 });
+    } else {
+      setTimeout(measureLoad, 10);
+    }
+  }
+
+  function setupUniversalFileSelectionListeners() {
+    // 1. Capture change events on file inputs across the entire document
+    document.addEventListener(
+      "change",
+      function (e) {
+        try {
+          const target = e.target;
+          if (
+            target &&
+            target.tagName === "INPUT" &&
+            target.type === "file" &&
+            target.files &&
+            target.files.length > 0
+          ) {
+            handleFileSelectionEvent(target.files, "input[type='file']");
+          }
+        } catch (_) {}
+      },
+      true, // Capturing phase ensures reception even if child stopPropagation() is called
+    );
+
+    // 2. Capture drop events across document / dropzones
+    document.addEventListener(
+      "drop",
+      function (e) {
+        try {
+          if (
+            e.dataTransfer &&
+            e.dataTransfer.files &&
+            e.dataTransfer.files.length > 0
+          ) {
+            handleFileSelectionEvent(e.dataTransfer.files, "drag-and-drop");
+          }
+        } catch (_) {}
+      },
+      true,
+    );
+  }
+
+  /**
+   * Main Public Tracking Method: trackConversion
+   * Correlates userId, PDF load duration, and conversion duration for anti-spam calculation
    */
   function trackConversion(data) {
     if (!data || typeof data !== "object") return;
@@ -270,7 +604,7 @@
           .toUpperCase() || "PDF";
       const fileType = fileExtension.toLowerCase();
 
-      // Resolve page count and photo count for precise performance evaluation
+      // Resolve page count and photo count
       let pageCount =
         typeof data.pageCount === "number" && data.pageCount > 0
           ? Math.round(data.pageCount)
@@ -278,7 +612,7 @@
             ? Math.round(data.totalPages)
             : typeof data.numPages === "number" && data.numPages > 0
               ? Math.round(data.numPages)
-              : null;
+              : (activeFileLoad ? activeFileLoad.pageCount : null);
 
       let photoCount =
         typeof data.photoCount === "number" && data.photoCount > 0
@@ -289,10 +623,11 @@
               ? Math.round(data.images)
               : null;
 
-      // Fallback extraction from fileDetails if not explicitly provided
       if (data.fileDetails && typeof data.fileDetails === "string") {
         if (photoCount === null) {
-          const phMatch = data.fileDetails.match(/(\d+)\s*(?:photo|image|picture)s?/i);
+          const phMatch = data.fileDetails.match(
+            /(\d+)\s*(?:photo|image|picture)s?/i,
+          );
           if (phMatch) photoCount = parseInt(phMatch[1], 10);
         }
         if (pageCount === null) {
@@ -302,24 +637,35 @@
       }
 
       const tLower = (tool || "").toLowerCase();
-      if (tLower.includes("photo to pdf") && photoCount === null && pageCount !== null) {
+      if (
+        tLower.includes("photo to pdf") &&
+        photoCount === null &&
+        pageCount !== null
+      ) {
         photoCount = pageCount;
-      } else if (tLower.includes("pdf to photo") && pageCount === null && photoCount !== null) {
+      } else if (
+        tLower.includes("pdf to photo") &&
+        pageCount === null &&
+        photoCount !== null
+      ) {
         pageCount = photoCount;
       }
 
-      // Resolve signedPageCount and non-sensitive settings (e.g. for Sign PDF)
       let signedPageCount =
         typeof data.signedPageCount === "number" && data.signedPageCount > 0
           ? Math.round(data.signedPageCount)
           : null;
 
-      if (signedPageCount === null && data.fileDetails && typeof data.fileDetails === "string") {
+      if (
+        signedPageCount === null &&
+        data.fileDetails &&
+        typeof data.fileDetails === "string"
+      ) {
         const signMatch = data.fileDetails.match(/(\d+)\s*signed/i);
         if (signMatch) signedPageCount = parseInt(signMatch[1], 10);
       }
 
-      // Sanitize settings: Ensure it's an object, strictly non-sensitive (strip any images/text)
+      // Sanitize non-sensitive settings
       let settings = null;
       if (data.settings && typeof data.settings === "object") {
         const clean = { ...data.settings };
@@ -353,13 +699,12 @@
         }
       }
 
-      // Cleanup old dedupe keys (> 60s)
       for (const [k, time] of recentEventKeys.entries()) {
         if (now - time > 60000) recentEventKeys.delete(k);
       }
       recentEventKeys.set(dedupeKey, now);
 
-      // Resolve hardware & memory metrics for performance benchmarking
+      // Resolve hardware & memory metrics
       const hw = getHardwareInfo();
       const deviceMemory =
         typeof data.deviceMemory === "number" && data.deviceMemory > 0
@@ -374,7 +719,8 @@
       const memoryUsedBytes =
         typeof data.memoryUsedBytes === "number" && data.memoryUsedBytes > 0
           ? Math.round(data.memoryUsedBytes)
-          : typeof data.memoryDeltaBytes === "number" && data.memoryDeltaBytes > 0
+          : typeof data.memoryDeltaBytes === "number" &&
+              data.memoryDeltaBytes > 0
             ? Math.round(data.memoryDeltaBytes)
             : typeof data.heapUsed === "number" && data.heapUsed > 0
               ? Math.round(data.heapUsed)
@@ -390,13 +736,14 @@
           ? Math.round(data.storageFreeBytes)
           : hw.storageFreeBytes;
 
-      // Bot & Automation Detection: Suppress conversion telemetry from automated scrapers / headless drivers
+      // Bot & Automation Detection
       const isBot = Boolean(
         (typeof navigator !== "undefined" && navigator.webdriver) ||
-        (typeof window !== "undefined" && (window.__nightmare || window._phantom || window.callPhantom))
+          (typeof window !== "undefined" &&
+            (window.__nightmare || window._phantom || window.callPhantom)),
       );
       if (isBot) {
-        log("Automated bot/crawler environment detected. Conversion telemetry suppressed.");
+        log("Automated bot/crawler detected. Conversion telemetry suppressed.");
         return null;
       }
 
@@ -417,8 +764,12 @@
               window.PDFMasterPageviewTracker.getCurrentDurationMs();
           }
         } else if (typeof sessionStorage !== "undefined") {
-          pageviewSessionId = sessionStorage.getItem("pdfmaster_tab_session_id");
-          const storedStart = sessionStorage.getItem("pdfmaster_tab_session_start");
+          pageviewSessionId = sessionStorage.getItem(
+            "pdfmaster_tab_session_id",
+          );
+          const storedStart = sessionStorage.getItem(
+            "pdfmaster_tab_session_start",
+          );
           if (storedStart) {
             sessionDurationBeforeConversionMs = Math.max(
               0,
@@ -428,11 +779,32 @@
         }
       } catch (_) {}
 
+      // Calculate Human Dwell Time (time from PDF load finish to clicking convert)
+      let dwellTimeMs = null;
+      let loadDurationMs = 0;
+      let loadId = null;
+
+      if (activeFileLoad) {
+        loadId = activeFileLoad.loadId;
+        loadDurationMs = activeFileLoad.loadDurationMs || 0;
+        if (activeFileLoad.timestamp) {
+          const loadTimestamp = new Date(activeFileLoad.timestamp).getTime();
+          dwellTimeMs = Math.max(0, now - loadTimestamp);
+        }
+      } else if (typeof data.loadDurationMs === "number") {
+        loadDurationMs = data.loadDurationMs;
+      }
+
       const eventId = `c_${now}_${Math.random().toString(36).slice(2, 8)}`;
+      const userId = getUserId();
 
       const payload = {
         eventId: eventId,
+        userId: userId,
         sessionId: pageviewSessionId,
+        loadId: loadId,
+        loadDurationMs: loadDurationMs,
+        dwellTimeMs: dwellTimeMs,
         sessionDurationMs: sessionDurationBeforeConversionMs,
         timestamp: new Date().toISOString(),
         tool: tool,
@@ -468,7 +840,7 @@
   }
 
   /**
-   * Hook into Universal Popup Modal automatically
+   * Hook into Universal Popup Modal automatically (all 19 tools route through here)
    */
   function hookUniversalPopup() {
     if (
@@ -482,8 +854,7 @@
             if (options && typeof options === "object") {
               const isReDownload =
                 options.skipTracking === true ||
-                (options.downloadText &&
-                  /again/i.test(options.downloadText)) ||
+                (options.downloadText && /again/i.test(options.downloadText)) ||
                 (options.title && /again/i.test(options.title));
 
               if (!isReDownload && !options.__trackedByTracker) {
@@ -543,11 +914,23 @@
         "#convertBtn",
         ".btn-convert",
         "#mergeBtn",
+        "#mergePdfBtn",
         "#splitBtn",
         "#rotateBtn",
+        "#rotatePdfPrimaryBtn",
         "#signPdfPrimaryBtn",
         "#applyWatermarkBtn",
         "#cleanMetaBtn",
+        "#compressPdfBtn",
+        "#deletePagesBtn",
+        "#insertBlankPageBtn",
+        "#reorderPagesBtn",
+        "#protectPdfBtn",
+        "#unlockPdfBtn",
+        "#comparePdfBtn",
+        "#extractPhotosBtn",
+        "#ocrPdfBtn",
+        "#pageNumberBtn",
         "[data-action='convert']",
         "[data-action='process']",
       ];
@@ -574,11 +957,35 @@
 
   // Export public API
   const TrackerAPI = {
+    getUserId: getUserId,
+    trackPdfLoad: trackPdfLoad,
+    recordFileLoad: trackPdfLoad,
+    getLastLoad: function () {
+      return activeFileLoad ? { ...activeFileLoad } : null;
+    },
+    startLoadTimer: function () {
+      return performance.now();
+    },
+    endLoadTimer: function (startMark, meta) {
+      const dur = Math.max(
+        1,
+        Math.round(performance.now() - (startMark || 0)),
+      );
+      trackPdfLoad({
+        ...(meta || {}),
+        loadDurationMs: dur,
+      });
+      return dur;
+    },
     trackConversion: trackConversion,
     recordConversion: trackConversion,
     setEndpoint: function (url) {
       if (url && typeof url === "string") {
         config.endpoint = url.trim();
+        config.fileLoadEndpoint = config.endpoint.replace(
+          /\/api\/(record|conversion)/,
+          "/api/file-load",
+        );
         try {
           localStorage.setItem("pdfmaster_tracker_endpoint", config.endpoint);
         } catch (_) {}
@@ -601,6 +1008,7 @@
     init: function () {
       hookUniversalPopup();
       setupConversionButtonListeners();
+      setupUniversalFileSelectionListeners();
     },
   };
 
@@ -609,6 +1017,7 @@
   function initTracker() {
     hookUniversalPopup();
     setupConversionButtonListeners();
+    setupUniversalFileSelectionListeners();
   }
 
   // Initialize hooks on load
@@ -618,13 +1027,16 @@
     initTracker();
   }
 
-  // Second pass in case universal-popup.js was loaded deferred
+  // Second & third pass in case universal-popup.js was loaded deferred
   setTimeout(initTracker, 500);
   setTimeout(initTracker, 1500);
 
   // Automatic Heartbeat Pageview Telemetry loader
   function initHeartbeatTracking() {
-    if (typeof window !== "undefined" && !window.__PDFMasterPageviewTrackerInitialized) {
+    if (
+      typeof window !== "undefined" &&
+      !window.__PDFMasterPageviewTrackerInitialized
+    ) {
       if (document.querySelector('script[src*="pageview-tracker.js"]')) return;
       var s = document.createElement("script");
       s.src = "/js/pageview-tracker.js";

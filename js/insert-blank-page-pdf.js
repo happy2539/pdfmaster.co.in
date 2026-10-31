@@ -1030,8 +1030,9 @@
       state.currentBlobUrl = URL.createObjectURL(fileOrBlob);
 
       showLoadingProgress(30, "Parsing PDF catalog…");
+      const arrayBuffer = await fileOrBlob.arrayBuffer();
       const loadingTask = pdfjsLib.getDocument({
-        url: state.currentBlobUrl,
+        data: new Uint8Array(arrayBuffer),
         disableRange: false,
         disableStream: false,
       });

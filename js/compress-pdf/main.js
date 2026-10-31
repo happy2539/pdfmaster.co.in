@@ -78,8 +78,9 @@
       state.currentBlobUrl = URL.createObjectURL(fileOrBlob);
 
       const pdfjsLib = window["pdfjs-dist/build/pdf"] || window.pdfjsLib;
+      const arrayBuffer = await fileOrBlob.arrayBuffer();
       const loadingTask = pdfjsLib.getDocument({
-        url: state.currentBlobUrl,
+        data: new Uint8Array(arrayBuffer),
         cMapUrl: "/assets/vendor/cmaps/",
         cMapPacked: true,
         enableXfa: false,
