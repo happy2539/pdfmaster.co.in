@@ -461,7 +461,7 @@ header nav {
 
 /* ═══════════════ PAGE HERO ═══════════════ */
 .tool-hero {
-  padding: 60px 0 44px;
+  padding: 24px 0 44px;
   text-align: center;
   position: relative;
   overflow: hidden;
@@ -1614,7 +1614,7 @@ footer {
     padding: 20px 16px;
   }
   .tool-hero {
-    padding: 40px 0 30px;
+    padding: 18px 0 28px;
   }
   .footer-grid {
     grid-template-columns: 1fr;
@@ -1657,10 +1657,7 @@ footer {
     flex-direction: column;
     align-items: flex-start;
   }
-  .breadcrumb {
-    padding: 10px 0;
-    font-size: 0.8rem;
-  }
+
   .upload-file-info.show {
     display: flex;
     flex-wrap: wrap;

@@ -460,6 +460,11 @@ header[data-festival="diwali"] .diwali-toran-border {
   margin-bottom: 18px;
   margin-top: 0;
   text-decoration: none;
+  background: transparent !important;
+  background-color: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  padding: 0 !important;
 }
 .breadcrumb a {
   color: var(--text-muted, var(--text-3, #888));
@@ -492,13 +497,27 @@ header[data-festival="diwali"] .diwali-toran-border {
   margin-top: 0 !important;
 }
 
+/* Fixed header pages (photo-to-pdf, merge-pdf) need nav-h included */
 [data-festival="diwali"] .tool-hero {
-  padding-top: calc(var(--nav-h) + 68px);
+  padding-top: calc(var(--nav-h) + 44px);
 }
 
 @media (max-width: 768px) {
   [data-festival="diwali"] .tool-hero {
-    padding-top: calc(var(--nav-h) + 46px);
+    padding-top: calc(var(--nav-h) + 32px);
+  }
+}
+
+/* Sticky/in-flow header pages like pdf-to-photo should not add nav-h */
+[data-festival="diwali"] section.tool-hero#top,
+[data-festival="diwali"] .tool-hero#top {
+  padding-top: 36px !important;
+}
+
+@media (max-width: 768px) {
+  [data-festival="diwali"] section.tool-hero#top,
+  [data-festival="diwali"] .tool-hero#top {
+    padding-top: 26px !important;
   }
 }
 
