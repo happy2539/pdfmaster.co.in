@@ -61,8 +61,120 @@
         <!-- Base Stand -->
         <rect x="7" y="36" width="24" height="3.5" rx="1.5" fill="#5d4037"/>
       </svg>
-    `
+    `,
+
+    // ── Hanging Diwali Toran Garland Units (Scalloped Swags & Glowing Diyas/Lamps) ──
+    toranUnit: function (index) {
+      const isB = index % 2 === 1;
+      const delay1 = ((index * 0.25) % 2).toFixed(2);
+      const delay2 = ((index * 0.25 + 0.8) % 2.2).toFixed(2);
+
+      if (!isB) {
+        // Unit A: Amber Bulb at peak + Hanging Traditional Clay Diya at trough
+        return `
+          <svg class="diwali-toran-unit" viewBox="0 0 110 44" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <line x1="0" y1="1" x2="110" y2="1" class="toran-top-wire" />
+            <path d="M 0,1 C 28,18 82,18 110,1" class="toran-swag-arc" />
+            <path d="M 4,2.5 C 30,20 80,20 106,2.5" class="toran-bead-arc" />
+
+            <!-- Peak Amber Bulb -->
+            <g transform="translate(0, 0)">
+              <circle cx="0" cy="1.5" r="3.2" class="toran-joint-bead" />
+              <line x1="0" y1="1.5" x2="0" y2="12" class="toran-drop-cord" />
+              <polygon points="-2.5,12 2.5,12 1.8,14.5 -1.8,14.5" class="toran-cap" />
+              <g class="toran-bulb-amber" style="transform-origin: 0px 19px; animation-delay: ${delay1}s;">
+                <circle cx="0" cy="19" r="8" class="toran-glow-halo" />
+                <ellipse cx="0" cy="19" rx="4.2" ry="5.2" class="bulb-body" />
+                <ellipse cx="-1.2" cy="17.5" rx="1.4" ry="2.2" class="bulb-core" />
+              </g>
+            </g>
+
+            <!-- Trough Diya Lamp -->
+            <g transform="translate(55, 0)">
+              <line x1="0" y1="13.5" x2="0" y2="24" class="toran-drop-cord" />
+              <circle cx="0" cy="14" r="1.8" class="toran-joint-bead" />
+              <g class="toran-bulb-diya" style="transform-origin: 0px 30px; animation-delay: ${delay2}s;">
+                <circle cx="0" cy="30" r="10" class="toran-glow-halo" />
+                <path d="M -7,30 C -7,36 7,36 7,30 C 5,28 0,28 -7,30 Z" class="diya-base" />
+                <path d="M -6.5,30 C -2,31.5 2,31.5 6.5,30" stroke="#ffd54f" stroke-width="0.8" fill="none" />
+                <path d="M 0,21 C 2.5,25 3.5,28 2,30 C 0.5,31.5 -1.5,31 -2,29 C -2.5,27 -1,24 0,21 Z" class="diya-flame" />
+                <path d="M 0,24 C 1.2,26 1.8,28 1,29 C 0.2,30 -0.8,29.8 -1,28.8 C -1.2,27.5 -0.5,25.5 0,24 Z" class="bulb-core" />
+              </g>
+            </g>
+          </svg>`;
+      } else {
+        // Unit B: Ruby Bulb at peak + Hanging Golden Teardrop Lamp at trough
+        return `
+          <svg class="diwali-toran-unit" viewBox="0 0 110 44" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <line x1="0" y1="1" x2="110" y2="1" class="toran-top-wire" />
+            <path d="M 0,1 C 28,18 82,18 110,1" class="toran-swag-arc" />
+            <path d="M 4,2.5 C 30,20 80,20 106,2.5" class="toran-bead-arc" />
+
+            <!-- Peak Ruby Bulb -->
+            <g transform="translate(0, 0)">
+              <circle cx="0" cy="1.5" r="3.2" class="toran-joint-bead" />
+              <line x1="0" y1="1.5" x2="0" y2="10" class="toran-drop-cord" />
+              <polygon points="-2.5,10 2.5,10 1.8,12.5 -1.8,12.5" class="toran-cap" />
+              <g class="toran-bulb-ruby" style="transform-origin: 0px 17px; animation-delay: ${delay1}s;">
+                <circle cx="0" cy="17" r="8" class="toran-glow-halo" />
+                <ellipse cx="0" cy="17" rx="4.2" ry="5.2" class="bulb-body" />
+                <ellipse cx="-1.2" cy="15.5" rx="1.4" ry="2.2" class="bulb-core" />
+              </g>
+            </g>
+
+            <!-- Trough Golden Teardrop Lamp -->
+            <g transform="translate(55, 0)">
+              <line x1="0" y1="13.5" x2="0" y2="23" class="toran-drop-cord" />
+              <circle cx="0" cy="14" r="1.8" class="toran-joint-bead" />
+              <polygon points="-3,23 3,23 2,25.5 -2,25.5" class="toran-cap" />
+              <g class="toran-bulb-gold" style="transform-origin: 0px 31px; animation-delay: ${delay2}s;">
+                <circle cx="0" cy="31" r="10" class="toran-glow-halo" />
+                <path d="M 0,25.5 C -4.5,29.5 -5,34 0,37.5 C 5,34 4.5,29.5 0,25.5 Z" class="bulb-body" />
+                <ellipse cx="-1" cy="30" rx="1.6" ry="2.6" class="bulb-core" />
+                <circle cx="0" cy="38" r="1" class="toran-cap" />
+              </g>
+            </g>
+          </svg>`;
+      }
+    }
   };
+
+  // ── Render Dynamic Hanging Toran Garland ──
+  let toranResizeTimer = null;
+  function renderDiwaliToran(toranEl) {
+    if (!toranEl) return;
+    const unitW = window.innerWidth <= 480 ? 70 : (window.innerWidth <= 768 ? 85 : 110);
+    const count = Math.min(42, Math.max(12, Math.ceil(window.innerWidth / unitW) + 2));
+
+    let track = toranEl.querySelector(".diwali-toran-track");
+    if (!track) {
+      track = document.createElement("div");
+      track.className = "diwali-toran-track";
+      toranEl.appendChild(track);
+    }
+
+    const currentUnits = track.querySelectorAll(".diwali-toran-unit").length;
+    if (currentUnits < count) {
+      let html = "";
+      for (let i = 0; i < count; i++) {
+        html += FESTIVAL_ASSETS.toranUnit(i);
+      }
+      track.innerHTML = html;
+    }
+
+    if (!window.__diwaliToranResizeHandler) {
+      window.__diwaliToranResizeHandler = () => {
+        clearTimeout(toranResizeTimer);
+        toranResizeTimer = setTimeout(() => {
+          const t = document.getElementById("diwaliToranBorder");
+          if (t && document.documentElement.getAttribute("data-festival") === "diwali") {
+            renderDiwaliToran(t);
+          }
+        }, 120);
+      };
+      window.addEventListener("resize", window.__diwaliToranResizeHandler, { passive: true });
+    }
+  }
 
   // ── 60fps Golden Cascading Falling Sparkles & Ember Engine ──
   class DiwaliParticleEngine {
@@ -227,14 +339,95 @@
 
     const htmlEl = document.documentElement;
     const header = document.querySelector("header");
-    const canvas = document.getElementById("festivalCanvas");
-    const diyaLeft = document.getElementById("navDiyaLeft");
-    const diyaRight = document.getElementById("navDiyaSlot");
-    const crackerSlot = document.getElementById("navCrackerSlot");
-    const pill = document.getElementById("navDiwaliPill");
-    const toran = document.getElementById("diwaliToranBorder");
 
     if (!header) return;
+
+    // Auto-ensure festival-theme.css stylesheet is loaded
+    if (!document.querySelector('link[href*="festival-theme.css"]')) {
+      const link = document.createElement("link");
+      link.rel = "stylesheet";
+      link.href = "/css/festival-theme.css";
+      document.head.appendChild(link);
+    }
+
+    // Auto-ensure Toran Border element exists in header
+    let toran = document.getElementById("diwaliToranBorder");
+    if (!toran) {
+      toran = document.createElement("div");
+      toran.id = "diwaliToranBorder";
+      toran.className = "diwali-toran-border";
+      toran.setAttribute("aria-hidden", "true");
+      header.appendChild(toran);
+    }
+
+    // Auto-ensure falling sparkles canvas exists
+    let canvas = document.getElementById("festivalCanvas");
+    if (!canvas && data.snowfall !== false) {
+      canvas = document.createElement("canvas");
+      canvas.id = "festivalCanvas";
+      canvas.className = "festival-canvas";
+      canvas.setAttribute("aria-hidden", "true");
+      document.body.prepend(canvas);
+    }
+
+    // Auto-ensure left diya and brand pill exist
+    let diyaLeft = document.getElementById("navDiyaLeft");
+    let pill = document.getElementById("navDiwaliPill");
+    const brandWrap = header.querySelector(".nav-brand-wrap");
+    const logo = header.querySelector(".nav-logo");
+
+    if (!diyaLeft && (brandWrap || logo)) {
+      diyaLeft = document.createElement("div");
+      diyaLeft.id = "navDiyaLeft";
+      diyaLeft.className = "nav-diya-left";
+      diyaLeft.setAttribute("aria-hidden", "true");
+      diyaLeft.title = "Happy Diwali";
+      if (brandWrap) {
+        brandWrap.prepend(diyaLeft);
+      } else if (logo && logo.parentNode) {
+        logo.parentNode.insertBefore(diyaLeft, logo);
+      }
+    }
+
+    if (!pill && (brandWrap || logo)) {
+      pill = document.createElement("div");
+      pill.id = "navDiwaliPill";
+      pill.className = "nav-diwali-pill";
+      pill.setAttribute("aria-label", "Happy Diwali");
+      pill.innerHTML = `
+        <span class="diwali-badge-diya">🪔</span>
+        <span class="diwali-badge-text"><span class="badge-prefix">Shubh </span>Deepawali</span>
+      `;
+      if (brandWrap) {
+        brandWrap.appendChild(pill);
+      } else if (logo && logo.parentNode) {
+        logo.parentNode.insertBefore(pill, logo.nextSibling);
+      }
+    }
+
+    // Auto-ensure right slots exist in nav-right
+    let crackerSlot = document.getElementById("navCrackerSlot");
+    let diyaRight = document.getElementById("navDiyaSlot");
+    const navRight = header.querySelector(".nav-right");
+
+    if (navRight) {
+      if (!crackerSlot) {
+        crackerSlot = document.createElement("div");
+        crackerSlot.id = "navCrackerSlot";
+        crackerSlot.className = "nav-cracker-slot";
+        crackerSlot.setAttribute("aria-hidden", "true");
+        crackerSlot.title = "Diwali Sparkler Fountain ✨ Click to burst sparks!";
+        navRight.prepend(crackerSlot);
+      }
+      if (!diyaRight) {
+        diyaRight = document.createElement("div");
+        diyaRight.id = "navDiyaSlot";
+        diyaRight.className = "nav-diya-slot";
+        diyaRight.setAttribute("aria-hidden", "true");
+        diyaRight.title = "Happy Diwali";
+        navRight.prepend(diyaRight);
+      }
+    }
 
     // 1. Set root & header attributes for CSS accents
     htmlEl.setAttribute("data-festival", data.theme);
@@ -293,7 +486,10 @@
 
     // 5. Show In-Nav Diwali Badge and Toran Border
     if (pill) pill.style.display = "inline-flex";
-    if (toran) toran.style.display = "block";
+    if (toran) {
+      toran.style.display = "flex";
+      renderDiwaliToran(toran);
+    }
 
     // 6. Start Cascading Golden Falling Sparkles Canvas
     const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -338,7 +534,14 @@
     if (pill) pill.style.display = "none";
 
     const toran = document.getElementById("diwaliToranBorder");
-    if (toran) toran.style.display = "none";
+    if (toran) {
+      toran.innerHTML = "";
+      toran.style.display = "none";
+    }
+    if (window.__diwaliToranResizeHandler) {
+      window.removeEventListener("resize", window.__diwaliToranResizeHandler);
+      window.__diwaliToranResizeHandler = null;
+    }
 
     if (activeParticleEngine) {
       activeParticleEngine.stop();
@@ -365,25 +568,30 @@
     if (document.getElementById("festPreviewFloatingBadge")) return;
     const isDefault = (theme === "none" || theme === "default");
     const label = isDefault 
-      ? `<span>⚡ <strong>Standard Clean Navbar Preview Active</strong> (Zero-Festival Mode)</span>`
-      : `<span>🪔 <strong>Diwali Navbar Preview Active</strong> (Click Sparkler for Sparks!)</span>`;
+      ? `<span>⚡ <strong>Standard Clean Navbar Preview Active</strong></span>`
+      : `<span>🪔 <strong>Diwali Festive Preview Active</strong> (Browsing Website)</span>`;
     const badge = document.createElement("div");
     badge.id = "festPreviewFloatingBadge";
     badge.innerHTML = `
       <div style="position: fixed; bottom: 18px; right: 18px; z-index: 99999; background: #120a0e; color: #ffffff; padding: 9px 16px; border-radius: 999px; box-shadow: 0 8px 25px rgba(255,145,0,0.35); display: flex; align-items: center; gap: 10px; font-size: 0.82rem; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; border: 1.5px solid rgba(255,179,0,0.6);">
         ${label}
-        <button id="festExitPreviewBtn" style="background: rgba(255,179,0,0.25); border: 1px solid rgba(255,179,0,0.5); color: #ffeb3b; padding: 3px 10px; border-radius: 6px; cursor: pointer; font-size: 0.74rem; font-weight: 700; transition: all 0.2s;">Exit</button>
+        <button id="festExitPreviewBtn" style="background: rgba(255,179,0,0.25); border: 1px solid rgba(255,179,0,0.5); color: #ffeb3b; padding: 3px 10px; border-radius: 6px; cursor: pointer; font-size: 0.74rem; font-weight: 700; transition: all 0.2s;">Exit Preview</button>
       </div>
     `;
     document.body.appendChild(badge);
 
     document.getElementById("festExitPreviewBtn")?.addEventListener("click", () => {
+      try {
+        sessionStorage.removeItem("pdfmaster_fest_preview_active");
+        sessionStorage.removeItem("pdfmaster_fest_preview_theme");
+        sessionStorage.removeItem("pdfmaster_fest_preview_cfg");
+        localStorage.removeItem(STORAGE_KEY);
+      } catch (_) {}
       const url = new URL(window.location.href);
       url.searchParams.delete("fest_preview");
       url.searchParams.delete("preview_theme");
       url.searchParams.delete("cfg");
       url.searchParams.delete("theme");
-      localStorage.removeItem(STORAGE_KEY);
       window.location.href = url.pathname + (url.search ? url.search : "");
     });
   }
@@ -391,10 +599,10 @@
   // ── Sync with KV Worker Backend (Non-Blocking) ──
   async function syncTheme() {
     const urlParams = new URLSearchParams(window.location.search);
-    const isPreview = urlParams.has("fest_preview") || urlParams.has("preview_theme");
+    const hasPreviewParam = urlParams.has("fest_preview") || urlParams.has("preview_theme");
 
-    // 1. If in Preview Mode from Test Button:
-    if (isPreview) {
+    // 1. If in Preview Mode from Test Button or URL param:
+    if (hasPreviewParam) {
       let previewConfig = {
         active: true,
         theme: "diwali",
@@ -421,10 +629,50 @@
         previewConfig.theme = themeParam || previewConfig.theme || "diwali";
       }
 
-      // Preview mode runs in-memory: NEVER mutates persistent localStorage
+      // Persist preview across the entire browsing session so navigating to other tools keeps preview active
+      try {
+        if (previewConfig.active) {
+          sessionStorage.setItem("pdfmaster_fest_preview_active", "1");
+          sessionStorage.setItem("pdfmaster_fest_preview_theme", previewConfig.theme);
+          sessionStorage.setItem("pdfmaster_fest_preview_cfg", JSON.stringify(previewConfig));
+        } else {
+          sessionStorage.removeItem("pdfmaster_fest_preview_active");
+          sessionStorage.removeItem("pdfmaster_fest_preview_theme");
+          sessionStorage.removeItem("pdfmaster_fest_preview_cfg");
+        }
+      } catch (_) {}
+
       applyTheme(previewConfig);
       renderFloatingPreviewBadge(previewConfig.theme);
       return; // Do NOT let background fetch overwrite active preview
+    }
+
+    // 1b. Check if user is navigating around the site during an active preview session
+    let isSessionPreview = false;
+    try {
+      isSessionPreview = sessionStorage.getItem("pdfmaster_fest_preview_active") === "1";
+    } catch (_) {}
+
+    if (isSessionPreview) {
+      let sessionConfig = {
+        active: true,
+        theme: "diwali",
+        leftDiya: true,
+        mascotAnimation: true,
+        crackerAnimation: true,
+        snowfall: true,
+        initialThemeMode: "dark"
+      };
+      try {
+        const rawCfg = sessionStorage.getItem("pdfmaster_fest_preview_cfg");
+        if (rawCfg) {
+          sessionConfig = Object.assign(sessionConfig, JSON.parse(rawCfg));
+        }
+      } catch (_) {}
+
+      applyTheme(sessionConfig);
+      renderFloatingPreviewBadge(sessionConfig.theme);
+      return;
     }
 
     // 2. Check localStorage (instant render for zero-CLS)

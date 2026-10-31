@@ -193,37 +193,281 @@ header[data-festival="diwali"] .nav-diya-slot {
   transform: scale(1.15);
 }
 
-/* ── Toran Garland Shimmer Border ── */
+/* ── Toran Garland Hanging Festive Lights (Diwali Scalloped Swags & Diyas) ── */
 .diwali-toran-border {
   position: absolute;
-  bottom: 0;
+  top: 100%; /* Placed flush underneath the bottom edge of the navbar */
   left: 0;
   right: 0;
-  height: 3px;
-  background: linear-gradient(
-    90deg,
-    #ff6f00 0%,
-    #ffd54f 20%,
-    #d84315 40%,
-    #ffd54f 60%,
-    #ff6f00 80%,
-    #ffd54f 100%
-  );
-  background-size: 200% 100%;
-  animation: toranShimmer 5s linear infinite;
-  box-shadow: 0 1px 12px rgba(255, 179, 0, 0.5);
+  width: 100%;
+  height: 44px;
+  pointer-events: none !important;
+  z-index: 105;
+  overflow: hidden;
   display: none;
-  z-index: 3;
+  justify-content: center;
 }
 
 [data-festival="diwali"] .diwali-toran-border,
 header[data-festival="diwali"] .diwali-toran-border {
-  display: block;
+  display: flex !important;
 }
 
-@keyframes toranShimmer {
-  0% { background-position: 0% 50%; }
-  100% { background-position: 200% 50%; }
+.diwali-toran-track {
+  display: flex;
+  flex-wrap: nowrap;
+  justify-content: center;
+  align-items: flex-start;
+  width: 100%;
+  min-width: 100vw;
+  pointer-events: none !important;
+}
+
+.diwali-toran-unit {
+  flex: 0 0 110px;
+  width: 110px;
+  height: 44px;
+  overflow: visible;
+  pointer-events: none !important;
+}
+
+/* Shimmer top wire along bottom of Navbar */
+.toran-top-wire {
+  stroke-width: 2.5;
+  stroke-linecap: round;
+}
+[data-theme="dark"] .toran-top-wire {
+  stroke: #ffd54f;
+  filter: drop-shadow(0 0 4px rgba(255, 213, 79, 0.8));
+}
+[data-theme="light"] .toran-top-wire {
+  stroke: #d97706;
+  filter: drop-shadow(0 1px 3px rgba(217, 119, 6, 0.45));
+}
+
+/* Swag catenary arches */
+.toran-swag-arc {
+  fill: none;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+}
+[data-theme="dark"] .toran-swag-arc {
+  stroke: #ffb300;
+  filter: drop-shadow(0 0 4px rgba(255, 179, 0, 0.7));
+}
+[data-theme="light"] .toran-swag-arc {
+  stroke: #b45309;
+}
+
+/* Secondary micro-bead accent arc */
+.toran-bead-arc {
+  fill: none;
+  stroke-width: 1;
+  stroke-dasharray: 2 3;
+}
+[data-theme="dark"] .toran-bead-arc {
+  stroke: #ffe082;
+  opacity: 0.85;
+}
+[data-theme="light"] .toran-bead-arc {
+  stroke: #d97706;
+  opacity: 0.8;
+}
+
+/* Vertical drop cords */
+.toran-drop-cord {
+  stroke-width: 1.2;
+}
+[data-theme="dark"] .toran-drop-cord {
+  stroke: #ffe082;
+}
+[data-theme="light"] .toran-drop-cord {
+  stroke: #b45309;
+}
+
+/* Brass Caps / Holders */
+.toran-cap {
+  stroke-width: 0.8;
+}
+[data-theme="dark"] .toran-cap {
+  fill: #ffca28;
+  stroke: #ff8f00;
+}
+[data-theme="light"] .toran-cap {
+  fill: #f59e0b;
+  stroke: #92400e;
+}
+
+/* Joint Rosettes / Mounting Beads */
+.toran-joint-bead {
+  stroke-width: 0.8;
+}
+[data-theme="dark"] .toran-joint-bead {
+  fill: #ffea00;
+  stroke: #ff6f00;
+  filter: drop-shadow(0 0 4px #ffd54f);
+}
+[data-theme="light"] .toran-joint-bead {
+  fill: #f59e0b;
+  stroke: #b45309;
+  filter: drop-shadow(0 1px 2px rgba(180, 83, 9, 0.4));
+}
+
+/* Twinkling Glow Bulbs & Dancing Diya Flames */
+.toran-bulb-amber {
+  animation: toranBulbPulse 2.1s infinite ease-in-out;
+}
+.toran-bulb-ruby {
+  animation: toranBulbPulse 2.4s infinite ease-in-out 0.7s;
+}
+.toran-bulb-gold {
+  animation: toranBulbPulse 1.9s infinite ease-in-out 1.2s;
+}
+.toran-bulb-diya {
+  animation: toranDiyaFlame 1.4s infinite ease-in-out alternate;
+}
+
+@keyframes toranBulbPulse {
+  0%, 100% {
+    opacity: 0.82;
+    transform: scale(0.96);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.06);
+  }
+}
+
+@keyframes toranDiyaFlame {
+  0% {
+    transform: scale(0.95, 0.92) rotate(-1.5deg);
+  }
+  100% {
+    transform: scale(1.08, 1.18) rotate(1.5deg);
+  }
+}
+
+/* Light Mode Bulb Colors & Glows (High Contrast on White) */
+[data-theme="light"] .toran-bulb-amber .bulb-body {
+  fill: #f59e0b;
+  stroke: #d97706;
+  filter: drop-shadow(0 1px 4px rgba(245, 158, 11, 0.55));
+}
+[data-theme="light"] .toran-bulb-ruby .bulb-body {
+  fill: #ef4444;
+  stroke: #b91c1c;
+  filter: drop-shadow(0 1px 4px rgba(239, 68, 68, 0.55));
+}
+[data-theme="light"] .toran-bulb-gold .bulb-body {
+  fill: #eab308;
+  stroke: #ca8a04;
+  filter: drop-shadow(0 1px 4px rgba(234, 179, 8, 0.55));
+}
+[data-theme="light"] .toran-bulb-diya .diya-base {
+  fill: #b7410e;
+  stroke: #7c2d12;
+}
+[data-theme="light"] .toran-bulb-diya .diya-flame {
+  fill: #f59e0b;
+  stroke: #d97706;
+  filter: drop-shadow(0 0 5px rgba(245, 158, 11, 0.75));
+}
+[data-theme="light"] .bulb-core {
+  fill: #fffbeb;
+}
+[data-theme="light"] .toran-glow-halo {
+  opacity: 0.28;
+  fill: #f59e0b;
+}
+
+/* Dark Mode Bulb Colors & Radiant Halos (Luminous Glow) */
+[data-theme="dark"] .toran-bulb-amber .bulb-body {
+  fill: #ff9100;
+  stroke: #ffd54f;
+  filter: drop-shadow(0 0 7px #ff9100);
+}
+[data-theme="dark"] .toran-bulb-ruby .bulb-body {
+  fill: #ff1744;
+  stroke: #ff8a80;
+  filter: drop-shadow(0 0 8px #ff1744);
+}
+[data-theme="dark"] .toran-bulb-gold .bulb-body {
+  fill: #ffea00;
+  stroke: #fff59d;
+  filter: drop-shadow(0 0 9px #ffea00);
+}
+[data-theme="dark"] .toran-bulb-diya .diya-base {
+  fill: #b7410e;
+  stroke: #ff9100;
+}
+[data-theme="dark"] .toran-bulb-diya .diya-flame {
+  fill: #ffea00;
+  stroke: #fff9c4;
+  filter: drop-shadow(0 0 8px #ffea00) drop-shadow(0 0 16px #ff6d00);
+}
+[data-theme="dark"] .bulb-core {
+  fill: #ffffff;
+}
+[data-theme="dark"] .toran-glow-halo {
+  opacity: 0.55;
+  fill: #ffea00;
+}
+
+/* ── Responsive scaling: delicate and compact on mobile/tablet ── */
+@media (max-width: 768px) {
+  .diwali-toran-border {
+    height: 34px;
+  }
+  .diwali-toran-unit {
+    flex: 0 0 85px;
+    width: 85px;
+    height: 34px;
+  }
+}
+
+@media (max-width: 480px) {
+  .diwali-toran-border {
+    height: 28px;
+  }
+  .diwali-toran-unit {
+    flex: 0 0 70px;
+    width: 70px;
+    height: 28px;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   DIWALI SAFE CLEARANCE VARIABLES (ZERO OVERLAP WITH ANY ITEMS)
+   ═══════════════════════════════════════════════════════════════════════════ */
+[data-festival="diwali"] {
+  --fest-banner-h: 22px;
+}
+
+@media (max-width: 768px) {
+  [data-festival="diwali"] {
+    --fest-banner-h: 16px;
+  }
+}
+
+/* Safe clearance on tool pages so breadcrumb or hero never touches toran */
+[data-festival="diwali"] .breadcrumb {
+  margin-top: calc(var(--nav-h) + 24px) !important;
+}
+
+@media (max-width: 768px) {
+  [data-festival="diwali"] .breadcrumb {
+    margin-top: calc(var(--nav-h) + 16px) !important;
+  }
+}
+
+[data-festival="diwali"] .tool-hero {
+  padding-top: calc(var(--nav-h) + 68px);
+}
+
+@media (max-width: 768px) {
+  [data-festival="diwali"] .tool-hero {
+    padding-top: calc(var(--nav-h) + 46px);
+  }
 }
 
 /* ═══════════════════════════════════════════════════════════════════════════
@@ -475,6 +719,10 @@ header[data-festival="diwali"] .recovery-badge {
   .diwali-flame-anim,
   .diwali-badge-diya,
   .diwali-toran-border,
+  .toran-bulb-amber,
+  .toran-bulb-ruby,
+  .toran-bulb-gold,
+  .toran-bulb-diya,
   .diwali-badge-text {
     animation: none !important;
     transition: none !important;
