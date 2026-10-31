@@ -226,14 +226,12 @@ body {
 
 /* ===== BREADCRUMB ===== */
 .breadcrumb {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 16px 24px 0;
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 7px;
   font-size: 0.8rem;
   color: var(--text-muted);
+  margin-bottom: 18px;
 }
 .breadcrumb a {
   color: var(--text-muted);
@@ -242,6 +240,9 @@ body {
 }
 .breadcrumb a:hover {
   color: var(--accent);
+}
+.breadcrumb svg {
+  flex-shrink: 0;
 }
 .breadcrumb span {
   color: var(--text-muted);

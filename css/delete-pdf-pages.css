@@ -379,54 +379,27 @@ ul {
 
 /* ===== BREADCRUMB ===== */
 .breadcrumb {
-  padding: 12px 0;
-  border-bottom: 1px solid var(--border);
-  font-size: 0.82rem;
-  color: var(--text-3);
-  background: var(--surface);
-}
-
-.breadcrumb__list {
   display: flex;
   align-items: center;
-  flex-wrap: wrap;
-  gap: 6px;
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-
-.breadcrumb__item {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-}
-
-.breadcrumb__item a {
+  gap: 7px;
+  justify-content: center;
+  font-size: 0.8rem;
   color: var(--text-3);
-  font-size: 0.82rem;
-  transition: color var(--transition);
+  margin-bottom: 18px;
 }
 
-.breadcrumb__item a:hover {
+.breadcrumb a {
+  color: var(--text-3);
+  transition: color var(--transition);
+  text-decoration: none;
+}
+
+.breadcrumb a:hover {
   color: var(--accent);
 }
 
-.breadcrumb__item a span {
-  color: inherit;
-  font-weight: 400;
-}
-
-.breadcrumb__item > span {
-  color: var(--text);
-  font-weight: 600;
-  font-size: 0.82rem;
-}
-
-.breadcrumb__sep {
-  color: var(--text-3);
-  font-size: 0.75rem;
-  user-select: none;
+.breadcrumb svg {
+  flex-shrink: 0;
 }
 
 /* ===== HERO SECTION ===== */

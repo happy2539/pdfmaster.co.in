@@ -249,34 +249,27 @@ nav.main-nav {
 
 /* ════════════ Breadcrumb ════════════ */
 .breadcrumb {
-  padding-top: calc(var(--nav-h) + 20px);
-  padding-bottom: 0;
-}
-.breadcrumb-inner {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 24px;
   display: flex;
   align-items: center;
-  gap: 8px;
-  font-size: 0.83rem;
+  gap: 7px;
+  justify-content: center;
+  font-size: 0.8rem;
   color: var(--text-muted);
-  flex-wrap: wrap;
+  margin-bottom: 18px;
 }
-.breadcrumb-inner a {
-  color: var(--text-2);
+
+.breadcrumb a {
+  color: var(--text-muted);
   transition: color 0.2s;
+  text-decoration: none;
 }
-.breadcrumb-inner a:hover {
+
+.breadcrumb a:hover {
   color: var(--primary);
 }
-.breadcrumb-inner svg {
-  color: var(--text-muted);
+
+.breadcrumb svg {
   flex-shrink: 0;
-}
-.breadcrumb-inner span {
-  color: var(--primary);
-  font-weight: 500;
 }
 
 /* ════════════ Page Hero ════════════ */

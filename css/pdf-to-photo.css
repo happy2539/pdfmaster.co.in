@@ -157,41 +157,27 @@ header nav {
 
 /* ===== BREADCRUMB ===== */
 .breadcrumb {
-  padding: 12px 0;
-  font-size: 0.85rem;
-  color: var(--text-muted);
-  border-bottom: 1px solid var(--border);
-  background: transparent;
-}
-.breadcrumb .container {
   display: flex;
   align-items: center;
-}
-.breadcrumb__list {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  flex-wrap: wrap;
-  list-style: none;
-  margin: 0;
-  padding: 0;
-}
-.breadcrumb__item {
-  display: inline-flex;
-  align-items: center;
-}
-.breadcrumb__item a {
+  gap: 7px;
+  justify-content: center;
+  font-size: 0.8rem;
   color: var(--text-muted);
-  text-decoration: none;
+  margin-bottom: 18px;
+}
+
+.breadcrumb a {
+  color: var(--text-muted);
   transition: color 0.2s;
+  text-decoration: none;
 }
-.breadcrumb__item a:hover {
+
+.breadcrumb a:hover {
   color: var(--accent);
 }
-.breadcrumb__sep {
-  color: var(--text-muted);
-  opacity: 0.6;
-  user-select: none;
+
+.breadcrumb svg {
+  flex-shrink: 0;
 }
 
 /* Nav right controls */

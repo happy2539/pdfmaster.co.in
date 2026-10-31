@@ -397,6 +397,9 @@ nav {
 .breadcrumb span {
   color: var(--text-3);
 }
+.breadcrumb svg {
+  flex-shrink: 0;
+}
 
 /* ══════════════════════════════════════════
        STATS STRIP

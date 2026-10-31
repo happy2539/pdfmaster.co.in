@@ -429,6 +429,30 @@ button {
   z-index: 1;
 }
 
+.breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  justify-content: center;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  margin-bottom: 18px;
+}
+
+.breadcrumb a {
+  color: var(--text-muted);
+  transition: color 0.2s;
+  text-decoration: none;
+}
+
+.breadcrumb a:hover {
+  color: var(--primary);
+}
+
+.breadcrumb svg {
+  flex-shrink: 0;
+}
+
 .hero-pill {
   display: inline-flex;
   align-items: center;

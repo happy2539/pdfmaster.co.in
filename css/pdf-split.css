@@ -361,37 +361,27 @@ ul {
 
 /* ===== BREADCRUMB ===== */
 .breadcrumb {
-  padding: 12px 0;
-  border-bottom: 1px solid var(--border);
-  background: var(--surface);
-}
-.breadcrumb__list {
   display: flex;
   align-items: center;
-  gap: 6px;
-  flex-wrap: wrap;
-}
-.breadcrumb__item {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-.breadcrumb__item a {
+  gap: 7px;
+  justify-content: center;
   font-size: 0.8rem;
+  color: var(--text-3);
+  margin-bottom: 18px;
+}
+
+.breadcrumb a {
   color: var(--text-3);
   transition: color var(--transition);
+  text-decoration: none;
 }
-.breadcrumb__item a:hover {
+
+.breadcrumb a:hover {
   color: var(--accent);
 }
-.breadcrumb__item span {
-  font-size: 0.8rem;
-  color: var(--text);
-  font-weight: 500;
-}
-.breadcrumb__sep {
-  color: var(--text-3);
-  font-size: 0.75rem;
+
+.breadcrumb svg {
+  flex-shrink: 0;
 }
 
 /* ===== HERO ===== */

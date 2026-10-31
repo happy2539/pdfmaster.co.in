@@ -530,35 +530,27 @@ header nav {
 
 /* ══════════════════ BREADCRUMB ══════════════════ */
 .breadcrumb {
-  background: var(--bg-card);
-  border-bottom: 1px solid var(--border);
-  padding: 10px 0;
-  margin-top: var(--nav-h);
-}
-
-.breadcrumb-inner {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 24px;
   display: flex;
   align-items: center;
-  gap: 8px;
-  font-size: 0.82rem;
+  gap: 7px;
+  justify-content: center;
+  font-size: 0.8rem;
   color: var(--text-muted);
+  margin-bottom: 18px;
 }
 
-.breadcrumb-inner a {
+.breadcrumb a {
   color: var(--text-muted);
   transition: color 0.2s;
+  text-decoration: none;
 }
 
-.breadcrumb-inner a:hover {
+.breadcrumb a:hover {
   color: var(--primary);
 }
 
-.breadcrumb-inner span {
-  color: var(--text-2);
-  font-weight: 500;
+.breadcrumb svg {
+  flex-shrink: 0;
 }
 
 /* ══════════════════ TOOL HERO ══════════════════ */

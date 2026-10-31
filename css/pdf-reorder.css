@@ -475,41 +475,28 @@ h5 {
 /* =============================================
        BREADCRUMB
     ============================================= */
-.breadcrumb-bar {
-  background: var(--bg-alt);
-  border-bottom: 1px solid var(--border-light);
-  padding: 10px 0;
-}
-
 .breadcrumb {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 7px;
+  justify-content: center;
   font-size: 0.8rem;
   color: var(--text-3);
-  list-style: none;
-  flex-wrap: wrap;
+  margin-bottom: 18px;
 }
 
-.breadcrumb li {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
 .breadcrumb a {
   color: var(--text-3);
-  text-decoration: none;
   transition: color var(--transition);
+  text-decoration: none;
 }
+
 .breadcrumb a:hover {
   color: var(--accent);
 }
-.breadcrumb .sep {
-  color: var(--border);
-}
-.breadcrumb .current {
-  color: var(--text-2);
-  font-weight: 500;
+
+.breadcrumb svg {
+  flex-shrink: 0;
 }
 
 /* =============================================

@@ -449,15 +449,47 @@ header[data-festival="diwali"] .diwali-toran-border {
   }
 }
 
-/* Safe clearance on tool pages so breadcrumb or hero never touches toran */
-[data-festival="diwali"] .breadcrumb {
+/* Universal .breadcrumb styling matching photo-to-pdf */
+.breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  justify-content: center;
+  font-size: 0.8rem;
+  color: var(--text-muted, var(--text-3, #888));
+  margin-bottom: 18px;
+  margin-top: 0;
+  text-decoration: none;
+}
+.breadcrumb a {
+  color: var(--text-muted, var(--text-3, #888));
+  transition: color 0.2s ease;
+  text-decoration: none;
+}
+.breadcrumb a:hover {
+  color: var(--primary, var(--accent, #e63946));
+}
+.breadcrumb svg {
+  flex-shrink: 0;
+  stroke: currentColor;
+}
+.breadcrumb span {
+  color: var(--text-muted, var(--text-2, #666));
+}
+
+/* Safe clearance on pages where breadcrumb was standalone at top */
+[data-festival="diwali"] header + .breadcrumb,
+[data-festival="diwali"] header + .breadcrumb-bar,
+[data-festival="diwali"] body > .breadcrumb {
   margin-top: calc(var(--nav-h) + 24px) !important;
 }
 
-@media (max-width: 768px) {
-  [data-festival="diwali"] .breadcrumb {
-    margin-top: calc(var(--nav-h) + 16px) !important;
-  }
+[data-festival="diwali"] .hero .breadcrumb,
+[data-festival="diwali"] .tool-hero .breadcrumb,
+[data-festival="diwali"] .page-hero .breadcrumb,
+[data-festival="diwali"] .hero-section .breadcrumb,
+[data-festival="diwali"] .article-header .breadcrumb {
+  margin-top: 0 !important;
 }
 
 [data-festival="diwali"] .tool-hero {

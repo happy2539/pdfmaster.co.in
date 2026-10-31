@@ -657,40 +657,23 @@
     </header>
 
     <!-- ════════════════ BREADCRUMB ════════════════ -->
-    <div class="breadcrumb" aria-label="Breadcrumb">
-      <div class="container">
-        <ol
-          class="breadcrumb__list"
-          itemscope
-          itemtype="https://schema.org/BreadcrumbList"
-        >
-          <li
-            class="breadcrumb__item"
-            itemprop="itemListElement"
-            itemscope
-            itemtype="https://schema.org/ListItem"
-          >
-            <a href="/" itemprop="item"><span itemprop="name">Home</span></a>
-            <meta itemprop="position" content="1" />
-          </li>
-          <li class="breadcrumb__sep" aria-hidden="true">›</li>
-          <li
-            class="breadcrumb__item"
-            itemprop="itemListElement"
-            itemscope
-            itemtype="https://schema.org/ListItem"
-          >
-            <span itemprop="name">PDF to Photo</span>
-            <link itemprop="item" href="https://pdfmaster.co.in/pdf-to-photo" />
-            <meta itemprop="position" content="2" />
-          </li>
-        </ol>
-      </div>
-    </div>
-
     <!-- ════════════════ HERO ════════════════ -->
     <section class="tool-hero" id="top">
       <div class="container">
+        <div class="breadcrumb">
+          <a href="/">Home</a>
+          <svg
+            width="12"
+            height="12"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2.5"
+          >
+            <path d="M9 18l6-6-6-6" />
+          </svg>
+          <span>PDF to Photo</span>
+        </div>
         <div class="tool-pill anim">
           <span class="pill-dot"></span>
           100% On-Device · No Uploads · IndexedDB Session Recovery · Multi-Format Export

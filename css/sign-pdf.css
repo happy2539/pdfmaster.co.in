@@ -409,6 +409,31 @@ ul {
   color: var(--accent);
 }
 
+/* ===== BREADCRUMB ===== */
+.breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  justify-content: center;
+  font-size: 0.8rem;
+  color: var(--text-3, var(--text-muted));
+  margin-bottom: 18px;
+}
+
+.breadcrumb a {
+  color: var(--text-3, var(--text-muted));
+  transition: color var(--transition);
+  text-decoration: none;
+}
+
+.breadcrumb a:hover {
+  color: var(--accent);
+}
+
+.breadcrumb svg {
+  flex-shrink: 0;
+}
+
 /* ===== HERO SECTION ===== */
 .hero {
   padding: 56px 0 36px;
