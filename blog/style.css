@@ -270,6 +270,7 @@ button {
   margin: 0 auto;
   padding: 14px 24px 0;
   display: flex;
+  justify-content: center;
   align-items: center;
   gap: 7px;
   font-size: 0.8rem;
