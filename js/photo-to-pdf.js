@@ -159,6 +159,7 @@ document.querySelectorAll(".spill").forEach((p) => {
       .forEach((x) => x.classList.remove("active"));
     p.classList.add("active");
     selectedSize = p.dataset.size;
+    invalidateGeneratedPdf();
     scheduleDBSave();
   });
 });
@@ -168,6 +169,7 @@ let selectedOrient = "portrait";
 document.querySelectorAll('input[name="orient"]').forEach((r) => {
   r.addEventListener("change", () => {
     selectedOrient = r.value;
+    invalidateGeneratedPdf();
     scheduleDBSave();
   });
 });
@@ -175,7 +177,8 @@ document.querySelectorAll('input[name="orient"]').forEach((r) => {
 /* ── App State ── */
 let imageFiles = [],
   imageOrder = [],
-  generatedPdfUrl = null;
+  generatedPdfUrl = null,
+  isConversionComplete = false;
 const isInApp =
   /wv|WebView/.test(navigator.userAgent) ||
   window.navigator.standalone ||
@@ -244,11 +247,15 @@ function downloadGeneratedPdf() {
     downloadReadyBtnText.textContent = "Downloaded! (Download Again)";
   }
   showToast(`"${fileName}" downloaded successfully!`, "success", 4000);
+
+  // When clicked on download button, delete the session recovery file from IndexedDB
+  clearSessionFromDB();
 }
 
 function invalidateGeneratedPdf() {
   generatedPdfUrl = null;
   generatedPdfBlob = null;
+  isConversionComplete = false;
   if (downloadReadyBtn) {
     downloadReadyBtn.style.display = "none";
   }
@@ -262,11 +269,40 @@ function invalidateGeneratedPdf() {
 }
 
 if (downloadReadyBtn) {
-  downloadReadyBtn.addEventListener("click", downloadGeneratedPdf);
+  downloadReadyBtn.addEventListener("click", () => {
+    downloadGeneratedPdf();
+    clearSessionFromDB();
+  });
 }
 
+const popupDownloadBtn = document.getElementById("popupDownloadBtn");
+if (popupDownloadBtn) {
+  popupDownloadBtn.addEventListener("click", () => {
+    downloadGeneratedPdf();
+    clearSessionFromDB();
+  });
+}
+
+// Global click listener: when user clicks any download button, delete the recovery session
+document.addEventListener("click", (e) => {
+  const dlBtn = e.target.closest(
+    "#downloadReadyBtn, #popupDownloadBtn, #pdfmPopupDownloadBtn, .popup-download-btn, .btn-download-ready",
+  );
+  if (dlBtn) {
+    clearSessionFromDB();
+  }
+});
+
+// Also clear session when universal popup fires file-downloaded event
+window.addEventListener("pdfmaster:file-downloaded", () => {
+  clearSessionFromDB();
+});
+
 if (pdfNameInput) {
-  pdfNameInput.addEventListener("input", scheduleDBSave);
+  pdfNameInput.addEventListener("input", () => {
+    invalidateGeneratedPdf();
+    scheduleDBSave();
+  });
 }
 const chkCompress = document.getElementById("chkCompress");
 if (chkCompress) {
@@ -602,6 +638,10 @@ convertBtn.addEventListener("click", async () => {
     generatedPdfBlob = pdfBlob;
     generatedFileName = `${name}.pdf`;
     generatedPageCount = page;
+    isConversionComplete = true;
+
+    // Mark conversion complete in IndexedDB: session recovery only works if conversion is incomplete
+    markConversionCompleteInDB();
 
     // Show the on-page legacy Download button so user can download directly if popup is closed
     if (downloadReadyBtn) {
@@ -673,6 +713,8 @@ convertBtn.addEventListener("click", async () => {
     }
   } catch (err) {
     console.error(err);
+    isConversionComplete = false;
+    scheduleDBSave();
     statusText.innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: middle; margin-right: 5px; display: inline-block;"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg>Error creating PDF. Please try again.`;
   } finally {
     setTimeout(() => {
@@ -785,6 +827,8 @@ async function saveSessionToDB() {
       pdfName: pdfNameInput ? pdfNameInput.value : "converted_document",
       chkCompress: document.getElementById("chkCompress")?.checked ?? true,
       chkOnePage: document.getElementById("chkOnePage")?.checked ?? true,
+      isConversionComplete: !!isConversionComplete,
+      conversionStatus: isConversionComplete ? "complete" : "incomplete",
     };
 
     // 2. Open transaction and write synchronously
@@ -802,11 +846,37 @@ async function saveSessionToDB() {
       tx.onabort = (e) => rej(e.target.error);
     });
 
-    updateRecoveryBadge(true);
+    // Session recovery badge only shows if conversion is incomplete
+    updateRecoveryBadge(!isConversionComplete);
     return true;
   } catch (err) {
     console.warn("IndexedDB save failed:", err);
     return false;
+  }
+}
+
+async function markConversionCompleteInDB() {
+  if (dbSaveTimer) {
+    clearTimeout(dbSaveTimer);
+    dbSaveTimer = null;
+  }
+  try {
+    const db = await openDB();
+    const tx = db.transaction(["settings"], "readwrite");
+    const settingsStore = tx.objectStore("settings");
+    const req = settingsStore.get("session");
+    req.onsuccess = () => {
+      const session = req.result;
+      if (session) {
+        session.isConversionComplete = true;
+        session.conversionStatus = "complete";
+        settingsStore.put(session, "session");
+      }
+    };
+    updateRecoveryBadge(false);
+  } catch (err) {
+    console.warn("Could not mark conversion complete in DB:", err);
+    updateRecoveryBadge(false);
   }
 }
 
@@ -828,10 +898,23 @@ async function loadSessionFromDB(isManual = false) {
       }),
     ]);
 
-    if (!images || !Array.isArray(images) || !images.length) {
+    const isComplete = Boolean(
+      session &&
+        (session.isConversionComplete || session.conversionStatus === "complete"),
+    );
+
+    // If conversion is complete, session recovery will not work
+    if (!images || !Array.isArray(images) || !images.length || isComplete) {
       updateRecoveryBadge(false);
       if (isManual) {
-        showToast("No stored session found in recovery storage.", "error");
+        if (isComplete) {
+          showToast(
+            "Previous conversion was completed. Session recovery is only available for incomplete conversions.",
+            "info",
+          );
+        } else {
+          showToast("No incomplete session found in recovery storage.", "error");
+        }
       }
       return false;
     }
@@ -884,15 +967,17 @@ async function loadSessionFromDB(isManual = false) {
       }
     }
 
+    isConversionComplete = false;
     refreshZone();
     renderPreviews();
+    invalidateGeneratedPdf();
     convertBtn.disabled = false;
     resetBtn.disabled = false;
     updateRecoveryBadge(true);
 
     if (isManual) {
       showToast(
-        `Restored ${imageFiles.length} photo${imageFiles.length > 1 ? "s" : ""} & settings!`,
+        `Restored incomplete session with ${imageFiles.length} photo${imageFiles.length > 1 ? "s" : ""} & settings!`,
         "success",
       );
     }
@@ -907,41 +992,67 @@ async function loadSessionFromDB(isManual = false) {
 }
 
 async function clearSessionFromDB() {
+  if (dbSaveTimer) {
+    clearTimeout(dbSaveTimer);
+    dbSaveTimer = null;
+  }
   try {
     const db = await openDB();
     const tx = db.transaction(["settings", "photo_data"], "readwrite");
     tx.objectStore("settings").clear();
     tx.objectStore("photo_data").clear();
+    await new Promise((res) => {
+      tx.oncomplete = () => res();
+      tx.onerror = () => res();
+      tx.onabort = () => res();
+    });
     updateRecoveryBadge(false);
   } catch (err) {
     console.warn("IndexedDB clear failed:", err);
+    updateRecoveryBadge(false);
   }
 }
 
 async function checkStoredSessionAvailable(notifyOnFound = false) {
   try {
     const db = await openDB();
-    const tx = db.transaction(["photo_data"], "readonly");
+    const tx = db.transaction(["settings", "photo_data"], "readonly");
+    const settingsReq = tx.objectStore("settings").get("session");
     const dataReq = tx.objectStore("photo_data").get("images");
-    const images = await new Promise((res) => {
-      dataReq.onsuccess = () => res(dataReq.result);
-      dataReq.onerror = () => res(null);
-    });
 
-    const hasData = !!(images && Array.isArray(images) && images.length);
-    updateRecoveryBadge(hasData);
+    const [session, images] = await Promise.all([
+      new Promise((res) => {
+        settingsReq.onsuccess = () => res(settingsReq.result);
+        settingsReq.onerror = () => res(null);
+      }),
+      new Promise((res) => {
+        dataReq.onsuccess = () => res(dataReq.result);
+        dataReq.onerror = () => res(null);
+      }),
+    ]);
 
-    if (hasData && notifyOnFound && !imageFiles.length) {
+    const isComplete = Boolean(
+      session &&
+        (session.isConversionComplete || session.conversionStatus === "complete"),
+    );
+
+    // Only incomplete conversions trigger recovery badge & restore prompt
+    const hasIncompleteSession = Boolean(
+      images && Array.isArray(images) && images.length && !isComplete,
+    );
+    updateRecoveryBadge(hasIncompleteSession);
+
+    if (hasIncompleteSession && notifyOnFound && !imageFiles.length) {
       const count = images.length;
       showToast(
-        `Previous session (${count} photo${count > 1 ? "s" : ""}) is available. Click to restore.`,
+        `Previous incomplete session (${count} photo${count > 1 ? "s" : ""}) is available. Click to restore.`,
         "info",
         8000,
         () => loadSessionFromDB(true),
         "Restore",
       );
     }
-    return hasData;
+    return hasIncompleteSession;
   } catch {
     updateRecoveryBadge(false);
     return false;
