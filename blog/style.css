@@ -1,9 +1,9 @@
 /* ── TOKENS ── */
 :root {
-  --accent: #e8372a;
-  --accent-h: #c92d22;
-  --accent-soft: rgba(232, 55, 42, 0.1);
-  --accent-glow: rgba(232, 55, 42, 0.16);
+  --accent: #e63946;
+  --accent-h: #c1121f;
+  --accent-soft: rgba(230, 57, 70, 0.08);
+  --accent-glow: transparent;
   --font-d: "Sora", sans-serif;
   --font-b: "DM Sans", sans-serif;
   --r-sm: 6px;
@@ -13,30 +13,30 @@
   --ease: 0.22s ease;
 }
 [data-theme="light"] {
-  --bg: #f7f6f4;
+  --bg: #f5f6fa;
   --bg-card: #ffffff;
-  --bg-nav: rgba(247, 246, 244, 0.93);
-  --bg-tag: #eeecea;
-  --border: rgba(0, 0, 0, 0.08);
-  --tx-h: #0f0e0e;
-  --tx-p: #48463f;
-  --tx-m: #8a8880;
-  --dot: rgba(0, 0, 0, 0.055);
-  --sh: 0 2px 14px rgba(0, 0, 0, 0.07);
-  --sh-h: 0 8px 28px rgba(0, 0, 0, 0.11);
+  --bg-nav: rgba(245, 246, 250, 0.94);
+  --bg-tag: #eef1f6;
+  --border: #e4e7ee;
+  --tx-h: #14151f;
+  --tx-p: #52596a;
+  --tx-m: #9099a8;
+  --dot: transparent;
+  --sh: 0 1px 4px rgba(0, 0, 0, 0.05);
+  --sh-h: 0 6px 24px rgba(0, 0, 0, 0.07);
 }
 [data-theme="dark"] {
-  --bg: #0e0d0d;
-  --bg-card: #191817;
-  --bg-nav: rgba(14, 13, 13, 0.93);
-  --bg-tag: #222120;
-  --border: rgba(255, 255, 255, 0.07);
-  --tx-h: #f0eeec;
-  --tx-p: #adaba8;
-  --tx-m: #6a6866;
-  --dot: rgba(255, 255, 255, 0.045);
-  --sh: 0 2px 14px rgba(0, 0, 0, 0.3);
-  --sh-h: 0 8px 28px rgba(0, 0, 0, 0.45);
+  --bg: #0c0e13;
+  --bg-card: #13161f;
+  --bg-nav: rgba(12, 14, 19, 0.96);
+  --bg-tag: #1a1e2b;
+  --border: #1e2232;
+  --tx-h: #edf0f8;
+  --tx-p: #8c95a8;
+  --tx-m: #525c6e;
+  --dot: transparent;
+  --sh: 0 1px 4px rgba(0, 0, 0, 0.35);
+  --sh-h: 0 6px 24px rgba(0, 0, 0, 0.45);
 }
 
 /* ── RESET ── */
@@ -298,21 +298,10 @@ button {
   padding: 64px 24px 52px;
 }
 .hero-bg {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  background: radial-gradient(
-    ellipse 65% 55% at 50% -5%,
-    var(--accent-glow),
-    transparent 68%
-  );
+  display: none;
 }
 .hero-bg::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background-image: radial-gradient(var(--dot) 1.5px, transparent 1.5px);
-  background-size: 26px 26px;
+  display: none;
 }
 .hero-inner {
   position: relative;
@@ -324,7 +313,7 @@ button {
   align-items: center;
   gap: 7px;
   background: var(--accent-soft);
-  border: 1px solid rgba(232, 55, 42, 0.18);
+  border: 1px solid rgba(230, 57, 70, 0.18);
   color: var(--accent);
   font-size: 0.75rem;
   font-weight: 700;
@@ -465,7 +454,7 @@ button {
 .tool-card:hover {
   box-shadow: var(--sh-h);
   transform: translateY(-4px);
-  border-color: rgba(232, 55, 42, 0.18);
+  border-color: rgba(230, 57, 70, 0.2);
 }
 /* accent top bar */
 .tool-card::after {
@@ -533,8 +522,8 @@ button {
   width: 62px;
   height: 62px;
   border-radius: var(--r-lg);
-  background: rgba(232, 55, 42, 0.18);
-  border: 1.5px solid rgba(232, 55, 42, 0.28);
+  background: rgba(230, 57, 70, 0.12);
+  border: 1.5px solid rgba(230, 57, 70, 0.25);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -723,7 +712,7 @@ button {
 .gc:hover {
   box-shadow: var(--sh-h);
   transform: translateY(-4px);
-  border-color: rgba(232, 55, 42, 0.15);
+  border-color: rgba(230, 57, 70, 0.2);
 }
 .gc-thumb {
   height: 148px;
@@ -741,8 +730,8 @@ button {
   width: 52px;
   height: 52px;
   border-radius: var(--r-md);
-  background: rgba(232, 55, 42, 0.14);
-  border: 1px solid rgba(232, 55, 42, 0.22);
+  background: rgba(230, 57, 70, 0.12);
+  border: 1px solid rgba(230, 57, 70, 0.2);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -903,7 +892,7 @@ button {
 
 /* ── NEWSLETTER ── */
 .nl {
-  background: linear-gradient(130deg, var(--accent) 0%, #c02217 100%);
+  background: linear-gradient(130deg, var(--accent) 0%, #c1121f 100%);
   border-radius: var(--r-xl);
   padding: 44px 40px;
   display: flex;
@@ -916,14 +905,7 @@ button {
   overflow: hidden;
 }
 .nl::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background-image: radial-gradient(
-    rgba(255, 255, 255, 0.055) 1.5px,
-    transparent 1.5px
-  );
-  background-size: 22px 22px;
+  display: none;
 }
 .nl-text {
   position: relative;
