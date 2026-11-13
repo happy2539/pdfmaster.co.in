@@ -19,19 +19,54 @@
     });
   }
 
-  // ── Mobile Hamburger Drawer ──
-  var hamburger = document.getElementById("hamburger-btn");
-  if (hamburger) {
-    hamburger.addEventListener("click", function () {
-      var isOpen = document.body.classList.toggle("nav-open");
-      hamburger.setAttribute("aria-expanded", isOpen ? "true" : "false");
+  // ── Mobile / Side Menu Drawer (Matching other PDF Guides) ──
+  var hamburgerBtn =
+    document.getElementById("hamburgerBtn") ||
+    document.getElementById("hamburger-btn");
+  var sideMenu = document.getElementById("sideMenu");
+  var sideOverlay = document.getElementById("sideOverlay");
+  var closeMenuBtn = document.getElementById("closeMenuBtn");
+
+  function openDrawer() {
+    if (sideMenu) sideMenu.classList.add("active");
+    if (sideOverlay) sideOverlay.classList.add("active");
+    if (hamburgerBtn) hamburgerBtn.setAttribute("aria-expanded", "true");
+    document.body.style.overflow = "hidden";
+  }
+
+  function closeDrawer() {
+    if (sideMenu) sideMenu.classList.remove("active");
+    if (sideOverlay) sideOverlay.classList.remove("active");
+    if (hamburgerBtn) hamburgerBtn.setAttribute("aria-expanded", "false");
+    document.body.style.overflow = "";
+  }
+
+  if (hamburgerBtn) {
+    hamburgerBtn.addEventListener("click", function () {
+      if (sideMenu && sideMenu.classList.contains("active")) {
+        closeDrawer();
+      } else {
+        openDrawer();
+      }
     });
   }
-  document.querySelectorAll(".mobile-panel a").forEach(function (a) {
-    a.addEventListener("click", function () {
-      document.body.classList.remove("nav-open");
-      if (hamburger) hamburger.setAttribute("aria-expanded", "false");
-    });
+
+  if (closeMenuBtn) {
+    closeMenuBtn.addEventListener("click", closeDrawer);
+  }
+
+  if (sideOverlay) {
+    sideOverlay.addEventListener("click", closeDrawer);
+  }
+
+  document.querySelectorAll(".side-nav a, .mobile-panel a").forEach(function (a) {
+    a.addEventListener("click", closeDrawer);
+  });
+
+  window.addEventListener("keydown", function (e) {
+    if (e.key === "Escape" && sideMenu && sideMenu.classList.contains("active")) {
+      closeDrawer();
+    }
   });
 
   // ── FAQ Accordion (Founder Page Design) ──
