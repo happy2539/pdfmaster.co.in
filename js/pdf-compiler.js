@@ -191,7 +191,18 @@ class PDFCompiler {
     this.sortable = null;
     this.dbPromise = null;
     this.saveTimer = null;
+    this.isConversionComplete = false;
+    this.lastMergedBlob = null;
+    this.lastMergedName = null;
     this.init();
+  }
+
+  invalidateMergedPdf() {
+    this.lastMergedBlob = null;
+    this.lastMergedName = null;
+    this.isConversionComplete = false;
+    const readyBtn = document.getElementById("downloadReadyBtn");
+    if (readyBtn) readyBtn.style.display = "none";
   }
 
   init() {
@@ -230,24 +241,41 @@ class PDFCompiler {
 
     if (recoveryBtn) {
       recoveryBtn.addEventListener("click", () => {
-        this.loadSessionFromDB(true).then((success) => {
-          if (!success) {
-            showToast("No stored session found in recovery storage.", "error");
-          }
-        });
+        this.loadSessionFromDB(true);
       });
     }
 
     /* Option inputs change auto-save */
     ["pdfName", "metaTitle", "metaAuthor", "metaSubject", "compressionLevel"].forEach((id) => {
       const el = document.getElementById(id);
-      if (el) el.addEventListener("input", () => this.scheduleDBSave());
+      if (el) el.addEventListener("input", () => {
+        this.invalidateMergedPdf();
+        this.scheduleDBSave();
+      });
     });
 
     const toggleBlank = document.getElementById("toggleBlankPage");
     if (toggleBlank) {
-      toggleBlank.addEventListener("click", () => this.scheduleDBSave());
+      toggleBlank.addEventListener("click", () => {
+        this.invalidateMergedPdf();
+        this.scheduleDBSave();
+      });
     }
+
+    // Global download button click listener: when user clicks any download button, delete recovery session
+    document.addEventListener("click", (e) => {
+      const dlBtn = e.target.closest(
+        "#downloadReadyBtn, #pdfmPopupDownloadBtn, .btn-download-ready, .popup-download-btn",
+      );
+      if (dlBtn) {
+        this.clearSessionFromDB();
+      }
+    });
+
+    // Universal popup download completion listener
+    window.addEventListener("pdfmaster:file-downloaded", () => {
+      this.clearSessionFromDB();
+    });
 
     uploadArea.addEventListener("dragover", (e) => {
       e.preventDefault();
@@ -422,6 +450,7 @@ class PDFCompiler {
     await new Promise((resolve) => setTimeout(resolve, 300));
 
     this.showLoadingModal(false);
+    this.invalidateMergedPdf();
     this.render();
     this.updateButtons();
     this.updateStats();
@@ -623,6 +652,7 @@ class PDFCompiler {
         ) {
           const moved = this.files.splice(oldIdx, 1)[0];
           this.files.splice(newIdx, 0, moved);
+          this.invalidateMergedPdf();
           this.render();
           this.updateButtons();
           this.updateStats();
@@ -635,6 +665,7 @@ class PDFCompiler {
   removeFile(id) {
     this.files = this.files.filter((f) => String(f.id) !== String(id));
     this.deleteFileFromDB(id);
+    this.invalidateMergedPdf();
     this.render();
     this.updateButtons();
     this.updateStats();
@@ -656,6 +687,7 @@ class PDFCompiler {
       const item = this.files.shift();
       this.files.push(item);
     }
+    this.invalidateMergedPdf();
     this.render();
     this.updateButtons();
     this.updateStats();
@@ -676,6 +708,7 @@ class PDFCompiler {
       const item = this.files.pop();
       this.files.unshift(item);
     }
+    this.invalidateMergedPdf();
     this.render();
     this.updateButtons();
     this.updateStats();
@@ -683,10 +716,7 @@ class PDFCompiler {
   }
   clearAll() {
     this.files = [];
-    this.lastMergedBlob = null;
-    this.lastMergedName = null;
-    const readyBtn = document.getElementById("downloadReadyBtn");
-    if (readyBtn) readyBtn.style.display = "none";
+    this.invalidateMergedPdf();
     this.render();
     this.updateButtons();
     this.updateStats();
@@ -697,6 +727,7 @@ class PDFCompiler {
     if (by === "name") this.files.sort((a, b) => a.name.localeCompare(b.name));
     if (by === "size") this.files.sort((a, b) => b.size - a.size);
     if (by === "pages") this.files.sort((a, b) => b.pages - a.pages);
+    this.invalidateMergedPdf();
     this.render();
     this.updateButtons();
     this.updateStats();
@@ -884,6 +915,10 @@ class PDFCompiler {
       const blob = new Blob([pdfBytes], { type: "application/pdf" });
       this.lastMergedBlob = blob;
       this.lastMergedName = name;
+      this.isConversionComplete = true;
+
+      // Mark merge complete in IndexedDB: session recovery only works if merge is incomplete
+      this.markConversionCompleteInDB();
 
       // Activate on-page legacy Download button so user can download directly if popup is closed
       const readyBtn = document.getElementById("downloadReadyBtn");
@@ -900,6 +935,7 @@ class PDFCompiler {
           document.body.removeChild(a);
           setTimeout(() => URL.revokeObjectURL(url), 60000);
           showToast(`"${this.lastMergedName}" downloaded successfully!`, "success", 4000);
+          this.clearSessionFromDB();
         };
       }
 
@@ -927,9 +963,12 @@ class PDFCompiler {
         document.body.removeChild(a);
         setTimeout(() => URL.revokeObjectURL(url), 5000);
         showToast(`"${name}" downloaded successfully!`, "success", 5000);
+        this.clearSessionFromDB();
       }
     } catch (err) {
       console.error(err);
+      this.isConversionComplete = false;
+      this.scheduleDBSave();
       this.showLoadingModal(false);
       showToast(
         "Merge failed. One or more files may be encrypted or corrupted.",
@@ -1060,6 +1099,8 @@ class PDFCompiler {
         metaTitle: document.getElementById("metaTitle")?.value || "",
         metaAuthor: document.getElementById("metaAuthor")?.value || "",
         metaSubject: document.getElementById("metaSubject")?.value || "",
+        isConversionComplete: !!this.isConversionComplete,
+        conversionStatus: this.isConversionComplete ? "complete" : "incomplete",
       };
       settingsStore.put(sessionData, "session");
 
@@ -1109,9 +1150,35 @@ class PDFCompiler {
         }
       }
 
-      this.updateRecoveryBadge(this.files.length > 0);
+      // Session recovery badge only shows if merge/conversion is incomplete
+      this.updateRecoveryBadge(this.files.length > 0 && !this.isConversionComplete);
     } catch (err) {
       console.warn("IndexedDB save failed:", err);
+    }
+  }
+
+  async markConversionCompleteInDB() {
+    if (this.saveTimer) {
+      clearTimeout(this.saveTimer);
+      this.saveTimer = null;
+    }
+    try {
+      const db = await this.openDB();
+      const tx = db.transaction(["settings"], "readwrite");
+      const settingsStore = tx.objectStore("settings");
+      const req = settingsStore.get("session");
+      req.onsuccess = () => {
+        const session = req.result;
+        if (session) {
+          session.isConversionComplete = true;
+          session.conversionStatus = "complete";
+          settingsStore.put(session, "session");
+        }
+      };
+      this.updateRecoveryBadge(false);
+    } catch (err) {
+      console.warn("Could not mark merge complete in DB:", err);
+      this.updateRecoveryBadge(false);
     }
   }
 
@@ -1133,10 +1200,23 @@ class PDFCompiler {
         }),
       ]);
 
-      if (!storedFiles || !storedFiles.length) {
+      const isComplete = Boolean(
+        session &&
+          (session.isConversionComplete || session.conversionStatus === "complete"),
+      );
+
+      // If merge/conversion is complete, session recovery will not work
+      if (!storedFiles || !storedFiles.length || isComplete) {
         this.updateRecoveryBadge(false);
         if (isManual) {
-          showToast("No stored session found in recovery storage.", "error");
+          if (isComplete) {
+            showToast(
+              "Previous merge was completed. Session recovery is only available for incomplete sessions.",
+              "info",
+            );
+          } else {
+            showToast("No incomplete session found in recovery storage.", "error");
+          }
         }
         return false;
       }
@@ -1209,6 +1289,8 @@ class PDFCompiler {
         };
       });
 
+      this.isConversionComplete = false;
+      this.invalidateMergedPdf();
       this.render();
       this.updateButtons();
       this.updateStats();
@@ -1217,7 +1299,7 @@ class PDFCompiler {
 
       if (isManual) {
         showToast(
-          `Recovered ${this.files.length} PDF file(s) and settings successfully!`,
+          `Recovered incomplete session with ${this.files.length} PDF file(s) and settings successfully!`,
           "success",
           4500,
         );
@@ -1233,33 +1315,57 @@ class PDFCompiler {
   }
 
   async clearSessionFromDB() {
+    if (this.saveTimer) {
+      clearTimeout(this.saveTimer);
+      this.saveTimer = null;
+    }
     try {
       const db = await this.openDB();
       const tx = db.transaction(["settings", "files"], "readwrite");
       tx.objectStore("settings").clear();
       tx.objectStore("files").clear();
+      await new Promise((res) => {
+        tx.oncomplete = () => res();
+        tx.onerror = () => res();
+        tx.onabort = () => res();
+      });
       this.updateRecoveryBadge(false);
     } catch (err) {
       console.warn("IndexedDB clear failed:", err);
+      this.updateRecoveryBadge(false);
     }
   }
 
   async checkStoredSessionAvailable(notifyOnFound = false) {
     try {
       const db = await this.openDB();
-      const tx = db.transaction(["files"], "readonly");
+      const tx = db.transaction(["settings", "files"], "readonly");
+      const sessionReq = tx.objectStore("settings").get("session");
       const filesReq = tx.objectStore("files").getAll();
-      const files = await new Promise((res) => {
-        filesReq.onsuccess = () => res(filesReq.result);
-        filesReq.onerror = () => res([]);
-      });
 
-      const hasFiles = files && files.length > 0;
-      this.updateRecoveryBadge(hasFiles);
+      const [session, files] = await Promise.all([
+        new Promise((res) => {
+          sessionReq.onsuccess = () => res(sessionReq.result);
+          sessionReq.onerror = () => res(null);
+        }),
+        new Promise((res) => {
+          filesReq.onsuccess = () => res(filesReq.result);
+          filesReq.onerror = () => res([]);
+        }),
+      ]);
 
-      if (hasFiles && notifyOnFound && this.files.length === 0) {
+      const isComplete = Boolean(
+        session &&
+          (session.isConversionComplete || session.conversionStatus === "complete"),
+      );
+
+      // Only incomplete sessions trigger recovery badge & restore prompt
+      const hasIncompleteSession = Boolean(files && files.length > 0 && !isComplete);
+      this.updateRecoveryBadge(hasIncompleteSession);
+
+      if (hasIncompleteSession && notifyOnFound && this.files.length === 0) {
         showToast(
-          `Last session (${files.length} file${files.length > 1 ? "s" : ""}) is available. Click to restore.`,
+          `Last incomplete session (${files.length} file${files.length > 1 ? "s" : ""}) is available. Click to restore.`,
           "info",
           8000,
           () => {
@@ -1268,7 +1374,7 @@ class PDFCompiler {
           "Restore",
         );
       }
-      return hasFiles;
+      return hasIncompleteSession;
     } catch (err) {
       this.updateRecoveryBadge(false);
       return false;
