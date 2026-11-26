@@ -802,7 +802,7 @@
         currentOptions.skipTracking === true ||
         (currentOptions.downloadText &&
           /again/i.test(currentOptions.downloadText)) ||
-        (currentOptions.title && /download again/i.test(currentOptions.title));
+        (currentOptions.title && /again/i.test(currentOptions.title));
 
       if (!isReDownload && !currentOptions.__trackedByTracker) {
         currentOptions.__trackedByTracker = true;

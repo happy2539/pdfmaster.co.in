@@ -373,6 +373,61 @@
    * PDF Load Tracking State
    */
   let activeFileLoad = null;
+  let hasUserTriggeredNewConversion = false;
+  let fileListenersBound = false;
+  let conversionListenersBound = false;
+
+  const AUXILIARY_ASSET_IDS = new Set([
+    "image-input",
+    "sig-upload-input",
+    "sig-drop-zone",
+    "uploadSigInput",
+    "uploadSigDropzone",
+    "wmImageInput",
+  ]);
+
+  function isAuxiliaryAssetTarget(target, toolName) {
+    if (!target) return false;
+    try {
+      if (target.id && AUXILIARY_ASSET_IDS.has(target.id)) {
+        return true;
+      }
+      if (
+        typeof target.closest === "function" &&
+        target.closest("#sig-drop-zone, #uploadSigDropzone")
+      ) {
+        return true;
+      }
+      if (
+        target.tagName === "INPUT" &&
+        target.type === "file" &&
+        toolName !== "Photo to PDF"
+      ) {
+        const accept = (target.getAttribute("accept") || "").toLowerCase();
+        if (
+          accept &&
+          (/image\/|\.(png|jpe?g|webp|gif|bmp|svg)/i.test(accept)) &&
+          !/pdf/i.test(accept)
+        ) {
+          return true;
+        }
+      }
+    } catch (_) {}
+    return false;
+  }
+
+  function isPrimaryToolFile(file, toolName) {
+    if (!file) return false;
+    const name = (file.name || "").toLowerCase();
+    const type = (file.type || "").toLowerCase();
+    if (toolName === "Photo to PDF") {
+      return (
+        type.startsWith("image/") ||
+        /\.(jpe?g|png|webp|bmp|gif|tiff?|svg|avif)$/i.test(name)
+      );
+    }
+    return type === "application/pdf" || name.endsWith(".pdf");
+  }
 
   /**
    * Record PDF Selection & Loading Telemetry in Database
@@ -382,6 +437,17 @@
     if (!config.enabled) return;
 
     try {
+      // For multi-file tools (Merge PDF, Photo to PDF, Compare PDF, Watermark PDF),
+      // asset additions, or pre-conversion file replacements, keep a single file_load
+      // record per unconverted conversion cycle so 1 conversion maps 1:1 to 1 loadId.
+      if (activeFileLoad && !activeFileLoad.converted && !data.forceNew) {
+        log(
+          "Active unconverted file load already recorded; skipping extra file_load:",
+          activeFileLoad.loadId,
+        );
+        return activeFileLoad.loadId;
+      }
+
       const now = Date.now();
       const loadId =
         data.loadId ||
@@ -464,6 +530,8 @@
         fileSize: fileSize,
         tool: tool,
         pageCount: pageCount,
+        converted: false,
+        convertedAt: 0,
       };
 
       // Dispatched to dedicated file-load endpoint (with fallback to /api/record)
@@ -490,9 +558,34 @@
   let lastHandledFileKey = "";
   let lastHandledTime = 0;
 
-  function handleFileSelectionEvent(files, sourceDesc) {
+  function handleFileSelectionEvent(files, sourceDesc, targetEl) {
     if (!files || files.length === 0) return;
-    const file = files[0];
+
+    const toolName = resolveToolName();
+
+    // Ignore auxiliary inputs/dropzones (signatures, watermarks, editor images)
+    if (isAuxiliaryAssetTarget(targetEl, toolName)) {
+      log("Ignored auxiliary asset input:", sourceDesc, targetEl && targetEl.id);
+      return;
+    }
+
+    // Do not emit extra file_load events while an unconverted file load is active
+    if (activeFileLoad && !activeFileLoad.converted) {
+      log(
+        "Ignored additional file selection within active conversion cycle:",
+        activeFileLoad.loadId,
+      );
+      return;
+    }
+
+    // Pick the first valid primary file for the active tool
+    let file = null;
+    for (let i = 0; i < files.length; i++) {
+      if (isPrimaryToolFile(files[i], toolName)) {
+        file = files[i];
+        break;
+      }
+    }
     if (!file) return;
 
     // Deduplication check: prevent multiple triggers for the same file within 3 seconds
@@ -511,11 +604,14 @@
 
     // Non-blocking asynchronous load timer measurement
     const measureLoad = () => {
+      if (activeFileLoad && !activeFileLoad.converted) return;
+
       // Benchmark client disk-to-memory I/O by reading a chunk or full file
       const sliceSize = Math.min(file.size, 2 * 1024 * 1024);
       const reader = new FileReader();
 
       reader.onload = function (e) {
+        if (activeFileLoad && !activeFileLoad.converted) return;
         const ioDurationMs = Math.max(
           1,
           Math.round(performance.now() - selectionStartTime),
@@ -537,7 +633,7 @@
         }
 
         const loadRecord = {
-          tool: resolveToolName(),
+          tool: toolName,
           fileName: file.name,
           fileSize: file.size,
           fileExtension: (file.name.split(".").pop() || "pdf").toUpperCase(),
@@ -558,12 +654,13 @@
       };
 
       reader.onerror = function () {
+        if (activeFileLoad && !activeFileLoad.converted) return;
         const fallbackDuration = Math.max(
           1,
           Math.round(performance.now() - selectionStartTime),
         );
         trackPdfLoad({
-          tool: resolveToolName(),
+          tool: toolName,
           fileName: file.name,
           fileSize: file.size,
           loadDurationMs: fallbackDuration,
@@ -574,8 +671,9 @@
       try {
         reader.readAsArrayBuffer(file.slice(0, sliceSize));
       } catch (_) {
+        if (activeFileLoad && !activeFileLoad.converted) return;
         trackPdfLoad({
-          tool: resolveToolName(),
+          tool: toolName,
           fileName: file.name,
           fileSize: file.size,
           loadDurationMs: Math.max(
@@ -595,6 +693,9 @@
   }
 
   function setupUniversalFileSelectionListeners() {
+    if (fileListenersBound) return;
+    fileListenersBound = true;
+
     // 1. Capture change events on file inputs across the entire document
     document.addEventListener(
       "change",
@@ -608,7 +709,11 @@
             target.files &&
             target.files.length > 0
           ) {
-            handleFileSelectionEvent(target.files, "input[type='file']");
+            handleFileSelectionEvent(
+              target.files,
+              "input[type='file']",
+              target,
+            );
           }
         } catch (_) {}
       },
@@ -625,7 +730,11 @@
             e.dataTransfer.files &&
             e.dataTransfer.files.length > 0
           ) {
-            handleFileSelectionEvent(e.dataTransfer.files, "drag-and-drop");
+            handleFileSelectionEvent(
+              e.dataTransfer.files,
+              "drag-and-drop",
+              e.target,
+            );
           }
         } catch (_) {}
       },
@@ -918,8 +1027,26 @@
    */
   function trackConversion(data) {
     if (!data || typeof data !== "object") return;
+    if (data.skipTracking === true) return null;
 
     try {
+      const now = Date.now();
+
+      // Prevent duplicate conversion records for the same conversion cycle
+      // (e.g., modal re-opens, secondary benchmark/download-selected buttons, or dual API calls)
+      if (
+        activeFileLoad &&
+        activeFileLoad.converted === true &&
+        !hasUserTriggeredNewConversion &&
+        !data.forceNew
+      ) {
+        log(
+          "Duplicate conversion suppressed (current file load already converted):",
+          activeFileLoad.loadId,
+        );
+        return null;
+      }
+
       const durationMs =
         typeof data.durationMs === "number" && data.durationMs > 0
           ? Math.round(data.durationMs)
@@ -1021,7 +1148,6 @@
       };
 
       // Deduplication check: prevent recording duplicate calls within cooldown (25s)
-      const now = Date.now();
       const normTool = (tool || "pdf-tool")
         .toLowerCase()
         .replace(/[^a-z0-9]/g, "");
@@ -1172,6 +1298,12 @@
         language: navigator.language || "en",
       };
 
+      hasUserTriggeredNewConversion = false;
+      if (activeFileLoad) {
+        activeFileLoad.converted = true;
+        activeFileLoad.convertedAt = now;
+      }
+
       sendPayload(payload);
       return eventId;
     } catch (err) {
@@ -1248,43 +1380,65 @@
   }
 
   // Reset dedupe cache on conversion button click to allow deliberate re-conversions
+  const CONVERSION_BUTTON_SELECTOR = [
+    "#convertBtn",
+    ".btn-convert",
+    "#mergeBtn",
+    "#mergePdfBtn",
+    "#splitBtn",
+    "#rotateBtn",
+    "#rotatePdfPrimaryBtn",
+    "#rotatePdfBtn",
+    "#signPdfPrimaryBtn",
+    "#applyWatermarkBtn",
+    "#applyBtn",
+    "#cleanMetaBtn",
+    "#removeBtn",
+    "#compressPdfBtn",
+    "#deletePagesBtn",
+    "#deletePdfBtn",
+    "#insertBlankPageBtn",
+    "#insertPdfBtn",
+    "#reorderPagesBtn",
+    "#protectPdfBtn",
+    "#encryptBtn",
+    "#unlockPdfBtn",
+    "#comparePdfBtn",
+    "#btnExportPdf",
+    "#extractPhotosBtn",
+    "#startExtractBtn",
+    "#ocrPdfBtn",
+    "#startOcrBtn",
+    "#pageNumberBtn",
+    "#numberPdfBtn",
+    "#sidebarNumberPdfBtn",
+    "#download-btn",
+    "[data-action='convert']",
+    "[data-action='process']",
+  ].join(", ");
+
   function setupConversionButtonListeners() {
+    if (conversionListenersBound) return;
+    conversionListenersBound = true;
     try {
-      const selectors = [
-        "#convertBtn",
-        ".btn-convert",
-        "#mergeBtn",
-        "#mergePdfBtn",
-        "#splitBtn",
-        "#rotateBtn",
-        "#rotatePdfPrimaryBtn",
-        "#signPdfPrimaryBtn",
-        "#applyWatermarkBtn",
-        "#cleanMetaBtn",
-        "#compressPdfBtn",
-        "#deletePagesBtn",
-        "#insertBlankPageBtn",
-        "#reorderPagesBtn",
-        "#protectPdfBtn",
-        "#unlockPdfBtn",
-        "#comparePdfBtn",
-        "#extractPhotosBtn",
-        "#ocrPdfBtn",
-        "#pageNumberBtn",
-        "[data-action='convert']",
-        "[data-action='process']",
-      ];
-      selectors.forEach((sel) => {
-        document.querySelectorAll(sel).forEach((el) => {
-          if (!el.__trackerListenerBound) {
-            el.__trackerListenerBound = true;
-            el.addEventListener("click", () => {
-              recentEventKeys.clear();
-              log("Conversion button clicked, dedupe cooldown reset.");
-            });
+      document.addEventListener(
+        "click",
+        (e) => {
+          const target = e.target;
+          if (!target || typeof target.closest !== "function") return;
+          const isReorderConvert =
+            typeof window !== "undefined" &&
+            window.location &&
+            window.location.pathname.includes("pdf-reorder") &&
+            Boolean(target.closest("#downloadBtn"));
+          if (isReorderConvert || target.closest(CONVERSION_BUTTON_SELECTOR)) {
+            recentEventKeys.clear();
+            hasUserTriggeredNewConversion = true;
+            log("Conversion button clicked, dedupe cooldown reset.");
           }
-        });
-      });
+        },
+        true,
+      );
     } catch (_) {}
   }
 

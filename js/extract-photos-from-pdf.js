@@ -1201,7 +1201,7 @@
   // =============================================
   //  UNIVERSAL TIMER POP-UP MODAL
   // =============================================
-  function showExtractionSuccessPopup(durationMs, targetPages = []) {
+  function showExtractionSuccessPopup(durationMs, targetPages = [], skipTracking = false) {
     if (!window.PDFMasterPopup || state.images.length === 0) return;
 
     const count = state.images.length;
@@ -1233,6 +1233,7 @@
         toolName: "Photo from PDF Extractor",
         verb: "Extracted",
         durationMs: safeDuration,
+        skipTracking: Boolean(skipTracking),
         blob: single.blob,
         onSecondary: () => {
           if (gallerySection) {
@@ -1254,6 +1255,7 @@
         toolName: "Photo from PDF Extractor",
         verb: "Extracted",
         durationMs: safeDuration,
+        skipTracking: Boolean(skipTracking),
         onDownload: () => {
           const visible = state.groupedImages.length ? state.groupedImages : state.images;
           return generateZip(visible, zipName);
@@ -1281,7 +1283,7 @@
   if (timerModalBtn) {
     timerModalBtn.addEventListener("click", () => {
       if (state.images.length > 0) {
-        showExtractionSuccessPopup(state.stats.durationMs || 300, state.targetPages);
+        showExtractionSuccessPopup(state.stats.durationMs || 300, state.targetPages, true);
       } else {
         showToast("Please extract photos first to view timer benchmark.");
       }
@@ -1292,7 +1294,7 @@
   if (statsTimeItem) {
     statsTimeItem.addEventListener("click", () => {
       if (state.images.length > 0) {
-        showExtractionSuccessPopup(state.stats.durationMs || 300, state.targetPages);
+        showExtractionSuccessPopup(state.stats.durationMs || 300, state.targetPages, true);
       } else {
         showToast("Please extract photos first to view timer benchmark.");
       }
@@ -1328,6 +1330,7 @@
           toolName: "Photo from PDF Extractor",
           verb: "Extracted",
           durationMs: state.stats.durationMs || 300,
+          skipTracking: true,
           onDownload: () => generateZip(selected, selZipName),
         });
       } else {

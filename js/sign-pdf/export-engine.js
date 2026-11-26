@@ -310,7 +310,7 @@
 
       const signDetails = `${totalPages} pages (${signedPageCount} signed) • ${totalSignatures} signature(s) • ${PDFSign.fmtBytes(outBlob.size)} • 100% Private`;
 
-      // Universal Popup Integration
+      // Universal Popup Integration (automatically records conversion telemetry once)
       if (
         window.PDFMasterPopup &&
         typeof window.PDFMasterPopup.show === "function"
@@ -329,14 +329,12 @@
           signedPageCount: signedPageCount,
           settings: signSettings,
         });
-      }
-
-      // Conversion Tracker
-      if (
+      } else if (
         window.PDFMasterTracker &&
         (typeof window.PDFMasterTracker.trackConversion === "function" ||
           typeof window.PDFMasterTracker.recordConversion === "function")
       ) {
+        // Fallback Conversion Tracker if popup is unavailable
         const trackerFn =
           window.PDFMasterTracker.trackConversion ||
           window.PDFMasterTracker.recordConversion;
