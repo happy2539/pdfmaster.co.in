@@ -85,6 +85,9 @@
     <link rel="icon" href="/assets/favicon.ico" />
     <link rel="apple-touch-icon" href="/assets/apple-touch-icon.png" />
 
+    <!-- Performance -->
+    <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
+
     <!-- Fonts (Matching Founder Page) -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -152,7 +155,7 @@
         window.addEventListener("mousemove", loadGTM, { passive: true });
         window.addEventListener("touchstart", loadGTM, { passive: true });
         window.addEventListener("click", loadGTM, { passive: true });
-        setTimeout(loadGTM, 5000);
+        setTimeout(loadGTM, 4000);
       })();
     </script>
 

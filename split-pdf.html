@@ -51,6 +51,9 @@
     <link rel="icon" href="/assets/favicon.ico" type="image/x-icon" />
     <link rel="apple-touch-icon" href="/assets/apple-touch-icon.png" />
 
+    <!-- Performance -->
+    <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
+
     <!-- Fonts -->
     <link href="assets/fonts/fonts.css" rel="stylesheet" />
 
@@ -166,10 +169,48 @@
     <script src="/js/sw-register.js" defer></script>
 
     <meta name="google-adsense-account" content="ca-pub-9223989888558332" />
+    <!-- Google Tag Manager (Activity-Only) -->
+    <script>
+      (function () {
+        var gtmLoaded = false;
+        var evts = ["mousemove", "mousedown", "touchstart", "keydown", "scroll", "wheel", "click"];
+        function loadGTM() {
+          if (gtmLoaded) return;
+          gtmLoaded = true;
+          evts.forEach(function (e) {
+            window.removeEventListener(e, loadGTM);
+          });
+          (function (w, d, s, l, i) {
+            w[l] = w[l] || [];
+            w[l].push({ "gtm.start": new Date().getTime(), event: "gtm.js" });
+            var f = d.getElementsByTagName(s)[0],
+              j = d.createElement(s),
+              dl = l != "dataLayer" ? "&l=" + l : "";
+            j.async = true;
+            j.src = "https://www.googletagmanager.com/gtm.js?id=" + i + dl;
+            f.parentNode.insertBefore(j, f);
+          })(window, document, "script", "dataLayer", "GTM-PCSVMC65");
+        }
+        evts.forEach(function (e) {
+          window.addEventListener(e, loadGTM, { once: true, passive: true });
+        });
+      })();
+    </script>
+    <!-- End Google Tag Manager -->
     <link rel="stylesheet" href="/css/categorized-footer.css" />
       <link rel=stylesheet href=/css/festival-theme.css />
   </head>
   <body>
+    <!-- Google Tag Manager (noscript) -->
+    <noscript
+      ><iframe
+        src="https://www.googletagmanager.com/ns.html?id=GTM-PCSVMC65"
+        height="0"
+        width="0"
+        style="display: none; visibility: hidden"
+      ></iframe
+    ></noscript>
+    <!-- End Google Tag Manager (noscript) -->
     <!-- ════════════════════════ NAVBAR ════════════════════════ -->
     <header class="site-header">
       <nav class="container">

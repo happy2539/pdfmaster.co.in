@@ -110,16 +110,17 @@
 
     <meta name="google-adsense-account" content="ca-pub-9223989888558332" />
 
-    <!-- Google Tag Manager (Delayed) -->
+    <!-- Google Tag Manager (Activity-Only) -->
     <script>
       (function () {
-        let gtmLoaded = false;
-        const gtmId = "GTM-PCSVMC65";
-
+        var gtmLoaded = false;
+        var evts = ["mousemove", "mousedown", "touchstart", "keydown", "scroll", "wheel", "click"];
         function loadGTM() {
           if (gtmLoaded) return;
           gtmLoaded = true;
-
+          evts.forEach(function (e) {
+            window.removeEventListener(e, loadGTM);
+          });
           (function (w, d, s, l, i) {
             w[l] = w[l] || [];
             w[l].push({ "gtm.start": new Date().getTime(), event: "gtm.js" });
@@ -129,24 +130,14 @@
             j.async = true;
             j.src = "https://www.googletagmanager.com/gtm.js?id=" + i + dl;
             f.parentNode.insertBefore(j, f);
-          })(window, document, "script", "dataLayer", gtmId);
-
-          // Clean up listeners
-          window.removeEventListener("scroll", loadGTM);
-          window.removeEventListener("mousemove", loadGTM);
-          window.removeEventListener("touchstart", loadGTM);
-          window.removeEventListener("click", loadGTM);
+          })(window, document, "script", "dataLayer", "GTM-PCSVMC65");
         }
-
-        window.addEventListener("scroll", loadGTM, { passive: true });
-        window.addEventListener("mousemove", loadGTM, { passive: true });
-        window.addEventListener("touchstart", loadGTM, { passive: true });
-        window.addEventListener("click", loadGTM, { passive: true });
-
-        // Fallback for very slow interactions
-        setTimeout(loadGTM, 5000);
+        evts.forEach(function (e) {
+          window.addEventListener(e, loadGTM, { once: true, passive: true });
+        });
       })();
     </script>
+    <!-- End Google Tag Manager -->
 
     <!-- Schema -->
     <script type="application/ld+json">

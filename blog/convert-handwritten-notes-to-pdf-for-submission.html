@@ -74,6 +74,9 @@
       type="image/x-icon"
     />
 
+    <!-- Performance -->
+    <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
+
     <link rel="preload" as="style" href="/assets/fonts/fonts.css" />
     <link href="/assets/fonts/fonts.css" rel="stylesheet" />
 
@@ -129,8 +132,8 @@
         window.addEventListener("touchstart", loadGTM, { passive: true });
         window.addEventListener("click", loadGTM, { passive: true });
 
-        // Fallback for very slow interactions
-        setTimeout(loadGTM, 5000);
+        // Fallback: load after 4 s if no interaction
+        setTimeout(loadGTM, 4000);
       })();
     </script>
 

@@ -51,6 +51,9 @@
       href="/assets/apple-touch-icon.png"
     />
 
+    <!-- Performance -->
+    <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
+
     <link href="/assets/fonts/fonts.css" rel="stylesheet" />
 
     <script type="application/ld+json">
@@ -177,6 +180,9 @@
         window.addEventListener("mousemove", loadGTM, { passive: true });
         window.addEventListener("touchstart", loadGTM, { passive: true });
         window.addEventListener("click", loadGTM, { passive: true });
+
+        // Fallback: load after 4 s if no interaction
+        setTimeout(loadGTM, 4000);
       })();
     </script>
   </head>
